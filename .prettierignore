@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+.idea
+pnpm-lock.yaml
+
+# Ignored suffix
+*.log
+*.svg
+*.png
+*ignore
+
+# Local
+.husky
+
+# Built-files
+dist

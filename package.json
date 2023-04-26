@@ -1,22 +1,48 @@
 {
   "name": "gzker-plus",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "过早客论坛增强插件～",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ccnnde/gzker-plus.git"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "Nor Cod",
+    "email": "norfecod@outlook.com"
+  },
   "type": "module",
   "scripts": {
+    "build": "vue-tsc && vite build",
     "dev": "vite",
-    "build": "vue-tsc && vite build"
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.vue --fix",
+    "lint:list": "DEBUG=eslint:cli-engine pnpm lint",
+    "up-all": "pnpm up --latest"
   },
   "dependencies": {
     "vue": "^3.2.47"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/eslint-parser": "^7.21.3",
     "@types/webextension-polyfill": "^0.10.0",
-    "@vitejs/plugin-vue": "^4.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "@vitejs/plugin-vue": "^4.2.0",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "eslint": "^8.39.0",
+    "eslint-config-alloy": "^5.0.0",
+    "eslint-plugin-vue": "^9.11.0",
+    "prettier": "^2.8.8",
+    "prettier-plugin-packagejson": "^2.4.3",
     "typescript": "^5.0.4",
-    "vite": "^4.3.1",
+    "vite": "^4.3.2",
     "vite-plugin-web-extension": "^3.0.6",
-    "vue-tsc": "^1.4.1",
+    "vue-eslint-parser": "^9.1.1",
+    "vue-tsc": "^1.4.4",
     "webextension-polyfill": "^0.10.0"
   }
 }
