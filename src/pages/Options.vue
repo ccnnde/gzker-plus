@@ -1,7 +1,7 @@
 <script setup lang="ts">
-console.log('Hello Popup');
+console.log('Hello Options');
 </script>
 
 <template>
-  <h1>Popup</h1>
+  <h1>Options</h1>
 </template>

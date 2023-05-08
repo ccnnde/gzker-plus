@@ -8,6 +8,10 @@
     "96": "icon/96.png",
     "128": "icon/128.png"
   },
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
+  },
   "{{chrome}}.action": {
     "default_popup": "src/popup.html"
   },
@@ -15,7 +19,7 @@
     "default_popup": "src/popup.html"
   },
   "background": {
-    "{{chrome}}.service_worker": "src/background.ts",
-    "{{firefox}}.scripts": ["src/background.ts"]
+    "{{chrome}}.service_worker": "src/utils/background/index.ts",
+    "{{firefox}}.scripts": ["src/utils/background/index.ts"]
   }
 }

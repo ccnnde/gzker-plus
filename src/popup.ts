@@ -1,4 +1,7 @@
-import Popup from "./pages/Popup.vue";
-import { createApp } from "vue";
+import { createApp } from 'vue';
 
-createApp(Popup).mount("body");
+import Popup from './pages/Popup.vue';
+
+const app = createApp(Popup);
+
+app.mount('#app');
