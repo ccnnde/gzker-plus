@@ -4,6 +4,7 @@
     "stylelint.vscode-stylelint",
     "esbenp.prettier-vscode",
     "Vue.volar",
-    "Vue.vscode-typescript-vue-plugin"
+    "Vue.vscode-typescript-vue-plugin",
+    "lokalise.i18n-ally"
   ]
 }
