@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ['stylelint-config-standard', 'stylelint-config-recess-order', 'stylelint-config-recommended-vue'],
+  extends: ['stylelint-config-recess-order', 'stylelint-config-standard-scss', 'stylelint-config-standard-vue/scss'],
 };

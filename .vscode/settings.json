@@ -8,8 +8,8 @@
     "source.fixAll.eslint": true,
     "source.fixAll.stylelint": true
   },
-  "stylelint.validate": ["css", "vue"],
-  "css.validate": false,
+  "stylelint.validate": ["scss", "vue"],
+  "scss.validate": false,
   "i18n-ally.localesPaths": "src/i18n/locales",
   "i18n-ally.sourceLanguage": "zh",
   "i18n-ally.displayLanguage": "zh",
