@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import htmlMinifier from 'vite-plugin-html-minifier';
 import webExtension, { readJsonFile } from 'vite-plugin-web-extension';
 import path from 'path';
 
@@ -24,6 +25,7 @@ export default defineConfig({
     vueI18nPlugin({
       include: path.resolve(__dirname, './src/i18n/locales/**'),
     }),
+    htmlMinifier(),
     webExtension({
       browser: target,
       manifest: generateManifest,
