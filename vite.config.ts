@@ -3,7 +3,8 @@ import vue from '@vitejs/plugin-vue';
 import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import htmlMinifier from 'vite-plugin-html-minifier';
 import webExtension, { readJsonFile } from 'vite-plugin-web-extension';
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
 
 const target = process.env.TARGET || 'chrome';
 
@@ -35,4 +36,9 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 });
