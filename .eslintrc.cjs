@@ -100,7 +100,7 @@ module.exports = {
     'import/no-unassigned-import': [
       'error',
       {
-        allow: ['**/*.scss'],
+        allow: ['**/*.{css,scss}', 'element-plus/**/style/css'],
       },
     ],
   },

@@ -2,8 +2,10 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
 import Options from './pages/Options.vue';
-import router from './router';
 import i18n from './i18n';
+import router from './router';
+
+import 'element-plus/es/components/message/style/css';
 
 const app = createApp(Options);
 const pinia = createPinia();
