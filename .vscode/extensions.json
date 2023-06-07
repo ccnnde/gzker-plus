@@ -5,6 +5,7 @@
     "esbenp.prettier-vscode",
     "Vue.volar",
     "Vue.vscode-typescript-vue-plugin",
-    "lokalise.i18n-ally"
+    "lokalise.i18n-ally",
+    "antfu.unocss"
   ]
 }

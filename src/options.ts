@@ -6,6 +6,7 @@ import i18n from './i18n';
 import router from './router';
 
 import 'element-plus/es/components/message/style/css';
+import './styles';
 
 const app = createApp(Options);
 const pinia = createPinia();

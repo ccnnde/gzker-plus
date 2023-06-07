@@ -1,6 +1,13 @@
 module.exports = {
   plugins: ['simple-import-sort', 'import'],
-  extends: ['alloy', 'alloy/vue', 'alloy/typescript', 'plugin:import/recommended', 'plugin:import/typescript'],
+  extends: [
+    'alloy',
+    'alloy/vue',
+    'alloy/typescript',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+    '@unocss',
+  ],
   settings: {
     'import/resolver': {
       /**
@@ -38,7 +45,7 @@ module.exports = {
       {
         groups: [
           // Packages. `vue` related packages come first.
-          ['^vue', '^@vue', 'pinia', '^vite$', '^@vitejs', '^vite-plugin', '^@?\\w'],
+          ['^vue', '^@vue', 'pinia', '^vite$', '^@vitejs', '^vite-plugin', '^unocss$', '^@unocss', '^@?\\w'],
           // Node.js builtins.
           ['^node:'],
           // Internal packages.
@@ -78,6 +85,12 @@ module.exports = {
     'import/no-absolute-path': 'error',
     'import/no-dynamic-require': 'error',
     'import/no-self-import': 'error',
+    'import/no-unresolved': [
+      'error',
+      {
+        ignore: ['^virtual:'],
+      },
+    ],
     'import/no-useless-path-segments': [
       'error',
       {
@@ -100,7 +113,7 @@ module.exports = {
     'import/no-unassigned-import': [
       'error',
       {
-        allow: ['**/*.{css,scss}', 'element-plus/**/style/css'],
+        allow: ['**/*.{css,scss}', '**/styles', 'element-plus/**/style/css'],
       },
     ],
   },
