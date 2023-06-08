@@ -40,11 +40,11 @@ export default defineConfig({
       include: path.resolve(__dirname, './src/i18n/locales/**'),
     }),
     AutoImport({
-      dts: 'src/types/auto-imports.d.ts',
+      dts: false,
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      dts: 'src/types/components.d.ts',
+      dts: false,
       resolvers: [ElementPlusResolver()],
     }),
     UnoCSS(),

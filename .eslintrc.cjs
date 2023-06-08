@@ -116,5 +116,39 @@ module.exports = {
         allow: ['**/*.{css,scss}', '**/styles', 'element-plus/**/style/css'],
       },
     ],
+    'vue/component-tags-order': [
+      'error',
+      {
+        order: ['script:not([setup])', 'script[setup]', 'template', 'style:not([scoped])', 'style[scoped]'],
+      },
+    ],
+    'vue/component-name-in-template-casing': [
+      'error',
+      'PascalCase',
+      {
+        registeredComponentsOnly: false,
+        ignores: ['/^un-/'],
+      },
+    ],
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'always',
+          normal: 'never',
+          component: 'always',
+        },
+        svg: 'always',
+        math: 'always',
+      },
+    ],
+    'vue/prop-name-casing': ['error', 'camelCase'],
+    'vue/attribute-hyphenation': [
+      'error',
+      'always',
+      {
+        ignore: [],
+      },
+    ],
   },
 };
