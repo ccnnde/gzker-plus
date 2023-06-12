@@ -1,6 +1,16 @@
 {
   "files.eol": "\n",
   "files.autoSave": "off",
+  "files.readonlyInclude": {
+    ".husky/**/*": true,
+    "dist/**/*": true,
+    "node_modules/**/*": true,
+    "LICENSE": true,
+    "pnpm-lock.yaml": true
+  },
+  "search.exclude": {
+    "dist/**/*": true
+  },
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -8,6 +18,7 @@
     "source.fixAll.eslint": true,
     "source.fixAll.stylelint": true
   },
+  "extensions.ignoreRecommendations": false,
   "stylelint.validate": ["scss", "vue"],
   "scss.validate": false,
   "i18n-ally.localesPaths": "src/i18n/locales",
