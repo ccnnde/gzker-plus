@@ -19,7 +19,7 @@
     "default_popup": "src/popup.html"
   },
   "background": {
-    "{{chrome}}.service_worker": "src/utils/background/index.ts",
-    "{{firefox}}.scripts": ["src/utils/background/index.ts"]
+    "{{chrome}}.service_worker": "src/background/index.ts",
+    "{{firefox}}.scripts": ["src/background/index.ts"]
   }
 }
