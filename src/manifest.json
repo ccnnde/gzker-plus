@@ -21,5 +21,11 @@
   "background": {
     "{{chrome}}.service_worker": "src/background/index.ts",
     "{{firefox}}.scripts": ["src/background/index.ts"]
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.guozaoke.com/*"],
+      "js": ["src/scripts/header.ts"]
+    }
+  ]
 }

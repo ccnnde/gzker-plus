@@ -1,5 +1,8 @@
 {
   "common": {
     "extName": "过早客 Plus"
+  },
+  "gzkHeader": {
+    "gzkSettings": "过早客 Plus 设置"
   }
 }

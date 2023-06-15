@@ -60,6 +60,7 @@ module.exports = {
             '^@/api(/.*|$)',
             '^@/utils(/.*|$)',
             '^@/constants(/.*|$)',
+            '^@/types(/.*|$)',
             '^@/icons(/.*|$)',
             '^@/styles(/.*|$)',
           ],
@@ -150,5 +151,6 @@ module.exports = {
         ignore: [],
       },
     ],
+    'vue/padding-line-between-blocks': ['error', 'always'],
   },
 };

@@ -1,5 +1,8 @@
 {
   "common": {
     "extName": "Gzker Plus"
+  },
+  "gzkHeader": {
+    "gzkSettings": "Gzker Plus settings"
   }
 }
