@@ -4,5 +4,11 @@
   },
   "gzkHeader": {
     "gzkSettings": "过早客 Plus 设置"
+  },
+  "navigation": {
+    "basicSetting": "基础设置"
+  },
+  "options": {
+    "title": "过早客 Plus 选项"
   }
 }

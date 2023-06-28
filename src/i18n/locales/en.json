@@ -4,5 +4,11 @@
   },
   "gzkHeader": {
     "gzkSettings": "Gzker Plus settings"
+  },
+  "navigation": {
+    "basicSetting": "Basic Setting"
+  },
+  "options": {
+    "title": "Gzker Plus Options"
   }
 }
