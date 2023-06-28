@@ -152,5 +152,17 @@ module.exports = {
       },
     ],
     'vue/padding-line-between-blocks': ['error', 'always'],
+    'vue/block-lang': [
+      'error',
+      {
+        script: {
+          lang: 'ts',
+        },
+        template: {},
+        style: {
+          lang: 'scss',
+        },
+      },
+    ],
   },
 };

@@ -127,8 +127,8 @@ devDependencies:
     specifier: ^1.0.3
     version: 1.0.3(vite@4.3.9)
   vite-plugin-web-extension:
-    specifier: ^3.0.9
-    version: 3.0.9(vite@4.3.9)
+    specifier: ^3.0.10
+    version: 3.0.10(vite@4.3.9)
   vue-eslint-parser:
     specifier: ^9.3.0
     version: 9.3.0(eslint@8.42.0)
@@ -7448,8 +7448,8 @@ packages:
       vite: 4.3.9(@types/node@20.2.5)(sass@1.62.1)
     dev: true
 
-  /vite-plugin-web-extension@3.0.9(vite@4.3.9):
-    resolution: {integrity: sha512-QRUo11QxPCOo4n2p2bmbtH30Ph/XaJc6aHJMyLDl1yrVbyH/wg963DMY2UnPnIFA91uq5kTdcfAWwDtvYpEVVA==}
+  /vite-plugin-web-extension@3.0.10(vite@4.3.9):
+    resolution: {integrity: sha512-R3k7/36gsFmcqlb5VNyX+P1n398j2hez60dtBxNVQ8ANW3vhyIMsrsm44cEmN+Be0SSB1LG3bHGFOYCa36jI8Q==}
     peerDependencies:
       vite: ^4
     dependencies:

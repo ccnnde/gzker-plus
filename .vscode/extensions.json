@@ -6,6 +6,7 @@
     "Vue.volar",
     "Vue.vscode-typescript-vue-plugin",
     "lokalise.i18n-ally",
+    "christian-kohler.path-intellisense",
     "antfu.unocss"
   ]
 }
