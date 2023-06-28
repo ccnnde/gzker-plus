@@ -4,8 +4,13 @@ import { useI18n } from 'vue-i18n';
 import en from 'element-plus/dist/locale/en.mjs';
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 
+import { LanguageType } from '@/constants';
+
 const { locale: language } = useI18n();
-const locale = computed(() => (language.value === 'zh' ? zhCn : en));
+
+const locale = computed(() => {
+  return language.value === LanguageType.ZH ? zhCn : en;
+});
 </script>
 
 <template>

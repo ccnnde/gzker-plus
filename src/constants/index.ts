@@ -9,3 +9,11 @@ export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
 export const enum ExtensionMessageType {
   OpenOptionsPage,
 }
+
+/**
+ * 多语言类型
+ */
+export const enum LanguageType {
+  ZH = 'zh',
+  EN = 'en',
+}
