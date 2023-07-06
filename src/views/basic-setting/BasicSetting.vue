@@ -4,7 +4,7 @@ import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { t } from '@/i18n';
 import { getStorage, setStorage } from '@/utils';
 import { OptionsKey } from '@/constants';
-import { Options, Setting } from '@/types';
+import { CheckedOption, Options, Setting } from '@/types';
 
 import BlankLink from './BlankLink.vue';
 
@@ -20,6 +20,16 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.blankLink.titleDesc'),
           key: OptionsKey.BlankLink,
           component: BlankLink,
+        },
+      ],
+    },
+    {
+      category: t('basicSetting.category.other'),
+      list: [
+        {
+          name: t('basicSetting.dblclickToTop.title'),
+          description: t('basicSetting.dblclickToTop.titleDesc'),
+          key: OptionsKey.DblclickToTop,
         },
       ],
     },
@@ -55,7 +65,7 @@ watch(
           <span class="setting-item-title">{{ item.name }}</span>
           <ElCheckbox
             v-if="!item.component"
-            v-model="(options[item.key] as any).checked"
+            v-model="(options[item.key] as CheckedOption).checked"
             class="setting-item-description-check"
             :label="item.description"
           />

@@ -8,7 +8,12 @@
       "user": "User"
     },
     "category": {
-      "browse": "Browse"
+      "browse": "Browse",
+      "other": "Other"
+    },
+    "dblclickToTop": {
+      "title": "Double-click to return to the top",
+      "titleDesc": "Double-click anywhere to return to the top"
     }
   },
   "common": {

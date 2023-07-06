@@ -36,11 +36,15 @@ export const LinkElementSelector: Record<LinkElementType, string> = {
 
 export const enum OptionsKey {
   BlankLink = 'blankLink',
+  DblclickToTop = 'dblclickToTop',
 }
 
 export const defaultExtensionOptions: Options = {
   [OptionsKey.BlankLink]: {
     checkedLinkTypes: [],
+  },
+  [OptionsKey.DblclickToTop]: {
+    checked: false,
   },
 };
 

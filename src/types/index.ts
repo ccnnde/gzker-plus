@@ -24,6 +24,7 @@ export interface Options {
   [OptionsKey.BlankLink]: {
     checkedLinkTypes: LinkElementType[];
   };
+  [OptionsKey.DblclickToTop]: CheckedOption;
 }
 
 export interface CheckedOption {

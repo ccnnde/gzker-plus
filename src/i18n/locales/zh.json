@@ -8,7 +8,12 @@
       "user": "用户"
     },
     "category": {
-      "browse": "浏览"
+      "browse": "浏览",
+      "other": "其他"
+    },
+    "dblclickToTop": {
+      "title": "双击返回顶部",
+      "titleDesc": "双击任意位置返回顶部"
     }
   },
   "common": {
