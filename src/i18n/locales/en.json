@@ -1,5 +1,18 @@
 {
+  "basicSetting": {
+    "blankLink": {
+      "node": "Node",
+      "title": "Open Link In New Tab",
+      "titleDesc": "Open the following types of links in a new tab in the browser",
+      "topic": "Topic",
+      "user": "User"
+    },
+    "category": {
+      "browse": "Browse"
+    }
+  },
   "common": {
+    "checkAll": "Check all",
     "extName": "Gzker Plus"
   },
   "gzkHeader": {

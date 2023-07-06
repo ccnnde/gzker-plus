@@ -1,5 +1,18 @@
 {
+  "basicSetting": {
+    "blankLink": {
+      "node": "节点",
+      "title": "新标签页打开链接",
+      "titleDesc": "在浏览器的新标签页中打开以下类型的链接",
+      "topic": "主题",
+      "user": "用户"
+    },
+    "category": {
+      "browse": "浏览"
+    }
+  },
   "common": {
+    "checkAll": "全选",
     "extName": "过早客 Plus"
   },
   "gzkHeader": {

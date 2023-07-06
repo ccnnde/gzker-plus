@@ -1,10 +1,13 @@
 import { runtime } from 'webextension-polyfill';
 
+import { initStorage } from '@/utils';
 import { ExtensionMessageType } from '@/constants';
 import { ExtensionMessage } from '@/types';
 
-runtime.onInstalled.addListener((details) => {
+runtime.onInstalled.addListener(async (details) => {
   const { reason } = details;
+
+  await initStorage();
 
   if (reason === 'install') {
     runtime.openOptionsPage();

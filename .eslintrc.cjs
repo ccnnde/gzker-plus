@@ -164,5 +164,11 @@ module.exports = {
         },
       },
     ],
+    'vue/no-mutating-props': [
+      'error',
+      {
+        shallowOnly: true,
+      },
+    ],
   },
 };
