@@ -32,7 +32,7 @@ import AsideItem from './AsideItem.vue';
   width: 250px;
   margin: 20px;
   margin-right: 0;
-  border: 1px solid #ddd;
+  border: 1px solid var(--el-border-color);
   border-radius: 0.5em;
 
   .el-menu {

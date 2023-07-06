@@ -41,7 +41,7 @@ const switchLanguage = (lang: LanguageType) => {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--el-border-color);
 }
 
 .header-title {
