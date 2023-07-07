@@ -61,7 +61,6 @@ module.exports = {
             '^@/api(/.*|$)',
             '^@/utils(/.*|$)',
             '^@/constants(/.*|$)',
-            '^@/types(/.*|$)',
             '^@/icons(/.*|$)',
             '^@/styles(/.*|$)',
           ],
@@ -71,6 +70,22 @@ module.exports = {
           ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
           // Other relative imports. Put same-folder imports and `.` last.
           ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+          // Type imports
+          [
+            '^vue.*\\u0000$',
+            '^@vue.*\\u0000$',
+            '^pinia.*\\u0000$',
+            '^vite\\u0000$',
+            '^@vitejs.*\\u0000$',
+            '^vite-plugin.*\\u0000$',
+            '^unocss\\u0000$',
+            '^@unocss.*\\u0000$',
+            '^@?\\w.*\\u0000$',
+            '^node:.*\\u0000$',
+            '^@/constants.*\\u0000$',
+            '^@/types.*\\u0000$',
+            '^.*\\u0000$',
+          ],
           // Style imports.
           ['^.+\\.s?css$'],
           // Side effect imports.

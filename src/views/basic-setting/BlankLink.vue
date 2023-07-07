@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import type { CheckboxValueType } from 'element-plus';
 
 import { t } from '@/i18n';
 import { LinkElementType, OptionsKey } from '@/constants';
 
+import type { CheckboxValueType } from 'element-plus';
 import type { Options } from '@/types';
 
 interface Props {

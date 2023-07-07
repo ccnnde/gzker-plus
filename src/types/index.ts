@@ -1,7 +1,6 @@
-import type { Component } from 'vue';
-
 import { ExtensionMessageType, LanguageType, OptionsKey } from '@/constants';
 
+import type { Component } from 'vue';
 import type { LinkElementType } from '@/constants';
 
 interface SettingItem {

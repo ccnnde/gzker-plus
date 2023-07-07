@@ -1,8 +1,9 @@
-import type { I18nOptions } from 'vue-i18n';
 import { createI18n } from 'vue-i18n';
 import messages from '@intlify/unplugin-vue-i18n/messages';
 
 import { LanguageType } from '@/constants';
+
+import type { I18nOptions } from 'vue-i18n';
 
 const i18n = createI18n({
   legacy: false,
