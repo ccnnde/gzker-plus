@@ -3,7 +3,8 @@ import { storage } from 'webextension-polyfill';
 
 import { t } from '@/i18n';
 import { defaultExtensionStorage } from '@/constants';
-import { StorageSettings } from '@/types';
+
+import type { StorageSettings } from '@/types';
 
 export const translateNavigation = (title: string | undefined) => {
   return title ? t('navigation.' + title) : '';

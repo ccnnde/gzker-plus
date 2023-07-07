@@ -4,7 +4,8 @@ import type { CheckboxValueType } from 'element-plus';
 
 import { t } from '@/i18n';
 import { LinkElementType, OptionsKey } from '@/constants';
-import { Options } from '@/types';
+
+import type { Options } from '@/types';
 
 interface Props {
   settings: Options[OptionsKey.BlankLink];

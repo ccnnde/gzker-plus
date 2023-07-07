@@ -1,6 +1,6 @@
-import { Options, StorageSettings } from '@/types';
-
 import { SELECTOR_NODE_LINK, SELECTOR_TOPIC_LINK, SELECTOR_USER_LINK } from './selector';
+
+import type { Options, StorageSettings } from '@/types';
 
 /**
  * 根组件类名前缀

@@ -30,6 +30,7 @@
     "styl-lint": "stylelint **/*.{scss,vue}",
     "styl-lint:fix": "stylelint **/*.{scss,vue} --fix",
     "styl-lint:list": "pnpm styl-lint -f verbose",
+    "type-check": "vue-tsc --noEmit --skipLibCheck",
     "up-all": "pnpm up --latest"
   },
   "dependencies": {

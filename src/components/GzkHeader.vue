@@ -3,9 +3,10 @@ import { runtime } from 'webextension-polyfill';
 
 import { useLanguage } from '@/composables/language';
 import { ExtensionMessageType } from '@/constants';
-import { ExtensionMessage } from '@/types';
 
 import ElementConfig from './ElementConfig.vue';
+
+import type { ExtensionMessage } from '@/types';
 
 const openExtOptions = () => {
   const msg: ExtensionMessage = {

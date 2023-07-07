@@ -4,9 +4,10 @@ import { computed } from 'vue';
 import { t } from '@/i18n';
 import { useStorageStore } from '@/stores/storage';
 import { OptionsKey } from '@/constants';
-import { CheckedOption, Setting } from '@/types';
 
 import BlankLink from './BlankLink.vue';
+
+import type { CheckedOption, Setting } from '@/types';
 
 const { options } = useStorageStore();
 

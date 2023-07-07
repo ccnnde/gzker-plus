@@ -2,7 +2,8 @@ import { runtime } from 'webextension-polyfill';
 
 import { initStorage } from '@/utils';
 import { ExtensionMessageType } from '@/constants';
-import { ExtensionMessage } from '@/types';
+
+import type { ExtensionMessage } from '@/types';
 
 runtime.onInstalled.addListener(async (details) => {
   const { reason } = details;

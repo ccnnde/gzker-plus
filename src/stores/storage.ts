@@ -2,7 +2,8 @@ import { computed, ref, toRaw, watch } from 'vue';
 import { defineStore } from 'pinia';
 
 import { setStorage } from '@/utils';
-import { StorageSettings } from '@/types';
+
+import type { StorageSettings } from '@/types';
 
 export const useStorageStore = defineStore('storage', () => {
   const settings = ref<StorageSettings>();
