@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, toRaw, watch } from 'vue';
+import { computed } from 'vue';
 
 import { t } from '@/i18n';
-import { getStorage, setStorage } from '@/utils';
+import { useStorageStore } from '@/stores/storage';
 import { OptionsKey } from '@/constants';
-import { CheckedOption, Options, Setting } from '@/types';
+import { CheckedOption, Setting } from '@/types';
 
 import BlankLink from './BlankLink.vue';
 
-const options = ref<Options>();
+const { options } = useStorageStore();
 
 const settings = computed<Setting[]>(() => {
   return [
@@ -35,25 +35,6 @@ const settings = computed<Setting[]>(() => {
     },
   ];
 });
-
-onMounted(async () => {
-  const settings = await getStorage();
-  options.value = settings.options;
-});
-
-watch(
-  options,
-  (newOptions, oldOptions) => {
-    if (!oldOptions) {
-      return;
-    }
-
-    setStorage({
-      options: toRaw(newOptions),
-    });
-  },
-  { deep: true },
-);
 </script>
 
 <template>
