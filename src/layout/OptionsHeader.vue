@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
-import { translateNavigation } from '@/utils';
+import { setStorage, translateNavigation } from '@/utils';
 import { LanguageType } from '@/constants';
 
 const { locale } = useI18n();
 
 const switchLanguage = (lang: LanguageType) => {
   locale.value = lang;
+  setStorage({ lang });
 };
 </script>
 

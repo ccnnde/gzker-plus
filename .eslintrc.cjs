@@ -54,6 +54,7 @@ module.exports = {
             '^@/layout(/.*|$)',
             '^@/views(/.*|$)',
             '^@/components(/.*|$)',
+            '^@/composables(/.*|$)',
             '^@/i18n(/.*|$)',
             '^@/router(/.*|$)',
             '^@/stores(/.*|$)',

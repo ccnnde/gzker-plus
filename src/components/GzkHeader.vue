@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { runtime } from 'webextension-polyfill';
 
+import { useLanguage } from '@/composables/language';
 import { ExtensionMessageType } from '@/constants';
 import { ExtensionMessage } from '@/types';
 
@@ -13,6 +14,8 @@ const openExtOptions = () => {
 
   runtime.sendMessage(msg);
 };
+
+useLanguage();
 </script>
 
 <template>
