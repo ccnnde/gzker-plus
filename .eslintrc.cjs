@@ -6,6 +6,8 @@ module.exports = {
     'alloy/typescript',
     'plugin:import/recommended',
     'plugin:import/typescript',
+    'plugin:jsonc/recommended-with-json',
+    'plugin:jsonc/prettier',
     '@unocss',
   ],
   settings: {
@@ -27,6 +29,27 @@ module.exports = {
       tsx: '@typescript-eslint/parser',
     },
   },
+  overrides: [
+    {
+      files: ['*.json'],
+      parser: 'jsonc-eslint-parser',
+      rules: {
+        'jsonc/key-name-casing': [
+          'error',
+          {
+            camelCase: true,
+          },
+        ],
+        'jsonc/sort-keys': [
+          'error',
+          {
+            pathPattern: '.*',
+            order: { type: 'asc' },
+          },
+        ],
+      },
+    },
+  ],
   env: {
     browser: true,
     node: true,

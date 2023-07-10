@@ -19,6 +19,7 @@
     "source.fixAll.stylelint": true
   },
   "extensions.ignoreRecommendations": false,
+  "eslint.validate": ["json"],
   "stylelint.validate": ["scss", "vue"],
   "scss.validate": false,
   "i18n-ally.localesPaths": "src/i18n/locales",
