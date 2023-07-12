@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { runtime } from 'webextension-polyfill';
 
-import { useLanguage } from '@/composables/language';
 import { ExtensionMessageType } from '@/constants';
 
 import ElementConfig from './ElementConfig.vue';
@@ -15,8 +14,6 @@ const openExtOptions = () => {
 
   runtime.sendMessage(msg);
 };
-
-useLanguage();
 </script>
 
 <template>

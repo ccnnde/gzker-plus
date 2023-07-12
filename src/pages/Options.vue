@@ -2,11 +2,8 @@
 import OptionsAside from '@/layout/OptionsAside.vue';
 import OptionsHeader from '@/layout/OptionsHeader.vue';
 import ElementConfig from '@/components/ElementConfig.vue';
-import { useLanguage } from '@/composables/language';
 
 const currentYear = new Date().getFullYear();
-
-useLanguage();
 </script>
 
 <template>

@@ -13,4 +13,8 @@ export const useLanguage = () => {
     locale.value = settings.lang;
     setSettings(settings);
   });
+
+  return {
+    locale,
+  };
 };
