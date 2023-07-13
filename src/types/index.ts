@@ -1,6 +1,7 @@
 import { ExtensionMessageType, LanguageType, OptionsKey } from '@/constants';
 
 import type { Component } from 'vue';
+import type { Pinia } from 'pinia';
 import type { LinkElementType } from '@/constants';
 
 interface SettingItem {
@@ -33,4 +34,13 @@ export interface CheckedOption {
 export interface StorageSettings {
   options: Options;
   lang: LanguageType;
+}
+
+export type CreateScriptApp = (pinia: Pinia) => void;
+
+export interface ScriptAppOptions {
+  root: Component;
+  pinia: Pinia;
+  containerId: string;
+  containerParentNode: Element | null;
 }

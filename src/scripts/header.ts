@@ -1,21 +1,19 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-
 import GzkHeader from '@/components/GzkHeader.vue';
-import i18n from '@/i18n';
+import { createScriptApp } from '@/utils';
 import { APP_ROOT_CLASS_PREFIX } from '@/constants';
+import { SELECTOR_NAVBAR_RIGHT } from '@/constants/selector';
 
-import 'virtual:uno.css';
+import type { Pinia } from 'pinia';
+import type { CreateScriptApp } from '@/types';
 
-const app = createApp(GzkHeader);
-const pinia = createPinia();
-const navBarRight = document.querySelector('.navbar-right');
-const container = document.createElement('div');
+export const createHeaderApp: CreateScriptApp = (pinia: Pinia) => {
+  const id = APP_ROOT_CLASS_PREFIX + 'header';
+  const navBarRight = document.querySelector(SELECTOR_NAVBAR_RIGHT);
 
-container.id = APP_ROOT_CLASS_PREFIX + 'header';
-navBarRight?.appendChild(container);
-
-app.use(pinia);
-app.use(i18n);
-
-app.mount(container);
+  createScriptApp({
+    root: GzkHeader,
+    pinia,
+    containerId: id,
+    containerParentNode: navBarRight,
+  });
+};
