@@ -1,6 +1,6 @@
 import { SELECTOR_NODE_LINK, SELECTOR_TOPIC_LINK, SELECTOR_USER_LINK } from './selector';
 
-import type { Options, StorageSettings } from '@/types';
+import type { ElementPositionAndSize, Options, StorageSettings } from '@/types';
 
 /**
  * 根组件类名前缀
@@ -37,6 +37,7 @@ export const LinkElementSelector: Record<LinkElementType, string> = {
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DblclickToTop = 'dblclickToTop',
+  FloatUserInfo = 'floatUserInfo',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -46,9 +47,19 @@ export const defaultExtensionOptions: Options = {
   [OptionsKey.DblclickToTop]: {
     checked: false,
   },
+  [OptionsKey.FloatUserInfo]: {
+    checked: true,
+  },
 };
 
 export const defaultExtensionStorage: StorageSettings = {
   options: defaultExtensionOptions,
   lang: LanguageType.ZH,
+};
+
+export const initialElementPositionAndSize: ElementPositionAndSize = {
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
 };

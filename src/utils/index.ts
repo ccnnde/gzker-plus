@@ -41,3 +41,22 @@ export const getStorage = async (): Promise<StorageSettings> => {
   const settings = await storage.sync.get();
   return settings as StorageSettings;
 };
+
+export const request = async (url: string): Promise<string> => {
+  const res = await fetch(url);
+
+  if (!res.ok || res.status !== 200) {
+    throw new Error(res.statusText);
+  }
+
+  if (res.redirected && res.url.includes('/login')) {
+    throw new Error(t('common.plzLogin'));
+  }
+
+  const data = await res.text();
+  return data;
+};
+
+export const addUnit = (val: number, unit: string = 'px'): string => {
+  return val + unit;
+};

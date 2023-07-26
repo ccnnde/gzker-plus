@@ -25,6 +25,7 @@ export interface Options {
     checkedLinkTypes: LinkElementType[];
   };
   [OptionsKey.DblclickToTop]: CheckedOption;
+  [OptionsKey.FloatUserInfo]: CheckedOption;
 }
 
 export interface CheckedOption {
@@ -43,4 +44,24 @@ export interface ScriptAppOptions {
   pinia: Pinia;
   containerId: string;
   containerParentNode: Element | null;
+}
+
+export interface UserInfo {
+  uid?: string;
+  avatarUrl?: string;
+  memberNo?: string;
+  checkInTime?: string;
+  topicNumber?: string;
+  replyNumber?: string;
+  favoriteNumber?: string;
+  creditValue?: string;
+  followed?: boolean;
+  blocked?: boolean;
+}
+
+export interface ElementPositionAndSize {
+  left: number | string;
+  top: number | string;
+  width: number | string;
+  height: number | string;
 }

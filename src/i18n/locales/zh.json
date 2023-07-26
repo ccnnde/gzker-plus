@@ -14,11 +14,29 @@
     "dblclickToTop": {
       "title": "双击返回顶部",
       "titleDesc": "双击任意位置返回顶部"
+    },
+    "floatUserInfo": {
+      "title": "悬浮展示用户信息",
+      "titleDesc": "鼠标悬浮在用户头像上时，展示用户基本信息，并可进行关注、屏蔽等操作"
     }
   },
   "common": {
     "checkAll": "全选",
-    "extName": "过早客 Plus"
+    "extName": "过早客 Plus",
+    "loadFailed": "加载失败",
+    "plzLogin": "请先登录社区再完成操作"
+  },
+  "floatUserInfo": {
+    "block": "屏蔽",
+    "blocked": "已屏蔽",
+    "checkInTime": "入住于 {time}",
+    "credit": "信用",
+    "favorite": "收藏",
+    "follow": "关注",
+    "followed": "已关注",
+    "memberNo": "第 {no} 号成员",
+    "reply": "回复",
+    "topic": "主题"
   },
   "gzkHeader": {
     "gzkSettings": "过早客 Plus 设置"

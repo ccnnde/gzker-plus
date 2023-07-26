@@ -28,6 +28,11 @@ const settings = computed<Setting[]>(() => {
       category: t('basicSetting.category.other'),
       list: [
         {
+          name: t('basicSetting.floatUserInfo.title'),
+          description: t('basicSetting.floatUserInfo.titleDesc'),
+          key: OptionsKey.FloatUserInfo,
+        },
+        {
           name: t('basicSetting.dblclickToTop.title'),
           description: t('basicSetting.dblclickToTop.titleDesc'),
           key: OptionsKey.DblclickToTop,
