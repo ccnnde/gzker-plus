@@ -60,3 +60,9 @@ export const request = async (url: string): Promise<string> => {
 export const addUnit = (val: number, unit: string = 'px'): string => {
   return val + unit;
 };
+
+export const waitTime = async (time: number = 100) => {
+  await new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};

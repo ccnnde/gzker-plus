@@ -15,6 +15,14 @@
       "title": "Double Click To Return To The Top",
       "titleDesc": "Double-click anywhere to return to the top"
     },
+    "enhancedMsg": {
+      "bellDot": "Show Dot",
+      "bellNone": "Do Not Use",
+      "bellNormal": "Icon Only",
+      "bellNum": "Show Number",
+      "title": "Enhanced Messages",
+      "titleDesc": "Use more noticeable icons for message notifications and display message list inline"
+    },
     "floatUserInfo": {
       "title": "Floating Display Of User Information",
       "titleDesc": "When the mouse hovers over the user avatar, display basic user information and allow actions such as following and blocking"
@@ -24,7 +32,15 @@
     "checkAll": "Check all",
     "extName": "Gzker Plus",
     "loadFailed": "Load failed",
+    "loadFailedAndRetry": "Load failed, please click to retry",
     "plzLogin": "Please log in to the community before proceeding with the operation"
+  },
+  "enhancedMsg": {
+    "image": "[Image]",
+    "inTopic": "mentioned you in the topic",
+    "mentionYou": " ",
+    "replyYou": "replied to your topic",
+    "viewAll": "View All"
   },
   "floatUserInfo": {
     "block": "Block",
@@ -39,7 +55,9 @@
     "topic": "Topic"
   },
   "gzkHeader": {
-    "gzkSettings": "Gzker Plus settings"
+    "gzkSettings": "Gzker Plus settings",
+    "message": "Message",
+    "unreadMessage": "You have {num} unread messages"
   },
   "navigation": {
     "basicSetting": "Basic Setting"

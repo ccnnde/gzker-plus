@@ -5,18 +5,14 @@ import { t } from '@/i18n';
 import { LinkElementType, OptionsKey } from '@/constants';
 
 import type { CheckboxValueType } from 'element-plus';
-import type { Options } from '@/types';
-
-interface Props {
-  settings: Options[OptionsKey.BlankLink];
-}
+import type { SettingProps } from '@/types';
 
 interface CheckLinkItem {
   value: LinkElementType;
   label: string;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<SettingProps<OptionsKey.BlankLink>>();
 
 const allLinkTypes: LinkElementType[] = [LinkElementType.Topic, LinkElementType.User, LinkElementType.Node];
 

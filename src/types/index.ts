@@ -2,7 +2,7 @@ import { ExtensionMessageType, LanguageType, OptionsKey } from '@/constants';
 
 import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
-import type { LinkElementType } from '@/constants';
+import type { BellStyle, LinkElementType, ReplyType } from '@/constants';
 
 interface SettingItem {
   name: string;
@@ -20,12 +20,19 @@ export interface Setting {
   list: SettingItem[];
 }
 
+export interface SettingProps<T extends OptionsKey> {
+  settings: Options[T];
+}
+
 export interface Options {
   [OptionsKey.BlankLink]: {
     checkedLinkTypes: LinkElementType[];
   };
   [OptionsKey.DblclickToTop]: CheckedOption;
   [OptionsKey.FloatUserInfo]: CheckedOption;
+  [OptionsKey.EnhancedMsg]: {
+    bellStyle: BellStyle;
+  };
 }
 
 export interface CheckedOption {
@@ -64,4 +71,14 @@ export interface ElementPositionAndSize {
   top: number | string;
   width: number | string;
   height: number | string;
+}
+
+export interface UserMessage {
+  uid?: string;
+  userLink?: string;
+  avatarUrl?: string;
+  topicTitle?: string;
+  topicLink?: string;
+  replyType?: ReplyType;
+  replyContent?: string;
 }

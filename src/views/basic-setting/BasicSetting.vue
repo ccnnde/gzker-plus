@@ -6,6 +6,7 @@ import { useStorageStore } from '@/stores/storage';
 import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
+import EnhancedMsg from './EnhancedMsg.vue';
 
 import type { CheckedOption, Setting } from '@/types';
 
@@ -21,6 +22,12 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.blankLink.titleDesc'),
           key: OptionsKey.BlankLink,
           component: BlankLink,
+        },
+        {
+          name: t('basicSetting.enhancedMsg.title'),
+          description: t('basicSetting.enhancedMsg.titleDesc'),
+          key: OptionsKey.EnhancedMsg,
+          component: EnhancedMsg,
         },
       ],
     },

@@ -34,10 +34,23 @@ export const LinkElementSelector: Record<LinkElementType, string> = {
   [LinkElementType.Node]: SELECTOR_NODE_LINK,
 };
 
+export const enum BellStyle {
+  None = 'none',
+  Normal = 'normal',
+  BadgeDot = 'badgeDot',
+  BadgeNum = 'badgeNum',
+}
+
+export const enum ReplyType {
+  Topic = 'topic',
+  Mention = 'mention',
+}
+
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DblclickToTop = 'dblclickToTop',
   FloatUserInfo = 'floatUserInfo',
+  EnhancedMsg = 'enhancedMsg',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -49,6 +62,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.FloatUserInfo]: {
     checked: true,
+  },
+  [OptionsKey.EnhancedMsg]: {
+    bellStyle: BellStyle.BadgeNum,
   },
 };
 
