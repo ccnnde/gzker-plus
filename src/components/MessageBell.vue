@@ -3,8 +3,8 @@ import { computed, nextTick, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useRequest } from '@/composables/request';
-import { t } from '@/i18n';
 import { useStorageStore } from '@/stores/storage';
+import { t } from '@/i18n';
 import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
 import { waitTime } from '@/utils';
 import { BellStyle, OptionsKey, ReplyType } from '@/constants';
