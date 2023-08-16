@@ -268,11 +268,22 @@ const isMsgUnread = (index: number): boolean => {
 </template>
 
 <style lang="scss">
-a.notification-indicator .mail-status {
-  &,
-  &.unread {
-    background-color: #ddd;
+a.notification-indicator {
+  &.contextually-unread {
+    padding-left: 0;
+    margin: 0 -15px;
+    background-color: transparent;
     background-image: none;
+    border-width: 0;
+  }
+
+  .mail-status {
+    &,
+    &.unread {
+      background-color: #ddd;
+      background-image: none;
+      box-shadow: none;
+    }
   }
 }
 </style>
