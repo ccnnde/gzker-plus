@@ -11,7 +11,7 @@ import { BellStyle, OptionsKey, ReplyType } from '@/constants';
 
 import LoadError from './LoadError.vue';
 
-import type { DirectiveBinding } from 'vue';
+import type { ObjectDirective } from 'vue';
 import type { ElScrollbar } from 'element-plus';
 import type { UserMessage } from '@/types';
 
@@ -21,8 +21,8 @@ const PAGE_SIZE = 36;
  * 将消息内容的指定元素替换为指定文本
  * v-msg-replace:selector="[text]"
  */
-const vMsgReplace = {
-  mounted: (el: HTMLDivElement, binding: DirectiveBinding<string | undefined>) => {
+const vMsgReplace: ObjectDirective<HTMLDivElement, string | undefined> = {
+  mounted: (el, binding) => {
     const { value, arg } = binding;
 
     if (!value || !arg) {
