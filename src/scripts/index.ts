@@ -7,6 +7,7 @@ import { createUserInfoApp } from './float-user-info';
 import { createHeaderApp } from './header';
 
 import 'virtual:uno.css';
+import '@/styles/script-vars.scss';
 
 import 'element-plus/es/components/message/style/css';
 

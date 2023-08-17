@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { t } from '@/i18n';
 import { useStorageStore } from '@/stores/storage';
+import { t } from '@/i18n';
 import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
@@ -74,7 +74,7 @@ const settings = computed<Setting[]>(() => {
 <style lang="scss" scoped>
 .setting-category-content {
   padding: 0.8em;
-  border-radius: 4px;
+  border-radius: var(--el-border-radius-base);
   transition: background-color 0.3s ease-in;
 
   &:hover {
@@ -92,7 +92,7 @@ const settings = computed<Setting[]>(() => {
   font-size: 1.5em;
   font-weight: bold;
   border-left: 5px solid var(--el-color-primary);
-  border-radius: 4px;
+  border-radius: var(--el-border-radius-base);
 }
 
 .setting-item-list {

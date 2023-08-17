@@ -336,7 +336,7 @@ $msg-padding: 15px;
   height: 40px;
   margin-top: 5px;
   margin-right: 10px;
-  border-radius: 3px;
+  border-radius: var(--gzk-avatar-border-radius);
 }
 
 .message-main {

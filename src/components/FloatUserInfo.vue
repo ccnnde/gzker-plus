@@ -167,7 +167,7 @@ const handleUserBlock = () => {
 .avatar-wrapper {
   position: absolute;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: var(--gzk-avatar-border-radius);
 
   &::before {
     position: absolute;
@@ -196,7 +196,7 @@ const handleUserBlock = () => {
 .user-basic-info-avatar {
   height: 100%;
   margin-right: 10px;
-  border-radius: 3px;
+  border-radius: var(--gzk-avatar-border-radius);
 }
 
 .user-basic-info-detail {
@@ -218,17 +218,17 @@ const handleUserBlock = () => {
 
 .user-basic-info-text {
   font-size: 13px;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 
 .user-statistic-type {
   font-size: 12px;
-  color: #606266;
+  color: var(--el-text-color-regular);
 }
 
 .user-statistic-value {
   font-size: 15px;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 
 .user-statistic-info {
