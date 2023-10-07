@@ -2,6 +2,7 @@ import { ExtensionMessageType, LanguageType, OptionsKey } from '@/constants';
 
 import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
+import type Viewer from 'viewerjs';
 import type { BellStyle, LinkElementType, ReplyType } from '@/constants';
 
 interface SettingItem {
@@ -9,6 +10,11 @@ interface SettingItem {
   description: string;
   key: OptionsKey;
   component?: Component;
+}
+
+export interface ImageViewer extends Viewer {
+  index: number;
+  length: number;
 }
 
 export interface ExtensionMessage {
@@ -33,6 +39,7 @@ export interface Options {
   [OptionsKey.EnhancedMsg]: {
     bellStyle: BellStyle;
   };
+  [OptionsKey.EnhancedTopic]: CheckedOption;
 }
 
 export interface CheckedOption {
@@ -42,6 +49,7 @@ export interface CheckedOption {
 export interface StorageSettings {
   options: Options;
   lang: LanguageType;
+  loginUserId?: string;
 }
 
 export type CreateScriptApp = (pinia: Pinia) => void;
@@ -81,4 +89,53 @@ export interface UserMessage {
   topicLink?: string;
   replyType?: ReplyType;
   replyContent?: string;
+}
+
+export interface UserTopic {
+  detail: UserTopicDetail;
+  reply: UserTopicReply;
+}
+
+export interface UserTopicDetail {
+  title?: string;
+  authorId?: string;
+  authorLink?: string;
+  avatarUrl?: string;
+  meta?: {
+    nodeInfo?: string;
+    authorInfo?: string;
+    createdTime?: string;
+    lastReplyUser?: string;
+    lastReplyTime?: string;
+  };
+  content?: string;
+  favorited?: boolean;
+  favoriteNumber?: string;
+  liked?: boolean;
+  likeNumber?: string;
+  clickNumber?: string;
+}
+
+export interface UserTopicReply {
+  total: string;
+  list: UserReplyItem[];
+}
+
+export interface UserReplyItem {
+  uid?: string;
+  userLink?: string;
+  avatarUrl?: string;
+  isOriginalPoster?: boolean;
+  replyId?: string;
+  replyNo?: string;
+  replyTime?: string;
+  replyIp?: string;
+  content?: string;
+  liked?: boolean;
+  likeNumber?: string;
+}
+
+export interface ApiJsonResponse {
+  message: string;
+  success: 0 | 1;
 }

@@ -3,6 +3,11 @@ import { SELECTOR_NODE_LINK, SELECTOR_TOPIC_LINK, SELECTOR_USER_LINK } from './s
 import type { ElementPositionAndSize, Options, StorageSettings } from '@/types';
 
 /**
+ * 过早客论坛地址
+ */
+export const GZK_URL = 'https://www.guozaoke.com';
+
+/**
  * 根组件类名前缀
  */
 export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
@@ -51,6 +56,7 @@ export const enum OptionsKey {
   DblclickToTop = 'dblclickToTop',
   FloatUserInfo = 'floatUserInfo',
   EnhancedMsg = 'enhancedMsg',
+  EnhancedTopic = 'enhancedTopic',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -65,6 +71,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.EnhancedMsg]: {
     bellStyle: BellStyle.BadgeNum,
+  },
+  [OptionsKey.EnhancedTopic]: {
+    checked: true,
   },
 };
 

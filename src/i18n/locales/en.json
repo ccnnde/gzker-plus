@@ -23,6 +23,10 @@
       "title": "Enhanced Messages",
       "titleDesc": "Use more noticeable icons for message notifications and display message list inline"
     },
+    "enhancedTopic": {
+      "title": "Enhanced Topic",
+      "titleDesc": "Browse topic details and post replies directly on the current page"
+    },
     "floatUserInfo": {
       "title": "Floating Display Of User Information",
       "titleDesc": "When the mouse hovers over the user avatar, display basic user information and allow actions such as following and blocking"
@@ -31,9 +35,11 @@
   "common": {
     "checkAll": "Check all",
     "extName": "Gzker Plus",
+    "favorite": "Favorite",
     "loadFailed": "Load failed",
     "loadFailedAndRetry": "Load failed, please click to retry",
-    "plzLogin": "Please log in to the community before proceeding with the operation"
+    "plzLogin": "Please log in to the community before proceeding with the operation",
+    "reply": "Reply"
   },
   "enhancedMsg": {
     "image": "[Image]",
@@ -42,16 +48,28 @@
     "replyYou": "replied to your topic",
     "viewAll": "View All"
   },
+  "enhancedTopic": {
+    "clickNumber": "Read",
+    "copyLinkSuccessfully": "Link copied successfully",
+    "like": "Like",
+    "noReply": "No replies yet, what do you think?",
+    "originalPoster": "OP",
+    "replyTotal": "Received {num} replies in total",
+    "share": "Share",
+    "shareLink": "Copy Link",
+    "shareWeChat": "Scan with WeChat",
+    "shareWeibo": "Share on Weibo",
+    "viewConversation": "View conversation",
+    "writeReply": "Write reply"
+  },
   "floatUserInfo": {
     "block": "Block",
     "blocked": "Blocked",
     "checkInTime": "Checked in at {time}",
     "credit": "Credit",
-    "favorite": "Favorite",
     "follow": "Follow",
     "followed": "Followed",
     "memberNo": "Member no. {no}",
-    "reply": "Reply",
     "topic": "Topic"
   },
   "gzkHeader": {
@@ -64,5 +82,11 @@
   },
   "options": {
     "title": "Gzker Plus Options"
+  },
+  "resMessage": {
+    "alreadyLiked": "Already liked",
+    "canNotFavoriteYourTopic": "Cannot favorite your own topic",
+    "canNotLikeYourReply": "Cannot like your own reply",
+    "canNotLikeYourTopic": "Cannot like your own topic"
   }
 }

@@ -23,6 +23,10 @@
       "title": "消息增强",
       "titleDesc": "使用更醒目的图标进行消息提醒，并可内联展示消息列表"
     },
+    "enhancedTopic": {
+      "title": "主题增强",
+      "titleDesc": "在当前页面直接浏览主题详情并回帖"
+    },
     "floatUserInfo": {
       "title": "悬浮展示用户信息",
       "titleDesc": "鼠标悬浮在用户头像上时，展示用户基本信息，并可进行关注、屏蔽等操作"
@@ -31,9 +35,11 @@
   "common": {
     "checkAll": "全选",
     "extName": "过早客 Plus",
+    "favorite": "收藏",
     "loadFailed": "加载失败",
     "loadFailedAndRetry": "加载失败，请点击重试",
-    "plzLogin": "请先登录社区再完成操作"
+    "plzLogin": "请先登录社区再完成操作",
+    "reply": "回复"
   },
   "enhancedMsg": {
     "image": "[图片]",
@@ -42,16 +48,28 @@
     "replyYou": "回复了你的主题",
     "viewAll": "查看全部"
   },
+  "enhancedTopic": {
+    "clickNumber": "阅读",
+    "copyLinkSuccessfully": "复制链接成功",
+    "like": "点赞",
+    "noReply": "暂无回复，这事你怎么看",
+    "originalPoster": "楼主",
+    "replyTotal": "共收到 {num} 条回复",
+    "share": "分享",
+    "shareLink": "复制链接",
+    "shareWeChat": "微信扫码",
+    "shareWeibo": "新浪微博",
+    "viewConversation": "查看对话",
+    "writeReply": "写回复"
+  },
   "floatUserInfo": {
     "block": "屏蔽",
     "blocked": "已屏蔽",
     "checkInTime": "入住于 {time}",
     "credit": "信用",
-    "favorite": "收藏",
     "follow": "关注",
     "followed": "已关注",
     "memberNo": "第 {no} 号成员",
-    "reply": "回复",
     "topic": "主题"
   },
   "gzkHeader": {
@@ -64,5 +82,11 @@
   },
   "options": {
     "title": "过早客 Plus 选项"
+  },
+  "resMessage": {
+    "alreadyLiked": "已赞过",
+    "canNotFavoriteYourTopic": "不能收藏自己的主题",
+    "canNotLikeYourReply": "不能赞自己的回复",
+    "canNotLikeYourTopic": "不能赞自己的主题"
   }
 }

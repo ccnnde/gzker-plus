@@ -1,11 +1,38 @@
 import { createApp } from 'vue';
+import { ElMessage } from 'element-plus';
 import { cloneDeep, merge } from 'lodash-es';
 import { storage } from 'webextension-polyfill';
 
 import i18n, { t } from '@/i18n';
+import { API_USER } from '@/api';
 import { defaultExtensionStorage } from '@/constants';
+import {
+  ALREADY_LIKE,
+  CAN_NOT_FAVORITE_YOUR_TOPIC,
+  CAN_NOT_LIKE_YOUR_REPLY,
+  CAN_NOT_LIKE_YOUR_TOPIC,
+  USER_NOT_LOGIN,
+} from '@/constants/res-msg';
+import { SELECTOR_LOGIN_USER_LINK } from '@/constants/selector';
 
-import type { ScriptAppOptions, StorageSettings } from '@/types';
+import type { ApiJsonResponse, ScriptAppOptions, StorageSettings } from '@/types';
+
+const getResMessage = (msg: string): string => {
+  switch (msg) {
+    case USER_NOT_LOGIN:
+      return t('common.plzLogin');
+    case ALREADY_LIKE:
+      return t('resMessage.alreadyLiked');
+    case CAN_NOT_FAVORITE_YOUR_TOPIC:
+      return t('resMessage.canNotFavoriteYourTopic');
+    case CAN_NOT_LIKE_YOUR_TOPIC:
+      return t('resMessage.canNotLikeYourTopic');
+    case CAN_NOT_LIKE_YOUR_REPLY:
+      return t('resMessage.canNotLikeYourReply');
+    default:
+      return msg;
+  }
+};
 
 export const createScriptApp = (options: ScriptAppOptions) => {
   const { root, pinia, containerId, containerParentNode } = options;
@@ -54,6 +81,18 @@ export const request = async (url: string): Promise<string> => {
   }
 
   const data = await res.text();
+
+  // 响应头部含有 Content-Length 字段时，代表返回的数据是 JSON 格式的字符串
+  if (res.headers.has('Content-Length')) {
+    const { message, success } = JSON.parse(data) as ApiJsonResponse;
+
+    if (!success) {
+      ElMessage.error(getResMessage(message));
+    }
+
+    return message;
+  }
+
   return data;
 };
 
@@ -65,4 +104,10 @@ export const waitTime = async (time: number = 100) => {
   await new Promise((resolve) => {
     setTimeout(resolve, time);
   });
+};
+
+export const getLoginUserId = () => {
+  const loginUserLinkEle = document.querySelector(SELECTOR_LOGIN_USER_LINK) as HTMLAnchorElement | null;
+  const loginUserId = loginUserLinkEle?.href.split(API_USER)[1];
+  return loginUserId;
 };
