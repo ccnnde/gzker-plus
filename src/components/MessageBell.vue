@@ -6,7 +6,6 @@ import { useRequest } from '@/composables/request';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
-import { waitTime } from '@/utils';
 import { BellStyle, OptionsKey, ReplyType } from '@/constants';
 
 import LoadError from './LoadError.vue';
@@ -116,9 +115,6 @@ const handlePopoverShow = () => {
 
   handleRequest(async () => {
     const firstPageData = await getUserMsgList(currentPage.value);
-
-    await waitTime();
-
     userMessageList.value = firstPageData;
     noMoreData.value = firstPageData.length < PAGE_SIZE;
   });
@@ -130,8 +126,6 @@ const handleScrollLoad = () => {
   handleRequest(async () => {
     const nextPageData = await getUserMsgList(currentPage.value);
     const nextPageNumber = nextPageData.length;
-
-    await waitTime();
 
     if (nextPageNumber === 0) {
       currentPage.value--;

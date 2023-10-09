@@ -1,4 +1,4 @@
-import { request } from '@/utils';
+import { request, waitTime } from '@/utils';
 import { ReplyType } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
@@ -146,6 +146,7 @@ export const unblockUser = async (memberNo: string | undefined): Promise<UserInf
 
 export const getUserMsgList = async (page: number): Promise<UserMessage[]> => {
   const data = await request(`${API_MSG}?p=${page}`);
+  await waitTime();
   return parseUserMsgList(data);
 };
 
