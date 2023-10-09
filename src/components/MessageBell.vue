@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 
-import { useRequest } from '@/composables/request';
+import { useScrollLoad } from '@/composables/scroll-load';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
@@ -11,7 +11,6 @@ import { BellStyle, OptionsKey, ReplyType } from '@/constants';
 import LoadError from './LoadError.vue';
 
 import type { ObjectDirective } from 'vue';
-import type { ElScrollbar } from 'element-plus';
 import type { UserMessage } from '@/types';
 
 const PAGE_SIZE = 36;
@@ -41,14 +40,9 @@ const vMsgReplace: ObjectDirective<HTMLDivElement, string | undefined> = {
 const storage = useStorageStore();
 const { options } = storeToRefs(storage);
 
-const { isLoading, errorOccurred, handleRequest, resetRequestState } = useRequest();
 const disableTooltip = ref(false);
 const disableBadge = ref(false);
 const unreadMessageNumber = ref(getUnreadUserMsgNum());
-const userMessageList = ref<UserMessage[]>([]);
-const currentPage = ref(1);
-const noMoreData = ref(true);
-const scrollbar = ref<InstanceType<typeof ElScrollbar> | null>(null);
 
 const bellTip = computed(() => {
   if (unreadMessageNumber.value === 0) {
@@ -78,83 +72,35 @@ const isBadgeDot = computed(() => {
   return bellStyle.value === BellStyle.BadgeDot;
 });
 
-const isFirstPage = computed(() => {
-  return currentPage.value === 1;
-});
+const getMsgListCallback = async (page: number): Promise<UserMessage[]> => {
+  const list = await getUserMsgList(page);
+  return list;
+};
 
-const isFirstPageLoading = computed(() => {
-  return isFirstPage.value && isLoading.value;
-});
-
-const isFirstPageEmpty = computed(() => {
-  return isFirstPage.value && !errorOccurred.value && userMessageList.value.length === 0;
-});
-
-const isNextPageLoading = computed(() => {
-  return !isFirstPage.value && isLoading.value;
-});
-
-const disableInfiniteScroll = computed(() => {
-  return isNextPageLoading.value || errorOccurred.value || noMoreData.value;
-});
-
-watch(isNextPageLoading, async () => {
-  if (!isNextPageLoading.value) {
-    return;
-  }
-
-  await nextTick();
-
-  scrollbar.value?.scrollTo({
-    top: scrollbar.value.wrapRef?.scrollHeight,
-  });
-});
+const {
+  dataList: userMessageList,
+  scrollbar,
+  isFirstPage,
+  isFirstPageLoading,
+  isFirstPageEmpty,
+  isNextPageLoading,
+  disableInfiniteScroll,
+  errorOccurred,
+  getFirstPageData,
+  getNextPageData,
+  reloadPageData,
+  resetScrollLoadState,
+} = useScrollLoad<UserMessage>(PAGE_SIZE, getMsgListCallback);
 
 const handlePopoverShow = () => {
   disableTooltip.value = true;
-
-  handleRequest(async () => {
-    const firstPageData = await getUserMsgList(currentPage.value);
-    userMessageList.value = firstPageData;
-    noMoreData.value = firstPageData.length < PAGE_SIZE;
-  });
-};
-
-const handleScrollLoad = () => {
-  currentPage.value++;
-
-  handleRequest(async () => {
-    const nextPageData = await getUserMsgList(currentPage.value);
-    const nextPageNumber = nextPageData.length;
-
-    if (nextPageNumber === 0) {
-      currentPage.value--;
-    }
-
-    noMoreData.value = nextPageNumber < PAGE_SIZE;
-    userMessageList.value.push(...nextPageData);
-  });
-};
-
-const handleRetry = () => {
-  errorOccurred.value = false;
-
-  if (isFirstPage.value) {
-    handlePopoverShow();
-    return;
-  }
-
-  currentPage.value--;
-  handleScrollLoad();
+  getFirstPageData();
 };
 
 const handlePopoverHide = () => {
   disableTooltip.value = false;
   disableBadge.value = true;
-  userMessageList.value = [];
-  currentPage.value = 1;
-  noMoreData.value = true;
-  resetRequestState();
+  resetScrollLoadState();
 
   setTimeout(() => {
     unreadMessageNumber.value = 0;
@@ -196,7 +142,7 @@ const isMsgUnread = (index: number): boolean => {
       <ElScrollbar ref="scrollbar">
         <div
           v-loading="isFirstPageLoading"
-          v-infinite-scroll="handleScrollLoad"
+          v-infinite-scroll="getNextPageData"
           class="message-list-content"
           :infinite-scroll-disabled="disableInfiniteScroll"
           :infinite-scroll-distance="100"
@@ -253,7 +199,7 @@ const isMsgUnread = (index: number): boolean => {
             v-show="errorOccurred"
             :show-icon="isFirstPage"
             :error-text="$t('common.loadFailedAndRetry')"
-            @retry="handleRetry"
+            @retry="reloadPageData"
           />
         </div>
       </ElScrollbar>
