@@ -50,7 +50,9 @@
   },
   "enhancedTopic": {
     "clickNumber": "Read",
+    "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",
+    "haveNotMentionAnyUser": "This reply hasn't mentioned any user",
     "like": "Like",
     "noReply": "No replies yet, what do you think?",
     "originalPoster": "OP",

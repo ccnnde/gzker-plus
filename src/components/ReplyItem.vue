@@ -1,30 +1,70 @@
 <script setup lang="ts">
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
-import { likeReply } from '@/api';
+import { API_USER, likeReply } from '@/api';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
 import UserAvatar from './UserAvatar.vue';
 
-import type { UserReplyItem } from '@/types';
+import type { UserReplyItem, UserReplyMention } from '@/types';
 
-const props = defineProps<UserReplyItem>();
+interface Props extends UserReplyItem {
+  isNotInConversation?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isNotInConversation: true,
+});
 
 const emit = defineEmits<{
   likeReply: [msg: string];
+  viewConversation: [mentionUids: string[]];
 }>();
 
 const { isLoading, handleRequest } = useRequest();
+const contentEl = ref<HTMLDivElement | null>(null);
 
 const handleReplyLike = async () => {
   handleRequest(async () => {
     const data = await likeReply(props.replyId);
     emit('likeReply', data);
   });
+};
+
+const handleConversationView = () => {
+  const mentionElements = contentEl.value?.querySelectorAll<HTMLAnchorElement>(SELECTOR_USER_MENTION_LINK);
+  let mentionUsers: string[] = [];
+
+  mentionElements?.forEach((element) => {
+    const uid = element.href.split(API_USER)[1];
+    mentionUsers.push(uid);
+  });
+
+  mentionUsers = [...new Set(mentionUsers)];
+
+  const mentionList: UserReplyMention[] = [];
+  const contentText = contentEl.value ? contentEl.value.innerText : '';
+
+  mentionUsers.forEach((uid) => {
+    const mentionRegExp = new RegExp(`@${uid}\\s?(#(\\d+)\\s?)?`, 'g');
+    const currentMentionUsers = [...contentText.matchAll(mentionRegExp)];
+    const currentMentionFloors = [...new Set(currentMentionUsers.map((item) => item[2]))];
+
+    currentMentionFloors.forEach((floor) =>
+      mentionList.push({
+        uid,
+        floor,
+      }),
+    );
+  });
+
+  const mentionUids = [...new Set(mentionList.map((item) => item.uid))];
+  emit('viewConversation', mentionUids);
 };
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
@@ -51,11 +91,15 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
       </div>
-      <div v-img-load="updateScrollbar" class="main-content" v-html="content"></div>
+      <div ref="contentEl" v-img-load="updateScrollbar" class="main-content" v-html="content"></div>
       <div class="reply-footer">
         <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="handleReplyLike" />
-        <OperateButton :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" />
-        <OperateButton :operate-text="$t('enhancedTopic.viewConversation')" />
+        <OperateButton v-if="isNotInConversation" :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" />
+        <OperateButton
+          v-if="isNotInConversation"
+          :operate-text="$t('enhancedTopic.viewConversation')"
+          @click="handleConversationView"
+        />
       </div>
     </div>
   </div>

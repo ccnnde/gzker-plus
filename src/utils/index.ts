@@ -11,11 +11,12 @@ import {
   CAN_NOT_FAVORITE_YOUR_TOPIC,
   CAN_NOT_LIKE_YOUR_REPLY,
   CAN_NOT_LIKE_YOUR_TOPIC,
+  SUCCESS_LIKE,
   USER_NOT_LOGIN,
 } from '@/constants/res-msg';
 import { SELECTOR_LOGIN_USER_LINK } from '@/constants/selector';
 
-import type { ApiJsonResponse, ScriptAppOptions, StorageSettings } from '@/types';
+import type { ApiJsonResponse, ScriptAppOptions, StorageSettings, UserReplyItem } from '@/types';
 
 const getResMessage = (msg: string): string => {
   switch (msg) {
@@ -110,4 +111,14 @@ export const getLoginUserId = () => {
   const loginUserLinkEle = document.querySelector(SELECTOR_LOGIN_USER_LINK) as HTMLAnchorElement | null;
   const loginUserId = loginUserLinkEle?.href.split(API_USER)[1];
   return loginUserId;
+};
+
+export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {
+  if (msg === SUCCESS_LIKE || msg === ALREADY_LIKE) {
+    replyItem.liked = true;
+  }
+
+  if (msg === SUCCESS_LIKE) {
+    replyItem.likeNumber = String(Number(replyItem.likeNumber) + 1);
+  }
 };

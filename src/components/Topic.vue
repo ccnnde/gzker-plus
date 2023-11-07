@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref } from 'vue';
 import { debounce } from 'lodash-es';
-import { directive as viewer } from 'v-viewer';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { favoriteTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
+import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 import { SELECTOR_TOPIC_LINK } from '@/constants/selector';
@@ -17,34 +17,9 @@ import TopicDetail from './TopicDetail.vue';
 import TopicFooter from './TopicFooter.vue';
 import TopicReply from './TopicReply.vue';
 
-import type { DialogBeforeCloseFn } from 'element-plus';
-import type Viewer from 'viewerjs';
-import type { ImageViewer, UserReplyItem, UserTopicDetail } from '@/types';
+import type { UserReplyItem, UserTopicDetail } from '@/types';
 
 import 'viewerjs/dist/viewer.css';
-
-const VIEWER_CLASS_NAME = 'gzk-app-img-viewer';
-const vViewer = viewer();
-const viewerOptions: Viewer.Options = {
-  className: VIEWER_CLASS_NAME,
-  title(this: ImageViewer, image: HTMLImageElement) {
-    return `${image.alt} (${this.index + 1}/${this.length})`;
-  },
-  filter(image: HTMLImageElement) {
-    const { src } = image;
-    const isImgGzkStaticRes = src.match(/guozaoke.com\/(\/)?static\/(avatar|emoji)/);
-    const isImgSinaExpression = src.includes('face.t.sinajs.cn/t4/appstyle/expression');
-    const isImgBaiduExpression = src.includes('img.whzxc.cn/bd');
-
-    if (isImgGzkStaticRes || isImgSinaExpression || isImgBaiduExpression) {
-      return false;
-    }
-
-    image.style.cursor = 'zoom-in';
-
-    return true;
-  },
-};
 
 const PAGE_SIZE = 106;
 const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
@@ -162,14 +137,6 @@ const handleTopicDialogClosed = () => {
   resetScrollLoadState();
 };
 
-const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
-  const imgViewer = document.querySelector(`.${VIEWER_CLASS_NAME}.viewer-container.viewer-in`);
-
-  if (!imgViewer) {
-    done();
-  }
-};
-
 const SCROLL_BUTTON_VISIBLE_HEIGHT = 200;
 const currentScrollDistance = ref(0);
 
@@ -205,7 +172,7 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
       class="topic-dialog"
       :z-index="2000"
       :show-close="false"
-      :before-close="handleTopicDialogBeforeClose"
+      :before-close="handleDialogBeforeClose"
       align-center
       @closed="handleTopicDialogClosed"
     >
@@ -274,7 +241,10 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 </template>
 
 <style lang="scss">
-#gzk-app-topic {
+@import '@/styles/mixin';
+
+.topic-dialog,
+.conversation-dialog {
   img {
     max-width: 100%;
   }
@@ -328,37 +298,7 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
     padding: 0;
   }
 
-  @media (width <= 1700px) {
-    width: 55%;
-  }
-
-  @media (width <= 1600px) {
-    width: 60%;
-  }
-
-  @media (width <= 1500px) {
-    width: 65%;
-  }
-
-  @media (width <= 1400px) {
-    width: 70%;
-  }
-
-  @media (width <= 1300px) {
-    width: 75%;
-  }
-
-  @media (width <= 1200px) {
-    width: 80%;
-  }
-
-  @media (width <= 1100px) {
-    width: 85%;
-  }
-
-  @media (width <= 1000px) {
-    width: 90%;
-  }
+  @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
 }
 </style>
 

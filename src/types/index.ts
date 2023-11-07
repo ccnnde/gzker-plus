@@ -135,6 +135,11 @@ export interface UserReplyItem {
   likeNumber?: string;
 }
 
+export interface UserReplyMention {
+  uid: string;
+  floor?: string;
+}
+
 export interface ApiJsonResponse {
   message: string;
   success: 0 | 1;

@@ -1,0 +1,14 @@
+@use 'sass:list';
+
+@mixin dynamic-width($widths...) {
+  $breakpoints: 1700px, 1600px, 1500px, 1400px, 1300px, 1200px, 1100px, 1000px;
+
+  @each $breakpoint in $breakpoints {
+    $index: list.index($breakpoints, $breakpoint);
+    $width: list.nth($widths, $index);
+
+    @media (max-width: $breakpoint) {
+      width: $width;
+    }
+  }
+}

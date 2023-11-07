@@ -29,6 +29,11 @@ export const SELECTOR_USER_AVATAR = 'a[href^="/u/"] > img.avatar';
 export const SELECTOR_LOGIN_USER_LINK = '.navbar-right a[href^="/u/"]';
 
 /**
+ * 提及用户链接元素
+ */
+export const SELECTOR_USER_MENTION_LINK = 'a[href^="/u/"].user-mention';
+
+/**
  * 未读消息提醒元素
  */
 export const SELECTOR_MSG_UNREAD_INDICATOR = 'a.notification-indicator.contextually-unread';

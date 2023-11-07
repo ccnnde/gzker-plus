@@ -1,20 +1,68 @@
 <script setup lang="ts">
-import { ALREADY_LIKE, SUCCESS_LIKE } from '@/constants/res-msg';
+import { ref, watch } from 'vue';
+import { ElMessage } from 'element-plus';
 
+import { t } from '@/i18n';
+import { handleReplyLike } from '@/utils';
+
+import ConversationList from './ConversationList.vue';
 import ReplyItem from './ReplyItem.vue';
 
 import type { UserReplyItem, UserTopicReply } from '@/types';
 
-defineProps<UserTopicReply>();
+const props = defineProps<UserTopicReply>();
 
-const handleReplyLike = (item: UserReplyItem, msg: string) => {
-  if (msg === SUCCESS_LIKE || msg === ALREADY_LIKE) {
-    item.liked = true;
+const conversationList = ref<InstanceType<typeof ConversationList> | null>(null);
+const userConversation = ref<UserReplyItem[]>([]);
+const replyMentionUids = ref<string[]>([]);
+const currentMentionUid = ref<string>('');
+
+let currentViewReplyItem: UserReplyItem | null = null;
+let currentViewReplyIndex: number = -1;
+
+watch(currentMentionUid, (newUid, oldUid) => {
+  if (oldUid === '' || newUid === '') {
+    return;
   }
 
-  if (msg === SUCCESS_LIKE) {
-    item.likeNumber = String(Number(item.likeNumber) + 1);
+  parseConversation();
+});
+
+const handleConversationView = (replyItem: UserReplyItem, replyIndex: number, mentionUids: string[]) => {
+  replyMentionUids.value = mentionUids;
+
+  if (!mentionUids.length) {
+    ElMessage.error(t('enhancedTopic.haveNotMentionAnyUser'));
+    return;
   }
+
+  currentMentionUid.value = mentionUids[0];
+  currentViewReplyItem = replyItem;
+  currentViewReplyIndex = replyIndex;
+
+  parseConversation();
+  conversationList.value?.openDialog();
+};
+
+const parseConversation = () => {
+  userConversation.value = props.list.slice(0, currentViewReplyIndex + 1).filter(({ uid, content }, index) => {
+    if (index === currentViewReplyIndex) {
+      return true;
+    }
+
+    const isReplyUidMentioned = uid === currentMentionUid.value;
+    const isReplyUidCurrentView = uid === currentViewReplyItem?.uid && content?.includes(`@${currentMentionUid.value}`);
+
+    return isReplyUidMentioned || isReplyUidCurrentView;
+  });
+};
+
+const handleConversationClose = () => {
+  userConversation.value = [];
+  replyMentionUids.value = [];
+  currentMentionUid.value = '';
+  currentViewReplyItem = null;
+  currentViewReplyIndex = -1;
 };
 </script>
 
@@ -22,7 +70,20 @@ const handleReplyLike = (item: UserReplyItem, msg: string) => {
   <div class="reply-total">
     {{ $t('enhancedTopic.replyTotal', { num: total }) }}
   </div>
-  <ReplyItem v-for="(item, index) in list" :key="index" v-bind="item" @like-reply="handleReplyLike(item, $event)" />
+  <ReplyItem
+    v-for="(item, index) in list"
+    :key="index"
+    v-bind="item"
+    @like-reply="handleReplyLike(item, $event)"
+    @view-conversation="handleConversationView(item, index, $event)"
+  />
+  <ConversationList
+    ref="conversationList"
+    v-model="currentMentionUid"
+    :mention-uids="replyMentionUids"
+    :conversations="userConversation"
+    @close-conversation="handleConversationClose"
+  />
 </template>
 
 <style lang="scss" scoped>
