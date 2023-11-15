@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue';
+import { ElScrollbar } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import { handleReplyLike } from '@/utils';
@@ -8,7 +9,6 @@ import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import ReplyItem from './ReplyItem.vue';
 
-import type { ElScrollbar } from 'element-plus';
 import type { UserReplyItem } from '@/types';
 
 interface Props {

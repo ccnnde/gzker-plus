@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { BellStyle, OptionsKey } from '@/constants';
+import { BellStyle } from '@/constants';
 
+import type { OptionsKey } from '@/constants';
 import type { SettingProps } from '@/types';
 
 defineProps<SettingProps<OptionsKey.EnhancedMsg>>();

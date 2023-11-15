@@ -2,9 +2,10 @@
 import { computed, onMounted, ref } from 'vue';
 
 import { t } from '@/i18n';
-import { LinkElementType, OptionsKey } from '@/constants';
+import { LinkElementType } from '@/constants';
 
 import type { CheckboxValueType } from 'element-plus';
+import type { OptionsKey } from '@/constants';
 import type { SettingProps } from '@/types';
 
 interface CheckLinkItem {

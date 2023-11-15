@@ -29,7 +29,7 @@ const emit = defineEmits<{
 const { isLoading, handleRequest } = useRequest();
 const contentEl = ref<HTMLDivElement | null>(null);
 
-const handleReplyLike = async () => {
+const handleReplyLike = () => {
   handleRequest(async () => {
     const data = await likeReply(props.replyId);
     emit('likeReply', data);

@@ -1,9 +1,14 @@
-import { ExtensionMessageType, LanguageType, OptionsKey } from '@/constants';
-
 import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
 import type Viewer from 'viewerjs';
-import type { BellStyle, LinkElementType, ReplyType } from '@/constants';
+import type {
+  BellStyle,
+  ExtensionMessageType,
+  LanguageType,
+  LinkElementType,
+  OptionsKey,
+  ReplyType,
+} from '@/constants';
 
 interface SettingItem {
   name: string;
