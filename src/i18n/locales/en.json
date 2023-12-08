@@ -39,6 +39,7 @@
     "loadFailed": "Load failed",
     "loadFailedAndRetry": "Load failed, please click to retry",
     "plzLogin": "Please log in to the community before proceeding with the operation",
+    "post": "Post",
     "reply": "Reply"
   },
   "enhancedMsg": {
@@ -52,10 +53,13 @@
     "clickNumber": "Read",
     "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",
+    "createReply": "Create reply",
     "haveNotMentionAnyUser": "This reply hasn't mentioned any user",
     "like": "Like",
     "noReply": "No replies yet, what do you think?",
     "originalPoster": "OP",
+    "replyContentCannotBeEmpty": "The reply content cannot be empty",
+    "replyContentIsUnderReview": "Reply moderation mode has been enabled on this site. Please wait for the administrator to review the reply content",
     "replyTotal": "Received {num} replies in total",
     "share": "Share",
     "shareLink": "Copy Link",

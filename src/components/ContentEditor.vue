@@ -1,0 +1,177 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
+
+import { addUnit } from '@/utils';
+
+import type { CSSProperties } from 'vue';
+import type { CherryLifecycle } from 'cherry-markdown/types/cherry';
+
+import 'cherry-markdown/dist/cherry-markdown.css';
+
+interface Props {
+  modelValue: string;
+  height: number;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string];
+}>();
+
+const LIGHT_THEME = 'light';
+let cherryEditor: Cherry | null = null;
+let cmEditor: CodeMirror.Editor | null = null;
+
+const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
+
+const editorStyle = computed<CSSProperties>(() => {
+  const height = addUnit(props.height);
+
+  return {
+    height,
+  };
+});
+
+onMounted(() => {
+  initCherryMarkdown();
+});
+
+const initCherryMarkdown = () => {
+  cherryEditor = new Cherry({
+    el: mdEditorEl.value,
+    value: props.modelValue,
+    toolbars: {
+      toolbar: [
+        'header',
+        'bold',
+        'italic',
+        'strikethrough',
+        'quote',
+        '|',
+        'ol',
+        'ul',
+        'checklist',
+        'table',
+        'hr',
+        '|',
+        'image',
+        'link',
+        'code',
+      ],
+      toolbarRight: ['fullScreen', 'togglePreview'],
+      bubble: ['bold', 'italic', 'strikethrough', 'quote'],
+      float: false,
+      sidebar: false,
+      theme: LIGHT_THEME,
+    },
+    callback: {
+      afterChange: handleContentChange,
+      afterInit: () => {},
+      beforeImageMounted: (srcProp, src) => ({ srcProp, src }),
+      onClickPreview: () => {},
+      onCopyCode: () => false,
+      changeString2Pinyin: () => '',
+    },
+    engine: {
+      syntax: {
+        link: {
+          target: '_blank',
+        },
+        autoLink: {
+          target: '_blank',
+        },
+        header: {
+          anchorStyle: 'none',
+        },
+        codeBlock: {
+          copyCode: false,
+          editCode: false,
+          changeLang: false,
+        },
+        mathBlock: false,
+        inlineMath: false,
+        toc: false,
+        detail: false,
+        panel: false,
+        bgColor: false,
+        fontColor: false,
+        fontSize: false,
+        sub: false,
+        sup: false,
+        ruby: false,
+        underline: false,
+        suggester: false,
+      },
+    },
+  });
+
+  cherryEditor.setTheme(LIGHT_THEME);
+  cmEditor = cherryEditor.editor.editor;
+};
+
+const handleContentChange: CherryLifecycle = (text) => {
+  emit('update:modelValue', text);
+};
+
+const focusEditor = () => {
+  cmEditor?.focus();
+  cmEditor?.setCursor(cmEditor.lastLine(), 99999);
+};
+
+const setValue = (content: string) => {
+  cherryEditor?.setValue(content);
+};
+
+const insertValue = (content: string) => {
+  const lastLineNumber = cmEditor?.lastLine() || 0;
+  const insertAnchor: [number, number] = [lastLineNumber + 1, 0];
+  cherryEditor?.insertValue(content, false, insertAnchor, false);
+};
+
+defineExpose({
+  focusEditor,
+  setValue,
+  insertValue,
+});
+</script>
+
+<template>
+  <div ref="mdEditorEl" class="content-editor-container" :style="editorStyle"></div>
+</template>
+
+<style lang="scss" scoped>
+.content-editor-container {
+  width: 100%;
+  height: 100%;
+
+  :deep(.cherry) {
+    display: flex;
+    border: 1px solid var(--el-border-color);
+    box-shadow: none;
+
+    .cherry-toolbar {
+      padding: 0 5px;
+      border-bottom: 1px solid var(--el-border-color);
+      box-shadow: none;
+    }
+
+    .cherry-editor {
+      /* stylelint-disable-next-line selector-class-pattern */
+      .CodeMirror-lines {
+        padding: 15px;
+      }
+    }
+
+    .cherry-previewer {
+      padding: 15px;
+
+      img {
+        max-width: 100%;
+        pointer-events: none;
+      }
+    }
+  }
+}
+</style>

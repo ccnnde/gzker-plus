@@ -88,11 +88,7 @@ defineExpose({
 @import '@/styles/mixin';
 
 .conversation-dialog {
-  width: 40%;
-  border-radius: var(--el-border-radius-base);
-
   .el-dialog__header {
-    padding-bottom: 0;
     padding-left: var(--gzk-topic-padding);
     margin-right: var(--gzk-topic-padding);
   }
@@ -100,8 +96,6 @@ defineExpose({
   .el-dialog__body {
     padding: 0;
   }
-
-  @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);
 }
 </style>
 

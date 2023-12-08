@@ -4,7 +4,7 @@ import { inject, ref } from 'vue';
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
 import { API_USER, likeReply } from '@/api';
-import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import { UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import LikeButton from './LikeButton.vue';
@@ -68,6 +68,13 @@ const handleConversationView = () => {
 };
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
+
+const writeReply = inject(WRITE_REPLY_INJECTION_KEY);
+
+const handleUserReply = () => {
+  const content = `@${props.uid} #${props.replyNo} `;
+  writeReply?.(content);
+};
 </script>
 
 <template>
@@ -94,7 +101,12 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
       <div ref="contentEl" v-img-load="updateScrollbar" class="main-content" v-html="content"></div>
       <div class="reply-footer">
         <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="handleReplyLike" />
-        <OperateButton v-if="isNotInConversation" :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" />
+        <OperateButton
+          v-if="isNotInConversation"
+          :tip-content="$t('common.reply')"
+          icon-class="i-mdi-chat-outline"
+          @click="handleUserReply"
+        />
         <OperateButton
           v-if="isNotInConversation"
           :operate-text="$t('enhancedTopic.viewConversation')"

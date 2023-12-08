@@ -39,6 +39,7 @@
     "loadFailed": "加载失败",
     "loadFailedAndRetry": "加载失败，请点击重试",
     "plzLogin": "请先登录社区再完成操作",
+    "post": "发布",
     "reply": "回复"
   },
   "enhancedMsg": {
@@ -52,10 +53,13 @@
     "clickNumber": "阅读",
     "conversationList": "对话列表",
     "copyLinkSuccessfully": "复制链接成功",
+    "createReply": "创建回复",
     "haveNotMentionAnyUser": "此回复未提及任何用户",
     "like": "点赞",
     "noReply": "暂无回复，这事你怎么看",
     "originalPoster": "楼主",
+    "replyContentCannotBeEmpty": "回复内容不能为空",
+    "replyContentIsUnderReview": "本站已开启回复审核模式，请等待管理员审核回复内容",
     "replyTotal": "共收到 {num} 条回复",
     "share": "分享",
     "shareLink": "复制链接",

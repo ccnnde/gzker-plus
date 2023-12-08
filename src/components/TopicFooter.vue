@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, inject } from 'vue';
 import { ElMessage } from 'element-plus';
 import QrcodeVue from 'qrcode.vue';
 
 import { t } from '@/i18n';
 import { API_TOPIC } from '@/api';
 import { GZK_URL } from '@/constants';
+import { WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 
 import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
@@ -28,8 +29,6 @@ defineEmits<{
   favoriteTopic: [];
   likeTopic: [];
 }>();
-
-const replyContent = ref('');
 
 const topicUrl = computed(() => {
   return `${GZK_URL}${API_TOPIC}${props.topicId}`;
@@ -61,6 +60,8 @@ const shareToWeibo = () => {
     'width=550, height=370',
   );
 };
+
+const writeReply = inject(WRITE_REPLY_INJECTION_KEY);
 </script>
 
 <template>
@@ -98,7 +99,9 @@ const shareToWeibo = () => {
         </ElDropdownMenu>
       </template>
     </ElDropdown>
-    <ElInput v-model="replyContent" :placeholder="$t('enhancedTopic.writeReply')" />
+    <ElButton class="reply-button" type="primary" size="small" @click="writeReply?.()">
+      {{ $t('enhancedTopic.writeReply') }}
+    </ElButton>
   </div>
 </template>
 
@@ -140,5 +143,10 @@ const shareToWeibo = () => {
 
 .share-icon-wechat {
   color: #3fc15f;
+}
+
+.reply-button {
+  position: absolute;
+  right: var(--gzk-topic-padding);
 }
 </style>

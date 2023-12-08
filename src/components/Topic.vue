@@ -7,17 +7,18 @@ import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { favoriteTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import { UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 import { SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
 import ElementConfig from './ElementConfig.vue';
 import LoadError from './LoadError.vue';
+import ReplyEditor from './ReplyEditor.vue';
 import TopicDetail from './TopicDetail.vue';
 import TopicFooter from './TopicFooter.vue';
 import TopicReply from './TopicReply.vue';
 
-import type { UserReplyItem, UserTopicDetail } from '@/types';
+import type { UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
 
 import 'viewerjs/dist/viewer.css';
 
@@ -58,6 +59,7 @@ const {
   getFirstPageData,
   getNextPageData,
   reloadPageData,
+  updateCurrentPageData,
   resetScrollLoadState,
   scrollToTop,
   scrollToBottom,
@@ -128,11 +130,23 @@ const handleTopicLike = () => {
   });
 };
 
+const handleTopicReply = (data: UserTopic) => {
+  const {
+    detail,
+    reply: { total, list },
+  } = data;
+
+  topicDetail.value = detail;
+  replyTotal.value = total;
+  updateCurrentPageData(total, list);
+};
+
 const handleTopicDialogClosed = () => {
   topicId.value = undefined;
   topicDetail.value = undefined;
   replyTotal.value = '0';
   currentScrollDistance.value = 0;
+  replyEditor.value?.clearReply();
   resetRequestState();
   resetScrollLoadState();
 };
@@ -163,6 +177,18 @@ const updateScrollbar = debounce(() => {
 }, 500);
 
 provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
+
+const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
+
+const writeReply = (content?: string) => {
+  replyEditor.value?.openDialog();
+
+  if (content) {
+    replyEditor.value?.insertReply(content);
+  }
+};
+
+provide(WRITE_REPLY_INJECTION_KEY, writeReply);
 </script>
 
 <template>
@@ -237,6 +263,7 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
         </div>
       </template>
     </ElDialog>
+    <ReplyEditor ref="replyEditor" :topic-id="topicId" @sended="handleTopicReply" />
   </ElementConfig>
 </template>
 
@@ -299,6 +326,18 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
   }
 
   @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
+}
+
+.reply-dialog,
+.conversation-dialog {
+  width: 40%;
+  border-radius: var(--el-border-radius-base);
+
+  .el-dialog__header {
+    padding-bottom: 0;
+  }
+
+  @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);
 }
 </style>
 

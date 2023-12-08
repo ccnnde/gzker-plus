@@ -1,4 +1,4 @@
-import { request, waitTime } from '@/utils';
+import { getXsrfToken, request, waitTime } from '@/utils';
 import { ReplyType } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
@@ -184,4 +184,20 @@ export const likeTopic = async (topicId: string | undefined): Promise<string> =>
 export const likeReply = async (replyId: string | undefined): Promise<string> => {
   const data = await request(`/replyVote?reply_id=${replyId}`);
   return data;
+};
+
+export const createReply = async (topicId: string, content: string): Promise<UserTopic> => {
+  const data = await request(`${API_TOPIC}${topicId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      tid: topicId,
+      content,
+      _xsrf: getXsrfToken(),
+    }),
+  });
+
+  return parseUserTopic(data);
 };

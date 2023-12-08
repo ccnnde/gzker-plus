@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { ElMessage } from 'element-plus';
+import Cookies from 'js-cookie';
 import { cloneDeep, merge } from 'lodash-es';
 import { storage } from 'webextension-polyfill';
 
@@ -70,8 +71,8 @@ export const getStorage = async (): Promise<StorageSettings> => {
   return settings as StorageSettings;
 };
 
-export const request = async (url: string): Promise<string> => {
-  const res = await fetch(url);
+export const request = async (url: string, init?: RequestInit): Promise<string> => {
+  const res = await fetch(url, init);
 
   if (!res.ok || res.status !== 200) {
     throw new Error(res.statusText);
@@ -111,6 +112,10 @@ export const getLoginUserId = () => {
   const loginUserLinkEle = document.querySelector(SELECTOR_LOGIN_USER_LINK) as HTMLAnchorElement | null;
   const loginUserId = loginUserLinkEle?.href.split(API_USER)[1];
   return loginUserId;
+};
+
+export const getXsrfToken = () => {
+  return Cookies.get('_xsrf') || '';
 };
 
 export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {
