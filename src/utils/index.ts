@@ -50,7 +50,7 @@ export const createScriptApp = (options: ScriptAppOptions) => {
   app.mount(container);
 };
 
-export const translateNavigation = (title: string | undefined) => {
+export const translateNavigation = (title?: string) => {
   return title ? t('navigation.' + title) : '';
 };
 

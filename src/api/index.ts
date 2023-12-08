@@ -129,17 +129,17 @@ export const getUserInfo = async (uid: string): Promise<UserInfo> => {
   return parseUserInfo(data);
 };
 
-export const followUser = async (uid: string | undefined) => {
+export const followUser = async (uid?: string) => {
   const data = await request(`/f/user/${uid}`);
   return parseUserInfo(data);
 };
 
-export const blockUser = async (memberNo: string | undefined): Promise<UserInfo> => {
+export const blockUser = async (memberNo?: string): Promise<UserInfo> => {
   const data = await request(`${API_USER}${memberNo}/block`);
   return parseUserInfo(data);
 };
 
-export const unblockUser = async (memberNo: string | undefined): Promise<UserInfo> => {
+export const unblockUser = async (memberNo?: string): Promise<UserInfo> => {
   const data = await request(`${API_USER}${memberNo}/unblock`);
   return parseUserInfo(data);
 };
@@ -166,22 +166,22 @@ export const getUserTopic = async (topicId: string | undefined, page: number): P
   return parseUserTopic(data);
 };
 
-export const favoriteTopic = async (topicId: string | undefined): Promise<string> => {
+export const favoriteTopic = async (topicId?: string): Promise<string> => {
   const data = await request(`/favorite?topic_id=${topicId}`);
   return data;
 };
 
-export const unfavoriteTopic = async (topicId: string | undefined): Promise<string> => {
+export const unfavoriteTopic = async (topicId?: string): Promise<string> => {
   const data = await request(`/unfavorite?topic_id=${topicId}`);
   return data;
 };
 
-export const likeTopic = async (topicId: string | undefined): Promise<string> => {
+export const likeTopic = async (topicId?: string): Promise<string> => {
   const data = await request(`/vote?topic_id=${topicId}`);
   return data;
 };
 
-export const likeReply = async (replyId: string | undefined): Promise<string> => {
+export const likeReply = async (replyId?: string): Promise<string> => {
   const data = await request(`/replyVote?reply_id=${replyId}`);
   return data;
 };
