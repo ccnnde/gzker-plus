@@ -1,0 +1,13 @@
+diff --git a/src/utils/emoji-data.js b/src/utils/emoji-data.js
+index 69e8ec691da8abb26592ed0555ff43eb8e1a9ade..4a377f7371fb26fb7be6c0691468c0a37bd992a7 100644
+--- a/src/utils/emoji-data.js
++++ b/src/utils/emoji-data.js
+@@ -192,7 +192,7 @@ export class EmojiIndex {
+         }
+       }
+       if (this._customCategory.emojis.length) {
+-        this._categories.push(this._customCategory)
++        this._categories.unshift(this._customCategory)
+       }
+     }
+ 

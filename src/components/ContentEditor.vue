@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 
 import { addUnit } from '@/utils';
+import { emojiHook } from '@/utils/emoji';
 
 import type { CSSProperties } from 'vue';
 import type { CherryLifecycle } from 'cherry-markdown/types/cherry';
@@ -18,6 +19,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
+  showEmojiPicker: [];
 }>();
 
 const LIGHT_THEME = 'light';
@@ -104,6 +106,12 @@ const initCherryMarkdown = () => {
         underline: false,
         suggester: false,
       },
+      customSyntax: {
+        emoji: {
+          syntaxClass: emojiHook,
+          force: true,
+        },
+      },
     },
   });
 
@@ -117,6 +125,10 @@ const handleContentChange: CherryLifecycle = (text) => {
 
 const focusEditor = () => {
   cmEditor?.focus();
+};
+
+const focusEndOfEditor = () => {
+  cmEditor?.focus();
   cmEditor?.setCursor(cmEditor.lastLine(), 99999);
 };
 
@@ -125,6 +137,10 @@ const setValue = (content: string) => {
 };
 
 const insertValue = (content: string) => {
+  cherryEditor?.insertValue(content);
+};
+
+const appendValue = (content: string) => {
   const lastLineNumber = cmEditor?.lastLine() || 0;
   const insertAnchor: [number, number] = [lastLineNumber + 1, 0];
   cherryEditor?.insertValue(content, false, insertAnchor, false);
@@ -132,8 +148,10 @@ const insertValue = (content: string) => {
 
 defineExpose({
   focusEditor,
+  focusEndOfEditor,
   setValue,
   insertValue,
+  appendValue,
 });
 </script>
 

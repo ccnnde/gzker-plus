@@ -1,0 +1,12 @@
+img[src^="https://face.t.sinajs.cn"]
+{
+  width: 1.125em;
+  height: 1.125em;
+  vertical-align: -0.188em;
+}
+
+img[src^='/static/emoji'] {
+  width: 1.22em !important;
+  height: 1.22em !important;
+  vertical-align: -0.214em !important;
+}

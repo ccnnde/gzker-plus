@@ -42,6 +42,26 @@
     "post": "发布",
     "reply": "回复"
   },
+  "emojiPicker": {
+    "categories": {
+      "activity": "活动",
+      "custom": "微博",
+      "flags": "旗帜",
+      "foods": "食物与饮品",
+      "nature": "动物与自然",
+      "objects": "物品",
+      "people": "手势与角色",
+      "places": "旅行与景点",
+      "recent": "精选",
+      "search": "搜索结果",
+      "smileys": "心情",
+      "symbols": "符号"
+    },
+    "emoji": "表情",
+    "notfound": "没有找到相关表情",
+    "pick": "选择一个表情…",
+    "search": "搜索"
+  },
   "enhancedMsg": {
     "image": "[图片]",
     "inTopic": "在",

@@ -42,6 +42,26 @@
     "post": "Post",
     "reply": "Reply"
   },
+  "emojiPicker": {
+    "categories": {
+      "activity": "Activity",
+      "custom": "Weibo",
+      "flags": "Flags",
+      "foods": "Food & Drink",
+      "nature": "Animals & Nature",
+      "objects": "Objects",
+      "people": "People & Body",
+      "places": "Travel & Places",
+      "recent": "Featured",
+      "search": "Search Results",
+      "smileys": "Smileys & Emoticon",
+      "symbols": "Symbols"
+    },
+    "emoji": "Emoji",
+    "notfound": "No Emoji Found",
+    "pick": "Pick an emoji…",
+    "search": "Search"
+  },
   "enhancedMsg": {
     "image": "[Image]",
     "inTopic": "mentioned you in the topic",

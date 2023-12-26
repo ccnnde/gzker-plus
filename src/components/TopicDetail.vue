@@ -2,6 +2,7 @@
 import { inject } from 'vue';
 
 import { vImgLoad } from '@/directives';
+import { convertEmojiToNative } from '@/utils/emoji';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import UserAvatar from './UserAvatar.vue';
@@ -31,7 +32,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
   <article>
     <header>
       <div class="detail-header-top">
-        <div class="detail-title">{{ title }}</div>
+        <div class="detail-title" v-html="title"></div>
         <div class="detail-reading">
           <span class="number-info">{{ $t('enhancedTopic.clickNumber') }}</span>
           <span class="number-info">{{ clickNumber }}</span>
@@ -50,7 +51,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
         </div>
       </div>
     </header>
-    <section v-img-load="updateScrollbar" class="main-content" v-html="content"></section>
+    <section v-img-load="updateScrollbar" class="main-content" v-html="convertEmojiToNative(content)"></section>
   </article>
 </template>
 

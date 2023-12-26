@@ -37,3 +37,8 @@ export const SELECTOR_USER_MENTION_LINK = 'a[href^="/u/"].user-mention';
  * 未读消息提醒元素
  */
 export const SELECTOR_MSG_UNREAD_INDICATOR = 'a.notification-indicator.contextually-unread';
+
+/**
+ * 非 emoji 图片元素
+ */
+export const SELECTOR_NOT_EMOJI_IMG = 'img:not([src^="https://face.t.sinajs.cn"]):not([src^="/static/emoji"])';

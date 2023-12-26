@@ -6,7 +6,9 @@ import { useScrollLoad } from '@/composables/scroll-load';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
+import { convertEmojiToNative } from '@/utils/emoji';
 import { BellStyle, OptionsKey, ReplyType } from '@/constants';
+import { SELECTOR_NOT_EMOJI_IMG } from '@/constants/selector';
 
 import LoadError from './LoadError.vue';
 
@@ -177,7 +179,11 @@ const isMsgUnread = (index: number): boolean => {
                   <span class="message-action">{{ $t('enhancedMsg.mentionYou') }}</span>
                 </template>
               </div>
-              <div v-msg-replace:img="$t('enhancedMsg.image')" class="message-content" v-html="item.replyContent"></div>
+              <div
+                v-msg-replace:[SELECTOR_NOT_EMOJI_IMG]="$t('enhancedMsg.image')"
+                class="message-content"
+                v-html="convertEmojiToNative(item.replyContent)"
+              ></div>
             </div>
           </div>
           <ElSkeleton v-show="isNextPageLoading" class="message-item message-item-skeleton" animated>

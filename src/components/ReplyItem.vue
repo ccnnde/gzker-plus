@@ -4,6 +4,7 @@ import { inject, ref } from 'vue';
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
 import { API_USER, likeReply } from '@/api';
+import { convertEmojiToNative } from '@/utils/emoji';
 import { UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
@@ -98,7 +99,12 @@ const handleUserReply = () => {
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
       </div>
-      <div ref="contentEl" v-img-load="updateScrollbar" class="main-content" v-html="content"></div>
+      <div
+        ref="contentEl"
+        v-img-load="updateScrollbar"
+        class="main-content"
+        v-html="convertEmojiToNative(content)"
+      ></div>
       <div class="reply-footer">
         <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="handleReplyLike" />
         <OperateButton

@@ -5,8 +5,10 @@ import { ElMessage } from 'element-plus';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { createReply } from '@/api';
+import { convertWeiboEmojiToImg } from '@/utils/emoji';
 
 import ContentEditor from './ContentEditor.vue';
+import EmojiPicker from './EmojiPicker.vue';
 
 import type { UserTopic } from '@/types';
 
@@ -23,6 +25,7 @@ const emit = defineEmits<{
 const replyContent = ref('');
 const replyDialogVisible = ref(false);
 const contentEditor = ref<InstanceType<typeof ContentEditor> | null>(null);
+const emojiPicker = ref<InstanceType<typeof EmojiPicker> | null>(null);
 
 const openDialog = () => {
   replyDialogVisible.value = true;
@@ -31,7 +34,15 @@ const openDialog = () => {
 const insertReply = (content: string) => {
   setTimeout(() => {
     const newLine = replyContent.value ? '\n' : '';
-    contentEditor.value?.insertValue(newLine + content);
+    contentEditor.value?.appendValue(newLine + content);
+  }, 0);
+};
+
+const insertEmoji = (emoji: string) => {
+  contentEditor.value?.insertValue(`:${emoji}:`);
+
+  setTimeout(() => {
+    contentEditor.value?.focusEditor();
   }, 0);
 };
 
@@ -48,7 +59,8 @@ const sendReply = () => {
   }
 
   handleRequest(async () => {
-    const data = await createReply(props.topicId as string, replyContent.value);
+    const content = convertWeiboEmojiToImg(replyContent.value);
+    const data = await createReply(props.topicId as string, content);
 
     replyDialogVisible.value = false;
     clearReply();
@@ -72,10 +84,16 @@ defineExpose({
     :title="$t('enhancedTopic.createReply')"
     :z-index="2001"
     append-to-body
-    @opened="contentEditor?.focusEditor()"
+    @opened="contentEditor?.focusEndOfEditor()"
   >
-    <ContentEditor ref="contentEditor" v-model="replyContent" :height="250" />
+    <ContentEditor
+      ref="contentEditor"
+      v-model="replyContent"
+      :height="250"
+      @show-emoji-picker="emojiPicker?.showPicker"
+    />
     <template #footer>
+      <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
       <ElButton type="primary" :loading="isLoading" @click="sendReply">{{ $t('common.post') }}</ElButton>
     </template>
   </ElDialog>
@@ -86,6 +104,12 @@ defineExpose({
   .el-dialog__body {
     padding-top: var(--gzk-topic-padding);
     padding-bottom: var(--gzk-topic-padding);
+  }
+
+  .el-dialog__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 </style>
