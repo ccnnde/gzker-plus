@@ -1,11 +1,7 @@
-img[src^="https://face.t.sinajs.cn"]
+img[src^='/static/emoji'],
+img[src^="https://face.t.sinajs.cn"],
+img[src^="https://img.whzxc.cn/bd"]
 {
-  width: 1.125em;
-  height: 1.125em;
-  vertical-align: -0.188em;
-}
-
-img[src^='/static/emoji'] {
   width: 1.22em !important;
   height: 1.22em !important;
   vertical-align: -0.214em !important;

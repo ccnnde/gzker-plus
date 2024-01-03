@@ -41,4 +41,4 @@ export const SELECTOR_MSG_UNREAD_INDICATOR = 'a.notification-indicator.contextua
 /**
  * 非 emoji 图片元素
  */
-export const SELECTOR_NOT_EMOJI_IMG = 'img:not([src^="https://face.t.sinajs.cn"]):not([src^="/static/emoji"])';
+export const SELECTOR_NOT_EMOJI_IMG = 'img:not([src^="https://face.t.sinajs.cn"],[src^="https://img.whzxc.cn/bd"],[src^="/static/emoji"])';
