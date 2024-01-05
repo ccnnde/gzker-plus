@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref } from 'vue';
+import { ElMessage } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
+import { t } from '@/i18n';
 import { favoriteTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
@@ -18,7 +20,7 @@ import TopicDetail from './TopicDetail.vue';
 import TopicFooter from './TopicFooter.vue';
 import TopicReply from './TopicReply.vue';
 
-import type { UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
+import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 import 'viewerjs/dist/viewer.css';
 
@@ -29,6 +31,7 @@ const { isLoading, handleRequest, resetRequestState } = useRequest();
 const topicId = ref<string>();
 const topicDialogVisible = ref(false);
 const topicDetail = ref<UserTopicDetail>();
+const topicStatus = ref<UserTopicStatus>();
 const replyTotal = ref<string>('0');
 
 const showReply = computed(() => {
@@ -38,10 +41,12 @@ const showReply = computed(() => {
 const getTopicCallback = async (page: number): Promise<UserReplyItem[]> => {
   const {
     detail,
+    status,
     reply: { total, list },
   } = await getUserTopic(topicId.value, page);
 
   topicDetail.value = detail;
+  topicStatus.value = status;
   replyTotal.value = total;
 
   return list;
@@ -181,6 +186,16 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
 
 const writeReply = (content?: string) => {
+  if (topicStatus.value?.unbindedPhone) {
+    ElMessage.error(t('enhancedTopic.cannotReplyByInvalidUser'));
+    return;
+  }
+
+  if (topicStatus.value?.locked) {
+    ElMessage.error(t('enhancedTopic.cannotReplyByLockedPost'));
+    return;
+  }
+
   replyEditor.value?.openDialog();
 
   if (content) {
@@ -247,11 +262,7 @@ provide(WRITE_REPLY_INJECTION_KEY, writeReply);
       <template #footer>
         <div class="topic-dialog-absolute topic-dialog-footer">
           <FadeTransition>
-            <un-i-mdi-arrow-up-bold-box-outline
-              v-show="showScrollTopButton"
-              class="topic-operate-icon"
-              @click="scrollToTop"
-            />
+            <un-i-mdi-arrow-up-bold-box-outline v-show="showScrollTopButton" class="topic-operate-icon" @click="scrollToTop" />
           </FadeTransition>
           <FadeTransition>
             <un-i-mdi-arrow-down-bold-box-outline

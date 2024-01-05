@@ -70,6 +70,8 @@
     "viewAll": "View All"
   },
   "enhancedTopic": {
+    "cannotReplyByInvalidUser": "Not logged in or not bound to a phone number, unable to reply",
+    "cannotReplyByLockedPost": "This post has been locked and cannot be replied to",
     "clickNumber": "Read",
     "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",

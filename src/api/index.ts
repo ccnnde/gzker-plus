@@ -2,7 +2,7 @@ import { getXsrfToken, request, waitTime } from '@/utils';
 import { ReplyType } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
-import type { UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
+import type { UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 const parseUserInfo = (htmlStr: string): UserInfo => {
   return {
@@ -35,6 +35,7 @@ const parseUserTopic = (htmlStr: string): UserTopic => {
 
   return {
     detail,
+    status: parseTopicStatus(htmlStr),
     reply: {
       total,
       list,
@@ -61,6 +62,15 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
     favorited: /<a href="[^"]+" class="J_topicFavorite" data-type="unfavorite">取消收藏<\/a>/.test(htmlStr),
     favoriteNumber: htmlStr.match(/<span class="favorited fr mr10">(\d+) 人收藏<\/span>/)?.[1],
     clickNumber: htmlStr.match(/<span class="hits fr mr10">(\d+) 次点击<\/span>/)?.[1],
+  };
+};
+
+const parseTopicStatus = (htmlStr: string): UserTopicStatus => {
+  const createReplyHtmlStr = htmlStr.split('<div class="topic-reply-create')[1].split('<div class="col-md-3 sidebar-right')[0];
+
+  return {
+    unbindedPhone: /请绑定手机号后，再发言/.test(createReplyHtmlStr),
+    locked: /本帖已锁/.test(createReplyHtmlStr),
   };
 };
 

@@ -70,6 +70,8 @@
     "viewAll": "查看全部"
   },
   "enhancedTopic": {
+    "cannotReplyByInvalidUser": "未登录或未绑定手机号，无法回复",
+    "cannotReplyByLockedPost": "本帖已锁，无法回复",
     "clickNumber": "阅读",
     "conversationList": "对话列表",
     "copyLinkSuccessfully": "复制链接成功",
