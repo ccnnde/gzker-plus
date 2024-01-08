@@ -9,7 +9,7 @@ import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
 import { favoriteTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
+import { EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 import { SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
@@ -197,13 +197,17 @@ const writeReply = (content?: string) => {
   }
 
   replyEditor.value?.openDialog();
-
-  if (content) {
-    replyEditor.value?.insertReply(content);
-  }
+  replyEditor.value?.insertReply(content);
 };
 
 provide(WRITE_REPLY_INJECTION_KEY, writeReply);
+
+const editReply = (reply: UserReplyItem) => {
+  replyEditor.value?.openDialog();
+  replyEditor.value?.editReply(reply);
+};
+
+provide(EDIT_REPLY_INJECTION_KEY, editReply);
 </script>
 
 <template>

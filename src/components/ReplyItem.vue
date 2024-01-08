@@ -3,9 +3,9 @@ import { inject, ref } from 'vue';
 
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
-import { API_USER, likeReply } from '@/api';
+import { API_USER, getReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
-import { UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
+import { EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import LikeButton from './LikeButton.vue';
@@ -76,6 +76,15 @@ const handleUserReply = () => {
   const content = `@${props.uid} #${props.replyNo} `;
   writeReply?.(content);
 };
+
+const editReply = inject(EDIT_REPLY_INJECTION_KEY);
+
+const handleReplyEdit = () => {
+  handleRequest(async () => {
+    const reply = await getReply(props.replyId);
+    editReply?.(reply);
+  });
+};
 </script>
 
 <template>
@@ -99,25 +108,14 @@ const handleUserReply = () => {
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
       </div>
-      <div
-        ref="contentEl"
-        v-img-load="updateScrollbar"
-        class="main-content"
-        v-html="convertEmojiToNative(content)"
-      ></div>
+      <div ref="contentEl" v-img-load="updateScrollbar" class="main-content" v-html="convertEmojiToNative(content)"></div>
       <div class="reply-footer">
         <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="handleReplyLike" />
-        <OperateButton
-          v-if="isNotInConversation"
-          :tip-content="$t('common.reply')"
-          icon-class="i-mdi-chat-outline"
-          @click="handleUserReply"
-        />
-        <OperateButton
-          v-if="isNotInConversation"
-          :operate-text="$t('enhancedTopic.viewConversation')"
-          @click="handleConversationView"
-        />
+        <template v-if="isNotInConversation">
+          <OperateButton :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" @click="handleUserReply" />
+          <OperateButton :operate-text="$t('enhancedTopic.viewConversation')" @click="handleConversationView" />
+          <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editReply')" @click="handleReplyEdit" />
+        </template>
       </div>
     </div>
   </div>

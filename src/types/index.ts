@@ -137,6 +137,7 @@ export interface UserReplyItem {
   content?: string;
   liked?: boolean;
   likeNumber?: string;
+  editable?: boolean;
 }
 
 export interface UserReplyMention {

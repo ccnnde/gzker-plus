@@ -86,6 +86,14 @@ export const convertWeiboEmojiToImg = (content: string): string => {
   });
 };
 
+export const convertWeiboImgToEmoji = (content: string): string => {
+  const weiboImgReg = /!\[(wb_([-a-zA-Z0-9\u4e00-\u9fa5+_]+?))\]\(https:\/\/face.t.sinajs.cn\/[\w/]+?\.(png|gif)\)/g;
+
+  return content.replace(weiboImgReg, (match: string, emojiId: string, emojiName: string) => {
+    return weiboEmojiMarkdownMap[emojiName] ? `:${emojiId}:` : match;
+  });
+};
+
 /**
  * 将 html 内容中的 emoji 转换成 native 形式，以使得主题和回复等内容可以显示所有 emoji，且样式统一。当发布的内容含有 emoji 时，存在以下两种情况
  * - 能被识别的 emoji 会被转换成图片，形如 `<img src="/static/emoji/joy.png" height="20" width="20" align="absmiddle"/>`

@@ -76,6 +76,8 @@
     "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",
     "createReply": "Create reply",
+    "editReply": "Edit reply",
+    "editReplySuccessful": "Edit reply successful",
     "haveNotMentionAnyUser": "This reply hasn't mentioned any user",
     "like": "Like",
     "noReply": "No replies yet, what do you think?",

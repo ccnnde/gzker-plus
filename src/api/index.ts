@@ -19,6 +19,10 @@ const parseUserInfo = (htmlStr: string): UserInfo => {
   };
 };
 
+const parseUserReply = (htmlStr: string): string => {
+  return htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1] || '';
+};
+
 const parseUserTopic = (htmlStr: string): UserTopic => {
   let detail: UserTopicDetail = {};
   let list: UserReplyItem[] = [];
@@ -100,6 +104,7 @@ const parseTopicReplyList = (htmlStr: string): UserReplyItem[] => {
       content: item.match(/<span class="content">(.+)<\/span>/s)?.[1],
       liked: false,
       likeNumber: item.match(/<a class="J_replyVote" data-count="(\d+)" href="[^"]+">/)?.[1],
+      editable: /<a href="\/reply\/edit\/\d+">编辑回复<\/a>/.test(item),
     };
   });
 };
@@ -126,6 +131,15 @@ const parseUserMsgList = (htmlStr: string): UserMessage[] => {
       replyContent: item.match(/<div class="content"><p>(.+)<\/p>/s)?.[1],
     };
   });
+};
+
+const checkAlertInfo = (htmlStr: string) => {
+  const alertHtmlStr = htmlStr.match(/<form [^>]*>.+?<ul class="alert alert-danger">(.+?)<\/ul>.+?<textarea/s)?.[1];
+
+  if (alertHtmlStr) {
+    const alertInfo = [...alertHtmlStr.matchAll(/<li>(.+?)<\/li>/g)].map((item) => item[1]).join('，');
+    throw new Error(alertInfo);
+  }
 };
 
 export const API_USER = '/u/';
@@ -196,18 +210,39 @@ export const likeReply = async (replyId?: string): Promise<string> => {
   return data;
 };
 
+export const getReply = async (replyId?: string): Promise<UserReplyItem> => {
+  const data = await request(`/reply/edit/${replyId}`);
+
+  return {
+    replyId,
+    content: parseUserReply(data),
+  };
+};
+
 export const createReply = async (topicId: string, content: string): Promise<UserTopic> => {
   const data = await request(`${API_TOPIC}${topicId}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
     body: new URLSearchParams({
       tid: topicId,
       content,
       _xsrf: getXsrfToken(),
     }),
   });
+
+  return parseUserTopic(data);
+};
+
+export const modifyReply = async (replyId: string, content: string): Promise<UserTopic> => {
+  const data = await request(`/reply/edit/${replyId}`, {
+    method: 'POST',
+    body: new URLSearchParams({
+      rid: replyId,
+      content,
+      _xsrf: getXsrfToken(),
+    }),
+  });
+
+  checkAlertInfo(data);
 
   return parseUserTopic(data);
 };

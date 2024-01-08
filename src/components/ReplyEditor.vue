@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
-import { createReply } from '@/api';
-import { convertWeiboEmojiToImg } from '@/utils/emoji';
+import { createReply, modifyReply } from '@/api';
+import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
 
-import type { UserTopic } from '@/types';
+import type { UserReplyItem, UserTopic } from '@/types';
 
 interface Props {
   topicId?: string;
@@ -22,19 +22,42 @@ const emit = defineEmits<{
   sended: [data: UserTopic];
 }>();
 
+let editContentId: string;
+
+const isEditContent = ref(false);
 const replyContent = ref('');
 const replyDialogVisible = ref(false);
 const contentEditor = ref<InstanceType<typeof ContentEditor> | null>(null);
 const emojiPicker = ref<InstanceType<typeof EmojiPicker> | null>(null);
 
+const editorTitle = computed(() => {
+  return isEditContent.value ? t('enhancedTopic.editReply') : t('enhancedTopic.createReply');
+});
+
 const openDialog = () => {
   replyDialogVisible.value = true;
 };
 
-const insertReply = (content: string) => {
+const insertReply = (content?: string) => {
+  isEditContent.value = false;
+
+  if (!content) {
+    return;
+  }
+
   setTimeout(() => {
     const newLine = replyContent.value ? '\n' : '';
     contentEditor.value?.appendValue(newLine + content);
+  }, 0);
+};
+
+const editReply = (reply: UserReplyItem) => {
+  isEditContent.value = true;
+  editContentId = reply.replyId as string;
+
+  setTimeout(() => {
+    const content = convertWeiboImgToEmoji(reply.content as string);
+    contentEditor.value?.setValue(content);
   }, 0);
 };
 
@@ -60,19 +83,32 @@ const sendReply = () => {
 
   handleRequest(async () => {
     const content = convertWeiboEmojiToImg(replyContent.value);
-    const data = await createReply(props.topicId as string, content);
+    let data;
+
+    if (isEditContent.value) {
+      data = await modifyReply(editContentId, content);
+      ElMessage.success(t('enhancedTopic.editReplySuccessful'));
+    } else {
+      data = await createReply(props.topicId as string, content);
+      clearReply();
+      ElMessage.success(t('enhancedTopic.replyContentIsUnderReview'));
+    }
 
     replyDialogVisible.value = false;
-    clearReply();
     emit('sended', data);
-
-    ElMessage.success(t('enhancedTopic.replyContentIsUnderReview'));
   });
+};
+
+const handleDialogClosed = () => {
+  if (isEditContent.value) {
+    clearReply();
+  }
 };
 
 defineExpose({
   openDialog,
   insertReply,
+  editReply,
   clearReply,
 });
 </script>
@@ -81,17 +117,13 @@ defineExpose({
   <ElDialog
     v-model="replyDialogVisible"
     class="reply-dialog"
-    :title="$t('enhancedTopic.createReply')"
+    :title="editorTitle"
     :z-index="2001"
     append-to-body
     @opened="contentEditor?.focusEndOfEditor()"
+    @closed="handleDialogClosed"
   >
-    <ContentEditor
-      ref="contentEditor"
-      v-model="replyContent"
-      :height="250"
-      @show-emoji-picker="emojiPicker?.showPicker"
-    />
+    <ContentEditor ref="contentEditor" v-model="replyContent" :height="250" @show-emoji-picker="emojiPicker?.showPicker" />
     <template #footer>
       <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
       <ElButton type="primary" :loading="isLoading" @click="sendReply">{{ $t('common.post') }}</ElButton>
