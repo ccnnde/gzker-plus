@@ -5,7 +5,7 @@ import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
 import { API_USER, getReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
-import { EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
+import { ADD_REPLY_INJECTION_KEY, EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import LikeButton from './LikeButton.vue';
@@ -70,11 +70,11 @@ const handleConversationView = () => {
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 
-const writeReply = inject(WRITE_REPLY_INJECTION_KEY);
+const addReply = inject(ADD_REPLY_INJECTION_KEY);
 
 const handleUserReply = () => {
   const content = `@${props.uid} #${props.replyNo} `;
-  writeReply?.(content);
+  addReply?.(content);
 };
 
 const editReply = inject(EDIT_REPLY_INJECTION_KEY);

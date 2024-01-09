@@ -9,7 +9,7 @@ import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
 import { favoriteTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY, WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
+import { ADD_REPLY_INJECTION_KEY, EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 import { SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
@@ -185,7 +185,7 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
 
-const writeReply = (content?: string) => {
+const addReply = (content?: string) => {
   if (topicStatus.value?.unbindedPhone) {
     ElMessage.error(t('enhancedTopic.cannotReplyByInvalidUser'));
     return;
@@ -197,10 +197,10 @@ const writeReply = (content?: string) => {
   }
 
   replyEditor.value?.openDialog();
-  replyEditor.value?.insertReply(content);
+  replyEditor.value?.addReply(content);
 };
 
-provide(WRITE_REPLY_INJECTION_KEY, writeReply);
+provide(ADD_REPLY_INJECTION_KEY, addReply);
 
 const editReply = (reply: UserReplyItem) => {
   replyEditor.value?.openDialog();

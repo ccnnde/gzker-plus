@@ -38,7 +38,7 @@ const openDialog = () => {
   replyDialogVisible.value = true;
 };
 
-const insertReply = (content?: string) => {
+const addReply = (content?: string) => {
   isEditContent.value = false;
 
   if (!content) {
@@ -107,7 +107,7 @@ const handleDialogClosed = () => {
 
 defineExpose({
   openDialog,
-  insertReply,
+  addReply,
   editReply,
   clearReply,
 });

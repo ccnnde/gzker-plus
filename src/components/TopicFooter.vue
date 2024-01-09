@@ -6,7 +6,7 @@ import QrcodeVue from 'qrcode.vue';
 import { t } from '@/i18n';
 import { API_TOPIC } from '@/api';
 import { GZK_URL } from '@/constants';
-import { WRITE_REPLY_INJECTION_KEY } from '@/constants/inject-key';
+import { ADD_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 
 import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
@@ -61,7 +61,7 @@ const shareToWeibo = () => {
   );
 };
 
-const writeReply = inject(WRITE_REPLY_INJECTION_KEY);
+const addReply = inject(ADD_REPLY_INJECTION_KEY);
 </script>
 
 <template>
@@ -99,7 +99,7 @@ const writeReply = inject(WRITE_REPLY_INJECTION_KEY);
         </ElDropdownMenu>
       </template>
     </ElDropdown>
-    <ElButton class="reply-button" type="primary" size="small" @click="writeReply?.()">
+    <ElButton class="reply-button" type="primary" size="small" @click="addReply?.()">
       {{ $t('enhancedTopic.writeReply') }}
     </ElButton>
   </div>
