@@ -26,7 +26,7 @@ const parseUserReply = (htmlStr: string): string => {
 const parseUserTopic = (htmlStr: string): UserTopic => {
   let detail: UserTopicDetail = {};
   let list: UserReplyItem[] = [];
-  let total = htmlStr.match(/共收到(\d+)条回复/)?.[1];
+  let total = htmlStr.match(/<div class="ui-header">.+?<span>共收到(\d+)条回复<\/span>/s)?.[1];
 
   if (total === undefined) {
     detail = parseTopicDetail(htmlStr);
