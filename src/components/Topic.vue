@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
+import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
@@ -30,9 +31,9 @@ const PAGE_SIZE = 106;
 const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
 const createTopicLinkRegExp = /\/t\/create\/(\w+)/;
 
+const { dialogVisible, openDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
 const topicId = ref<string>();
-const topicDialogVisible = ref(false);
 const topicDetail = ref<UserTopicDetail>();
 const topicStatus = ref<UserTopicStatus>();
 const replyTotal = ref<string>('0');
@@ -90,7 +91,7 @@ onMounted(() => {
 
 const handleTopicClick = (e: Event) => {
   e.preventDefault();
-  topicDialogVisible.value = true;
+  openDialog();
 
   const topicLinkEle = e.target as HTMLAnchorElement;
   topicId.value = topicLinkEle.href.match(topicLinkRegExp)?.[1];
@@ -191,7 +192,7 @@ const handleTopicDialogClosed = () => {
   topicDetail.value = undefined;
   replyTotal.value = '0';
   currentScrollDistance.value = 0;
-  replyEditor.value?.clearReply();
+  replyEditor.value?.clearContent();
   resetRequestState();
   resetScrollLoadState();
 };
@@ -260,7 +261,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 <template>
   <ElementConfig>
     <ElDialog
-      v-model="topicDialogVisible"
+      v-model="dialogVisible"
       class="topic-dialog"
       :z-index="2000"
       :show-close="false"

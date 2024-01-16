@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 
+import { useContentEditor } from '@/composables/content-editor';
+import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { createReply, modifyReply } from '@/api';
@@ -22,24 +24,18 @@ const emit = defineEmits<{
   sended: [data: UserTopic];
 }>();
 
-let editContentId: string;
+let editedReplyId: string;
 
-const isEditContent = ref(false);
 const replyContent = ref('');
-const replyDialogVisible = ref(false);
-const contentEditor = ref<InstanceType<typeof ContentEditor> | null>(null);
-const emojiPicker = ref<InstanceType<typeof EmojiPicker> | null>(null);
+const { dialogVisible, openDialog, closeDialog } = useDialog();
+const { isAddContent, contentEditor, emojiPicker, insertEmoji, clearContent } = useContentEditor();
 
 const editorTitle = computed(() => {
-  return isEditContent.value ? t('enhancedTopic.editReply') : t('enhancedTopic.createReply');
+  return isAddContent.value ? t('enhancedTopic.createReply') : t('enhancedTopic.editReply');
 });
 
-const openDialog = () => {
-  replyDialogVisible.value = true;
-};
-
 const addReply = (content?: string) => {
-  isEditContent.value = false;
+  isAddContent.value = true;
 
   if (!content) {
     return;
@@ -52,25 +48,13 @@ const addReply = (content?: string) => {
 };
 
 const editReply = (reply: UserReplyItem) => {
-  isEditContent.value = true;
-  editContentId = reply.replyId as string;
+  isAddContent.value = false;
+  editedReplyId = reply.replyId as string;
 
   setTimeout(() => {
     const content = convertWeiboImgToEmoji(reply.content as string);
     contentEditor.value?.setValue(content);
   }, 0);
-};
-
-const insertEmoji = (emoji: string) => {
-  contentEditor.value?.insertValue(`:${emoji}:`);
-
-  setTimeout(() => {
-    contentEditor.value?.focusEditor();
-  }, 0);
-};
-
-const clearReply = () => {
-  contentEditor.value?.setValue('');
 };
 
 const { isLoading, handleRequest } = useRequest();
@@ -85,23 +69,23 @@ const sendReply = () => {
     const content = convertWeiboEmojiToImg(replyContent.value);
     let data;
 
-    if (isEditContent.value) {
-      data = await modifyReply(editContentId, content);
-      ElMessage.success(t('enhancedTopic.editReplySuccessful'));
-    } else {
+    if (isAddContent.value) {
       data = await createReply(props.topicId as string, content);
-      clearReply();
+      clearContent();
       ElMessage.success(t('enhancedTopic.replyContentIsUnderReview'));
+    } else {
+      data = await modifyReply(editedReplyId, content);
+      ElMessage.success(t('enhancedTopic.editReplySuccessful'));
     }
 
-    replyDialogVisible.value = false;
+    closeDialog();
     emit('sended', data);
   });
 };
 
 const handleDialogClosed = () => {
-  if (isEditContent.value) {
-    clearReply();
+  if (!isAddContent.value) {
+    clearContent();
   }
 };
 
@@ -109,14 +93,14 @@ defineExpose({
   openDialog,
   addReply,
   editReply,
-  clearReply,
+  clearContent,
 });
 </script>
 
 <template>
   <ElDialog
-    v-model="replyDialogVisible"
-    class="reply-dialog"
+    v-model="dialogVisible"
+    class="editor-dialog reply-editor-dialog"
     :title="editorTitle"
     :z-index="2001"
     append-to-body
@@ -130,18 +114,3 @@ defineExpose({
     </template>
   </ElDialog>
 </template>
-
-<style lang="scss">
-.reply-dialog {
-  .el-dialog__body {
-    padding-top: var(--gzk-topic-padding);
-    padding-bottom: var(--gzk-topic-padding);
-  }
-
-  .el-dialog__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-</style>

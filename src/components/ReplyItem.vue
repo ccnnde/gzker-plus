@@ -3,7 +3,7 @@ import { inject, ref } from 'vue';
 
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
-import { API_USER, getReply, likeReply } from '@/api';
+import { API_USER, getEditedReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { ADD_REPLY_INJECTION_KEY, EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
@@ -81,7 +81,7 @@ const editReply = inject(EDIT_REPLY_INJECTION_KEY);
 
 const handleReplyEdit = () => {
   handleRequest(async () => {
-    const reply = await getReply(props.replyId);
+    const reply = await getEditedReply(props.replyId);
     editReply?.(reply);
   });
 };

@@ -3,6 +3,7 @@ import { provide, ref } from 'vue';
 import { ElScrollbar } from 'element-plus';
 import { debounce } from 'lodash-es';
 
+import { useDialog } from '@/composables/dialog';
 import { handleReplyLike } from '@/utils';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
@@ -24,11 +25,7 @@ const emit = defineEmits<{
   closeConversation: [];
 }>();
 
-const conversationDialogVisible = ref(false);
-
-const openDialog = () => {
-  conversationDialogVisible.value = true;
-};
+const { dialogVisible, openDialog } = useDialog();
 
 const handleMentionUidChange = (val: string) => {
   emit('update:modelValue', val);
@@ -54,7 +51,7 @@ defineExpose({
 
 <template>
   <ElDialog
-    v-model="conversationDialogVisible"
+    v-model="dialogVisible"
     class="conversation-dialog"
     :z-index="2001"
     :before-close="handleDialogBeforeClose"
@@ -85,8 +82,6 @@ defineExpose({
 </template>
 
 <style lang="scss">
-@import '@/styles/mixin';
-
 .conversation-dialog {
   .el-dialog__header {
     padding-left: var(--gzk-topic-padding);
