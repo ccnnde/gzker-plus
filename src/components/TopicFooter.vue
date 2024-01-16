@@ -21,6 +21,7 @@ interface Props {
   favoriteNumber?: string;
   liked?: boolean;
   likeNumber?: string;
+  editable?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -28,6 +29,7 @@ const props = defineProps<Props>();
 defineEmits<{
   favoriteTopic: [];
   likeTopic: [];
+  editTopic: [];
 }>();
 
 const topicUrl = computed(() => {
@@ -99,6 +101,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
         </ElDropdownMenu>
       </template>
     </ElDropdown>
+    <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
     <ElButton class="reply-button" type="primary" size="small" @click="addReply?.()">
       {{ $t('enhancedTopic.writeReply') }}
     </ElButton>

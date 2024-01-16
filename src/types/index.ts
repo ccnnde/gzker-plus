@@ -113,6 +113,7 @@ export interface UserTopicDetail {
   liked?: boolean;
   likeNumber?: string;
   clickNumber?: string;
+  editable?: boolean;
 }
 
 export interface UserTopicStatus {
@@ -143,6 +144,12 @@ export interface UserReplyItem {
 export interface UserReplyMention {
   uid: string;
   floor?: string;
+}
+
+export interface TreeNode {
+  value?: string;
+  label?: string;
+  children?: TreeNode[];
 }
 
 export interface ApiJsonResponse {

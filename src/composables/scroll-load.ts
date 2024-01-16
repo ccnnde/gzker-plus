@@ -77,6 +77,12 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
     getNextPageData();
   };
 
+  const reloadFirstPageData = (firstPageData: T[]) => {
+    currentPage.value = 1;
+    dataList.value = firstPageData;
+    noMoreData.value = firstPageData.length < pageSize;
+  };
+
   const updateCurrentPageData = (total: string, lastPageData: T[]) => {
     const lastPageNum = Math.ceil(Number(total) / pageSize);
 
@@ -123,6 +129,7 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
     getFirstPageData,
     getNextPageData,
     reloadPageData,
+    reloadFirstPageData,
     updateCurrentPageData,
     resetScrollLoadState,
     scrollToTop,

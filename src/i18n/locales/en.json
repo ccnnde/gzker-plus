@@ -25,7 +25,7 @@
     },
     "enhancedTopic": {
       "title": "Enhanced Topic",
-      "titleDesc": "Browse topic details and post replies directly on the current page"
+      "titleDesc": "Browse, create, and edit topics directly on the current page, as well as create and edit replies"
     },
     "floatUserInfo": {
       "title": "Floating Display Of User Information",
@@ -76,8 +76,11 @@
     "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",
     "createReply": "Create reply",
+    "createTopic": "Create topic",
     "editReply": "Edit reply",
     "editReplySuccessful": "Edit reply successful",
+    "editTopic": "Edit topic",
+    "editTopicSuccessful": "Edit topic successful",
     "haveNotMentionAnyUser": "This reply hasn't mentioned any user",
     "like": "Like",
     "noReply": "No replies yet, what do you think?",
@@ -89,6 +92,11 @@
     "shareLink": "Copy Link",
     "shareWeChat": "Scan with WeChat",
     "shareWeibo": "Share on Weibo",
+    "topicContentCannotBeEmpty": "The topic content cannot be empty",
+    "topicContentIsUnderReview": "Topic published successfully. Please wait for administrator review",
+    "topicTitle": "Title",
+    "topicTitleCannotBeEmpty": "The topic title cannot be empty",
+    "topicTitleLengthLimit": "The topic title must be between 3 and 56 characters in length",
     "viewConversation": "View conversation",
     "writeReply": "Write reply"
   },

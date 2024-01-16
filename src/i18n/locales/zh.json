@@ -25,7 +25,7 @@
     },
     "enhancedTopic": {
       "title": "主题增强",
-      "titleDesc": "在当前页面直接浏览主题详情并回帖"
+      "titleDesc": "在当前页面直接浏览、创建和编辑主题，以及创建和编辑回复"
     },
     "floatUserInfo": {
       "title": "悬浮展示用户信息",
@@ -76,8 +76,11 @@
     "conversationList": "对话列表",
     "copyLinkSuccessfully": "复制链接成功",
     "createReply": "创建回复",
+    "createTopic": "创建主题",
     "editReply": "编辑回复",
     "editReplySuccessful": "编辑回复成功",
+    "editTopic": "编辑主题",
+    "editTopicSuccessful": "编辑主题成功",
     "haveNotMentionAnyUser": "此回复未提及任何用户",
     "like": "点赞",
     "noReply": "暂无回复，这事你怎么看",
@@ -89,6 +92,11 @@
     "shareLink": "复制链接",
     "shareWeChat": "微信扫码",
     "shareWeibo": "新浪微博",
+    "topicContentCannotBeEmpty": "主题内容不能为空",
+    "topicContentIsUnderReview": "发布主题成功，请等待管理员审核",
+    "topicTitle": "标题",
+    "topicTitleCannotBeEmpty": "主题标题不能为空",
+    "topicTitleLengthLimit": "主题标题长度范围必须在 3-56 个字符之间",
     "viewConversation": "查看对话",
     "writeReply": "写回复"
   },

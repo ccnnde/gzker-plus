@@ -7,7 +7,8 @@ import FadeTransition from '@/transitions/FadeTransition.vue';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
-import { favoriteTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
+import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
+import { request } from '@/utils';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { ADD_REPLY_INJECTION_KEY, EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
@@ -17,6 +18,7 @@ import ElementConfig from './ElementConfig.vue';
 import LoadError from './LoadError.vue';
 import ReplyEditor from './ReplyEditor.vue';
 import TopicDetail from './TopicDetail.vue';
+import TopicEditor from './TopicEditor.vue';
 import TopicFooter from './TopicFooter.vue';
 import TopicReply from './TopicReply.vue';
 
@@ -26,6 +28,7 @@ import 'viewerjs/dist/viewer.css';
 
 const PAGE_SIZE = 106;
 const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
+const createTopicLinkRegExp = /\/t\/create\/(\w+)/;
 
 const { isLoading, handleRequest, resetRequestState } = useRequest();
 const topicId = ref<string>();
@@ -64,6 +67,7 @@ const {
   getFirstPageData,
   getNextPageData,
   reloadPageData,
+  reloadFirstPageData,
   updateCurrentPageData,
   resetScrollLoadState,
   scrollToTop,
@@ -76,21 +80,37 @@ onMounted(() => {
   topicLinkElements.forEach((element) => {
     const { href } = element;
 
-    if (!href.match(topicLinkRegExp)) {
-      return;
+    if (topicLinkRegExp.test(href)) {
+      element.addEventListener('click', handleTopicClick);
+    } else if (createTopicLinkRegExp.test(href)) {
+      element.addEventListener('click', handleCreateTopicClick);
     }
-
-    element.addEventListener('click', handleTopicClick);
   });
 });
 
-const handleTopicClick = async (e: Event) => {
+const handleTopicClick = (e: Event) => {
   e.preventDefault();
   topicDialogVisible.value = true;
 
   const topicLinkEle = e.target as HTMLAnchorElement;
   topicId.value = topicLinkEle.href.match(topicLinkRegExp)?.[1];
   getFirstPageData();
+};
+
+const handleCreateTopicClick = async (e: Event) => {
+  e.preventDefault();
+
+  try {
+    const createTopicLinkEle = e.target as HTMLAnchorElement;
+    const { href } = createTopicLinkEle;
+    await request(href);
+
+    const node = href.match(createTopicLinkRegExp)?.[1];
+    addTopic(node as string);
+  } catch (err) {
+    ElMessage.error((err as Error).message);
+    console.error(err);
+  }
 };
 
 const handleTopicFavorite = () => {
@@ -135,7 +155,27 @@ const handleTopicLike = () => {
   });
 };
 
-const handleTopicReply = (data: UserTopic) => {
+const handleTopicEdit = () => {
+  handleRequest(async () => {
+    const data = await getEditedTopic(topicId.value);
+    topicEditor.value?.openDialog();
+    topicEditor.value?.editTopic(topicId.value as string, data);
+  });
+};
+
+const handleTopicSended = (data: UserTopic) => {
+  const {
+    detail,
+    reply: { total, list },
+  } = data;
+
+  topicDetail.value = detail;
+  replyTotal.value = total;
+  reloadFirstPageData(list);
+  setTimeout(scrollToTop, 0);
+};
+
+const handleReplySended = (data: UserTopic) => {
   const {
     detail,
     reply: { total, list },
@@ -182,6 +222,13 @@ const updateScrollbar = debounce(() => {
 }, 500);
 
 provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
+
+const topicEditor = ref<InstanceType<typeof TopicEditor> | null>(null);
+
+const addTopic = (node: string) => {
+  topicEditor.value?.openDialog();
+  topicEditor.value?.addTopic(node);
+};
 
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
 
@@ -259,8 +306,10 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           :favorite-number="topicDetail.favoriteNumber"
           :liked="topicDetail.liked"
           :like-number="topicDetail.likeNumber"
+          :editable="topicDetail.editable"
           @favorite-topic="handleTopicFavorite"
           @like-topic="handleTopicLike"
+          @edit-topic="handleTopicEdit"
         />
       </div>
       <template #footer>
@@ -278,7 +327,8 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
         </div>
       </template>
     </ElDialog>
-    <ReplyEditor ref="replyEditor" :topic-id="topicId" @sended="handleTopicReply" />
+    <TopicEditor ref="topicEditor" @sended="handleTopicSended" />
+    <ReplyEditor ref="replyEditor" :topic-id="topicId" @sended="handleReplySended" />
   </ElementConfig>
 </template>
 
@@ -324,9 +374,6 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .topic-dialog {
-  width: 45%;
-  border-radius: var(--el-border-radius-base);
-
   .el-dialog__header {
     padding: 0;
     margin: 0;
@@ -339,18 +386,42 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
   .el-dialog__footer {
     padding: 0;
   }
-
-  @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
 }
 
-.reply-dialog,
+.editor-dialog {
+  .el-dialog__body {
+    padding-top: var(--gzk-topic-padding);
+    padding-bottom: var(--gzk-topic-padding);
+  }
+
+  .el-dialog__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.topic-dialog,
+.topic-editor-dialog,
+.reply-editor-dialog,
 .conversation-dialog {
-  width: 40%;
   border-radius: var(--el-border-radius-base);
 
   .el-dialog__header {
     padding-bottom: 0;
   }
+}
+
+.topic-dialog,
+.topic-editor-dialog {
+  width: 45%;
+
+  @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
+}
+
+.reply-editor-dialog,
+.conversation-dialog {
+  width: 40%;
 
   @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);
 }

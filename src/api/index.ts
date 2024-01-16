@@ -2,7 +2,7 @@ import { getXsrfToken, request, waitTime } from '@/utils';
 import { ReplyType } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
-import type { UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type { TreeNode, UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 const parseUserInfo = (htmlStr: string): UserInfo => {
   return {
@@ -19,8 +19,15 @@ const parseUserInfo = (htmlStr: string): UserInfo => {
   };
 };
 
-const parseUserReply = (htmlStr: string): string => {
+const parseEditedReply = (htmlStr: string): string => {
   return htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1] || '';
+};
+
+const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
+  return {
+    title: htmlStr.match(/<input class="form-control" id="prependedInput" type="text" placeholder="主题" name="title" value="(.+?)">/)?.[1],
+    content: htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1],
+  };
 };
 
 const parseUserTopic = (htmlStr: string): UserTopic => {
@@ -66,6 +73,7 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
     favorited: /<a href="[^"]+" class="J_topicFavorite" data-type="unfavorite">取消收藏<\/a>/.test(htmlStr),
     favoriteNumber: htmlStr.match(/<span class="favorited fr mr10">(\d+) 人收藏<\/span>/)?.[1],
     clickNumber: htmlStr.match(/<span class="hits fr mr10">(\d+) 次点击<\/span>/)?.[1],
+    editable: /<a href="\/t\/edit\/\d+" class="fr hidden-mobile">编辑主题<\/a>/.test(htmlStr),
   };
 };
 
@@ -129,6 +137,32 @@ const parseUserMsgList = (htmlStr: string): UserMessage[] => {
       topicLink: item.match(/<a href="(\/t\/[^"]+)">.+<\/a>/)?.[1],
       replyType: /回复了你的主题/.test(item) ? ReplyType.Topic : ReplyType.Mention,
       replyContent: item.match(/<div class="content"><p>(.+)<\/p>/s)?.[1],
+    };
+  });
+};
+
+const parseNodeList = (htmlStr: string): TreeNode[] => {
+  const nodeNavHtmlStr = htmlStr.match(/节点导航.+?<\/h4>.+?<ul>(.+?)<\/ul>/s)?.[1];
+
+  if (!nodeNavHtmlStr) {
+    return [];
+  }
+
+  const nodeTypesHtmlStr = [...nodeNavHtmlStr.matchAll(/<li>.+?<\/li>/gs)];
+
+  return nodeTypesHtmlStr.map(([item]): TreeNode => {
+    const nodeType = item.match(/<label for="">(.+?)<\/label>/)?.[1];
+    const nodeList = [...item.matchAll(/<a href="\/node\/(\w+?)">(.+?)<\/a>/g)].map(
+      (node): TreeNode => ({
+        value: node[1],
+        label: node[2],
+      }),
+    );
+
+    return {
+      value: nodeType,
+      label: nodeType,
+      children: nodeList,
     };
   });
 };
@@ -205,17 +239,48 @@ export const likeTopic = async (topicId?: string): Promise<string> => {
   return data;
 };
 
+export const getEditedTopic = async (topicId?: string): Promise<UserTopicDetail> => {
+  const data = await request(`/t/edit/${topicId}`);
+  return parseEditedTopic(data);
+};
+
+export const createTopic = async (node: string, title: string, content: string) => {
+  await request(`/t/create/${node}`, {
+    method: 'POST',
+    body: new URLSearchParams({
+      title,
+      content,
+      _xsrf: getXsrfToken(),
+    }),
+  });
+};
+
+export const modifyTopic = async (topicId: string, title: string, content: string): Promise<UserTopic> => {
+  const data = await request(`/t/edit/${topicId}`, {
+    method: 'POST',
+    body: new URLSearchParams({
+      title,
+      content,
+      _xsrf: getXsrfToken(),
+    }),
+  });
+
+  checkAlertInfo(data);
+
+  return parseUserTopic(data);
+};
+
 export const likeReply = async (replyId?: string): Promise<string> => {
   const data = await request(`/replyVote?reply_id=${replyId}`);
   return data;
 };
 
-export const getReply = async (replyId?: string): Promise<UserReplyItem> => {
+export const getEditedReply = async (replyId?: string): Promise<UserReplyItem> => {
   const data = await request(`/reply/edit/${replyId}`);
 
   return {
     replyId,
-    content: parseUserReply(data),
+    content: parseEditedReply(data),
   };
 };
 
@@ -245,4 +310,9 @@ export const modifyReply = async (replyId: string, content: string): Promise<Use
   checkAlertInfo(data);
 
   return parseUserTopic(data);
+};
+
+export const getNodeList = async (): Promise<TreeNode[]> => {
+  const data = await request('/nodes');
+  return parseNodeList(data);
 };
