@@ -83,6 +83,7 @@ const initCherryMarkdown = () => {
         },
         autoLink: {
           target: '_blank',
+          enableShortLink: false,
         },
         header: {
           anchorStyle: 'none',
@@ -188,6 +189,12 @@ defineExpose({
       img {
         max-width: 100%;
         pointer-events: none;
+      }
+    }
+
+    .cherry-markdown {
+      a[target='_blank']::after {
+        display: none;
       }
     }
   }
