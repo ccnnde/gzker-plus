@@ -103,6 +103,7 @@ defineExpose({
     class="editor-dialog reply-editor-dialog"
     :title="editorTitle"
     :z-index="2001"
+    :close-on-click-modal="false"
     append-to-body
     @opened="contentEditor?.focusEndOfEditor()"
     @closed="handleDialogClosed"

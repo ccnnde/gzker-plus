@@ -141,6 +141,7 @@ defineExpose({
     v-model="dialogVisible"
     class="editor-dialog topic-editor-dialog"
     :z-index="2001"
+    :close-on-click-modal="false"
     append-to-body
     @opened="titleInput?.focus"
     @closed="handleDialogClosed"

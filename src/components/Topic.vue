@@ -266,6 +266,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       :z-index="2000"
       :show-close="false"
       :before-close="handleDialogBeforeClose"
+      :close-on-click-modal="false"
       align-center
       @closed="handleTopicDialogClosed"
     >
