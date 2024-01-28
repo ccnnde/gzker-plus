@@ -7,12 +7,14 @@ import { emojiHook } from '@/utils/emoji';
 
 import type { CSSProperties } from 'vue';
 import type { CherryLifecycle } from 'cherry-markdown/types/cherry';
+import type { Coordinates, Keybindings } from '@/types';
 
 import 'cherry-markdown/dist/cherry-markdown.css';
 
 interface Props {
   modelValue: string;
   height: number;
+  mentionable: boolean;
 }
 
 const props = defineProps<Props>();
@@ -20,6 +22,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   'update:modelValue': [value: string];
   showEmojiPicker: [];
+  showMentionPicker: [coords: Coordinates];
 }>();
 
 const LIGHT_THEME = 'light';
@@ -118,6 +121,32 @@ const initCherryMarkdown = () => {
 
   cherryEditor.setTheme(LIGHT_THEME);
   cmEditor = cherryEditor.editor.editor;
+
+  cmEditor.on('keydown', (editor, e) => {
+    const shortcut = generateShortcut(e);
+    keybindings[shortcut]?.();
+  });
+};
+
+const generateShortcut = (e: KeyboardEvent) => {
+  const ctrlStr = e.ctrlKey ? 'ctrl+' : '';
+  const shiftStr = e.shiftKey ? 'shift+' : '';
+  return ctrlStr + shiftStr + e.key;
+};
+
+const keybindings: Keybindings = {
+  'ctrl+[': function showEmoji() {
+    emit('showEmojiPicker');
+  },
+  'shift+@': function showMention() {
+    if (!props.mentionable) {
+      return;
+    }
+
+    setTimeout(() => {
+      emit('showMentionPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
+    });
+  },
 };
 
 const handleContentChange: CherryLifecycle = (text) => {
@@ -125,7 +154,9 @@ const handleContentChange: CherryLifecycle = (text) => {
 };
 
 const focusEditor = () => {
-  cmEditor?.focus();
+  setTimeout(() => {
+    cmEditor?.focus();
+  });
 };
 
 const focusEndOfEditor = () => {

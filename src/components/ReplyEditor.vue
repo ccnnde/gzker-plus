@@ -11,11 +11,13 @@ import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
+import MentionPicker from './MentionPicker.vue';
 
 import type { UserReplyItem, UserTopic } from '@/types';
 
 interface Props {
   topicId?: string;
+  replyList: UserReplyItem[];
 }
 
 const props = defineProps<Props>();
@@ -28,10 +30,26 @@ let editedReplyId: string;
 
 const replyContent = ref('');
 const { dialogVisible, openDialog, closeDialog } = useDialog();
-const { isAddContent, contentEditor, emojiPicker, insertEmoji, clearContent } = useContentEditor();
+const {
+  isAddContent,
+  contentEditor,
+  emojiPicker,
+  mentionPicker,
+  mentionPickerStyle,
+  insertUid,
+  insertEmoji,
+  clearContent,
+  showMentionPicker,
+} = useContentEditor();
 
 const editorTitle = computed(() => {
   return isAddContent.value ? t('enhancedTopic.createReply') : t('enhancedTopic.editReply');
+});
+
+const uidList = computed(() => {
+  let replyUids = props.replyList.map((item) => item.uid as string);
+  replyUids = [...new Set(replyUids)];
+  return replyUids;
 });
 
 const addReply = (content?: string) => {
@@ -105,10 +123,24 @@ defineExpose({
     :z-index="2001"
     :close-on-click-modal="false"
     append-to-body
-    @opened="contentEditor?.focusEndOfEditor()"
+    @opened="contentEditor?.focusEndOfEditor"
     @closed="handleDialogClosed"
   >
-    <ContentEditor ref="contentEditor" v-model="replyContent" :height="250" @show-emoji-picker="emojiPicker?.showPicker" />
+    <ContentEditor
+      ref="contentEditor"
+      v-model="replyContent"
+      :height="250"
+      mentionable
+      @show-emoji-picker="emojiPicker?.showPicker"
+      @show-mention-picker="showMentionPicker"
+    />
+    <MentionPicker
+      ref="mentionPicker"
+      :style="mentionPickerStyle"
+      :uid-list="uidList"
+      @picked="insertUid"
+      @hide="contentEditor?.focusEditor"
+    />
     <template #footer>
       <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
       <ElButton type="primary" :loading="isLoading" @click="sendReply">{{ $t('common.post') }}</ElButton>

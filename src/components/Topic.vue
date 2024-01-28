@@ -330,7 +330,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       </template>
     </ElDialog>
     <TopicEditor ref="topicEditor" @sended="handleTopicSended" />
-    <ReplyEditor ref="replyEditor" :topic-id="topicId" @sended="handleReplySended" />
+    <ReplyEditor ref="replyEditor" :topic-id="topicId" :reply-list="replyList" @sended="handleReplySended" />
   </ElementConfig>
 </template>
 

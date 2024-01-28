@@ -79,6 +79,13 @@ export interface ElementPositionAndSize {
   height: number | string;
 }
 
+export interface Coordinates {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+
 export interface UserMessage {
   uid?: string;
   userLink?: string;
@@ -155,4 +162,8 @@ export interface TreeNode {
 export interface ApiJsonResponse {
   message: string;
   success: 0 | 1;
+}
+
+export interface Keybindings {
+  [key: string]: (() => void) | undefined;
 }

@@ -159,7 +159,13 @@ defineExpose({
         <ElInput ref="titleInput" v-model="topicForm.title" :placeholder="$t('enhancedTopic.topicTitle')" />
       </ElFormItem>
       <ElFormItem prop="content">
-        <ContentEditor ref="contentEditor" v-model="topicForm.content" :height="300" @show-emoji-picker="emojiPicker?.showPicker" />
+        <ContentEditor
+          ref="contentEditor"
+          v-model="topicForm.content"
+          :height="300"
+          :mentionable="false"
+          @show-emoji-picker="emojiPicker?.showPicker"
+        />
       </ElFormItem>
     </ElForm>
     <template #footer>
