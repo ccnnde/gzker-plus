@@ -115,6 +115,10 @@ const initCherryMarkdown = () => {
           syntaxClass: emojiHook,
           force: true,
         },
+        mentionUser: {
+          syntaxClass: mentionUserHook,
+          before: 'bgColor',
+        },
       },
     },
   });
@@ -172,6 +176,23 @@ const keybindings: Keybindings = {
     }
   },
 };
+
+const mentionUserHook = Cherry.createSyntaxHook('mentionUser', Cherry.constants.HOOKS_TYPE_LIST.SEN, {
+  makeHtml(str: string) {
+    if (!this.test(str)) {
+      return str;
+    }
+
+    return str.replace(this.RULE.reg, (match: string, uid: string) => {
+      return `<a target="_blank" href="/u/${uid}">${match}</a>`;
+    });
+  },
+  rule() {
+    return {
+      reg: /@([a-z]\w{2,})/gi,
+    };
+  },
+});
 
 const handleContentChange: CherryLifecycle = (text) => {
   emit('update:modelValue', text);
