@@ -165,5 +165,5 @@ export interface ApiJsonResponse {
 }
 
 export interface Keybindings {
-  [key: string]: (() => void) | undefined;
+  [key: string]: ((e: KeyboardEvent) => void) | undefined;
 }

@@ -124,7 +124,7 @@ const initCherryMarkdown = () => {
 
   cmEditor.on('keydown', (editor, e) => {
     const shortcut = generateShortcut(e);
-    keybindings[shortcut]?.();
+    keybindings[shortcut]?.(e);
   });
 };
 
@@ -146,6 +146,30 @@ const keybindings: Keybindings = {
     setTimeout(() => {
       emit('showMentionPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
     });
+  },
+  // eslint-disable-next-line func-name-matching
+  Backspace: function clearMentionUid(e: KeyboardEvent) {
+    if (!cmEditor) {
+      return;
+    }
+
+    const cursor = cmEditor.getCursor();
+    const { line, ch } = cursor;
+    const currentLineContent = cmEditor.getLine(line);
+    const beforeCursorContent = currentLineContent.substring(0, ch);
+    const afterCursorChar = currentLineContent.substring(ch, ch + 1);
+    const mentionUidMatch = beforeCursorContent.match(/@[a-z]\w{2,}$/i);
+    const isAfterCursorCharEmpty = afterCursorChar === '' || afterCursorChar === ' ';
+
+    if (mentionUidMatch && isAfterCursorCharEmpty) {
+      const start: CodeMirror.Position = {
+        line,
+        ch: ch - mentionUidMatch[0].length,
+      };
+
+      cmEditor.replaceRange('', start, cursor);
+      e.preventDefault();
+    }
   },
 };
 
