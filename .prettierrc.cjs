@@ -1,6 +1,6 @@
 module.exports = {
   plugins: ['prettier-plugin-packagejson'],
-  printWidth: 140,
+  printWidth: 120,
   tabWidth: 2,
   useTabs: false,
   semi: true,
@@ -21,4 +21,12 @@ module.exports = {
   endOfLine: 'lf',
   embeddedLanguageFormatting: 'auto',
   singleAttributePerLine: false,
+  overrides: [
+    {
+      files: 'src/constants/selector.ts',
+      options: {
+        printWidth: 140,
+      },
+    },
+  ],
 };
