@@ -11,7 +11,11 @@ import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { request } from '@/utils';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { ADD_REPLY_INJECTION_KEY, EDIT_REPLY_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import {
+  ADD_REPLY_INJECTION_KEY,
+  EDIT_REPLY_INJECTION_KEY,
+  UPDATE_SCROLLBAR_INJECTION_KEY,
+} from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 import { SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
@@ -317,7 +321,11 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       <template #footer>
         <div class="topic-dialog-absolute topic-dialog-footer">
           <FadeTransition>
-            <un-i-mdi-arrow-up-bold-box-outline v-show="showScrollTopButton" class="topic-operate-icon" @click="scrollToTop" />
+            <un-i-mdi-arrow-up-bold-box-outline
+              v-show="showScrollTopButton"
+              class="topic-operate-icon"
+              @click="scrollToTop"
+            />
           </FadeTransition>
           <FadeTransition>
             <un-i-mdi-arrow-down-bold-box-outline
@@ -391,15 +399,36 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .editor-dialog {
+  display: flex;
+  flex-direction: column;
+
   .el-dialog__body {
+    flex: 1;
     padding-top: var(--gzk-topic-padding);
     padding-bottom: var(--gzk-topic-padding);
+    overflow: hidden;
   }
 
   .el-dialog__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+.editor-dialog-fullscreen {
+  .cherry-toolbar {
+    .ch-icon-dialog-fullscreen::before {
+      content: '\EA42';
+    }
+  }
+}
+
+.editor-dialog-minscreen {
+  .cherry-toolbar {
+    .ch-icon-dialog-fullscreen::before {
+      content: '\EA41';
+    }
   }
 }
 

@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 
-import { addUnit } from '@/utils';
 import { emojiHook } from '@/utils/emoji';
 
-import type { CSSProperties } from 'vue';
 import type { CherryLifecycle } from 'cherry-markdown/types/cherry';
 import type { Coordinates, Keybindings } from '@/types';
 
@@ -13,7 +11,6 @@ import 'cherry-markdown/dist/cherry-markdown.css';
 
 interface Props {
   modelValue: string;
-  height: number;
   mentionable: boolean;
 }
 
@@ -23,6 +20,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
   showEmojiPicker: [];
   showMentionPicker: [coords: Coordinates];
+  toggleFullscreen: [];
 }>();
 
 const LIGHT_THEME = 'light';
@@ -30,14 +28,6 @@ let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
 
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
-
-const editorStyle = computed<CSSProperties>(() => {
-  const height = addUnit(props.height);
-
-  return {
-    height,
-  };
-});
 
 onMounted(() => {
   initCherryMarkdown();
@@ -65,11 +55,19 @@ const initCherryMarkdown = () => {
         'link',
         'code',
       ],
-      toolbarRight: ['fullScreen', 'togglePreview'],
+      toolbarRight: ['dialogFullscreen', 'togglePreview'],
       bubble: ['bold', 'italic', 'strikethrough', 'quote'],
       float: false,
       sidebar: false,
       theme: LIGHT_THEME,
+      customMenu: {
+        dialogFullscreen: Cherry.createMenuHook('对话框全屏', {
+          iconName: 'dialog-fullscreen',
+          onClick() {
+            emit('toggleFullscreen');
+          },
+        }),
+      },
     },
     callback: {
       afterChange: handleContentChange,
@@ -151,6 +149,9 @@ const keybindings: Keybindings = {
       emit('showMentionPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
     });
   },
+  'ctrl+]': function toggleFullscreen() {
+    emit('toggleFullscreen');
+  },
   // eslint-disable-next-line func-name-matching
   Backspace: function clearMentionUid(e: KeyboardEvent) {
     if (!cmEditor) {
@@ -209,6 +210,18 @@ const focusEndOfEditor = () => {
   cmEditor?.setCursor(cmEditor.lastLine(), 99999);
 };
 
+const refreshEditor = () => {
+  setTimeout(() => {
+    cmEditor?.refresh();
+  });
+};
+
+const scrollToCursor = () => {
+  setTimeout(() => {
+    insertValue('');
+  });
+};
+
 const setValue = (content: string) => {
   cherryEditor?.setValue(content);
 };
@@ -226,6 +239,8 @@ const appendValue = (content: string) => {
 defineExpose({
   focusEditor,
   focusEndOfEditor,
+  refreshEditor,
+  scrollToCursor,
   setValue,
   insertValue,
   appendValue,
@@ -233,13 +248,12 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="mdEditorEl" class="content-editor-container" :style="editorStyle"></div>
+  <div ref="mdEditorEl" class="content-editor-container"></div>
 </template>
 
 <style lang="scss" scoped>
 .content-editor-container {
   width: 100%;
-  height: 100%;
 
   :deep(.cherry) {
     display: flex;

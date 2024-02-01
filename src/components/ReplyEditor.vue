@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus';
 
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
+import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { createReply, modifyReply } from '@/api';
@@ -29,7 +30,6 @@ const emit = defineEmits<{
 let editedReplyId: string;
 
 const replyContent = ref('');
-const { dialogVisible, openDialog, closeDialog } = useDialog();
 const {
   isAddContent,
   contentEditor,
@@ -39,8 +39,17 @@ const {
   insertUid,
   insertEmoji,
   clearContent,
+  refreshEditor,
   showMentionPicker,
 } = useContentEditor();
+const { dialogVisible, openDialog, closeDialog } = useDialog();
+const {
+  dialogFullscreen,
+  dialogFullscreenClass,
+  dialogFullscreenStyle,
+  toggleDialogFullscreen,
+  resetDialogFullscreen,
+} = useDialogFullscreen(refreshEditor);
 
 const editorTitle = computed(() => {
   return isAddContent.value ? t('enhancedTopic.createReply') : t('enhancedTopic.editReply');
@@ -105,6 +114,8 @@ const handleDialogClosed = () => {
   if (!isAddContent.value) {
     clearContent();
   }
+
+  resetDialogFullscreen();
 };
 
 defineExpose({
@@ -118,8 +129,10 @@ defineExpose({
 <template>
   <ElDialog
     v-model="dialogVisible"
-    class="editor-dialog reply-editor-dialog"
+    :class="['editor-dialog', 'reply-editor-dialog', dialogFullscreenClass]"
+    :style="dialogFullscreenStyle"
     :title="editorTitle"
+    :align-center="dialogFullscreen"
     :z-index="2001"
     :close-on-click-modal="false"
     append-to-body
@@ -129,10 +142,10 @@ defineExpose({
     <ContentEditor
       ref="contentEditor"
       v-model="replyContent"
-      :height="250"
       mentionable
       @show-emoji-picker="emojiPicker?.showPicker"
       @show-mention-picker="showMentionPicker"
+      @toggle-fullscreen="toggleDialogFullscreen"
     />
     <MentionPicker
       ref="mentionPicker"
@@ -147,3 +160,9 @@ defineExpose({
     </template>
   </ElDialog>
 </template>
+
+<style lang="scss">
+.reply-editor-dialog {
+  height: 400px;
+}
+</style>

@@ -4,6 +4,7 @@ import { ElInput, ElMessage } from 'element-plus';
 
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
+import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { createTopic, getNodeList, modifyTopic } from '@/api';
@@ -59,8 +60,15 @@ const topicRules = computed<FormRules<TopicForm>>(() => {
   };
 });
 
+const { isAddContent, contentEditor, emojiPicker, insertEmoji, clearContent, refreshEditor } = useContentEditor();
 const { dialogVisible, openDialog, closeDialog } = useDialog();
-const { isAddContent, contentEditor, emojiPicker, insertEmoji, clearContent } = useContentEditor();
+const {
+  dialogFullscreen,
+  dialogFullscreenClass,
+  dialogFullscreenStyle,
+  toggleDialogFullscreen,
+  resetDialogFullscreen,
+} = useDialogFullscreen(refreshEditor);
 const titleInput = ref<InstanceType<typeof ElInput> | null>(null);
 const nodeList = ref<TreeNode[]>([]);
 
@@ -127,6 +135,7 @@ const handleDialogClosed = () => {
   topicForm.title = '';
   topicFormRef.value?.clearValidate();
   clearContent();
+  resetDialogFullscreen();
 };
 
 defineExpose({
@@ -139,7 +148,9 @@ defineExpose({
 <template>
   <ElDialog
     v-model="dialogVisible"
-    class="editor-dialog topic-editor-dialog"
+    :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
+    :style="dialogFullscreenStyle"
+    :align-center="dialogFullscreen"
     :z-index="2001"
     :close-on-click-modal="false"
     append-to-body
@@ -154,17 +165,24 @@ defineExpose({
         </template>
       </div>
     </template>
-    <ElForm ref="topicFormRef" :model="topicForm" :rules="topicRules" size="large" hide-required-asterisk>
+    <ElForm
+      ref="topicFormRef"
+      class="topic-editor-form"
+      :model="topicForm"
+      :rules="topicRules"
+      size="large"
+      hide-required-asterisk
+    >
       <ElFormItem prop="title">
         <ElInput ref="titleInput" v-model="topicForm.title" :placeholder="$t('enhancedTopic.topicTitle')" />
       </ElFormItem>
-      <ElFormItem prop="content">
+      <ElFormItem class="topic-form-content" prop="content">
         <ContentEditor
           ref="contentEditor"
           v-model="topicForm.content"
-          :height="300"
           :mentionable="false"
           @show-emoji-picker="emojiPicker?.showPicker"
+          @toggle-fullscreen="toggleDialogFullscreen"
         />
       </ElFormItem>
     </ElForm>
@@ -177,6 +195,8 @@ defineExpose({
 
 <style lang="scss">
 .topic-editor-dialog {
+  height: 540px;
+
   .el-dialog__footer {
     padding-top: 0;
   }
@@ -197,5 +217,18 @@ defineExpose({
       display: none;
     }
   }
+}
+
+.topic-editor-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.topic-form-content {
+  flex: 1;
+  padding-bottom: 22px;
+  margin-bottom: 0;
+  overflow: hidden;
 }
 </style>

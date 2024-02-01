@@ -39,6 +39,11 @@ export const useContentEditor = () => {
     contentEditor.value?.setValue('');
   };
 
+  const refreshEditor = () => {
+    contentEditor.value?.refreshEditor();
+    contentEditor.value?.scrollToCursor();
+  };
+
   const showMentionPicker = (coords: Coordinates) => {
     mentionPickerLeft.value = coords.left;
     mentionPickerTop.value = coords.top;
@@ -54,6 +59,7 @@ export const useContentEditor = () => {
     insertUid,
     insertEmoji,
     clearContent,
+    refreshEditor,
     showMentionPicker,
   };
 };
