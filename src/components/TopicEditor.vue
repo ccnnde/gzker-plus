@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { ElInput, ElMessage } from 'element-plus';
 
 import { useContentEditor } from '@/composables/content-editor';
@@ -41,20 +41,17 @@ const topicRules = computed<FormRules<TopicForm>>(() => {
       {
         required: true,
         message: t('enhancedTopic.topicTitleCannotBeEmpty'),
-        trigger: 'blur',
       },
       {
         min: 3,
         max: 56,
         message: t('enhancedTopic.topicTitleLengthLimit'),
-        trigger: 'blur',
       },
     ],
     content: [
       {
         required: true,
         message: t('enhancedTopic.topicContentCannotBeEmpty'),
-        trigger: 'blur',
       },
     ],
   };
@@ -79,10 +76,6 @@ const cascaderProps: CascaderProps = {
 
 const editorTitle = computed(() => {
   return isAddContent.value ? t('enhancedTopic.createTopic') : t('enhancedTopic.editTopic');
-});
-
-onMounted(async () => {
-  nodeList.value = await getNodeList();
 });
 
 const addTopic = (node: string) => {
@@ -130,10 +123,17 @@ const sendTopic = () => {
   });
 };
 
+const handleDialogOpen = async () => {
+  topicFormRef.value?.clearValidate();
+
+  if (isAddContent.value && !nodeList.value.length) {
+    nodeList.value = await getNodeList();
+  }
+};
+
 const handleDialogClosed = () => {
   topicForm.node = '';
   topicForm.title = '';
-  topicFormRef.value?.clearValidate();
   clearContent();
   resetDialogFullscreen();
 };
@@ -154,6 +154,7 @@ defineExpose({
     :z-index="2001"
     :close-on-click-modal="false"
     append-to-body
+    @open="handleDialogOpen"
     @opened="titleInput?.focus"
     @closed="handleDialogClosed"
   >
