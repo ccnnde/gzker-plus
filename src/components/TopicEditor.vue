@@ -57,7 +57,15 @@ const topicRules = computed<FormRules<TopicForm>>(() => {
   };
 });
 
-const { isAddContent, contentEditor, emojiPicker, insertEmoji, clearContent, refreshEditor } = useContentEditor();
+const {
+  isAddContent,
+  contentEditor,
+  emojiPicker,
+  insertEmoji,
+  clearContent,
+  refreshEditor,
+  handleEditorBeforeClose, //
+} = useContentEditor();
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const {
   dialogFullscreen,
@@ -152,6 +160,7 @@ defineExpose({
     :style="dialogFullscreenStyle"
     :align-center="dialogFullscreen"
     :z-index="2001"
+    :before-close="handleEditorBeforeClose"
     :close-on-click-modal="false"
     append-to-body
     @open="handleDialogOpen"

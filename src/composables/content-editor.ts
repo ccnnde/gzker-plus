@@ -6,6 +6,7 @@ import type MentionPicker from '@/components/MentionPicker.vue';
 import { addUnit } from '@/utils';
 
 import type { CSSProperties } from 'vue';
+import type { DialogBeforeCloseFn } from 'element-plus';
 import type { Coordinates } from '@/types';
 
 export const useContentEditor = () => {
@@ -50,6 +51,16 @@ export const useContentEditor = () => {
     mentionPicker.value?.showPicker();
   };
 
+  const handleEditorBeforeClose: DialogBeforeCloseFn = (done) => {
+    if (emojiPicker.value?.visible) {
+      emojiPicker.value.hidePicker();
+      contentEditor.value?.focusEditor();
+      return;
+    }
+
+    done();
+  };
+
   return {
     isAddContent,
     contentEditor,
@@ -61,5 +72,6 @@ export const useContentEditor = () => {
     clearContent,
     refreshEditor,
     showMentionPicker,
+    handleEditorBeforeClose,
   };
 };

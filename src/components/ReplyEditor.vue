@@ -41,6 +41,7 @@ const {
   clearContent,
   refreshEditor,
   showMentionPicker,
+  handleEditorBeforeClose,
 } = useContentEditor();
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const {
@@ -134,6 +135,7 @@ defineExpose({
     :title="editorTitle"
     :align-center="dialogFullscreen"
     :z-index="2001"
+    :before-close="handleEditorBeforeClose"
     :close-on-click-modal="false"
     append-to-body
     @opened="contentEditor?.focusEndOfEditor"

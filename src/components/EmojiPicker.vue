@@ -48,6 +48,10 @@ const showPicker = () => {
   visible.value = true;
 };
 
+const hidePicker = () => {
+  visible.value = false;
+};
+
 const handleEmojiSelect = (emoji: EmojiObject) => {
   emit('select', emoji.id);
 };
@@ -68,7 +72,9 @@ const handlePickerHide = () => {
 };
 
 defineExpose({
+  visible,
   showPicker,
+  hidePicker,
 });
 </script>
 
