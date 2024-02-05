@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
@@ -9,7 +9,7 @@ import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
-import { request } from '@/utils';
+import { request, waitTime } from '@/utils';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import {
   ADD_REPLY_INJECTION_KEY,
@@ -105,9 +105,12 @@ const handleTopicClick = (e: Event) => {
 const handleCreateTopicClick = async (e: Event) => {
   e.preventDefault();
 
+  const loading = ElLoading.service();
+
   try {
     const createTopicLinkEle = e.target as HTMLAnchorElement;
     const { href } = createTopicLinkEle;
+    await waitTime();
     await request(href);
 
     const node = href.match(createTopicLinkRegExp)?.[1];
@@ -115,6 +118,8 @@ const handleCreateTopicClick = async (e: Event) => {
   } catch (err) {
     ElMessage.error((err as Error).message);
     console.error(err);
+  } finally {
+    loading.close();
   }
 };
 
