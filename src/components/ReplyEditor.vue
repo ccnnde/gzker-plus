@@ -134,6 +134,7 @@ defineExpose({
     :style="dialogFullscreenStyle"
     :title="editorTitle"
     :align-center="dialogFullscreen"
+    :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="false"

@@ -5,6 +5,7 @@ import { ElInput, ElMessage } from 'element-plus';
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
+import { useLockscreen } from '@/composables/lockscreen';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { createTopic, getNodeList, modifyTopic } from '@/api';
@@ -66,6 +67,7 @@ const {
   refreshEditor,
   handleEditorBeforeClose, //
 } = useContentEditor();
+const { lockScroll, unlockScroll } = useLockscreen();
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const {
   dialogFullscreen,
@@ -134,8 +136,18 @@ const sendTopic = () => {
 const handleDialogOpen = async () => {
   topicFormRef.value?.clearValidate();
 
-  if (isAddContent.value && !nodeList.value.length) {
-    nodeList.value = await getNodeList();
+  if (isAddContent.value) {
+    lockScroll();
+
+    if (!nodeList.value.length) {
+      nodeList.value = await getNodeList();
+    }
+  }
+};
+
+const handleDialogClose = () => {
+  if (isAddContent.value) {
+    unlockScroll();
   }
 };
 
@@ -159,12 +171,14 @@ defineExpose({
     :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
     :style="dialogFullscreenStyle"
     :align-center="dialogFullscreen"
+    :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="false"
     append-to-body
     @open="handleDialogOpen"
     @opened="titleInput?.focus"
+    @close="handleDialogClose"
     @closed="handleDialogClosed"
   >
     <template #header="{ titleId, titleClass }">
