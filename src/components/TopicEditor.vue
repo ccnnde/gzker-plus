@@ -212,7 +212,10 @@ defineExpose({
     </ElForm>
     <template #footer>
       <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
-      <ElButton type="primary" :loading="isLoading" @click="sendTopic">{{ $t('common.post') }}</ElButton>
+      <span>
+        <ElButton @click="closeDialog">{{ $t('common.cancel') }}</ElButton>
+        <ElButton type="primary" :loading="isLoading" @click="sendTopic">{{ $t('common.post') }}</ElButton>
+      </span>
     </template>
   </ElDialog>
 </template>

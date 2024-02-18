@@ -54,6 +54,7 @@
     }
   },
   "common": {
+    "cancel": "取消",
     "checkAll": "全选",
     "extName": "过早客 Plus",
     "favorite": "收藏",

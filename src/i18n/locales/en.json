@@ -54,6 +54,7 @@
     }
   },
   "common": {
+    "cancel": "Cancel",
     "checkAll": "Check all",
     "extName": "Gzker Plus",
     "favorite": "Favorite",
