@@ -377,6 +377,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
   .main-content {
     margin: 15px 0;
     color: var(--el-text-color-primary);
+    word-break: break-all;
   }
 
   .number-info {
