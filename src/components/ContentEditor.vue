@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
@@ -37,7 +37,7 @@ let cmEditor: CodeMirror.Editor | null = null;
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
 
 onMounted(() => {
-  initCherryMarkdown();
+  nextTick(initCherryMarkdown);
 });
 
 const initCherryMarkdown = () => {
