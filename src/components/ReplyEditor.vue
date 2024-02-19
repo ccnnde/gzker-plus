@@ -40,6 +40,7 @@ const {
   insertEmoji,
   clearContent,
   refreshEditor,
+  resetEditorLayout,
   showMentionPicker,
   handleEditorBeforeClose,
 } = useContentEditor();
@@ -139,6 +140,7 @@ defineExpose({
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="false"
     append-to-body
+    @open="resetEditorLayout"
     @opened="contentEditor?.focusEndOfEditor"
     @closed="handleDialogClosed"
   >

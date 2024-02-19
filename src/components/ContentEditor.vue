@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
@@ -37,7 +37,7 @@ let cmEditor: CodeMirror.Editor | null = null;
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
 
 onMounted(() => {
-  nextTick(initCherryMarkdown);
+  initCherryMarkdown();
 });
 
 const initCherryMarkdown = () => {
@@ -325,6 +325,10 @@ const refreshEditor = () => {
   });
 };
 
+const setEditorLayout = (editorPercentage: string, previewerPercentage: string) => {
+  cherryEditor?.previewer.setRealLayout(editorPercentage, previewerPercentage);
+};
+
 const scrollToCursor = () => {
   setTimeout(() => {
     insertValue('');
@@ -349,6 +353,7 @@ defineExpose({
   focusEditor,
   focusEndOfEditor,
   refreshEditor,
+  setEditorLayout,
   scrollToCursor,
   setValue,
   insertValue,

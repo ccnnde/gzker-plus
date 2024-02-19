@@ -45,6 +45,10 @@ export const useContentEditor = () => {
     contentEditor.value?.scrollToCursor();
   };
 
+  const resetEditorLayout = () => {
+    contentEditor.value?.setEditorLayout('50%', '50%');
+  };
+
   const showMentionPicker = (coords: Coordinates) => {
     mentionPickerLeft.value = coords.left;
     mentionPickerTop.value = coords.top;
@@ -71,6 +75,7 @@ export const useContentEditor = () => {
     insertEmoji,
     clearContent,
     refreshEditor,
+    resetEditorLayout,
     showMentionPicker,
     handleEditorBeforeClose,
   };

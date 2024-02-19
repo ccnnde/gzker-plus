@@ -65,7 +65,8 @@ const {
   insertEmoji,
   clearContent,
   refreshEditor,
-  handleEditorBeforeClose, //
+  resetEditorLayout,
+  handleEditorBeforeClose,
 } = useContentEditor();
 const { lockScroll, unlockScroll } = useLockscreen();
 const { dialogVisible, openDialog, closeDialog } = useDialog();
@@ -134,6 +135,7 @@ const sendTopic = () => {
 };
 
 const handleDialogOpen = async () => {
+  resetEditorLayout();
   topicFormRef.value?.clearValidate();
 
   if (isAddContent.value) {
