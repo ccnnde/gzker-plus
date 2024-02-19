@@ -259,5 +259,9 @@ defineExpose({
   padding-bottom: 22px;
   margin-bottom: 0;
   overflow: hidden;
+
+  &.is-error :deep(.cherry) {
+    border-color: var(--el-color-danger);
+  }
 }
 </style>

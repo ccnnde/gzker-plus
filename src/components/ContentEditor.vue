@@ -34,6 +34,7 @@ const LIGHT_THEME = 'light';
 let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
 
+const isEditorFocused = ref(false);
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
 
 onMounted(() => {
@@ -135,6 +136,14 @@ const initCherryMarkdown = () => {
   cmEditor.on('keydown', (editor, e) => {
     const shortcut = generateShortcut(e);
     keybindings[shortcut]?.(e);
+  });
+
+  cmEditor.on('focus', () => {
+    isEditorFocused.value = true;
+  });
+
+  cmEditor.on('blur', () => {
+    isEditorFocused.value = false;
   });
 };
 
@@ -362,7 +371,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="mdEditorEl" class="content-editor-container"></div>
+  <div ref="mdEditorEl" :class="['content-editor-container', { 'is-focus': isEditorFocused }]"></div>
 </template>
 
 <style lang="scss" scoped>
@@ -372,15 +381,21 @@ defineExpose({
   :deep(.cherry) {
     display: flex;
     border: 1px solid var(--el-border-color);
+    border-radius: var(--el-border-radius-base);
     box-shadow: none;
 
     .cherry-toolbar {
       padding: 0 5px;
       border-bottom: 1px solid var(--el-border-color);
+      border-top-left-radius: var(--el-border-radius-base);
+      border-top-right-radius: var(--el-border-radius-base);
       box-shadow: none;
     }
 
     .cherry-editor {
+      border-bottom-right-radius: var(--el-border-radius-base);
+      border-bottom-left-radius: var(--el-border-radius-base);
+
       /* stylelint-disable-next-line selector-class-pattern */
       .CodeMirror-lines {
         padding: 15px;
@@ -389,6 +404,8 @@ defineExpose({
 
     .cherry-previewer {
       padding: 15px;
+      border-bottom-right-radius: var(--el-border-radius-base);
+      border-bottom-left-radius: var(--el-border-radius-base);
 
       img {
         max-width: 100%;
@@ -401,6 +418,14 @@ defineExpose({
         display: none;
       }
     }
+  }
+
+  &:hover :deep(.cherry) {
+    border-color: var(--el-border-color-hover);
+  }
+
+  &.is-focus :deep(.cherry) {
+    border-color: var(--el-color-primary);
   }
 }
 </style>
