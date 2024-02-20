@@ -2,6 +2,7 @@
   "{{chrome}}.manifest_version": 3,
   "{{firefox}}.manifest_version": 2,
   "permissions": ["storage"],
+  "host_permissions": ["https://sm.ms/"],
   "icons": {
     "16": "icon/16.png",
     "32": "icon/32.png",

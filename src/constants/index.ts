@@ -17,6 +17,7 @@ export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
  */
 export const enum ExtensionMessageType {
   OpenOptionsPage,
+  UploadImg,
 }
 
 /**
@@ -57,6 +58,7 @@ export const enum OptionsKey {
   FloatUserInfo = 'floatUserInfo',
   EnhancedMsg = 'enhancedMsg',
   EnhancedTopic = 'enhancedTopic',
+  SmApiKey = 'smApiKey',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -74,6 +76,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.EnhancedTopic]: {
     checked: true,
+  },
+  [OptionsKey.SmApiKey]: {
+    apiKey: '',
   },
 };
 

@@ -30,6 +30,27 @@
     "floatUserInfo": {
       "title": "悬浮展示用户信息",
       "titleDesc": "鼠标悬浮在用户头像上时，展示用户基本信息，并可进行关注、屏蔽等操作"
+    },
+    "smApiKey": {
+      "apiAvailable": "SM.MS 接口可以使用",
+      "checkApi": "验证接口",
+      "explanation": "说明",
+      "managePicture": "管理图片",
+      "plzEnterApiKey": "请输入 API Key",
+      "title": "SM.MS 图床 API Key",
+      "titleDesc": "配置 API Key 后可以直接在编辑器中上传图片，点击验证按钮测试接口是否可用",
+      "userProfile": {
+        "diskSpace": "已使用 / 总容量",
+        "email": "邮箱",
+        "expireDate": "到期时间",
+        "group": "用户组",
+        "name": "用户名",
+        "notVerified": "未验证",
+        "regularUser": "普通用户",
+        "title": "SM.MS 用户信息",
+        "verified": "已验证",
+        "vipUser": "VIP 用户"
+      }
     }
   },
   "common": {
@@ -40,7 +61,8 @@
     "loadFailedAndRetry": "加载失败，请点击重试",
     "plzLogin": "请先登录社区再完成操作",
     "post": "发布",
-    "reply": "回复"
+    "reply": "回复",
+    "warning": "警告"
   },
   "emojiPicker": {
     "categories": {
@@ -72,6 +94,7 @@
   "enhancedTopic": {
     "cannotReplyByInvalidUser": "未登录或未绑定手机号，无法回复",
     "cannotReplyByLockedPost": "本帖已锁，无法回复",
+    "cannotUploadByEmptyApiKey": "未配置图床的 API Key，无法上传图片。请点击确定按钮查看配置说明",
     "clickNumber": "阅读",
     "conversationList": "对话列表",
     "copyLinkSuccessfully": "复制链接成功",
@@ -98,6 +121,11 @@
     "topicTitle": "标题",
     "topicTitleCannotBeEmpty": "主题标题不能为空",
     "topicTitleLengthLimit": "主题标题长度范围必须在 3-56 个字符之间",
+    "uploadFailed": "上传失败，请按 F12 打开控制台查看报错信息",
+    "uploadImgMaxNum": "最多同时上传 {num} 张图片",
+    "uploadImgMaxSize": "图片大小不能超过 {size}MB",
+    "uploadImgOnly": "只能上传图片文件",
+    "uploading": "上传中",
     "viewConversation": "查看对话",
     "writeReply": "写回复"
   },

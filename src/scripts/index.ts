@@ -12,6 +12,7 @@ import '@/styles/script-vars.scss';
 import '@/styles/script-global.scss';
 
 import 'element-plus/es/components/message/style/css';
+import 'element-plus/es/components/message-box/style/css';
 
 const pinia = createPinia();
 

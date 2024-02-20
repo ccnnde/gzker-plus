@@ -8,11 +8,15 @@ const currentYear = new Date().getFullYear();
 
 <template>
   <ElementConfig>
-    <ElContainer h-screen>
+    <ElContainer class="options-container" h-screen>
       <OptionsHeader />
-      <ElContainer>
+      <ElContainer class="options-container">
         <OptionsAside />
-        <ElMain><RouterView /></ElMain>
+        <ElMain class="options-main">
+          <ElScrollbar always>
+            <RouterView />
+          </ElScrollbar>
+        </ElMain>
       </ElContainer>
       <ElFooter class="footer-content">
         <span class="mr-1"> {{ $t('common.extName') }} © {{ currentYear }} by </span>
@@ -23,6 +27,14 @@ const currentYear = new Date().getFullYear();
 </template>
 
 <style lang="scss" scoped>
+.options-container {
+  overflow: hidden;
+}
+
+.options-main {
+  padding-right: 0;
+}
+
 .footer-content {
   display: flex;
   align-items: center;

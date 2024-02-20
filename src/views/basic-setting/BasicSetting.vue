@@ -7,6 +7,7 @@ import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
+import SmApiKey from './SmApiKey.vue';
 
 import type { CheckedOption, Setting } from '@/types';
 
@@ -49,6 +50,12 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.dblclickToTop.titleDesc'),
           key: OptionsKey.DblclickToTop,
         },
+        {
+          name: t('basicSetting.smApiKey.title'),
+          description: t('basicSetting.smApiKey.titleDesc'),
+          key: OptionsKey.SmApiKey,
+          component: SmApiKey,
+        },
       ],
     },
   ];
@@ -79,6 +86,7 @@ const settings = computed<Setting[]>(() => {
 <style lang="scss" scoped>
 .setting-category-content {
   padding: 0.8em;
+  margin-right: 15px;
   border-radius: var(--el-border-radius-base);
   transition: background-color 0.3s ease-in;
 

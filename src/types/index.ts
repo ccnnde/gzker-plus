@@ -1,7 +1,14 @@
 import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
 import type Viewer from 'viewerjs';
-import type { BellStyle, ExtensionMessageType, LanguageType, LinkElementType, OptionsKey, ReplyType } from '@/constants';
+import type {
+  BellStyle,
+  ExtensionMessageType,
+  LanguageType,
+  LinkElementType,
+  OptionsKey,
+  ReplyType,
+} from '@/constants';
 
 interface SettingItem {
   name: string;
@@ -15,8 +22,16 @@ export interface ImageViewer extends Viewer {
   length: number;
 }
 
+export interface Base64File {
+  name: string;
+  type: string;
+  base64Str: string;
+}
+
 export interface ExtensionMessage {
   msgType: ExtensionMessageType;
+  imgFile?: Base64File;
+  apiKey?: string;
 }
 
 export interface Setting {
@@ -38,6 +53,9 @@ export interface Options {
     bellStyle: BellStyle;
   };
   [OptionsKey.EnhancedTopic]: CheckedOption;
+  [OptionsKey.SmApiKey]: {
+    apiKey: string;
+  };
 }
 
 export interface CheckedOption {
@@ -166,4 +184,44 @@ export interface ApiJsonResponse {
 
 export interface Keybindings {
   [key: string]: ((e: KeyboardEvent) => void) | undefined;
+}
+
+export interface SMApiResponse<T> {
+  success: boolean;
+  code: string;
+  message: string;
+  data: T;
+  images?: string;
+  RequestId: string;
+}
+
+export interface SMUserProfile {
+  username: string;
+  role: 'user' | 'VIP';
+  group_expire: string;
+  email: string;
+  email_verified: 0 | 1;
+  disk_usage: string;
+  disk_usage_raw: number;
+  disk_limit: string;
+  disk_limit_raw: number;
+}
+
+export interface SMUploadedImg {
+  file_id: number;
+  width: number;
+  height: number;
+  filename: string;
+  storename: string;
+  size: number;
+  path: string;
+  hash: string;
+  url: string;
+  delete: string;
+  page: string;
+}
+
+export interface CherryFileUploadStatus {
+  done: boolean;
+  uploadedCallback?: () => void;
 }

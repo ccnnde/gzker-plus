@@ -17,7 +17,7 @@ import {
 } from '@/constants/res-msg';
 import { SELECTOR_LOGIN_USER_LINK } from '@/constants/selector';
 
-import type { ApiJsonResponse, ScriptAppOptions, StorageSettings, UserReplyItem } from '@/types';
+import type { ApiJsonResponse, Base64File, ScriptAppOptions, StorageSettings, UserReplyItem } from '@/types';
 
 const getResMessage = (msg: string): string => {
   switch (msg) {
@@ -126,4 +126,25 @@ export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {
   if (msg === SUCCESS_LIKE) {
     replyItem.likeNumber = String(Number(replyItem.likeNumber) + 1);
   }
+};
+
+export const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve((reader.result as string).split(',')[1]);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+};
+
+export const base64ToFile = (file: Base64File): File => {
+  const byteCharacters = atob(file.base64Str);
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const byteArray = new Uint8Array(byteNumbers);
+  return new File([byteArray], file.name, { type: file.type });
 };

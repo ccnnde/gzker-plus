@@ -30,6 +30,27 @@
     "floatUserInfo": {
       "title": "Floating Display Of User Information",
       "titleDesc": "When the mouse hovers over the user avatar, display basic user information and allow actions such as following and blocking"
+    },
+    "smApiKey": {
+      "apiAvailable": "SM.MS API is available",
+      "checkApi": "Check API",
+      "explanation": "Explanation",
+      "managePicture": "Manage pictures",
+      "plzEnterApiKey": "Please enter API Key",
+      "title": "SM.MS Image Hosting API Key",
+      "titleDesc": "After configuring the API Key, you can directly upload images in the editor. Click the verify button to test if the API is available",
+      "userProfile": {
+        "diskSpace": "Used / Total",
+        "email": "Email",
+        "expireDate": "Expiration date",
+        "group": "User group",
+        "name": "Username",
+        "notVerified": "Not verified",
+        "regularUser": "Regular user",
+        "title": "SM.MS User Information",
+        "verified": "Verified",
+        "vipUser": "VIP user"
+      }
     }
   },
   "common": {
@@ -40,7 +61,8 @@
     "loadFailedAndRetry": "Load failed, please click to retry",
     "plzLogin": "Please log in to the community before proceeding with the operation",
     "post": "Post",
-    "reply": "Reply"
+    "reply": "Reply",
+    "warning": "Warning"
   },
   "emojiPicker": {
     "categories": {
@@ -72,6 +94,7 @@
   "enhancedTopic": {
     "cannotReplyByInvalidUser": "Not logged in or not bound to a phone number, unable to reply",
     "cannotReplyByLockedPost": "This post has been locked and cannot be replied to",
+    "cannotUploadByEmptyApiKey": "API Key for the image hosting is not configured, unable to upload pictures. Please click the OK button to view the configuration instructions",
     "clickNumber": "Read",
     "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",
@@ -98,6 +121,11 @@
     "topicTitle": "Title",
     "topicTitleCannotBeEmpty": "The topic title cannot be empty",
     "topicTitleLengthLimit": "The topic title must be between 3 and 56 characters in length",
+    "uploadFailed": "Upload failed, please press F12 to open the console and view the error message",
+    "uploadImgMaxNum": "Up to {num} images can be uploaded simultaneously",
+    "uploadImgMaxSize": "Image size cannot exceed {size}MB",
+    "uploadImgOnly": "Only image files can be uploaded",
+    "uploading": "Uploading",
     "viewConversation": "View conversation",
     "writeReply": "Write reply"
   },

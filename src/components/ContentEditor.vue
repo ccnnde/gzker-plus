@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
+import { runtime } from 'webextension-polyfill';
 
+import { useStorageStore } from '@/stores/storage';
+import { t } from '@/i18n';
+import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
+import { fileToBase64 } from '@/utils';
 import { emojiHook } from '@/utils/emoji';
+import { ExtensionMessageType, OptionsKey } from '@/constants';
 
-import type { CherryLifecycle } from 'cherry-markdown/types/cherry';
-import type { Coordinates, Keybindings } from '@/types';
+import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
+import type { CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
 
 import 'cherry-markdown/dist/cherry-markdown.css';
 
@@ -37,6 +44,7 @@ const initCherryMarkdown = () => {
   cherryEditor = new Cherry({
     el: mdEditorEl.value,
     value: props.modelValue,
+    fileUpload: handleImgFileUpload,
     toolbars: {
       toolbar: [
         'header',
@@ -176,6 +184,107 @@ const keybindings: Keybindings = {
       e.preventDefault();
     }
   },
+};
+
+const storage = useStorageStore();
+const imgFileUploadStatusMap: Map<File, CherryFileUploadStatus> = new Map();
+let isApiKeyConfirmShown = false;
+
+const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
+  const apiKey = storage.options?.[OptionsKey.SmApiKey].apiKey;
+
+  if (!apiKey) {
+    if (isApiKeyConfirmShown) {
+      return;
+    }
+
+    try {
+      isApiKeyConfirmShown = true;
+
+      await ElMessageBox.confirm(t('enhancedTopic.cannotUploadByEmptyApiKey'), t('common.warning'), {
+        type: 'warning',
+        closeOnClickModal: false,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      isApiKeyConfirmShown = false;
+    }
+
+    return;
+  }
+
+  const isImgFile = /image/i.test(file.type);
+
+  if (!isImgFile) {
+    ElMessage.error({
+      message: t('enhancedTopic.uploadImgOnly'),
+      grouping: true,
+    });
+
+    return;
+  }
+
+  const imgFileSize = file.size / 1024 / 1024;
+
+  if (imgFileSize > IMG_MAX_SIZE) {
+    ElMessage.error({
+      message: t('enhancedTopic.uploadImgMaxSize', { size: IMG_MAX_SIZE }),
+      grouping: true,
+    });
+
+    return;
+  }
+
+  if (imgFileUploadStatusMap.size >= IMG_MAX_NUM) {
+    ElMessage.error({
+      message: t('enhancedTopic.uploadImgMaxNum', { num: IMG_MAX_NUM }),
+      grouping: true,
+    });
+
+    return;
+  }
+
+  imgFileUploadStatusMap.set(file, { done: false });
+
+  const loading = ElLoading.service({
+    text: t('enhancedTopic.uploading'),
+    background: 'rgba(0, 0, 0, 0.7)',
+  });
+
+  try {
+    const msg: ExtensionMessage = {
+      msgType: ExtensionMessageType.UploadImg,
+      imgFile: {
+        name: file.name,
+        type: file.type,
+        base64Str: await fileToBase64(file),
+      },
+      apiKey,
+    };
+
+    const imgUrl = await runtime.sendMessage(msg);
+    const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
+    uploadStatus.uploadedCallback = () => callback(imgUrl);
+  } catch (err) {
+    ElMessage.error({
+      message: t('enhancedTopic.uploadFailed'),
+      grouping: true,
+    });
+
+    console.error(err);
+  } finally {
+    const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
+    uploadStatus.done = true;
+
+    const uploadedFileNum = [...imgFileUploadStatusMap.values()].filter((item) => item.done).length;
+
+    if (uploadedFileNum === imgFileUploadStatusMap.size) {
+      imgFileUploadStatusMap.forEach((item) => item.uploadedCallback?.());
+      imgFileUploadStatusMap.clear();
+      loading.close();
+    }
+  }
 };
 
 const mentionUserHook = Cherry.createSyntaxHook('mentionUser', Cherry.constants.HOOKS_TYPE_LIST.SEN, {

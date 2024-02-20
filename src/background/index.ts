@@ -1,9 +1,10 @@
 import { runtime } from 'webextension-polyfill';
 
-import { initStorage } from '@/utils';
+import { uploadImg } from '@/api/sm-img';
+import { base64ToFile, initStorage } from '@/utils';
 import { ExtensionMessageType } from '@/constants';
 
-import type { ExtensionMessage } from '@/types';
+import type { Base64File, ExtensionMessage } from '@/types';
 
 runtime.onInstalled.addListener(async (details) => {
   const { reason } = details;
@@ -15,8 +16,14 @@ runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-runtime.onMessage.addListener((message: ExtensionMessage) => {
-  if (message.msgType === ExtensionMessageType.OpenOptionsPage) {
-    runtime.openOptionsPage();
+runtime.onMessage.addListener(async (message: ExtensionMessage) => {
+  switch (message.msgType) {
+    case ExtensionMessageType.OpenOptionsPage:
+      runtime.openOptionsPage();
+      return;
+    case ExtensionMessageType.UploadImg: {
+      const imgFile = base64ToFile(message.imgFile as Base64File);
+      return await uploadImg(message.apiKey as string, imgFile);
+    }
   }
 });
