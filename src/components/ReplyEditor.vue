@@ -112,11 +112,18 @@ const sendReply = () => {
   });
 };
 
-const handleDialogClosed = () => {
+const handleDialogOpen = () => {
+  resetEditorLayout();
+  contentEditor.value?.focusEndOfEditor();
+};
+
+const handleDialogClose = () => {
   if (!isAddContent.value) {
     clearContent();
   }
+};
 
+const handleDialogClosed = () => {
   resetDialogFullscreen();
 };
 
@@ -140,8 +147,9 @@ defineExpose({
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="false"
     append-to-body
-    @open="resetEditorLayout"
+    @open="handleDialogOpen"
     @opened="contentEditor?.focusEndOfEditor"
+    @close="handleDialogClose"
     @closed="handleDialogClosed"
   >
     <ContentEditor

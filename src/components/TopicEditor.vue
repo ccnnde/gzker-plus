@@ -148,6 +148,8 @@ const handleDialogOpen = async () => {
 };
 
 const handleDialogClose = () => {
+  clearContent();
+
   if (isAddContent.value) {
     unlockScroll();
   }
@@ -156,7 +158,6 @@ const handleDialogClose = () => {
 const handleDialogClosed = () => {
   topicForm.node = '';
   topicForm.title = '';
-  clearContent();
   resetDialogFullscreen();
 };
 
