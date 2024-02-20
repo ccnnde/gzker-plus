@@ -1,17 +1,17 @@
 /**
  * 主题链接元素
  */
-export const SELECTOR_TOPIC_LINK = 'a[href^="/t/"]';
+export const SELECTOR_TOPIC_LINK = 'a[href^="/t/"]:not([href*="?p="])';
 
 /**
  * 用户链接元素
  */
-export const SELECTOR_USER_LINK = 'a[href^="/u/"]';
+export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 
 /**
  * 节点链接元素
  */
-export const SELECTOR_NODE_LINK = 'a[href^="/node/"]';
+export const SELECTOR_NODE_LINK = 'a[href^="/node/"]:not([href*="?p="])';
 
 /**
  * 导航条右侧元素
