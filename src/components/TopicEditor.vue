@@ -134,6 +134,14 @@ const sendTopic = () => {
   });
 };
 
+const validateContentField = async () => {
+  try {
+    await topicFormRef.value?.validateField('content');
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
 const handleDialogOpen = async () => {
   resetEditorLayout();
   topicFormRef.value?.clearValidate();
@@ -208,6 +216,8 @@ defineExpose({
           ref="contentEditor"
           v-model="topicForm.content"
           :mentionable="false"
+          @blur="validateContentField"
+          @change="validateContentField"
           @show-emoji-picker="emojiPicker?.showPicker"
           @toggle-fullscreen="toggleDialogFullscreen"
         />

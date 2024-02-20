@@ -25,6 +25,8 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
+  blur: [];
+  change: [];
   showEmojiPicker: [];
   showMentionPicker: [coords: Coordinates];
   toggleFullscreen: [];
@@ -144,6 +146,7 @@ const initCherryMarkdown = () => {
 
   cmEditor.on('blur', () => {
     isEditorFocused.value = false;
+    emit('blur');
   });
 };
 
@@ -315,6 +318,7 @@ const mentionUserHook = Cherry.createSyntaxHook('mentionUser', Cherry.constants.
 
 const handleContentChange: CherryLifecycle = (text) => {
   emit('update:modelValue', text);
+  emit('change');
 };
 
 const focusEditor = () => {
