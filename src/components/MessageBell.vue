@@ -7,6 +7,7 @@ import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
+import { emitter } from '@/utils/event-bus';
 import { BellStyle, OptionsKey, ReplyType } from '@/constants';
 import { SELECTOR_NOT_EMOJI_IMG } from '@/constants/selector';
 
@@ -110,6 +111,10 @@ const handlePopoverHide = () => {
   }, 500);
 };
 
+const handleTopicClick = (e: Event) => {
+  emitter.emit('clickTopic', e);
+};
+
 const isMsgUnread = (index: number): boolean => {
   const messageIndex = index + 1;
   return messageIndex <= unreadMessageNumber.value;
@@ -119,7 +124,7 @@ const isMsgUnread = (index: number): boolean => {
 <template>
   <ElPopover
     :width="350"
-    :popper-style="{ padding: 0 }"
+    :popper-style="{ padding: 0, zIndex: 2000 }"
     trigger="click"
     @show="handlePopoverShow"
     @hide="handlePopoverHide"
@@ -167,13 +172,13 @@ const isMsgUnread = (index: number): boolean => {
                 </a>
                 <template v-if="item.replyType === ReplyType.Topic">
                   <span class="message-action">{{ $t('enhancedMsg.replyYou') }}</span>
-                  <a class="message-link" :href="item.topicLink" target="_blank">
+                  <a class="message-link" :href="item.topicLink" @click="handleTopicClick">
                     {{ item.topicTitle }}
                   </a>
                 </template>
                 <template v-else-if="item.replyType === ReplyType.Mention">
                   <span class="message-action">{{ $t('enhancedMsg.inTopic') }}</span>
-                  <a class="message-link" :href="item.topicLink" target="_blank">
+                  <a class="message-link" :href="item.topicLink" @click="handleTopicClick">
                     {{ item.topicTitle }}
                   </a>
                   <span class="message-action">{{ $t('enhancedMsg.mentionYou') }}</span>

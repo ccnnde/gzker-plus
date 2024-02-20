@@ -10,6 +10,7 @@ import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { request, waitTime } from '@/utils';
+import { emitter } from '@/utils/event-bus';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import {
   ADD_REPLY_INJECTION_KEY,
@@ -91,6 +92,8 @@ onMounted(() => {
       element.addEventListener('click', handleCreateTopicClick);
     }
   });
+
+  emitter.on('clickTopic', handleTopicClick);
 });
 
 const handleTopicClick = (e: Event) => {
