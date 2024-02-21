@@ -8,6 +8,7 @@ import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { fileToBase64 } from '@/utils';
+import { autoImageHook, CHERRY_HOOK_AUTO_IMAGE } from '@/utils/cherry-hook';
 import { emojiHook } from '@/utils/emoji';
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 
@@ -123,6 +124,10 @@ const initCherryMarkdown = () => {
         emoji: {
           syntaxClass: emojiHook,
           force: true,
+        },
+        [CHERRY_HOOK_AUTO_IMAGE]: {
+          syntaxClass: autoImageHook,
+          before: 'autoLink',
         },
         mentionUser: {
           syntaxClass: mentionUserHook,
