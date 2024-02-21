@@ -86,7 +86,7 @@ const settings = computed<Setting[]>(() => {
 <style lang="scss" scoped>
 .setting-category-content {
   padding: 0.8em;
-  margin-right: 15px;
+  margin-right: 20px;
   border-radius: var(--el-border-radius-base);
   transition: background-color 0.3s ease-in;
 
