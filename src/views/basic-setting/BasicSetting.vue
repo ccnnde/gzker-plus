@@ -124,14 +124,27 @@ const settings = computed<Setting[]>(() => {
 
 .setting-item-description,
 .setting-item-description-check {
-  height: 35px;
-  line-height: 35px;
+  padding: 10px 0;
 }
 
 .setting-item-description,
 .setting-item-description-check :deep(.el-checkbox__label) {
   font-size: 1em;
   font-weight: normal;
+  line-height: 20px;
   color: #777;
+}
+
+.setting-item-description-check {
+  align-items: flex-start;
+  height: auto;
+
+  :deep(.el-checkbox__input) {
+    margin-top: 3px;
+  }
+
+  :deep(.el-checkbox__label) {
+    white-space: normal;
+  }
 }
 </style>
