@@ -56,6 +56,12 @@ export const useContentEditor = () => {
   };
 
   const handleEditorBeforeClose: DialogBeforeCloseFn = (done) => {
+    const loadingEle = document.querySelector('.el-loading-mask.is-fullscreen');
+
+    if (loadingEle) {
+      return;
+    }
+
     if (emojiPicker.value?.visible) {
       emojiPicker.value.hidePicker();
       contentEditor.value?.focusEditor();
