@@ -202,59 +202,20 @@ const keybindings: Keybindings = {
   },
 };
 
-const storage = useStorageStore();
 const imgFileUploadStatusMap: Map<File, CherryFileUploadStatus> = new Map();
-let isApiKeyConfirmShown = false;
 
 const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
-  const apiKey = storage.options?.[OptionsKey.SmApiKey].apiKey;
+  const apiKey = await getApiKey();
 
   if (!apiKey) {
-    if (isApiKeyConfirmShown) {
-      return;
-    }
-
-    try {
-      isApiKeyConfirmShown = true;
-
-      await ElMessageBox.confirm(t('enhancedTopic.cannotUploadByEmptyApiKey'), t('common.warning'), {
-        type: 'warning',
-        closeOnClickModal: false,
-      });
-    } catch (err) {
-      console.log(err);
-    } finally {
-      isApiKeyConfirmShown = false;
-    }
-
     return;
   }
 
-  const isImgFile = /image/i.test(file.type);
+  const errMsg = validateImgFile(file);
 
-  if (!isImgFile) {
+  if (errMsg) {
     ElMessage.error({
-      message: t('enhancedTopic.uploadImgOnly'),
-      grouping: true,
-    });
-
-    return;
-  }
-
-  const imgFileSize = file.size / 1024 / 1024;
-
-  if (imgFileSize > IMG_MAX_SIZE) {
-    ElMessage.error({
-      message: t('enhancedTopic.uploadImgMaxSize', { size: IMG_MAX_SIZE }),
-      grouping: true,
-    });
-
-    return;
-  }
-
-  if (imgFileUploadStatusMap.size >= IMG_MAX_NUM) {
-    ElMessage.error({
-      message: t('enhancedTopic.uploadImgMaxNum', { num: IMG_MAX_NUM }),
+      message: errMsg,
       grouping: true,
     });
 
@@ -301,6 +262,52 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
       loading.close();
     }
   }
+};
+
+const storage = useStorageStore();
+let isApiKeyConfirmShown = false;
+
+const getApiKey = async (): Promise<string | undefined> => {
+  const apiKey = storage.options?.[OptionsKey.SmApiKey].apiKey;
+
+  if (apiKey || isApiKeyConfirmShown) {
+    return apiKey;
+  }
+
+  try {
+    isApiKeyConfirmShown = true;
+
+    await ElMessageBox.confirm(t('enhancedTopic.cannotUploadByEmptyApiKey'), t('common.warning'), {
+      type: 'warning',
+      closeOnClickModal: false,
+    });
+  } catch {
+    ElMessage(t('common.canceled'));
+  } finally {
+    isApiKeyConfirmShown = false;
+  }
+
+  return apiKey;
+};
+
+const validateImgFile = (file: File): string => {
+  const isImgFile = /image/i.test(file.type);
+
+  if (!isImgFile) {
+    return t('enhancedTopic.uploadImgOnly');
+  }
+
+  const imgFileSize = file.size / 1024 / 1024;
+
+  if (imgFileSize > IMG_MAX_SIZE) {
+    return t('enhancedTopic.uploadImgMaxSize', { size: IMG_MAX_SIZE });
+  }
+
+  if (imgFileUploadStatusMap.size >= IMG_MAX_NUM) {
+    return t('enhancedTopic.uploadImgMaxNum', { num: IMG_MAX_NUM });
+  }
+
+  return '';
 };
 
 const handleContentChange: CherryLifecycle = (text) => {
