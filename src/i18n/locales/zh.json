@@ -56,6 +56,7 @@
   "common": {
     "cancel": "取消",
     "checkAll": "全选",
+    "emptyData": "查询数据为空，请稍后再做尝试",
     "extName": "过早客 Plus",
     "favorite": "收藏",
     "loadFailed": "加载失败",

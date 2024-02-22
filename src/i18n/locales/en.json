@@ -56,6 +56,7 @@
   "common": {
     "cancel": "Cancel",
     "checkAll": "Check all",
+    "emptyData": "The query returned no results. Please try again later",
     "extName": "Gzker Plus",
     "favorite": "Favorite",
     "loadFailed": "Load failed",

@@ -84,6 +84,10 @@ export const request = async (url: string, init?: RequestInit): Promise<string> 
 
   const data = await res.text();
 
+  if (!data) {
+    throw new Error(t('common.emptyData'));
+  }
+
   // 响应头部含有 Content-Length 字段时，代表返回的数据是 JSON 格式的字符串
   if (res.headers.has('Content-Length')) {
     const { message, success } = JSON.parse(data) as ApiJsonResponse;
