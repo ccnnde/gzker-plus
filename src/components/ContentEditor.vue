@@ -10,6 +10,12 @@ import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import { ExtensionMessageType, OptionsKey } from '@/constants';
+import {
+  SHORTCUT_CLEAR_MENTION_UID,
+  SHORTCUT_SHOW_EMOJI,
+  SHORTCUT_SHOW_MENTION,
+  SHORTCUT_TOGGLE_FULLSCREEN,
+} from '@/constants/shortcut';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
 import type { CherryAnchor, CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
@@ -161,10 +167,10 @@ const generateShortcut = (e: KeyboardEvent) => {
 };
 
 const keybindings: Keybindings = {
-  'ctrl+[': function showEmoji() {
+  [SHORTCUT_SHOW_EMOJI]: () => {
     emit('showEmojiPicker');
   },
-  'shift+@': function showMention() {
+  [SHORTCUT_SHOW_MENTION]: () => {
     if (!props.mentionable) {
       return;
     }
@@ -173,11 +179,7 @@ const keybindings: Keybindings = {
       emit('showMentionPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
     });
   },
-  'ctrl+]': function toggleFullscreen() {
-    emit('toggleFullscreen');
-  },
-  // eslint-disable-next-line func-name-matching
-  Backspace: function clearMentionUid(e: KeyboardEvent) {
+  [SHORTCUT_CLEAR_MENTION_UID]: (e: KeyboardEvent) => {
     if (!cmEditor) {
       return;
     }
@@ -199,6 +201,9 @@ const keybindings: Keybindings = {
       cmEditor.replaceRange('', start, cursor);
       e.preventDefault();
     }
+  },
+  [SHORTCUT_TOGGLE_FULLSCREEN]: () => {
+    emit('toggleFullscreen');
   },
 };
 
