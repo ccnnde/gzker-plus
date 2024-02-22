@@ -1,4 +1,3 @@
-import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import data from 'emoji-mart-vue-fast/data/all.json';
 import { EmojiIndex } from 'emoji-mart-vue-fast/src';
 
@@ -19,7 +18,7 @@ const weiboEmojiMarkdownMap: WeiboEmojiMarkdownMap = weiboEmojis.reduce<WeiboEmo
   return acc;
 }, {});
 
-const getEmojiById = (emojiId: string): string | null => {
+export const getEmojiById = (emojiId: string): string | null => {
   try {
     const emoji = emojiIndex.emoji(emojiId);
 
@@ -58,24 +57,6 @@ export const emojiIndex = new EmojiIndex(data, {
     'wb_并不简单',
     'wb_裂开',
   ],
-});
-
-export const emojiHook = Cherry.createSyntaxHook('emoji', Cherry.constants.HOOKS_TYPE_LIST.SEN, {
-  makeHtml(str: string) {
-    if (!this.test(str)) {
-      return str;
-    }
-
-    return str.replace(this.RULE.reg, (match: string, emojiId: string) => {
-      const emoji = getEmojiById(emojiId);
-      return emoji || match;
-    });
-  },
-  rule() {
-    return {
-      reg: /:([-a-zA-Z0-9\u4e00-\u9fa5+_]+?):/g,
-    };
-  },
 });
 
 export const convertWeiboEmojiToImg = (content: string): string => {

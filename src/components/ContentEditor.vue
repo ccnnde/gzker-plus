@@ -8,8 +8,7 @@ import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { fileToBase64 } from '@/utils';
-import { autoImageHook, CHERRY_HOOK_AUTO_IMAGE } from '@/utils/cherry-hook';
-import { emojiHook } from '@/utils/emoji';
+import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
@@ -121,15 +120,15 @@ const initCherryMarkdown = () => {
         suggester: false,
       },
       customSyntax: {
-        emoji: {
+        [CherryHookName.Emoji]: {
           syntaxClass: emojiHook,
           force: true,
         },
-        [CHERRY_HOOK_AUTO_IMAGE]: {
+        [CherryHookName.AutoImage]: {
           syntaxClass: autoImageHook,
           before: 'autoLink',
         },
-        mentionUser: {
+        [CherryHookName.MentionUser]: {
           syntaxClass: mentionUserHook,
           before: 'bgColor',
         },
@@ -303,23 +302,6 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
     }
   }
 };
-
-const mentionUserHook = Cherry.createSyntaxHook('mentionUser', Cherry.constants.HOOKS_TYPE_LIST.SEN, {
-  makeHtml(str: string) {
-    if (!this.test(str)) {
-      return str;
-    }
-
-    return str.replace(this.RULE.reg, (match: string, uid: string) => {
-      return `<a target="_blank" href="/u/${uid}">${match}</a>`;
-    });
-  },
-  rule() {
-    return {
-      reg: /@([a-z]\w{2,})/gi,
-    };
-  },
-});
 
 const handleContentChange: CherryLifecycle = (text) => {
   emit('update:modelValue', text);
