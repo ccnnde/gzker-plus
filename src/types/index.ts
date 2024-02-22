@@ -225,3 +225,5 @@ export interface CherryFileUploadStatus {
   done: boolean;
   uploadedCallback?: () => void;
 }
+
+export type CherryAnchor = [number, number] | false;

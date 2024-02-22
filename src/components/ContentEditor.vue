@@ -12,7 +12,7 @@ import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/uti
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
-import type { CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
+import type { CherryAnchor, CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
 
 import 'cherry-markdown/dist/cherry-markdown.css';
 
@@ -338,7 +338,14 @@ const setEditorLayout = (editorPercentage: string, previewerPercentage: string) 
 
 const scrollToCursor = () => {
   setTimeout(() => {
-    insertValue('');
+    if (!cmEditor) {
+      return;
+    }
+
+    const cursor = cmEditor.getCursor();
+    const insertAnchor: CherryAnchor = [cursor.line, 99999];
+    cherryEditor?.insertValue('', false, insertAnchor, false);
+    cmEditor.setCursor(cursor);
   });
 };
 
@@ -352,7 +359,7 @@ const insertValue = (content: string) => {
 
 const appendValue = (content: string) => {
   const lastLineNumber = cmEditor?.lastLine() || 0;
-  const insertAnchor: [number, number] = [lastLineNumber + 1, 0];
+  const insertAnchor: CherryAnchor = [lastLineNumber + 1, 0];
   cherryEditor?.insertValue(content, false, insertAnchor, false);
 };
 
