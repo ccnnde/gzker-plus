@@ -12,8 +12,8 @@ import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/uti
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 import {
   SHORTCUT_CLEAR_MENTION_UID,
-  SHORTCUT_SHOW_EMOJI,
-  SHORTCUT_SHOW_MENTION,
+  SHORTCUT_SHOW_EMOJI_PICKER,
+  SHORTCUT_SHOW_MENTION_PICKER,
   SHORTCUT_TOGGLE_FULLSCREEN,
 } from '@/constants/shortcut';
 
@@ -167,10 +167,10 @@ const generateShortcut = (e: KeyboardEvent) => {
 };
 
 const keybindings: Keybindings = {
-  [SHORTCUT_SHOW_EMOJI]: () => {
+  [SHORTCUT_SHOW_EMOJI_PICKER]: () => {
     emit('showEmojiPicker');
   },
-  [SHORTCUT_SHOW_MENTION]: () => {
+  [SHORTCUT_SHOW_MENTION_PICKER]: () => {
     if (!props.mentionable) {
       return;
     }
