@@ -14,6 +14,11 @@ export const SHORTCUT_SHOW_MENTION_PICKER = 'shift+@';
 export const SHORTCUT_CLEAR_MENTION_UID = 'Backspace';
 
 /**
+ * 关闭或展示预览区域
+ */
+export const SHORTCUT_TOGGLE_PREVIEW = 'ctrl+m';
+
+/**
  * 切换全屏
  */
 export const SHORTCUT_TOGGLE_FULLSCREEN = 'ctrl+ ';

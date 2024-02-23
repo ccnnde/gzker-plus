@@ -15,6 +15,7 @@ import {
   SHORTCUT_SHOW_EMOJI_PICKER,
   SHORTCUT_SHOW_MENTION_PICKER,
   SHORTCUT_TOGGLE_FULLSCREEN,
+  SHORTCUT_TOGGLE_PREVIEW,
 } from '@/constants/shortcut';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
@@ -201,6 +202,9 @@ const keybindings: Keybindings = {
       cmEditor.replaceRange('', start, cursor);
       e.preventDefault();
     }
+  },
+  [SHORTCUT_TOGGLE_PREVIEW]: () => {
+    cherryEditor?.toolbar.menus.hooks.togglePreview.onClick();
   },
   [SHORTCUT_TOGGLE_FULLSCREEN]: () => {
     emit('toggleFullscreen');
