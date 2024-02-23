@@ -89,11 +89,9 @@ const initCherryMarkdown = () => {
           iconName: 'question',
           onClick: openEditorHelp,
         }),
-        dialogFullscreen: Cherry.createMenuHook('对话框全屏', {
+        dialogFullscreen: Cherry.createMenuHook(t('enhancedTopic.dialogFullscreen'), {
           iconName: 'dialog-fullscreen',
-          onClick() {
-            emit('toggleFullscreen');
-          },
+          onClick: toggleEditorFullscreen,
         }),
       },
     },
@@ -183,10 +181,15 @@ const openEditorHelp = () => {
   editorHelp.value?.openDialog();
 };
 
+const toggleEditorFullscreen = () => {
+  emit('toggleFullscreen');
+};
+
 const keybindings: Keybindings = {
   [SHORTCUT_SHOW_EDITOR_HELP]: openEditorHelp,
-  [SHORTCUT_SHOW_EMOJI_PICKER]: () => {
+  [SHORTCUT_SHOW_EMOJI_PICKER]: (e: KeyboardEvent) => {
     emit('showEmojiPicker');
+    e.preventDefault();
   },
   [SHORTCUT_SHOW_MENTION_PICKER]: () => {
     if (!props.mentionable) {
@@ -223,9 +226,7 @@ const keybindings: Keybindings = {
   [SHORTCUT_TOGGLE_PREVIEW]: () => {
     cherryEditor?.toolbar.menus.hooks.togglePreview.onClick();
   },
-  [SHORTCUT_TOGGLE_FULLSCREEN]: () => {
-    emit('toggleFullscreen');
-  },
+  [SHORTCUT_TOGGLE_FULLSCREEN]: toggleEditorFullscreen,
   [SHORTCUT_SUBMIT_CONTENT]: () => {
     emit('submitContent');
   },
