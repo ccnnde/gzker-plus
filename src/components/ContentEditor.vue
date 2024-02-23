@@ -12,12 +12,15 @@ import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/uti
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 import {
   SHORTCUT_CLEAR_MENTION_UID,
+  SHORTCUT_SHOW_EDITOR_HELP,
   SHORTCUT_SHOW_EMOJI_PICKER,
   SHORTCUT_SHOW_MENTION_PICKER,
   SHORTCUT_SUBMIT_CONTENT,
   SHORTCUT_TOGGLE_FULLSCREEN,
   SHORTCUT_TOGGLE_PREVIEW,
 } from '@/constants/shortcut';
+
+import EditorHelp from './EditorHelp.vue';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
 import type { CherryAnchor, CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
@@ -74,6 +77,7 @@ const initCherryMarkdown = () => {
         'image',
         'link',
         'code',
+        'help',
       ],
       toolbarRight: ['dialogFullscreen', 'togglePreview'],
       bubble: ['bold', 'italic', 'strikethrough', 'quote'],
@@ -81,6 +85,10 @@ const initCherryMarkdown = () => {
       sidebar: false,
       theme: LIGHT_THEME,
       customMenu: {
+        help: Cherry.createMenuHook(t('enhancedTopic.editorHelp'), {
+          iconName: 'question',
+          onClick: openEditorHelp,
+        }),
         dialogFullscreen: Cherry.createMenuHook('对话框全屏', {
           iconName: 'dialog-fullscreen',
           onClick() {
@@ -169,7 +177,14 @@ const generateShortcut = (e: KeyboardEvent) => {
   return ctrlStr + shiftStr + e.key;
 };
 
+const editorHelp = ref<InstanceType<typeof EditorHelp> | null>(null);
+
+const openEditorHelp = () => {
+  editorHelp.value?.openDialog();
+};
+
 const keybindings: Keybindings = {
+  [SHORTCUT_SHOW_EDITOR_HELP]: openEditorHelp,
   [SHORTCUT_SHOW_EMOJI_PICKER]: () => {
     emit('showEmojiPicker');
   },
@@ -391,6 +406,7 @@ defineExpose({
 
 <template>
   <div ref="mdEditorEl" :class="['content-editor-container', { 'is-focus': isEditorFocused }]"></div>
+  <EditorHelp ref="editorHelp" />
 </template>
 
 <style lang="scss" scoped>

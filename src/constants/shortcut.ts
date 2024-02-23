@@ -1,4 +1,9 @@
 /**
+ * 显示编辑器帮助对话框
+ */
+export const SHORTCUT_SHOW_EDITOR_HELP = 'ctrl+/';
+
+/**
  * 显示 Emoji 选择器
  */
 export const SHORTCUT_SHOW_EMOJI_PICKER = 'ctrl+;';
