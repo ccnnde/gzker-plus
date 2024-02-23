@@ -77,6 +77,7 @@ module.exports = {
             '^@/layout(/.*|$)',
             '^@/views(/.*|$)',
             '^@/components(/.*|$)',
+            '^@/markdown(/.*|$)',
             '^@/transitions(/.*|$)',
             '^@/composables(/.*|$)',
             '^@/directives(/.*|$)',

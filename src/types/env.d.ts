@@ -15,3 +15,10 @@ declare module 'element-plus/dist/locale/zh-cn.mjs' {
 declare module 'element-plus/es/utils/index.mjs' {
   export * from 'element-plus/es/utils';
 }
+
+declare module '*.md' {
+  import type { ComponentOptions } from 'vue';
+
+  const Component: ComponentOptions;
+  export default Component;
+}
