@@ -14,6 +14,7 @@ import {
   SHORTCUT_CLEAR_MENTION_UID,
   SHORTCUT_SHOW_EMOJI_PICKER,
   SHORTCUT_SHOW_MENTION_PICKER,
+  SHORTCUT_SUBMIT_CONTENT,
   SHORTCUT_TOGGLE_FULLSCREEN,
   SHORTCUT_TOGGLE_PREVIEW,
 } from '@/constants/shortcut';
@@ -34,6 +35,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
   blur: [];
   change: [];
+  submitContent: [];
   showEmojiPicker: [];
   showMentionPicker: [coords: Coordinates];
   toggleFullscreen: [];
@@ -208,6 +210,9 @@ const keybindings: Keybindings = {
   },
   [SHORTCUT_TOGGLE_FULLSCREEN]: () => {
     emit('toggleFullscreen');
+  },
+  [SHORTCUT_SUBMIT_CONTENT]: () => {
+    emit('submitContent');
   },
 };
 

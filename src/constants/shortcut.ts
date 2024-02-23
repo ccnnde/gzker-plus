@@ -22,3 +22,8 @@ export const SHORTCUT_TOGGLE_PREVIEW = 'ctrl+m';
  * 切换全屏
  */
 export const SHORTCUT_TOGGLE_FULLSCREEN = 'ctrl+ ';
+
+/**
+ * 提交内容
+ */
+export const SHORTCUT_SUBMIT_CONTENT = 'ctrl+Enter';

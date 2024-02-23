@@ -218,6 +218,7 @@ defineExpose({
           :mentionable="false"
           @blur="validateContentField"
           @change="validateContentField"
+          @submit-content="sendTopic"
           @show-emoji-picker="emojiPicker?.showPicker"
           @toggle-fullscreen="toggleDialogFullscreen"
         />

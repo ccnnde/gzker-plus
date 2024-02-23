@@ -156,6 +156,7 @@ defineExpose({
       ref="contentEditor"
       v-model="replyContent"
       mentionable
+      @submit-content="sendReply"
       @show-emoji-picker="emojiPicker?.showPicker"
       @show-mention-picker="showMentionPicker"
       @toggle-fullscreen="toggleDialogFullscreen"
