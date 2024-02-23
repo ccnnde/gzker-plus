@@ -87,11 +87,11 @@ const initCherryMarkdown = () => {
       customMenu: {
         help: Cherry.createMenuHook(t('enhancedTopic.editorHelp'), {
           iconName: 'question',
-          onClick: openEditorHelp,
+          onClick: () => openEditorHelp(),
         }),
         dialogFullscreen: Cherry.createMenuHook(t('enhancedTopic.dialogFullscreen'), {
           iconName: 'dialog-fullscreen',
-          onClick: toggleEditorFullscreen,
+          onClick: () => toggleEditorFullscreen(),
         }),
       },
     },
@@ -177,12 +177,14 @@ const generateShortcut = (e: KeyboardEvent) => {
 
 const editorHelp = ref<InstanceType<typeof EditorHelp> | null>(null);
 
-const openEditorHelp = () => {
+const openEditorHelp = (e?: KeyboardEvent) => {
   editorHelp.value?.openDialog();
+  e?.preventDefault();
 };
 
-const toggleEditorFullscreen = () => {
+const toggleEditorFullscreen = (e?: KeyboardEvent) => {
   emit('toggleFullscreen');
+  e?.preventDefault();
 };
 
 const keybindings: Keybindings = {
@@ -227,8 +229,9 @@ const keybindings: Keybindings = {
     cherryEditor?.toolbar.menus.hooks.togglePreview.onClick();
   },
   [SHORTCUT_TOGGLE_FULLSCREEN]: toggleEditorFullscreen,
-  [SHORTCUT_SUBMIT_CONTENT]: () => {
+  [SHORTCUT_SUBMIT_CONTENT]: (e: KeyboardEvent) => {
     emit('submitContent');
+    e.preventDefault();
   },
 };
 

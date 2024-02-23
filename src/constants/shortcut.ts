@@ -26,7 +26,7 @@ export const SHORTCUT_TOGGLE_PREVIEW = 'ctrl+m';
 /**
  * 切换全屏
  */
-export const SHORTCUT_TOGGLE_FULLSCREEN = 'ctrl+ ';
+export const SHORTCUT_TOGGLE_FULLSCREEN = 'ctrl+f';
 
 /**
  * 提交内容
