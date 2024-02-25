@@ -38,6 +38,7 @@
     "cherry-markdown": "^0.8.29",
     "element-plus": "^2.4.2",
     "emoji-mart-vue-fast": "^15.0.0",
+    "github-markdown-css": "^5.5.1",
     "js-cookie": "^3.0.5",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",

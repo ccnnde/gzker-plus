@@ -5,6 +5,8 @@ import Options from './pages/Options.vue';
 import i18n from './i18n';
 import router from './router';
 
+import 'github-markdown-css/github-markdown.css';
+
 import 'element-plus/es/components/message/style/css';
 import './styles';
 

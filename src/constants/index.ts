@@ -13,10 +13,19 @@ export const GZK_URL = 'https://www.guozaoke.com';
 export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
 
 /**
+ * Options 页面路由名称
+ */
+export const OptionsRouteNames = {
+  BasicSetting: 'basicSetting',
+  ImageHosting: 'imageHosting',
+};
+
+/**
  * 扩展发送和接受的消息类型
  */
 export const enum ExtensionMessageType {
   OpenOptionsPage,
+  OpenExtensionPage,
   UploadImg,
 }
 

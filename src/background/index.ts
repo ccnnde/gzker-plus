@@ -1,4 +1,4 @@
-import { runtime } from 'webextension-polyfill';
+import { runtime, tabs } from 'webextension-polyfill';
 
 import { uploadImg } from '@/api/sm-img';
 import { base64ToFile, initStorage } from '@/utils';
@@ -21,6 +21,20 @@ runtime.onMessage.addListener(async (message: ExtensionMessage) => {
     case ExtensionMessageType.OpenOptionsPage:
       runtime.openOptionsPage();
       return;
+    case ExtensionMessageType.OpenExtensionPage: {
+      await runtime.openOptionsPage();
+
+      const [tab] = await tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+
+      setTimeout(() => {
+        tabs.sendMessage(tab.id as number, message);
+      }, 700);
+
+      return;
+    }
     case ExtensionMessageType.UploadImg: {
       const imgFile = base64ToFile(message.imgFile as Base64File);
       return await uploadImg(message.apiKey as string, imgFile);

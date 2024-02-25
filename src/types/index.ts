@@ -32,6 +32,7 @@ export interface ExtensionMessage {
   msgType: ExtensionMessageType;
   imgFile?: Base64File;
   apiKey?: string;
+  extPageName?: string;
 }
 
 export interface Setting {

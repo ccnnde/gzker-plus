@@ -6,6 +6,7 @@ import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { getUserProfile } from '@/api/sm-img';
+import { OptionsRouteNames } from '@/constants';
 
 import type { OptionsKey } from '@/constants';
 import type { SettingProps, SMUserProfile } from '@/types';
@@ -63,7 +64,9 @@ const handleDialogClosed = () => {
       clearable
     >
       <template #append>
-        <ElButton>{{ $t('basicSetting.smApiKey.explanation') }}</ElButton>
+        <ElButton @click="$router.push({ name: OptionsRouteNames.ImageHosting })">
+          {{ $t('basicSetting.smApiKey.explanation') }}
+        </ElButton>
       </template>
     </ElInput>
     <ElButton type="primary" :loading="isLoading" @click="checkApiKey">

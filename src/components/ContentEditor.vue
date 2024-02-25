@@ -9,7 +9,7 @@ import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
-import { ExtensionMessageType, OptionsKey } from '@/constants';
+import { ExtensionMessageType, OptionsKey, OptionsRouteNames } from '@/constants';
 import {
   SHORTCUT_CLEAR_MENTION_UID,
   SHORTCUT_SHOW_EDITOR_HELP,
@@ -312,8 +312,16 @@ const getApiKey = async (): Promise<string | undefined> => {
 
     await ElMessageBox.confirm(t('enhancedTopic.cannotUploadByEmptyApiKey'), t('common.warning'), {
       type: 'warning',
+      autofocus: false,
       closeOnClickModal: false,
     });
+
+    const msg: ExtensionMessage = {
+      msgType: ExtensionMessageType.OpenExtensionPage,
+      extPageName: OptionsRouteNames.ImageHosting,
+    };
+
+    runtime.sendMessage(msg);
   } catch {
     ElMessage(t('common.canceled'));
   } finally {

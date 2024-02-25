@@ -150,7 +150,8 @@
     "unreadMessage": "你有 {num} 条未读消息"
   },
   "navigation": {
-    "basicSetting": "基础设置"
+    "basicSetting": "基础设置",
+    "imageHosting": "图床说明"
   },
   "options": {
     "title": "过早客 Plus 选项"

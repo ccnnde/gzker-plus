@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
+import { OptionsRouteNames } from '@/constants';
+
 import type { RouteRecordRaw } from 'vue-router';
 
 declare module 'vue-router' {
@@ -17,11 +19,20 @@ const routes: Readonly<RouteRecordRaw[]> = [
   },
   {
     path: '/basic-setting',
-    name: 'basicSetting',
+    name: OptionsRouteNames.BasicSetting,
     component: () => import('@/views/basic-setting/BasicSetting.vue'),
     meta: {
-      title: 'basicSetting',
+      title: OptionsRouteNames.BasicSetting,
       icon: 'i-mdi-cog-outline',
+    },
+  },
+  {
+    path: '/image-hosting',
+    name: OptionsRouteNames.ImageHosting,
+    component: () => import('@/markdown/ImageHosting.md'),
+    meta: {
+      title: OptionsRouteNames.ImageHosting,
+      icon: 'i-mdi-image-edit-outline',
     },
   },
 ];

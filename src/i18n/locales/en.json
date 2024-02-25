@@ -150,7 +150,8 @@
     "unreadMessage": "You have {num} unread messages"
   },
   "navigation": {
-    "basicSetting": "Basic Setting"
+    "basicSetting": "Basic Setting",
+    "imageHosting": "Image Hosting"
   },
   "options": {
     "title": "Gzker Plus Options"
