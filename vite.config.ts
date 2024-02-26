@@ -3,6 +3,7 @@ import Vue from '@vitejs/plugin-vue';
 import HtmlMinifier from 'vite-plugin-html-minifier';
 import WebExtension, { readJsonFile } from 'vite-plugin-web-extension';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import MarkdownItLinkAttr from 'markdown-it-link-attributes';
 import UnoCSS from 'unocss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
@@ -51,7 +52,15 @@ export default defineConfig({
     }),
     UnoCSS(),
     HtmlMinifier(),
-    Markdown({}),
+    Markdown({
+      markdownItSetup(md) {
+        md.use(MarkdownItLinkAttr, {
+          attrs: {
+            target: '_blank',
+          },
+        });
+      },
+    }),
     WebExtension({
       browser: target,
       manifest: generateManifest,

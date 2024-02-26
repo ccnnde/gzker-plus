@@ -27,3 +27,13 @@
 ![smms-enter-key](../assets/img/smms-enter-key.png)
 
 ![smms-pictures](../assets/img/smms-pictures.png)
+
+## 编辑器上传图片
+
+支持以下方式进行图片上传（**批量上传最多 10 张图片，每张图片最大不能超过 5MB**）
+
+![smms-editor](../assets/img/smms-editor.png)
+
+上传成功后会自动在编辑区里插入图片
+
+![smms-upload](../assets/img/smms-upload.gif)
