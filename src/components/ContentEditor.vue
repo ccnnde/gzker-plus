@@ -175,7 +175,8 @@ const generateShortcut = (e: KeyboardEvent) => {
   const ctrlStr = e.ctrlKey ? 'ctrl+' : '';
   const metaStr = e.metaKey && isMacOS ? 'ctrl+' : '';
   const shiftStr = e.shiftKey ? 'shift+' : '';
-  return ctrlStr + metaStr + shiftStr + e.key;
+  const keyStr = e.key && e.key.toLowerCase() !== 'shift' ? e.key.toLowerCase() : '';
+  return ctrlStr + metaStr + shiftStr + keyStr;
 };
 
 const editorHelp = ref<InstanceType<typeof EditorHelp> | null>(null);

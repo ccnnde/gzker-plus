@@ -16,7 +16,7 @@ export const SHORTCUT_SHOW_MENTION_PICKER = 'shift+@';
 /**
  * 清除提及用户
  */
-export const SHORTCUT_CLEAR_MENTION_UID = 'Backspace';
+export const SHORTCUT_CLEAR_MENTION_UID = 'backspace';
 
 /**
  * 关闭或展示预览区域
@@ -31,4 +31,4 @@ export const SHORTCUT_TOGGLE_FULLSCREEN = 'ctrl+f';
 /**
  * 提交内容
  */
-export const SHORTCUT_SUBMIT_CONTENT = 'ctrl+Enter';
+export const SHORTCUT_SUBMIT_CONTENT = 'ctrl+enter';
