@@ -7,7 +7,7 @@ import { runtime } from 'webextension-polyfill';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
-import { fileToBase64 } from '@/utils';
+import { checkMacOS, fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import { ExtensionMessageType, OptionsKey, OptionsRouteNames } from '@/constants';
 import {
@@ -169,10 +169,13 @@ const initCherryMarkdown = () => {
   });
 };
 
+const isMacOS = checkMacOS();
+
 const generateShortcut = (e: KeyboardEvent) => {
   const ctrlStr = e.ctrlKey ? 'ctrl+' : '';
+  const metaStr = e.metaKey && isMacOS ? 'ctrl+' : '';
   const shiftStr = e.shiftKey ? 'shift+' : '';
-  return ctrlStr + shiftStr + e.key;
+  return ctrlStr + metaStr + shiftStr + e.key;
 };
 
 const editorHelp = ref<InstanceType<typeof EditorHelp> | null>(null);

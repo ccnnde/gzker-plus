@@ -152,3 +152,7 @@ export const base64ToFile = (file: Base64File): File => {
   const byteArray = new Uint8Array(byteNumbers);
   return new File([byteArray], file.name, { type: file.type });
 };
+
+export const checkMacOS = () => {
+  return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+};
