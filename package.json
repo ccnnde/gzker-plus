@@ -42,6 +42,7 @@
     "js-cookie": "^3.0.5",
     "lodash-es": "^4.17.21",
     "markdown-it-link-attributes": "^4.0.1",
+    "markdown-it-task-checkbox": "^1.0.6",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
     "qrcode.vue": "^3.4.1",

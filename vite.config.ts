@@ -4,6 +4,7 @@ import HtmlMinifier from 'vite-plugin-html-minifier';
 import WebExtension, { readJsonFile } from 'vite-plugin-web-extension';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import MarkdownItLinkAttr from 'markdown-it-link-attributes';
+import MarkdownItTaskCheckbox from 'markdown-it-task-checkbox';
 import UnoCSS from 'unocss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
@@ -59,6 +60,8 @@ export default defineConfig({
             target: '_blank',
           },
         });
+
+        md.use(MarkdownItTaskCheckbox);
       },
     }),
     WebExtension({

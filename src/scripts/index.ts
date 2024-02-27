@@ -7,6 +7,7 @@ import { createUserInfoApp } from './float-user-info';
 import { createHeaderApp } from './header';
 import { createTopicApp } from './topic';
 
+import 'github-markdown-css/github-markdown.css';
 import 'virtual:uno.css';
 import '@/styles/script-vars.scss';
 import '@/styles/script-global.scss';

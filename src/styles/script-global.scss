@@ -6,3 +6,29 @@ img[src^="https://img.whzxc.cn/bd"]
   height: 1.22em !important;
   vertical-align: -0.214em !important;
 }
+
+.markdown-body {
+  h1,
+  h2 {
+    border-bottom: none;
+  }
+
+  code {
+    color: #1f2328;
+  }
+
+  ol ol,
+  ul ol {
+    list-style-type: decimal;
+  }
+
+  & > .task-list {
+    padding-left: 0;
+  }
+
+  .task-list-item {
+    input[type='checkbox'] {
+      margin-right: 5px;
+    }
+  }
+}

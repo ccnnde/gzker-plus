@@ -444,7 +444,8 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 .topic-dialog,
 .topic-editor-dialog,
 .reply-editor-dialog,
-.conversation-dialog {
+.conversation-dialog,
+.editor-help-dialog {
   border-radius: var(--el-border-radius-base);
 
   .el-dialog__header {
@@ -453,7 +454,8 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .topic-dialog,
-.topic-editor-dialog {
+.topic-editor-dialog,
+.editor-help-dialog {
   width: 45%;
 
   @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
