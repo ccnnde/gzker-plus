@@ -2,8 +2,10 @@
 import EditorShortcut from '@/markdown/EditorShortcut.md';
 import MarkdownGrammar from '@/markdown/MarkdownGrammar.md';
 import { useDialog } from '@/composables/dialog';
+import { useScrollbar } from '@/composables/scrollbar';
 
 const { dialogVisible, openDialog } = useDialog();
+const { scrollbar, scrollToTop } = useScrollbar();
 
 defineExpose({
   openDialog,
@@ -19,8 +21,9 @@ defineExpose({
     :z-index="2001"
     
      append-to-body align-center 
+    @open="scrollToTop(false)"
   >
-    <ElScrollbar>
+    <ElScrollbar ref="scrollbar">
       <ElRow class="editor-help-content" justify="space-between">
         <ElCol :span="11">
           <EditorShortcut />
