@@ -2,7 +2,15 @@ import { getXsrfToken, request, waitTime } from '@/utils';
 import { ReplyType } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
-import type { TreeNode, UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type {
+  TreeNode,
+  UserInfo,
+  UserMessage,
+  UserReplyItem,
+  UserTopic,
+  UserTopicDetail,
+  UserTopicStatus,
+} from '@/types';
 
 const parseUserInfo = (htmlStr: string): UserInfo => {
   return {
@@ -25,7 +33,9 @@ const parseEditedReply = (htmlStr: string): string => {
 
 const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
   return {
-    title: htmlStr.match(/<input class="form-control" id="prependedInput" type="text" placeholder="主题" name="title" value="(.+?)">/)?.[1],
+    title: htmlStr.match(
+      /<input class="form-control" id="prependedInput" type="text" placeholder="主题" name="title" value="(.+?)">/,
+    )?.[1],
     content: htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1],
   };
 };
@@ -78,7 +88,9 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
 };
 
 const parseTopicStatus = (htmlStr: string): UserTopicStatus => {
-  const createReplyHtmlStr = htmlStr.split('<div class="topic-reply-create')[1].split('<div class="col-md-3 sidebar-right')[0];
+  const createReplyHtmlStr = htmlStr
+    .split('<div class="topic-reply-create')[1]
+    .split('<div class="col-md-3 sidebar-right')[0];
 
   return {
     unbindedPhone: /请绑定手机号后，再发言/.test(createReplyHtmlStr),

@@ -19,8 +19,8 @@ defineExpose({
     :title="$t('enhancedTopic.editorHelp')"
     :lock-scroll="false"
     :z-index="2001"
-    
-     append-to-body align-center 
+    append-to-body
+    align-center
     @open="scrollToTop(false)"
   >
     <ElScrollbar ref="scrollbar">
