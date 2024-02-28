@@ -1,17 +1,28 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeMount, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { runtime } from 'webextension-polyfill';
 
 import OptionsAside from '@/layout/OptionsAside.vue';
 import OptionsHeader from '@/layout/OptionsHeader.vue';
 import ElementConfig from '@/components/ElementConfig.vue';
+import { useScrollbar } from '@/composables/scrollbar';
 import { ExtensionMessageType } from '@/constants';
 
 import type { ExtensionMessage } from '@/types';
 
 const router = useRouter();
 const currentYear = new Date().getFullYear();
+
+const route = useRoute();
+const { scrollbar, scrollToTop } = useScrollbar();
+
+watch(
+  () => route.name,
+  () => {
+    scrollToTop(false);
+  },
+);
 
 onBeforeMount(() => {
   runtime.onMessage.addListener((message: ExtensionMessage) => {
@@ -31,7 +42,7 @@ onBeforeMount(() => {
       <ElContainer class="options-container">
         <OptionsAside />
         <ElMain class="options-main">
-          <ElScrollbar>
+          <ElScrollbar ref="scrollbar">
             <RouterView />
           </ElScrollbar>
         </ElMain>
