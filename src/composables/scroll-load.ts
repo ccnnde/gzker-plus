@@ -1,16 +1,16 @@
 import { computed, nextTick, ref, watch } from 'vue';
 
 import { useRequest } from './request';
+import { useScrollbar } from './scrollbar';
 
 import type { Ref } from 'vue';
-import type { ElScrollbar } from 'element-plus';
 
 export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: number) => Promise<T[]>) => {
   const { isLoading, errorOccurred, handleRequest, resetRequestState } = useRequest();
+  const { scrollbar, scrollToTop, scrollToBottom } = useScrollbar();
   const dataList = ref<T[]>([]) as Ref<T[]>;
   const currentPage = ref(1);
   const noMoreData = ref(true);
-  const scrollbar = ref<InstanceType<typeof ElScrollbar> | null>(null);
 
   const isFirstPage = computed(() => {
     return currentPage.value === 1;
@@ -101,20 +101,6 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
     currentPage.value = 1;
     noMoreData.value = true;
     resetRequestState();
-  };
-
-  const scrollToTop = () => {
-    scrollbar.value?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
-
-  const scrollToBottom = () => {
-    scrollbar.value?.scrollTo({
-      top: scrollbar.value.wrapRef?.scrollHeight,
-      behavior: 'smooth',
-    });
   };
 
   return {
