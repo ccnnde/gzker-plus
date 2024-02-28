@@ -31,7 +31,7 @@ onBeforeMount(() => {
       <ElContainer class="options-container">
         <OptionsAside />
         <ElMain class="options-main">
-          <ElScrollbar always>
+          <ElScrollbar>
             <RouterView />
           </ElScrollbar>
         </ElMain>
@@ -67,6 +67,10 @@ onBeforeMount(() => {
 
 .options-main {
   padding-right: 0;
+
+  & > :deep(.el-scrollbar) .el-scrollbar__view {
+    margin-right: var(--el-main-padding);
+  }
 }
 
 .footer-content {
