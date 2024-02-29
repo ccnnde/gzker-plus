@@ -17,6 +17,10 @@ interface SettingItem {
   component?: Component;
 }
 
+export interface IFontFaceSet extends FontFaceSet {
+  keys: () => IterableIterator<FontFace>;
+}
+
 export interface ImageViewer extends Viewer {
   index: number;
   length: number;

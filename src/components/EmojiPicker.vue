@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 import { Picker } from 'emoji-mart-vue-fast/src';
+import { runtime } from 'webextension-polyfill';
 
 import { t } from '@/i18n';
-import { emojiIndex } from '@/utils/emoji';
+import { EMOJI_CLASS_NAME, emojiIndex, NOTO_EMOJI_FONT } from '@/utils/emoji';
 
 import type { CSSProperties } from 'vue';
 import type { EmojiObject } from 'emoji-mart-vue-fast/src';
+import type { IFontFaceSet } from '@/types';
 
 import 'emoji-mart-vue-fast/css/emoji-mart.css';
 
@@ -43,6 +45,36 @@ const emojiI18n = computed(() => {
     },
   };
 });
+
+onBeforeMount(() => {
+  loadEmojiFont();
+});
+
+const loadEmojiFont = () => {
+  const isEmojiFontLoaded = [...(document.fonts as IFontFaceSet).keys()]
+    .map((item) => item.family)
+    .includes(NOTO_EMOJI_FONT);
+
+  if (isEmojiFontLoaded) {
+    return;
+  }
+
+  const fontFace = document.createElement('style');
+  const emojiFontUrl = runtime.getURL(`font/${NOTO_EMOJI_FONT}.ttf`);
+
+  fontFace.textContent = `
+    @font-face {
+      font-family: ${NOTO_EMOJI_FONT};
+      src: url(${emojiFontUrl});
+    }
+
+    span.${EMOJI_CLASS_NAME} {
+      font-family: ${NOTO_EMOJI_FONT};
+    }
+  `;
+
+  document.head.appendChild(fontFace);
+};
 
 const showPicker = () => {
   visible.value = true;

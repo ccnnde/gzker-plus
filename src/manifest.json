@@ -23,5 +23,11 @@
       "matches": ["*://www.guozaoke.com/*"],
       "js": ["src/scripts/index.ts", "src/scripts/blank-link.ts", "src/scripts/dblclick-to-top.ts"]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["*://www.guozaoke.com/*"],
+      "resources": ["font/NotoColorEmoji.ttf"]
+    }
   ]
 }

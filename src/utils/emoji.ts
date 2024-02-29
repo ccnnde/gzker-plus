@@ -1,4 +1,4 @@
-import data from 'emoji-mart-vue-fast/data/all.json';
+import data from 'emoji-mart-vue-fast/data/google.json';
 import { EmojiIndex } from 'emoji-mart-vue-fast/src';
 
 import weiboEmojis from '@/assets/weibo-emojis.json';
@@ -18,12 +18,16 @@ const weiboEmojiMarkdownMap: WeiboEmojiMarkdownMap = weiboEmojis.reduce<WeiboEmo
   return acc;
 }, {});
 
+export const NOTO_EMOJI_FONT = 'NotoColorEmoji';
+
+export const EMOJI_CLASS_NAME = 'emoji-type-native';
+
 export const getEmojiById = (emojiId: string): string | null => {
   try {
     const emoji = emojiIndex.emoji(emojiId);
 
     if (emoji.native) {
-      return emoji.native;
+      return `<span class="${EMOJI_CLASS_NAME}">${emoji.native}</span>`;
     } else if (emoji.custom) {
       return `<img src="${emoji.imageUrl}" alt="${emojiId}"/>`;
     } else {
