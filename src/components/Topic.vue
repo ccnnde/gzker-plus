@@ -12,6 +12,7 @@ import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic
 import { request, waitTime } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
+import { LOADING_BACKGROUND_DARK } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -108,7 +109,9 @@ const handleTopicClick = (e: Event) => {
 const handleCreateTopicClick = async (e: Event) => {
   e.preventDefault();
 
-  const loading = ElLoading.service();
+  const loading = ElLoading.service({
+    background: LOADING_BACKGROUND_DARK,
+  });
 
   try {
     const createTopicLinkEle = e.target as HTMLAnchorElement;

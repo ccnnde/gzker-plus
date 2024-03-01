@@ -9,7 +9,7 @@ import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
-import { ExtensionMessageType, OptionsKey, OptionsRouteNames } from '@/constants';
+import { ExtensionMessageType, LOADING_BACKGROUND_DARK, OptionsKey, OptionsRouteNames } from '@/constants';
 import {
   SHORTCUT_CLEAR_MENTION_UID,
   SHORTCUT_SHOW_EDITOR_HELP,
@@ -263,7 +263,7 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
 
   const loading = ElLoading.service({
     text: t('enhancedTopic.uploading'),
-    background: 'rgba(0, 0, 0, 0.7)',
+    background: LOADING_BACKGROUND_DARK,
   });
 
   try {

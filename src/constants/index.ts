@@ -13,6 +13,11 @@ export const GZK_URL = 'https://www.guozaoke.com';
 export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
 
 /**
+ * Loading 暗色背景
+ */
+export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
+
+/**
  * Options 页面路由名称
  */
 export const OptionsRouteNames = {
