@@ -47,6 +47,7 @@ const emit = defineEmits<{
 const LIGHT_THEME = 'light';
 let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
+let isEditorFirstRender = true;
 
 const isEditorFocused = ref(false);
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
@@ -357,6 +358,12 @@ const validateImgFile = (file: File): string => {
 
 const handleContentChange: CherryLifecycle = (text) => {
   emit('update:modelValue', text);
+
+  if (isEditorFirstRender) {
+    isEditorFirstRender = false;
+    return;
+  }
+
   emit('change');
 };
 
