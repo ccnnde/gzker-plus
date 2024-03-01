@@ -114,7 +114,10 @@ const handleCreateTopicClick = async (e: Event) => {
     const createTopicLinkEle = e.target as HTMLAnchorElement;
     const { href } = createTopicLinkEle;
     await waitTime();
-    await request(href);
+
+    if (import.meta.env.PROD) {
+      await request(href);
+    }
 
     const node = href.match(createTopicLinkRegExp)?.[1];
     addTopic(node as string);
@@ -246,14 +249,16 @@ const addTopic = (node: string) => {
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
 
 const addReply = (content?: string) => {
-  if (topicStatus.value?.unbindedPhone) {
-    ElMessage.error(t('enhancedTopic.cannotReplyByInvalidUser'));
-    return;
-  }
+  if (import.meta.env.PROD) {
+    if (topicStatus.value?.unbindedPhone) {
+      ElMessage.error(t('enhancedTopic.cannotReplyByInvalidUser'));
+      return;
+    }
 
-  if (topicStatus.value?.locked) {
-    ElMessage.error(t('enhancedTopic.cannotReplyByLockedPost'));
-    return;
+    if (topicStatus.value?.locked) {
+      ElMessage.error(t('enhancedTopic.cannotReplyByLockedPost'));
+      return;
+    }
   }
 
   replyEditor.value?.openDialog();
