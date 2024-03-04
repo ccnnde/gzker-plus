@@ -4,6 +4,11 @@
 export const SHORTCUT_SHOW_EDITOR_HELP = 'ctrl+/';
 
 /**
+ * 显示编辑器历史记录对话框
+ */
+export const SHORTCUT_SHOW_EDITOR_HISTORY = 'ctrl+h';
+
+/**
  * 显示 Emoji 选择器
  */
 export const SHORTCUT_SHOW_EMOJI_PICKER = 'ctrl+;';

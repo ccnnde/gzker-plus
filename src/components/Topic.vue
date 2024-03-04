@@ -453,6 +453,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 .topic-editor-dialog,
 .reply-editor-dialog,
 .conversation-dialog,
+.editor-history-dialog,
 .editor-help-dialog {
   border-radius: var(--el-border-radius-base);
 
@@ -470,6 +471,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .reply-editor-dialog,
+.editor-history-dialog,
 .conversation-dialog {
   width: 40%;
 

@@ -13,6 +13,7 @@ import { ExtensionMessageType, LOADING_BACKGROUND_DARK, OptionsKey, OptionsRoute
 import {
   SHORTCUT_CLEAR_MENTION_UID,
   SHORTCUT_SHOW_EDITOR_HELP,
+  SHORTCUT_SHOW_EDITOR_HISTORY,
   SHORTCUT_SHOW_EMOJI_PICKER,
   SHORTCUT_SHOW_MENTION_PICKER,
   SHORTCUT_SUBMIT_CONTENT,
@@ -21,6 +22,7 @@ import {
 } from '@/constants/shortcut';
 
 import EditorHelp from './EditorHelp.vue';
+import EditorHistory from './EditorHistory.vue';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
 import type { CherryAnchor, CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
@@ -78,6 +80,7 @@ const initCherryMarkdown = () => {
         'image',
         'link',
         'code',
+        'history',
         'help',
       ],
       toolbarRight: ['dialogFullscreen', 'togglePreview'],
@@ -86,6 +89,10 @@ const initCherryMarkdown = () => {
       sidebar: false,
       theme: LIGHT_THEME,
       customMenu: {
+        history: Cherry.createMenuHook(t('enhancedTopic.editorHistory'), {
+          iconName: 'insertSeq',
+          onClick: () => openEditorHistory(),
+        }),
         help: Cherry.createMenuHook(t('enhancedTopic.editorHelp'), {
           iconName: 'question',
           onClick: () => openEditorHelp(),
@@ -180,6 +187,13 @@ const generateShortcut = (e: KeyboardEvent) => {
   return ctrlStr + metaStr + shiftStr + keyStr;
 };
 
+const editorHistory = ref<InstanceType<typeof EditorHistory> | null>(null);
+
+const openEditorHistory = (e?: KeyboardEvent) => {
+  editorHistory.value?.openDialog();
+  e?.preventDefault();
+};
+
 const editorHelp = ref<InstanceType<typeof EditorHelp> | null>(null);
 
 const openEditorHelp = (e?: KeyboardEvent) => {
@@ -193,6 +207,7 @@ const toggleEditorFullscreen = (e?: KeyboardEvent) => {
 };
 
 const keybindings: Keybindings = {
+  [SHORTCUT_SHOW_EDITOR_HISTORY]: openEditorHistory,
   [SHORTCUT_SHOW_EDITOR_HELP]: openEditorHelp,
   [SHORTCUT_SHOW_EMOJI_PICKER]: (e: KeyboardEvent) => {
     emit('showEmojiPicker');
@@ -429,6 +444,7 @@ defineExpose({
 
 <template>
   <div ref="mdEditorEl" :class="['content-editor-container', { 'is-focus': isEditorFocused }]"></div>
+  <EditorHistory ref="editorHistory" />
   <EditorHelp ref="editorHelp" />
 </template>
 
