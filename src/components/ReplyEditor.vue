@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
+import { debounce } from 'lodash-es';
 
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
@@ -149,7 +150,7 @@ watch(replyContent, () => {
     return;
   }
 
-  saveEditHistory(editHistoryId, { content: replyContent.value });
+  updateEditHistory();
 });
 
 const generateEditHisotryId = () => {
@@ -161,6 +162,10 @@ const generateEditHisotryId = () => {
     editHistoryId = getReplyModifyHistoryId(loginUserId, props.topicId as string, editedReplyId);
   }
 };
+
+const updateEditHistory = debounce(() => {
+  saveEditHistory(editHistoryId, { content: replyContent.value });
+}, 200);
 
 const importEditHistory = (data: EditHistoryItem) => {
   const { id, content } = data;

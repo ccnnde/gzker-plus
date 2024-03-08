@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import { ElInput, ElMessage } from 'element-plus';
+import { debounce } from 'lodash-es';
 
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
@@ -184,7 +185,7 @@ watch(topicForm, () => {
     return;
   }
 
-  saveEditHistory(editHistoryId, topicForm);
+  updateEditHistory();
 });
 
 const generateEditHisotryId = () => {
@@ -196,6 +197,10 @@ const generateEditHisotryId = () => {
     editHistoryId = getTopicModifyHistoryId(loginUserId, editedTopicId);
   }
 };
+
+const updateEditHistory = debounce(() => {
+  saveEditHistory(editHistoryId, topicForm);
+}, 200);
 
 const importEditHistory = (data: EditHistoryItem) => {
   const { id, title, content } = data;

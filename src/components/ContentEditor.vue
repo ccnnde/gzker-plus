@@ -200,7 +200,11 @@ const generateShortcut = (e: KeyboardEvent) => {
 const editorHistory = ref<InstanceType<typeof EditorHistory> | null>(null);
 
 const openEditorHistory = (e?: KeyboardEvent) => {
-  editorHistory.value?.openDialog();
+  // 内容输入时对历史记录的存储操作进行了防抖处理，为了保持打开历史记录时查询的内容和输入的一致，故延时打开
+  setTimeout(() => {
+    editorHistory.value?.openDialog();
+  }, 200);
+
   e?.preventDefault();
 };
 
