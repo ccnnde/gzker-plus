@@ -232,3 +232,23 @@ export interface CherryFileUploadStatus {
 }
 
 export type CherryAnchor = [number, number] | false;
+
+export interface TopicForm {
+  node: string;
+  title: string;
+  content: string;
+}
+
+export interface EditHistoryItem {
+  id: string;
+  uid: string;
+  topicId?: string;
+  replyId?: string;
+  node?: string;
+  title?: string;
+  content?: string;
+  createTime: string;
+  createTimestamp: number;
+  updateTime: string;
+  updateTimestamp: number;
+}

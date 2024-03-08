@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { ElInput, ElMessage } from 'element-plus';
 
 import { useContentEditor } from '@/composables/content-editor';
@@ -7,21 +7,22 @@ import { useDialog } from '@/composables/dialog';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
 import { useLockscreen } from '@/composables/lockscreen';
 import { useRequest } from '@/composables/request';
+import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { createTopic, getNodeList, modifyTopic } from '@/api';
+import {
+  EditHistoryType,
+  getTopicCreateHistoryId,
+  getTopicModifyHistoryId,
+  saveEditHistory,
+} from '@/utils/edit-history';
 import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
 
 import type { CascaderProps, FormInstance, FormRules } from 'element-plus';
-import type { TreeNode, UserTopic, UserTopicDetail } from '@/types';
-
-interface TopicForm {
-  node: string;
-  title: string;
-  content: string;
-}
+import type { EditHistoryItem, TopicForm, TreeNode, UserTopic, UserTopicDetail } from '@/types';
 
 const emit = defineEmits<{
   sended: [data: UserTopic];
@@ -144,6 +145,7 @@ const validateContentField = async () => {
 
 const handleDialogOpen = async () => {
   resetEditorLayout();
+  generateEditHisotryId();
   topicFormRef.value?.clearValidate();
 
   if (isAddContent.value) {
@@ -156,6 +158,7 @@ const handleDialogOpen = async () => {
 };
 
 const handleDialogClose = () => {
+  editHistoryId = '';
   clearContent();
 
   if (isAddContent.value) {
@@ -167,6 +170,44 @@ const handleDialogClosed = () => {
   topicForm.node = '';
   topicForm.title = '';
   resetDialogFullscreen();
+};
+
+const storage = useStorageStore();
+let editHistoryId = '';
+
+const editorHistoryType = computed<EditHistoryType>(() => {
+  return isAddContent.value ? EditHistoryType.TopicCreate : EditHistoryType.TopicModify;
+});
+
+watch(topicForm, () => {
+  if (!editHistoryId) {
+    return;
+  }
+
+  saveEditHistory(editHistoryId, topicForm);
+});
+
+const generateEditHisotryId = () => {
+  const loginUserId = storage.settings?.loginUserId as string;
+
+  if (isAddContent.value) {
+    editHistoryId = getTopicCreateHistoryId(loginUserId);
+  } else {
+    editHistoryId = getTopicModifyHistoryId(loginUserId, editedTopicId);
+  }
+};
+
+const importEditHistory = (data: EditHistoryItem) => {
+  const { id, title, content } = data;
+  editHistoryId = id;
+
+  if (title !== undefined) {
+    topicForm.title = title;
+  }
+
+  if (content !== undefined) {
+    contentEditor.value?.setValue(content);
+  }
 };
 
 defineExpose({
@@ -216,8 +257,10 @@ defineExpose({
           ref="contentEditor"
           v-model="topicForm.content"
           :mentionable="false"
+          :editor-history-type="editorHistoryType"
           @blur="validateContentField"
           @change="validateContentField"
+          @import-history="importEditHistory"
           @submit-content="sendTopic"
           @show-emoji-picker="emojiPicker?.showPicker"
           @toggle-fullscreen="toggleDialogFullscreen"

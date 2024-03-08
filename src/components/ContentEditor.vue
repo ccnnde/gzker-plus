@@ -9,6 +9,7 @@ import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
+import type { EditHistoryType } from '@/utils/edit-history';
 import { ExtensionMessageType, LOADING_BACKGROUND_DARK, OptionsKey, OptionsRouteNames } from '@/constants';
 import {
   SHORTCUT_CLEAR_MENTION_UID,
@@ -25,13 +26,21 @@ import EditorHelp from './EditorHelp.vue';
 import EditorHistory from './EditorHistory.vue';
 
 import type { CherryFileUploadHandler, CherryLifecycle } from 'cherry-markdown/types/cherry';
-import type { CherryAnchor, CherryFileUploadStatus, Coordinates, ExtensionMessage, Keybindings } from '@/types';
+import type {
+  CherryAnchor,
+  CherryFileUploadStatus,
+  Coordinates,
+  EditHistoryItem,
+  ExtensionMessage,
+  Keybindings,
+} from '@/types';
 
 import 'cherry-markdown/dist/cherry-markdown.css';
 
 interface Props {
   modelValue: string;
   mentionable: boolean;
+  editorHistoryType: EditHistoryType;
 }
 
 const props = defineProps<Props>();
@@ -40,6 +49,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
   blur: [];
   change: [];
+  importHistory: [data: EditHistoryItem];
   submitContent: [];
   showEmojiPicker: [];
   showMentionPicker: [coords: Coordinates];
@@ -444,7 +454,11 @@ defineExpose({
 
 <template>
   <div ref="mdEditorEl" :class="['content-editor-container', { 'is-focus': isEditorFocused }]"></div>
-  <EditorHistory ref="editorHistory" />
+  <EditorHistory
+    ref="editorHistory"
+    :editor-history-type="editorHistoryType"
+    @import-history="$emit('importHistory', $event)"
+  />
   <EditorHelp ref="editorHelp" />
 </template>
 

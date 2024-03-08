@@ -453,7 +453,6 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 .topic-editor-dialog,
 .reply-editor-dialog,
 .conversation-dialog,
-.editor-history-dialog,
 .editor-help-dialog {
   border-radius: var(--el-border-radius-base);
 

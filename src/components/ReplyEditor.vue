@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
 import { useRequest } from '@/composables/request';
+import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { createReply, modifyReply } from '@/api';
+import {
+  EditHistoryType,
+  getReplyCreateHistoryId,
+  getReplyModifyHistoryId,
+  saveEditHistory,
+} from '@/utils/edit-history';
 import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
 import MentionPicker from './MentionPicker.vue';
 
-import type { UserReplyItem, UserTopic } from '@/types';
+import type { EditHistoryItem, UserReplyItem, UserTopic } from '@/types';
 
 interface Props {
   topicId?: string;
@@ -114,10 +121,13 @@ const sendReply = () => {
 
 const handleDialogOpen = () => {
   resetEditorLayout();
+  generateEditHisotryId();
   contentEditor.value?.focusEndOfEditor();
 };
 
 const handleDialogClose = () => {
+  editHistoryId = '';
+
   if (!isAddContent.value) {
     clearContent();
   }
@@ -125,6 +135,40 @@ const handleDialogClose = () => {
 
 const handleDialogClosed = () => {
   resetDialogFullscreen();
+};
+
+const storage = useStorageStore();
+let editHistoryId = '';
+
+const editorHistoryType = computed<EditHistoryType>(() => {
+  return isAddContent.value ? EditHistoryType.ReplyCreate : EditHistoryType.ReplyModify;
+});
+
+watch(replyContent, () => {
+  if (!editHistoryId) {
+    return;
+  }
+
+  saveEditHistory(editHistoryId, { content: replyContent.value });
+});
+
+const generateEditHisotryId = () => {
+  const loginUserId = storage.settings?.loginUserId as string;
+
+  if (isAddContent.value) {
+    editHistoryId = getReplyCreateHistoryId(loginUserId, props.topicId as string);
+  } else {
+    editHistoryId = getReplyModifyHistoryId(loginUserId, props.topicId as string, editedReplyId);
+  }
+};
+
+const importEditHistory = (data: EditHistoryItem) => {
+  const { id, content } = data;
+  editHistoryId = id;
+
+  if (content !== undefined) {
+    contentEditor.value?.setValue(content);
+  }
 };
 
 defineExpose({
@@ -156,6 +200,8 @@ defineExpose({
       ref="contentEditor"
       v-model="replyContent"
       mentionable
+      :editor-history-type="editorHistoryType"
+      @import-history="importEditHistory"
       @submit-content="sendReply"
       @show-emoji-picker="emojiPicker?.showPicker"
       @show-mention-picker="showMentionPicker"
