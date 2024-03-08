@@ -59,8 +59,11 @@ const handleHistoryTypeChange = () => {
 
 const importEditHistory = (data: EditHistoryItem) => {
   emit('importHistory', data);
-  closeDialog();
   ElMessage.success(t('common.imported'));
+
+  setTimeout(() => {
+    closeDialog();
+  }, 300);
 };
 
 const deleteEditHistory = (id: string, index: number) => {
