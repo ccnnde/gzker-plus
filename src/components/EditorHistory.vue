@@ -79,6 +79,7 @@ const deleteAllEditHistory = () => {
 const handleDialogOpen = () => {
   selectedHistoryType.value = props.editorHistoryType;
   handleHistoryTypeChange();
+  scrollbar.value?.update();
 };
 
 const handleDialogClosed = () => {
