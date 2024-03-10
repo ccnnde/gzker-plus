@@ -1,6 +1,10 @@
 {
-  "{{chrome}}.manifest_version": 3,
-  "{{firefox}}.manifest_version": 2,
+  "manifest_version": 3,
+  "{{firefox}}.browser_specific_settings": {
+    "gecko": {
+      "id": "gzkerplus@gmail.com"
+    }
+  },
   "permissions": ["storage"],
   "host_permissions": ["https://sm.ms/"],
   "icons": {
