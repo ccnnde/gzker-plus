@@ -92,6 +92,10 @@ const editReply = (reply: UserReplyItem) => {
     const content = convertWeiboImgToEmoji(reply.content as string);
     contentEditor.value?.setValue(content);
   }, 0);
+
+  setTimeout(() => {
+    generateEditHisotryId();
+  }, 300);
 };
 
 const { isLoading, handleRequest } = useRequest();
@@ -122,7 +126,11 @@ const sendReply = () => {
 
 const handleDialogOpen = () => {
   resetEditorLayout();
-  generateEditHisotryId();
+
+  if (isAddContent.value) {
+    generateEditHisotryId();
+  }
+
   contentEditor.value?.focusEndOfEditor();
 };
 
@@ -169,12 +177,16 @@ const updateEditHistory = debounce(() => {
 
 const importEditHistory = (data: EditHistoryItem) => {
   const { id, content } = data;
-  editHistoryId = id;
+  editHistoryId = '';
 
   if (content !== undefined) {
     contentEditor.value?.setValue(content);
     contentEditor.value?.focusEndOfEditor();
   }
+
+  setTimeout(() => {
+    editHistoryId = id;
+  }, 100);
 };
 
 defineExpose({

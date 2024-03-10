@@ -105,6 +105,10 @@ const editTopic = (topicId: string, topicDetail: UserTopicDetail) => {
     const content = convertWeiboImgToEmoji(topicDetail.content as string);
     contentEditor.value?.setValue(content);
   }, 0);
+
+  setTimeout(() => {
+    generateEditHisotryId();
+  }, 300);
 };
 
 const { isLoading, handleRequest } = useRequest();
@@ -146,11 +150,11 @@ const validateContentField = async () => {
 
 const handleDialogOpen = async () => {
   resetEditorLayout();
-  generateEditHisotryId();
   topicFormRef.value?.clearValidate();
 
   if (isAddContent.value) {
     lockScroll();
+    generateEditHisotryId();
 
     if (!nodeList.value.length) {
       nodeList.value = await getNodeList();
@@ -204,7 +208,7 @@ const updateEditHistory = debounce(() => {
 
 const importEditHistory = (data: EditHistoryItem) => {
   const { id, title, content } = data;
-  editHistoryId = id;
+  editHistoryId = '';
 
   if (title !== undefined) {
     topicForm.title = title;
@@ -214,6 +218,10 @@ const importEditHistory = (data: EditHistoryItem) => {
     contentEditor.value?.setValue(content);
     contentEditor.value?.focusEndOfEditor();
   }
+
+  setTimeout(() => {
+    editHistoryId = id;
+  }, 100);
 };
 
 defineExpose({
