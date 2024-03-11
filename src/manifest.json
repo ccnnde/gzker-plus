@@ -1,5 +1,6 @@
 {
-  "manifest_version": 3,
+  "{{chrome}}.manifest_version": 3,
+  "{{firefox}}.manifest_version": 2,
   "{{firefox}}.browser_specific_settings": {
     "gecko": {
       "id": "gzkerplus@gmail.com"
@@ -28,10 +29,11 @@
       "js": ["src/scripts/index.ts", "src/scripts/blank-link.ts", "src/scripts/dblclick-to-top.ts"]
     }
   ],
-  "web_accessible_resources": [
+  "{{chrome}}.web_accessible_resources": [
     {
       "matches": ["*://www.guozaoke.com/*"],
-      "resources": ["font/NotoColorEmoji.ttf"]
+      "resources": ["font/*.ttf"]
     }
-  ]
+  ],
+  "{{firefox}}.web_accessible_resources": ["font/*.ttf"]
 }

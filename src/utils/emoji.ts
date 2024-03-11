@@ -18,7 +18,7 @@ const weiboEmojiMarkdownMap: WeiboEmojiMarkdownMap = weiboEmojis.reduce<WeiboEmo
   return acc;
 }, {});
 
-export const NOTO_EMOJI_FONT = 'NotoColorEmoji';
+export const NOTO_EMOJI_FONT = 'Noto-COLRv1';
 
 export const EMOJI_CLASS_NAME = 'emoji-type-native';
 
