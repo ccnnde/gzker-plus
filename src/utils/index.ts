@@ -6,7 +6,7 @@ import { storage } from 'webextension-polyfill';
 
 import i18n, { t } from '@/i18n';
 import { API_USER } from '@/api';
-import { defaultExtensionStorage } from '@/constants';
+import { defaultExtensionStorage, GZK_URL } from '@/constants';
 import {
   ALREADY_LIKE,
   CAN_NOT_FAVORITE_YOUR_TOPIC,
@@ -72,7 +72,7 @@ export const getStorage = async (): Promise<StorageSettings> => {
 };
 
 export const request = async (url: string, init?: RequestInit): Promise<string> => {
-  const res = await fetch(url, init);
+  const res = await fetch(GZK_URL + url, init);
 
   if (!res.ok || res.status !== 200) {
     throw new Error(res.statusText);

@@ -115,7 +115,7 @@ const handleCreateTopicClick = async (e: Event) => {
 
   try {
     const createTopicLinkEle = e.target as HTMLAnchorElement;
-    const { href } = createTopicLinkEle;
+    const href = createTopicLinkEle.getAttribute('href') as string;
     await waitTime();
 
     if (import.meta.env.PROD) {
