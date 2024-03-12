@@ -51,7 +51,7 @@ onBeforeMount(() => {
 });
 
 const loadEmojiFont = () => {
-  const isEmojiFontLoaded = [...(document.fonts as IFontFaceSet).keys()]
+  const isEmojiFontLoaded = getFontFaceList()
     .map((item) => item.family)
     .includes(NOTO_EMOJI_FONT);
 
@@ -74,6 +74,27 @@ const loadEmojiFont = () => {
   `;
 
   document.head.appendChild(fontFace);
+};
+
+/**
+ * 获取文档已经加载的字体列表
+ * - 在 firefox 浏览器中调用 `[...document.fonts.values()]`  会报错 `Uncaught TypeError: document.fonts.values() is not iterable`
+ * - 故使用手动迭代的方式获取 `values`，解决方案参考 https://sidneyliebrand.io/blog/fixing-font-face-set-entries-not-iterable-in-firefox
+ * - 此 bug 已经存在于 firefox 的 bugzilla，尚未修复，链接如下
+ *    - https://bugzilla.mozilla.org/show_bug.cgi?id=1729089
+ *    - https://bugzilla.mozilla.org/show_bug.cgi?id=1780657
+ */
+const getFontFaceList = (): FontFace[] => {
+  const fontFaceList: FontFace[] = [];
+  const iterator = (document.fonts as IFontFaceSet).values();
+  let result = iterator.next();
+
+  while (!result.done) {
+    fontFaceList.push(result.value);
+    result = iterator.next();
+  }
+
+  return fontFaceList;
 };
 
 const showPicker = () => {

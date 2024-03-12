@@ -18,7 +18,7 @@ interface SettingItem {
 }
 
 export interface IFontFaceSet extends FontFaceSet {
-  keys: () => IterableIterator<FontFace>;
+  values: () => IterableIterator<FontFace>;
 }
 
 export interface ImageViewer extends Viewer {
