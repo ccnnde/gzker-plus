@@ -6,6 +6,7 @@ import { useDialog } from '@/composables/dialog';
 import { useScrollbar } from '@/composables/scrollbar';
 import { t } from '@/i18n';
 import { deleteAllEditHistoryByType, EditHistoryType, getAllEditHistoryByType } from '@/utils/edit-history';
+import { convertEmojiToNative } from '@/utils/emoji';
 
 import type { EditHistoryItem } from '@/types';
 
@@ -170,7 +171,7 @@ defineExpose({
                   <p class="history-card-content">{{ item.title || '-' }}</p>
                   <label class="history-card-label">{{ $t('enhancedTopic.topicContent') }}</label>
                 </template>
-                <p class="history-card-content">{{ item.content || '-' }}</p>
+                <p class="history-card-content" v-html="convertEmojiToNative(item.content) || '-'"></p>
               </ElCard>
             </ElTimelineItem>
           </TransitionGroup>
