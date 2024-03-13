@@ -46,6 +46,7 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
       const firstPageData = await requestCallback(currentPage.value);
       dataList.value = firstPageData;
       noMoreData.value = firstPageData.length < pageSize;
+      scrollbar.value?.handleScroll();
     });
   };
 
