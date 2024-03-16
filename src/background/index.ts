@@ -31,7 +31,7 @@ runtime.onMessage.addListener(async (message: ExtensionMessage) => {
 
       setTimeout(() => {
         tabs.sendMessage(tab.id as number, message);
-      }, 700);
+      }, 500);
 
       return;
     }
