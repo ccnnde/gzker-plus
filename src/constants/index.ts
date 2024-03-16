@@ -20,9 +20,17 @@ export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
 /**
  * Options 页面路由名称
  */
-export const OptionsRouteNames = {
-  BasicSetting: 'basicSetting',
-  ImageHosting: 'imageHosting',
+export const enum OptionsRouteNames {
+  BasicSetting = 'basicSetting',
+  ImageHosting = 'imageHosting',
+}
+
+/**
+ * Options 页面路由路径
+ */
+export const OptionsRoutePaths: Record<OptionsRouteNames, string> = {
+  [OptionsRouteNames.BasicSetting]: '/basic-setting',
+  [OptionsRouteNames.ImageHosting]: '/image-hosting',
 };
 
 /**
@@ -30,7 +38,6 @@ export const OptionsRouteNames = {
  */
 export const enum ExtensionMessageType {
   OpenOptionsPage,
-  OpenExtensionPage,
   UploadImg,
 }
 

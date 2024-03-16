@@ -10,7 +10,13 @@ import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
-import { ExtensionMessageType, LOADING_BACKGROUND_DARK, OptionsKey, OptionsRouteNames } from '@/constants';
+import {
+  ExtensionMessageType,
+  LOADING_BACKGROUND_DARK,
+  OptionsKey,
+  OptionsRouteNames,
+  OptionsRoutePaths,
+} from '@/constants';
 import {
   SHORTCUT_CLEAR_MENTION_UID,
   SHORTCUT_SHOW_EDITOR_HELP,
@@ -351,8 +357,8 @@ const getApiKey = async (): Promise<string | undefined> => {
     });
 
     const msg: ExtensionMessage = {
-      msgType: ExtensionMessageType.OpenExtensionPage,
-      extPageName: OptionsRouteNames.ImageHosting,
+      msgType: ExtensionMessageType.OpenOptionsPage,
+      extPagePath: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
     };
 
     runtime.sendMessage(msg);

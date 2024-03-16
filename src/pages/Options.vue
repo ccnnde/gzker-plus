@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import { onBeforeMount, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { runtime } from 'webextension-polyfill';
+import { watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 import OptionsAside from '@/layout/OptionsAside.vue';
 import OptionsHeader from '@/layout/OptionsHeader.vue';
 import ElementConfig from '@/components/ElementConfig.vue';
 import { useScrollbar } from '@/composables/scrollbar';
-import { ExtensionMessageType } from '@/constants';
 
-import type { ExtensionMessage } from '@/types';
-
-const router = useRouter();
 const currentYear = new Date().getFullYear();
 
 const route = useRoute();
@@ -23,16 +18,6 @@ watch(
     scrollToTop(false);
   },
 );
-
-onBeforeMount(() => {
-  runtime.onMessage.addListener((message: ExtensionMessage) => {
-    switch (message.msgType) {
-      case ExtensionMessageType.OpenExtensionPage:
-        router.push({ name: message.extPageName });
-        return;
-    }
-  });
-});
 </script>
 
 <template>

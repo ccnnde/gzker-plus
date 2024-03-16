@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import { OptionsRouteNames } from '@/constants';
+import { OptionsRouteNames, OptionsRoutePaths } from '@/constants';
 
 import type { RouteRecordRaw } from 'vue-router';
 
@@ -15,10 +15,10 @@ declare module 'vue-router' {
 const routes: Readonly<RouteRecordRaw[]> = [
   {
     path: '/',
-    redirect: '/basic-setting',
+    redirect: OptionsRoutePaths[OptionsRouteNames.BasicSetting],
   },
   {
-    path: '/basic-setting',
+    path: OptionsRoutePaths[OptionsRouteNames.BasicSetting],
     name: OptionsRouteNames.BasicSetting,
     component: () => import('@/views/basic-setting/BasicSetting.vue'),
     meta: {
@@ -27,7 +27,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
     },
   },
   {
-    path: '/image-hosting',
+    path: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
     name: OptionsRouteNames.ImageHosting,
     component: () => import('@/markdown/ImageHosting.md'),
     meta: {

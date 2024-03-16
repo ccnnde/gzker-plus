@@ -6,7 +6,7 @@
       "id": "gzkerplus@gmail.com"
     }
   },
-  "{{chrome}}.permissions": ["storage"],
+  "{{chrome}}.permissions": ["storage", "tabs"],
   "{{chrome}}.host_permissions": ["https://sm.ms/"],
   "{{firefox}}.permissions": ["storage", "https://sm.ms/"],
   "icons": {

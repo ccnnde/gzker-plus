@@ -34,9 +34,9 @@ export interface Base64File {
 
 export interface ExtensionMessage {
   msgType: ExtensionMessageType;
+  extPagePath?: string;
   imgFile?: Base64File;
   apiKey?: string;
-  extPageName?: string;
 }
 
 export interface Setting {
