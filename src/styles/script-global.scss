@@ -8,6 +8,9 @@ img[src^="https://img.whzxc.cn/bd"]
 }
 
 .markdown-body {
+  --base-size-8: 8px;
+  --base-size-16: 16px;
+
   h1,
   h2 {
     border-bottom: none;

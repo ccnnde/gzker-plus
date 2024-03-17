@@ -41,6 +41,7 @@
     "github-markdown-css": "^5.5.1",
     "js-cookie": "^3.0.5",
     "lodash-es": "^4.17.21",
+    "markdown-it-github-alerts": "^0.3.0",
     "markdown-it-link-attributes": "^4.0.1",
     "markdown-it-task-checkbox": "^1.0.6",
     "mitt": "^3.0.1",

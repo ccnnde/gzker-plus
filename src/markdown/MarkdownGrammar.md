@@ -150,7 +150,8 @@ Markdown 语法
 
 ![doge](https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/a1/2018new_doge02_org.png)
 
-也可以直接插入图片链接，编辑器会自动渲染为图片
+> [!TIP]
+> 也可以直接插入图片链接，编辑器会自动渲染为图片
 
 ### 链接
 
@@ -167,7 +168,8 @@ Markdown 语法
 
 [百度](https://wwww.baidu.com)
 
-也可以直接插入链接地址，编辑器会自动渲染为链接
+> [!TIP]
+> 也可以直接插入链接地址，编辑器会自动渲染为链接
 
 ### 行内代码
 

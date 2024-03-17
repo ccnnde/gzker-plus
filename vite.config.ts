@@ -3,6 +3,7 @@ import Vue from '@vitejs/plugin-vue';
 import HtmlMinifier from 'vite-plugin-html-minifier';
 import WebExtension, { readJsonFile } from 'vite-plugin-web-extension';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import MarkdownItGithubAlerts from 'markdown-it-github-alerts';
 import MarkdownItLinkAttr from 'markdown-it-link-attributes';
 import MarkdownItTaskCheckbox from 'markdown-it-task-checkbox';
 import UnoCSS from 'unocss/vite';
@@ -55,6 +56,16 @@ export default defineConfig({
     HtmlMinifier(),
     Markdown({
       markdownItSetup(md) {
+        md.use(MarkdownItGithubAlerts, {
+          titles: {
+            tip: '提示',
+            note: '注意',
+            important: '重要',
+            warning: '警告',
+            caution: '注意',
+          },
+        });
+
         md.use(MarkdownItLinkAttr, {
           attrs: {
             target: '_blank',
