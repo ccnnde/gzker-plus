@@ -81,10 +81,10 @@ const initCherryMarkdown = () => {
     fileUpload: handleImgFileUpload,
     toolbars: {
       toolbar: [
-        'header',
         'bold',
         'italic',
         'strikethrough',
+        'header',
         'quote',
         '|',
         'ol',
