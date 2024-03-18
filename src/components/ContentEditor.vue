@@ -240,7 +240,7 @@ const keybindings: Keybindings = {
 
     setTimeout(() => {
       emit('showMentionPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
-    });
+    }, 50);
   },
   [SHORTCUT_CLEAR_MENTION_UID]: (e: KeyboardEvent) => {
     if (!cmEditor) {

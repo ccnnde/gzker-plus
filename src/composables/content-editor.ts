@@ -52,7 +52,10 @@ export const useContentEditor = () => {
   const showMentionPicker = (coords: Coordinates) => {
     mentionPickerLeft.value = coords.left;
     mentionPickerTop.value = coords.top;
-    mentionPicker.value?.showPicker();
+
+    setTimeout(() => {
+      mentionPicker.value?.showPicker();
+    }, 50);
   };
 
   const handleEditorBeforeClose: DialogBeforeCloseFn = (done) => {

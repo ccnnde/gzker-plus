@@ -37,10 +37,7 @@ const initPicker = () => {
 
 const showPicker = () => {
   isPickerVisible.value = true;
-
-  setTimeout(() => {
-    select.value?.focus();
-  });
+  select.value?.focus();
 };
 
 const handlePickerFocus = () => {
