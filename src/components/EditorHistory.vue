@@ -101,6 +101,7 @@ defineExpose({
     :z-index="2001"
     append-to-body
     @open="handleDialogOpen"
+    @opened="scrollbar?.handleScroll"
     @closed="handleDialogClosed"
   >
     <template #header="{ titleId, titleClass }">
