@@ -181,7 +181,6 @@ const importEditHistory = (data: EditHistoryItem) => {
 
   if (content !== undefined) {
     contentEditor.value?.setValue(content);
-    contentEditor.value?.focusEndOfEditor();
   }
 
   setTimeout(() => {
