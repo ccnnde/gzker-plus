@@ -209,7 +209,7 @@ defineExpose({
     :close-on-click-modal="false"
     append-to-body
     @open="handleDialogOpen"
-    @opened="contentEditor?.focusEndOfEditor"
+    @opened="contentEditor?.focusEditor"
     @close="handleDialogClose"
     @closed="handleDialogClosed"
   >

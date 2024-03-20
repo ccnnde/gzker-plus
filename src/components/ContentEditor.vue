@@ -436,8 +436,21 @@ const scrollToCursor = () => {
   });
 };
 
+/**
+ * 重置滚动条位置
+ * - 导入或编辑内容时，若上次编辑的滚动条位置有过变化（比如位于中间），则这次打开时仍然在该位置，但实际上滚动条应该位于顶部
+ */
+const resetScrollbarPosition = () => {
+  const verticalScrollbarEle = cmEditor?.getWrapperElement().querySelector('.CodeMirror-vscrollbar');
+
+  if (verticalScrollbarEle) {
+    verticalScrollbarEle.scrollTop = 0;
+  }
+};
+
 const setValue = (content: string) => {
   cherryEditor?.setValue(content);
+  resetScrollbarPosition();
 };
 
 const insertValue = (content: string) => {
