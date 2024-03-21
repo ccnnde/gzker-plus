@@ -88,8 +88,8 @@ export const request = async (url: string, init?: RequestInit): Promise<string> 
     throw new Error(t('common.emptyData'));
   }
 
-  // 响应头部含有 Content-Length 字段时，代表返回的数据是 JSON 格式的字符串
-  if (res.headers.has('Content-Length')) {
+  // 若 JSON.parse(data) 未报错，代表返回的数据是 JSON 格式的字符串，否则为 HTML 字符串
+  try {
     const { message, success } = JSON.parse(data) as ApiJsonResponse;
 
     if (!success) {
@@ -97,9 +97,9 @@ export const request = async (url: string, init?: RequestInit): Promise<string> 
     }
 
     return message;
+  } catch {
+    return data;
   }
-
-  return data;
 };
 
 export const addUnit = (val: number, unit: string = 'px'): string => {
