@@ -56,7 +56,7 @@ const handlePopoverHide = () => {
 
 <template>
   <ElementConfig>
-    <UserInfoPopover :uid="uid" :show-after="200" :hide-after="0" @hide="handlePopoverHide">
+    <UserInfoPopover :uid="uid" :show-after="200" :hide-after="100" @hide="handlePopoverHide">
       <a class="avatar-wrapper" :style="avatarWrapperStyle" :href="userLink" target="_blank"></a>
     </UserInfoPopover>
   </ElementConfig>

@@ -79,6 +79,7 @@ const handleUserBlock = () => {
     :width="300"
     :show-after="showAfter"
     :hide-after="hideAfter"
+    :disabled="!uid"
     placement="top"
     @show="handlePopoverShow"
     @hide="handlePopoverHide"
