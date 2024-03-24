@@ -26,7 +26,7 @@ const emit = defineEmits<{
 }>();
 
 const { dialogVisible, openDialog, closeDialog } = useDialog();
-const { scrollbar } = useScrollbar();
+const { scrollbar, scrollToTop } = useScrollbar();
 
 const editHistoryList = ref<EditHistoryItem[]>([]);
 const selectedHistoryType = ref(EditHistoryType.TopicCreate);
@@ -56,6 +56,7 @@ const disableImport = computed(() => {
 
 const handleHistoryTypeChange = () => {
   editHistoryList.value = getAllEditHistoryByType(selectedHistoryType.value);
+  scrollToTop(false);
 };
 
 const importEditHistory = (data: EditHistoryItem) => {
