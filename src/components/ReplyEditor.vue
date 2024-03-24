@@ -140,6 +140,8 @@ const handleDialogClose = () => {
   if (!isAddContent.value) {
     clearContent();
   }
+
+  contentEditor.value?.hideAllSubMenu();
 };
 
 const handleDialogClosed = () => {

@@ -463,6 +463,10 @@ const appendValue = (content: string) => {
   cherryEditor?.insertValue(content, false, insertAnchor, false);
 };
 
+const hideAllSubMenu = () => {
+  cherryEditor?.toolbar.hideAllSubMenu();
+};
+
 defineExpose({
   focusEditor,
   focusEndOfEditor,
@@ -472,6 +476,7 @@ defineExpose({
   setValue,
   insertValue,
   appendValue,
+  hideAllSubMenu,
 });
 </script>
 

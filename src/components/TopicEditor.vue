@@ -169,6 +169,8 @@ const handleDialogClose = () => {
   if (isAddContent.value) {
     unlockScroll();
   }
+
+  contentEditor.value?.hideAllSubMenu();
 };
 
 const handleDialogClosed = () => {
