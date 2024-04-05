@@ -12,6 +12,14 @@ ESLint + Stylelint + Commitlint + Prettier + Lint Staged + Husky
 
 ## 安装
 
+请根据你的浏览器选择相应的安装地址
+
+Chrome: <https://chromewebstore.google.com/detail/lbdkjckninkejnacdmbnakdfalglfmkd>
+
+Edge: <https://microsoftedge.microsoft.com/addons/detail/eoindkoinilbnhiaajccmhjdlifeodfm>
+
+Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
+
 ## 功能
 
 - 💬 用户信息悬浮窗：鼠标悬浮在用户头像上时，展示用户基本信息，并可进行关注、屏蔽等操作
