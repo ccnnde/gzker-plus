@@ -12,6 +12,8 @@ ESLint + Stylelint + Commitlint + Prettier + Lint Staged + Husky
 
 ## 安装
 
+### 应用商店
+
 请根据你的浏览器选择相应的安装地址
 
 Chrome: <https://chromewebstore.google.com/detail/lbdkjckninkejnacdmbnakdfalglfmkd>
@@ -19,6 +21,14 @@ Chrome: <https://chromewebstore.google.com/detail/lbdkjckninkejnacdmbnakdfalglfm
 Edge: <https://microsoftedge.microsoft.com/addons/detail/eoindkoinilbnhiaajccmhjdlifeodfm>
 
 Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
+
+### 离线安装
+
+适用于 Chromium 内核浏览器，比如 Chrome/Edge/QQ 浏览器等
+
+- <https://github.com/ccnnde/gzker-plus/releases> 下载 `gzker-plus-x.x.x-chromium.zip`，并解压
+- 在浏览器的扩展管理页面打开 **开发者模式**
+- 点击 **加载已解压的扩展程序**，选中你解压好的目录即可
 
 ## 功能
 
