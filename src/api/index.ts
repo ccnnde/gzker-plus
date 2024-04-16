@@ -148,7 +148,7 @@ const parseUserMsgList = (htmlStr: string): UserMessage[] => {
       topicTitle: item.match(/<a href="\/t\/[^"]+">(.+)<\/a>/)?.[1],
       topicLink: item.match(/<a href="(\/t\/[^"]+)">.+<\/a>/)?.[1],
       replyType: /回复了你的主题/.test(item) ? ReplyType.Topic : ReplyType.Mention,
-      replyContent: item.match(/<div class="content"><p>(.+)<\/p>/s)?.[1],
+      replyContent: item.match(/<div class="content">(.+)<\/div>/s)?.[1],
     };
   });
 };

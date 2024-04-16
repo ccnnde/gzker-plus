@@ -320,6 +320,14 @@ $msg-padding: 15px;
   font-size: 13px;
   color: var(--el-text-color-regular);
 
+  :deep(p) {
+    margin-bottom: 0;
+
+    & + p {
+      margin-top: 10px;
+    }
+  }
+
   :deep(a) {
     color: var(--el-text-color-regular);
   }
