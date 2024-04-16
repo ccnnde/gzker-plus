@@ -155,7 +155,10 @@
     "topic": "主题"
   },
   "gzkHeader": {
+    "feedback": "意见反馈",
+    "gzkIssue": "提交 GitHub issue",
     "gzkSettings": "过早客 Plus 设置",
+    "gzkTopic": "过早客 Plus 主题帖",
     "message": "消息",
     "unreadMessage": "你有 {num} 条未读消息"
   },

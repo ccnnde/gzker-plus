@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import { ElDropdown } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
 
 import { ExtensionMessageType } from '@/constants';
@@ -7,6 +9,8 @@ import ElementConfig from './ElementConfig.vue';
 import MessageBell from './MessageBell.vue';
 
 import type { ExtensionMessage } from '@/types';
+
+const feedbackDropdown = ref<InstanceType<typeof ElDropdown> | null>(null);
 
 const openExtOptions = () => {
   const msg: ExtensionMessage = {
@@ -19,6 +23,27 @@ const openExtOptions = () => {
 
 <template>
   <ElementConfig>
+    <ElDropdown ref="feedbackDropdown" trigger="click" popper-class="feedback-popper">
+      <div>
+        <ElTooltip :content="$t('gzkHeader.feedback')" :show-arrow="false">
+          <un-i-mdi-account-question-outline class="header-icon" />
+        </ElTooltip>
+      </div>
+      <template #dropdown>
+        <ElDropdownMenu>
+          <ElDropdownItem>
+            <a href="/t/108340" @click="feedbackDropdown?.popperRef?.onClose">
+              {{ $t('gzkHeader.gzkTopic') }}
+            </a>
+          </ElDropdownItem>
+          <ElDropdownItem>
+            <a href="https://github.com/ccnnde/gzker-plus/issues" target="_blank">
+              {{ $t('gzkHeader.gzkIssue') }}
+            </a>
+          </ElDropdownItem>
+        </ElDropdownMenu>
+      </template>
+    </ElDropdown>
     <MessageBell />
     <ElTooltip :content="$t('gzkHeader.gzkSettings')" :show-arrow="false">
       <un-i-mdi-cog-outline class="header-icon" @click="openExtOptions" />
@@ -27,7 +52,7 @@ const openExtOptions = () => {
 </template>
 
 <style lang="scss">
-$gzker-header-width: 7em;
+$gzker-header-width: 9em;
 
 #gzk-app-header {
   position: absolute;
@@ -46,6 +71,22 @@ $gzker-header-width: 7em;
 
     &:hover {
       color: #db4937;
+    }
+  }
+}
+
+.feedback-popper {
+  .el-dropdown-menu__item {
+    a {
+      color: var(--el-text-color-regular);
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    &:not(.is-disabled):focus a {
+      color: var(--el-color-primary);
     }
   }
 }
