@@ -6,12 +6,12 @@ import { useDialog } from '@/composables/dialog';
 import { useScrollbar } from '@/composables/scrollbar';
 import { t } from '@/i18n';
 import { deleteAllEditHistoryByType, EditHistoryType, getAllEditHistoryByType } from '@/utils/edit-history';
-import { convertEmojiToNative } from '@/utils/emoji';
 
 import type { EditHistoryItem } from '@/types';
 
 interface Props {
   editorHistoryType: EditHistoryType;
+  renderMarkdown: (md?: string) => string;
 }
 
 interface HistoryTypeOption {
@@ -136,7 +136,7 @@ defineExpose({
               placement="top"
               hollow
             >
-              <ElCard shadow="hover">
+              <ElCard body-class="history-card-body" shadow="hover">
                 <template #header>
                   <div class="history-card-header">
                     <span>
@@ -173,7 +173,10 @@ defineExpose({
                   <p class="history-card-content">{{ item.title || '-' }}</p>
                   <label class="history-card-label">{{ $t('enhancedTopic.topicContent') }}</label>
                 </template>
-                <p class="history-card-content" v-html="convertEmojiToNative(item.content) || '-'"></p>
+                <p
+                  class="history-card-content cherry-markdown theme__light"
+                  v-html="renderMarkdown(item.content) || '-'"
+                ></p>
               </ElCard>
             </ElTimelineItem>
           </TransitionGroup>
@@ -213,6 +216,10 @@ defineExpose({
 
 .history-list-leave-active {
   position: absolute;
+}
+
+.history-card-body {
+  padding-bottom: 4px;
 }
 </style>
 
@@ -262,12 +269,28 @@ defineExpose({
 }
 
 .history-card-label {
+  padding-left: 5px;
   font-weight: normal;
   color: var(--el-text-color-regular);
+  border-left: 3px solid var(--el-color-primary);
+  border-radius: var(--el-border-radius-small);
 }
 
 .history-card-content {
-  word-break: break-all;
-  white-space: pre-wrap;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 25px;
+
+  &.theme__light {
+    color: var(--el-text-color-primary);
+  }
+
+  :deep(img) {
+    max-width: 100%;
+  }
+
+  :deep(.ch-icon) {
+    vertical-align: middle;
+  }
 }
 </style>

@@ -467,6 +467,14 @@ const hideAllSubMenu = () => {
   cherryEditor?.toolbar.hideAllSubMenu();
 };
 
+const makeHtml = (md?: string) => {
+  if (!md || !cherryEditor) {
+    return '';
+  }
+
+  return cherryEditor.engine.makeHtml(md);
+};
+
 defineExpose({
   focusEditor,
   focusEndOfEditor,
@@ -485,10 +493,23 @@ defineExpose({
   <EditorHistory
     ref="editorHistory"
     :editor-history-type="editorHistoryType"
+    :render-markdown="makeHtml"
     @import-history="$emit('importHistory', $event)"
   />
   <EditorHelp ref="editorHelp" />
 </template>
+
+<style lang="scss">
+.cherry-markdown {
+  a[target='_blank']::after {
+    display: none;
+  }
+
+  blockquote {
+    font-size: inherit;
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 .content-editor-container {
@@ -526,12 +547,6 @@ defineExpose({
       img {
         max-width: 100%;
         pointer-events: none;
-      }
-    }
-
-    .cherry-markdown {
-      a[target='_blank']::after {
-        display: none;
       }
     }
   }
