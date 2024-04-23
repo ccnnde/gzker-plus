@@ -4,6 +4,7 @@ import { ElLoading, ElMessage } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
+import { useClickModal } from '@/composables/click-modal';
 import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
@@ -12,7 +13,7 @@ import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic
 import { request, waitTime } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { LOADING_BACKGROUND_DARK } from '@/constants';
+import { DialogType, LOADING_BACKGROUND_DARK } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -37,6 +38,7 @@ const PAGE_SIZE = 106;
 const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
 const createTopicLinkRegExp = /\/t\/create\/(\w+)/;
 
+const { closeOnClickModal } = useClickModal(DialogType.TopicViewer);
 const { dialogVisible, openDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
 const topicId = ref<string>();
@@ -286,7 +288,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       :z-index="2000"
       :show-close="false"
       :before-close="handleDialogBeforeClose"
-      :close-on-click-modal="false"
+      :close-on-click-modal="closeOnClickModal"
       align-center
       @closed="handleTopicDialogClosed"
     >

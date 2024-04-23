@@ -6,12 +6,7 @@ import { LinkElementType } from '@/constants';
 
 import type { CheckboxValueType } from 'element-plus';
 import type { OptionsKey } from '@/constants';
-import type { SettingProps } from '@/types';
-
-interface CheckLinkItem {
-  value: LinkElementType;
-  label: string;
-}
+import type { CheckItem, SettingProps } from '@/types';
 
 const props = defineProps<SettingProps<OptionsKey.BlankLink>>();
 
@@ -20,7 +15,7 @@ const allLinkTypes: LinkElementType[] = [LinkElementType.Topic, LinkElementType.
 const checkAll = ref(false);
 const isIndeterminate = ref(false);
 
-const checkLinkList = computed<CheckLinkItem[]>(() => {
+const checkLinkList = computed<CheckItem<LinkElementType>[]>(() => {
   return [
     {
       value: LinkElementType.Topic,

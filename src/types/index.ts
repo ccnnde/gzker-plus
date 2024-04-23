@@ -3,6 +3,7 @@ import type { Pinia } from 'pinia';
 import type Viewer from 'viewerjs';
 import type {
   BellStyle,
+  DialogType,
   ExtensionMessageType,
   LanguageType,
   LinkElementType,
@@ -61,10 +62,18 @@ export interface Options {
   [OptionsKey.SmApiKey]: {
     apiKey: string;
   };
+  [OptionsKey.CloseDialogOnClickModal]: {
+    checkedDialogTypes: DialogType[];
+  };
 }
 
 export interface CheckedOption {
   checked: boolean;
+}
+
+export interface CheckItem<T> {
+  value: T;
+  label: string;
 }
 
 export interface StorageSettings {

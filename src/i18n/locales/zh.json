@@ -11,6 +11,13 @@
       "browse": "浏览",
       "other": "其他"
     },
+    "closeDialogOnClickModal": {
+      "replyEditor": "回复编辑框",
+      "title": "点击遮罩关闭弹窗",
+      "titleDesc": "启用主题增强后，针对以下弹窗类型，是否可以通过点击四周的遮罩层关闭弹窗",
+      "topicEditor": "主题编辑框",
+      "topicViewer": "主题浏览框"
+    },
     "dblclickToTop": {
       "title": "双击返回顶部",
       "titleDesc": "双击任意位置返回网页顶部"

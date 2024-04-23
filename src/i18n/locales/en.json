@@ -11,6 +11,13 @@
       "browse": "Browse",
       "other": "Other"
     },
+    "closeDialogOnClickModal": {
+      "replyEditor": "Reply Editor",
+      "title": "Close Dialog On Clicking Modal",
+      "titleDesc": "After enabling topic enhancement, for the following types of dialogs, can the dialog be closed by clicking on the surrounding modal layer",
+      "topicEditor": "Topic Editor",
+      "topicViewer": "Topic Viewer"
+    },
     "dblclickToTop": {
       "title": "Double Click To Return To The Top",
       "titleDesc": "Double-click anywhere to return to the top of the webpage"

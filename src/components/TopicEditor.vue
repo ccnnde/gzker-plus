@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import { ElInput, ElMessage } from 'element-plus';
 import { debounce } from 'lodash-es';
 
+import { useClickModal } from '@/composables/click-modal';
 import { useContentEditor } from '@/composables/content-editor';
 import { useDialog } from '@/composables/dialog';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
@@ -18,6 +19,7 @@ import {
   saveEditHistory,
 } from '@/utils/edit-history';
 import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
+import { DialogType } from '@/constants';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
@@ -71,6 +73,7 @@ const {
   handleEditorBeforeClose,
 } = useContentEditor();
 const { lockScroll, unlockScroll } = useLockscreen();
+const { closeOnClickModal } = useClickModal(DialogType.TopicEditor);
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const {
   dialogFullscreen,
@@ -241,7 +244,7 @@ defineExpose({
     :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
-    :close-on-click-modal="false"
+    :close-on-click-modal="closeOnClickModal"
     append-to-body
     @open="handleDialogOpen"
     @opened="titleInput?.focus"

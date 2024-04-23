@@ -61,6 +61,12 @@ export const LinkElementSelector: Record<LinkElementType, string> = {
   [LinkElementType.Node]: SELECTOR_NODE_LINK,
 };
 
+export const enum DialogType {
+  TopicViewer = 'topicViewer',
+  TopicEditor = 'topicEditor',
+  ReplyEditor = 'replyEditor',
+}
+
 export const enum BellStyle {
   None = 'none',
   Normal = 'normal',
@@ -80,6 +86,7 @@ export const enum OptionsKey {
   EnhancedMsg = 'enhancedMsg',
   EnhancedTopic = 'enhancedTopic',
   SmApiKey = 'smApiKey',
+  CloseDialogOnClickModal = 'closeDialogOnClickModal',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -100,6 +107,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.SmApiKey]: {
     apiKey: '',
+  },
+  [OptionsKey.CloseDialogOnClickModal]: {
+    checkedDialogTypes: [],
   },
 };
 

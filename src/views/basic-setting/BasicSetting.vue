@@ -6,6 +6,7 @@ import { t } from '@/i18n';
 import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
+import CloseDialog from './CloseDialog.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
 import SmApiKey from './SmApiKey.vue';
 
@@ -34,6 +35,12 @@ const settings = computed<Setting[]>(() => {
           name: t('basicSetting.enhancedTopic.title'),
           description: t('basicSetting.enhancedTopic.titleDesc'),
           key: OptionsKey.EnhancedTopic,
+        },
+        {
+          name: t('basicSetting.closeDialogOnClickModal.title'),
+          description: t('basicSetting.closeDialogOnClickModal.titleDesc'),
+          key: OptionsKey.CloseDialogOnClickModal,
+          component: CloseDialog,
         },
       ],
     },
