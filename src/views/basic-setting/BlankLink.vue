@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
+import CheckAll from '@/components/CheckAll.vue';
 import { t } from '@/i18n';
 import { LinkElementType } from '@/constants';
 
-import type { CheckboxValueType } from 'element-plus';
 import type { OptionsKey } from '@/constants';
 import type { CheckItem, SettingProps } from '@/types';
 
-const props = defineProps<SettingProps<OptionsKey.BlankLink>>();
-
-const allLinkTypes: LinkElementType[] = [LinkElementType.Topic, LinkElementType.User, LinkElementType.Node];
-
-const checkAll = ref(false);
-const isIndeterminate = ref(false);
+defineProps<SettingProps<OptionsKey.BlankLink>>();
 
 const checkLinkList = computed<CheckItem<LinkElementType>[]>(() => {
   return [
@@ -31,31 +26,8 @@ const checkLinkList = computed<CheckItem<LinkElementType>[]>(() => {
     },
   ];
 });
-
-onMounted(() => {
-  handleCheckedLinksChange(props.settings.checkedLinkTypes);
-});
-
-const handleCheckAllChange = (val: CheckboxValueType) => {
-  props.settings.checkedLinkTypes = val ? allLinkTypes : [];
-  isIndeterminate.value = false;
-};
-
-const handleCheckedLinksChange = (value: CheckboxValueType[]) => {
-  const checkedCount = value.length;
-  checkAll.value = checkedCount === allLinkTypes.length;
-  isIndeterminate.value = checkedCount > 0 && checkedCount < allLinkTypes.length;
-};
 </script>
 
 <template>
-  <ElSpace>
-    <ElCheckbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
-      {{ $t('common.checkAll') }}
-    </ElCheckbox>
-    <ElDivider direction="vertical" />
-    <ElCheckboxGroup v-model="settings.checkedLinkTypes" @change="handleCheckedLinksChange">
-      <ElCheckbox v-for="(item, index) in checkLinkList" :key="index" :label="item.value">{{ item.label }}</ElCheckbox>
-    </ElCheckboxGroup>
-  </ElSpace>
+  <CheckAll v-model="settings.checkedLinkTypes" :check-item-list="checkLinkList" />
 </template>

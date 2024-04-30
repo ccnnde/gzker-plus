@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
+import CheckAll from '@/components/CheckAll.vue';
 import { t } from '@/i18n';
 import { DialogType } from '@/constants';
 
-import type { CheckboxValueType } from 'element-plus';
 import type { OptionsKey } from '@/constants';
 import type { CheckItem, SettingProps } from '@/types';
 
-const props = defineProps<SettingProps<OptionsKey.CloseDialogOnClickModal>>();
-
-const allDialogTypes: DialogType[] = [DialogType.TopicViewer, DialogType.TopicEditor, DialogType.ReplyEditor];
-
-const checkAll = ref(false);
-const isIndeterminate = ref(false);
+defineProps<SettingProps<OptionsKey.CloseDialogOnClickModal>>();
 
 const checkDialogList = computed<CheckItem<DialogType>[]>(() => {
   return [
@@ -31,33 +26,8 @@ const checkDialogList = computed<CheckItem<DialogType>[]>(() => {
     },
   ];
 });
-
-onMounted(() => {
-  handleCheckedDialogsChange(props.settings.checkedDialogTypes);
-});
-
-const handleCheckAllChange = (val: CheckboxValueType) => {
-  props.settings.checkedDialogTypes = val ? allDialogTypes : [];
-  isIndeterminate.value = false;
-};
-
-const handleCheckedDialogsChange = (value: CheckboxValueType[]) => {
-  const checkedCount = value.length;
-  checkAll.value = checkedCount === allDialogTypes.length;
-  isIndeterminate.value = checkedCount > 0 && checkedCount < allDialogTypes.length;
-};
 </script>
 
 <template>
-  <ElSpace>
-    <ElCheckbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
-      {{ $t('common.checkAll') }}
-    </ElCheckbox>
-    <ElDivider direction="vertical" />
-    <ElCheckboxGroup v-model="settings.checkedDialogTypes" @change="handleCheckedDialogsChange">
-      <ElCheckbox v-for="(item, index) in checkDialogList" :key="index" :label="item.value">
-        {{ item.label }}
-      </ElCheckbox>
-    </ElCheckboxGroup>
-  </ElSpace>
+  <CheckAll v-model="settings.checkedDialogTypes" :check-item-list="checkDialogList" />
 </template>

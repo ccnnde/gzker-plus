@@ -63,7 +63,7 @@
   "common": {
     "cancel": "Cancel",
     "canceled": "Canceled",
-    "checkAll": "Check all",
+    "checkAll": "Check All",
     "clear": "Clear",
     "delete": "Delete",
     "emptyData": "The query returned no results. Please try again later",
