@@ -38,6 +38,12 @@
       "title": "悬浮展示用户信息",
       "titleDesc": "鼠标悬浮在用户头像上时，展示用户基本信息，并可进行关注、屏蔽等操作"
     },
+    "hideGzkInfo": {
+      "gzkLogo": "论坛 Logo",
+      "profile": "个人信息",
+      "title": "隐藏信息",
+      "titleDesc": "隐藏论坛中以下类型的信息，防止窥屏"
+    },
     "smApiKey": {
       "apiAvailable": "SM.MS 接口可以使用",
       "checkApi": "验证接口",

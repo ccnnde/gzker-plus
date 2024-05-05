@@ -27,7 +27,12 @@
   "content_scripts": [
     {
       "matches": ["*://www.guozaoke.com/*"],
-      "js": ["src/scripts/index.ts", "src/scripts/blank-link.ts", "src/scripts/dblclick-to-top.ts"]
+      "js": [
+        "src/scripts/index.ts",
+        "src/scripts/blank-link.ts",
+        "src/scripts/dblclick-to-top.ts",
+        "src/scripts/hide-gzk-info.ts"
+      ]
     }
   ],
   "{{chrome}}.web_accessible_resources": [

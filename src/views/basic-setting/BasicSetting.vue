@@ -8,6 +8,7 @@ import { OptionsKey } from '@/constants';
 import BlankLink from './BlankLink.vue';
 import CloseDialog from './CloseDialog.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
+import HideGzkInfo from './HideGzkInfo.vue';
 import SmApiKey from './SmApiKey.vue';
 
 import type { CheckedOption, Setting } from '@/types';
@@ -56,6 +57,12 @@ const settings = computed<Setting[]>(() => {
           name: t('basicSetting.dblclickToTop.title'),
           description: t('basicSetting.dblclickToTop.titleDesc'),
           key: OptionsKey.DblclickToTop,
+        },
+        {
+          name: t('basicSetting.hideGzkInfo.title'),
+          description: t('basicSetting.hideGzkInfo.titleDesc'),
+          key: OptionsKey.HideGzkInfo,
+          component: HideGzkInfo,
         },
         {
           name: t('basicSetting.smApiKey.title'),

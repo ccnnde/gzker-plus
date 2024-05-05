@@ -67,6 +67,16 @@ export const enum DialogType {
   ReplyEditor = 'replyEditor',
 }
 
+export const enum GzkInfoType {
+  GzkLogo = 'gzkLogo',
+  Profile = 'profile',
+}
+
+export const GzkInfoHideClass: Record<GzkInfoType, string> = {
+  [GzkInfoType.GzkLogo]: 'hide-gzk-logo',
+  [GzkInfoType.Profile]: 'hide-profile',
+};
+
 export const enum BellStyle {
   None = 'none',
   Normal = 'normal',
@@ -87,6 +97,7 @@ export const enum OptionsKey {
   EnhancedTopic = 'enhancedTopic',
   SmApiKey = 'smApiKey',
   CloseDialogOnClickModal = 'closeDialogOnClickModal',
+  HideGzkInfo = 'hideGzkInfo',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -110,6 +121,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.CloseDialogOnClickModal]: {
     checkedDialogTypes: [],
+  },
+  [OptionsKey.HideGzkInfo]: {
+    checkedGzkInfoTypes: [],
   },
 };
 

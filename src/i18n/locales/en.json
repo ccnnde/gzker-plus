@@ -38,6 +38,12 @@
       "title": "Floating Display Of User Information",
       "titleDesc": "When the mouse hovers over the user avatar, display basic user information and allow actions such as following and blocking"
     },
+    "hideGzkInfo": {
+      "gzkLogo": "Forum Logo",
+      "profile": "Personal Information",
+      "title": "Hide Information",
+      "titleDesc": "Hide the following types of information in the forum to prevent peeking"
+    },
     "smApiKey": {
       "apiAvailable": "SM.MS API is available",
       "checkApi": "Check API",

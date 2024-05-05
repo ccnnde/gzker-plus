@@ -12,3 +12,7 @@
     }
   }
 }
+
+@mixin blur-element() {
+  filter: blur(6px);
+}

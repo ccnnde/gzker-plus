@@ -1,3 +1,5 @@
+@import 'mixin';
+
 img[src^='/static/emoji'],
 img[src^="https://face.t.sinajs.cn"],
 img[src^="https://img.whzxc.cn/bd"]
@@ -32,6 +34,26 @@ img[src^="https://img.whzxc.cn/bd"]
   .task-list-item {
     input[type='checkbox'] {
       margin-right: 5px;
+    }
+  }
+}
+
+.hide-gzk-logo {
+  .navbar-brand > img {
+    @include blur-element;
+  }
+}
+
+.hide-profile {
+  .navbar-right a[href^='/u/'] {
+    @include blur-element;
+  }
+
+  .usercard,
+  .profile {
+    img.avatar,
+    .username {
+      @include blur-element;
     }
   }
 }

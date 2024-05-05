@@ -5,6 +5,7 @@ import type {
   BellStyle,
   DialogType,
   ExtensionMessageType,
+  GzkInfoType,
   LanguageType,
   LinkElementType,
   OptionsKey,
@@ -64,6 +65,9 @@ export interface Options {
   };
   [OptionsKey.CloseDialogOnClickModal]: {
     checkedDialogTypes: DialogType[];
+  };
+  [OptionsKey.HideGzkInfo]: {
+    checkedGzkInfoTypes: GzkInfoType[];
   };
 }
 
