@@ -41,6 +41,8 @@
     "hideGzkInfo": {
       "gzkLogo": "Forum Logo",
       "profile": "Personal Information",
+      "tabIcon": "Tab Icon",
+      "tabTitle": "Tab Title",
       "title": "Hide Information",
       "titleDesc": "Hide the following types of information in the forum to prevent peeking"
     },

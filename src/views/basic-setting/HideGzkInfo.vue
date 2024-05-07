@@ -20,6 +20,14 @@ const checkGzkInfoList = computed<CheckItem<GzkInfoType>[]>(() => {
       value: GzkInfoType.Profile,
       label: t('basicSetting.hideGzkInfo.profile'),
     },
+    {
+      value: GzkInfoType.TabIcon,
+      label: t('basicSetting.hideGzkInfo.tabIcon'),
+    },
+    {
+      value: GzkInfoType.TabTitle,
+      label: t('basicSetting.hideGzkInfo.tabTitle'),
+    },
   ];
 });
 </script>

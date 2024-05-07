@@ -38,8 +38,8 @@
   "{{chrome}}.web_accessible_resources": [
     {
       "matches": ["*://www.guozaoke.com/*"],
-      "resources": ["font/*.ttf"]
+      "resources": ["icon/*.png", "font/*.ttf"]
     }
   ],
-  "{{firefox}}.web_accessible_resources": ["font/*.ttf"]
+  "{{firefox}}.web_accessible_resources": ["icon/*.png", "font/*.ttf"]
 }

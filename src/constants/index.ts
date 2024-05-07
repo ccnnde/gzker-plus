@@ -70,9 +70,11 @@ export const enum DialogType {
 export const enum GzkInfoType {
   GzkLogo = 'gzkLogo',
   Profile = 'profile',
+  TabIcon = 'tabIcon',
+  TabTitle = 'tabTitle',
 }
 
-export const GzkInfoHideClass: Record<GzkInfoType, string> = {
+export const GzkInfoHideClass: Partial<Record<GzkInfoType, string>> = {
   [GzkInfoType.GzkLogo]: 'hide-gzk-logo',
   [GzkInfoType.Profile]: 'hide-profile',
 };

@@ -41,6 +41,8 @@
     "hideGzkInfo": {
       "gzkLogo": "论坛 Logo",
       "profile": "个人信息",
+      "tabIcon": "标签页图标",
+      "tabTitle": "标签页标题",
       "title": "隐藏信息",
       "titleDesc": "隐藏论坛中以下类型的信息，防止窥屏"
     },
