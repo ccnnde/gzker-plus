@@ -23,6 +23,7 @@ export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
 export const enum OptionsRouteNames {
   BasicSetting = 'basicSetting',
   ImageHosting = 'imageHosting',
+  ChangeLog = 'changeLog',
 }
 
 /**
@@ -31,6 +32,7 @@ export const enum OptionsRouteNames {
 export const OptionsRoutePaths: Record<OptionsRouteNames, string> = {
   [OptionsRouteNames.BasicSetting]: '/basic-setting',
   [OptionsRouteNames.ImageHosting]: '/image-hosting',
+  [OptionsRouteNames.ChangeLog]: '/change-log',
 };
 
 /**
