@@ -34,6 +34,8 @@ runtime.onInstalled.addListener(async (details) => {
 
   if (reason === 'install') {
     openOptionsPage();
+  } else if (reason === 'update') {
+    openOptionsPage(OptionsRoutePaths[OptionsRouteNames.ChangeLog]);
   }
 });
 
