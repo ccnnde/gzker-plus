@@ -54,6 +54,10 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
 - 🔗 新标签页打开主题、用户、节点等链接
 - 🚀 双击任意位置返回网页顶部
 
+## 更新日志
+
+[ChangeLog](src/markdown/ChangeLog.md)
+
 ## 截图
 
 ### 扩展设置
