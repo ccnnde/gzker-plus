@@ -26,6 +26,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue,.json",
     "lint:fix": "pnpm lint --fix",
     "lint:list": "DEBUG=eslint:cli-engine pnpm lint",
+    "log:auto": "pnpm log:gen && pnpm log:format && pnpm log:stage",
+    "log:format": "prettier --write src/markdown/ChangeLog.md package.json",
+    "log:gen": "changelogen --bump --clean",
+    "log:stage": "git add src/markdown/ChangeLog.md package.json",
     "prepare": "husky install",
     "styl-lint": "stylelint **/*.{scss,vue}",
     "styl-lint:fix": "stylelint **/*.{scss,vue} --fix",
@@ -67,6 +71,7 @@
     "@unocss/eslint-config": "^0.57.3",
     "@vitejs/plugin-vue": "^4.4.1",
     "@vue/eslint-config-typescript": "^12.0.0",
+    "changelogen": "^0.5.5",
     "commitlint-config-git-commit-emoji": "^1.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.53.0",
@@ -101,7 +106,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "emoji-mart-vue-fast@15.0.0": "patches/emoji-mart-vue-fast@15.0.0.patch"
+      "emoji-mart-vue-fast@15.0.0": "patches/emoji-mart-vue-fast@15.0.0.patch",
+      "changelogen@0.5.5": "patches/changelogen@0.5.5.patch"
     }
   }
 }

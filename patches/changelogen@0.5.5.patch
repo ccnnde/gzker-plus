@@ -1,0 +1,107 @@
+diff --git a/dist/shared/changelogen.b98c84ee.mjs b/dist/shared/changelogen.b98c84ee.mjs
+index b7bb47127a629815accf551fd2f5fd7dcc3b0bfd..622a4342e9045ae8681eb847ae0380e494769ac3 100644
+--- a/dist/shared/changelogen.b98c84ee.mjs
++++ b/dist/shared/changelogen.b98c84ee.mjs
+@@ -277,15 +277,24 @@ function getRepoConfig(repoUrl = "") {
+   };
+ }
+ 
++function getCurrentDateStr() {
++  const date = new Date();
++  const year = date.getFullYear();
++  const month = String(date.getMonth() + 1).padStart(2, '0');
++  const day = String(date.getDate()).padStart(2, '0');
++  const formattedDate = `${year}-${month}-${day}`;
++  return formattedDate;
++}
++
+ async function generateMarkDown(commits, config) {
+   const typeGroups = groupBy(commits, "type");
+   const markdown = [];
+   const breakingChanges = [];
+-  const v = config.newVersion && `v${config.newVersion}`;
+-  markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
+-  if (config.repo && config.from) {
+-    markdown.push(formatCompareChanges(v, config));
+-  }
++  const v = config.newVersion && `v${config.newVersion} (${getCurrentDateStr()})`;
++  markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`));
++  // if (config.repo && config.from) {
++  //   markdown.push(formatCompareChanges(v, config));
++  // }
+   for (const type in config.types) {
+     const group = typeGroups[type];
+     if (!group || group.length === 0) {
+@@ -336,22 +345,22 @@ async function generateMarkDown(commits, config) {
+       }
+     })
+   );
+-  const authors = [..._authors.entries()].map((e) => ({ name: e[0], ...e[1] }));
+-  if (authors.length > 0) {
+-    markdown.push(
+-      "",
+-      "### \u2764\uFE0F Contributors",
+-      "",
+-      ...authors.map((i) => {
+-        const _email = [...i.email].find(
+-          (e) => !e.includes("noreply.github.com")
+-        );
+-        const email = _email ? `<${_email}>` : "";
+-        const github = i.github ? `([@${i.github}](http://github.com/${i.github}))` : "";
+-        return `- ${i.name} ${github || email}`;
+-      })
+-    );
+-  }
++  // const authors = [..._authors.entries()].map((e) => ({ name: e[0], ...e[1] }));
++  // if (authors.length > 0) {
++  //   markdown.push(
++  //     "",
++  //     "### \u2764\uFE0F Contributors",
++  //     "",
++  //     ...authors.map((i) => {
++  //       const _email = [...i.email].find(
++  //         (e) => !e.includes("noreply.github.com")
++  //       );
++  //       const email = _email ? `<${_email}>` : "";
++  //       const github = i.github ? `([@${i.github}](http://github.com/${i.github}))` : "";
++  //       return `- ${i.name} ${github || email}`;
++  //     })
++  //   );
++  // }
+   return convert(markdown.join("\n").trim(), true);
+ }
+ function parseChangelogMarkdown(contents) {
+@@ -376,7 +385,7 @@ function parseChangelogMarkdown(contents) {
+   };
+ }
+ function formatCommit(commit, config) {
+-  return "- " + (commit.scope ? `**${commit.scope.trim()}:** ` : "") + (commit.isBreaking ? "\u26A0\uFE0F  " : "") + upperFirst(commit.description) + formatReferences(commit.references, config);
++  return "- " + (commit.isBreaking ? "\u26A0\uFE0F  " : "") + upperFirst(commit.description);
+ }
+ function formatReferences(references, config) {
+   const pr = references.filter((ref) => ref.type === "pull-request");
+@@ -409,15 +418,15 @@ const getDefaultConfig = () => ({
+     feat: { title: "\u{1F680} Enhancements", semver: "minor" },
+     perf: { title: "\u{1F525} Performance", semver: "patch" },
+     fix: { title: "\u{1FA79} Fixes", semver: "patch" },
+-    refactor: { title: "\u{1F485} Refactors", semver: "patch" },
+-    docs: { title: "\u{1F4D6} Documentation", semver: "patch" },
+-    build: { title: "\u{1F4E6} Build", semver: "patch" },
+-    types: { title: "\u{1F30A} Types", semver: "patch" },
+-    chore: { title: "\u{1F3E1} Chore" },
+-    examples: { title: "\u{1F3C0} Examples" },
+-    test: { title: "\u2705 Tests" },
+-    style: { title: "\u{1F3A8} Styles" },
+-    ci: { title: "\u{1F916} CI" }
++    // refactor: { title: "\u{1F485} Refactors", semver: "patch" },
++    // docs: { title: "\u{1F4D6} Documentation", semver: "patch" },
++    // build: { title: "\u{1F4E6} Build", semver: "patch" },
++    // types: { title: "\u{1F30A} Types", semver: "patch" },
++    // chore: { title: "\u{1F3E1} Chore" },
++    // examples: { title: "\u{1F3C0} Examples" },
++    // test: { title: "\u2705 Tests" },
++    // style: { title: "\u{1F3A8} Styles" },
++    // ci: { title: "\u{1F916} CI" }
+   },
+   cwd: null,
+   from: "",
