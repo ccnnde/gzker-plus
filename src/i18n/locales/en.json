@@ -32,7 +32,7 @@
     },
     "enhancedTopic": {
       "title": "Enhanced Topic",
-      "titleDesc": "Browse, create, and edit topics directly on the current page, as well as create and edit replies"
+      "titleDesc": "Browse, create, edit and block topics directly on the current page, as well as create and edit replies"
     },
     "floatUserInfo": {
       "title": "Floating Display Of User Information",
@@ -114,10 +114,14 @@
     "viewAll": "View All"
   },
   "enhancedTopic": {
+    "alreadyBlockTopic": "The topic has already been blocked, please do not repeat the operation",
+    "blockTopic": "Block topic",
+    "blockTopicSuccessful": "Topic blocked successfully",
     "cannotReplyByInvalidUser": "Not logged in or not bound to a phone number, unable to reply",
     "cannotReplyByLockedPost": "This post has been locked and cannot be replied to",
     "cannotUploadByEmptyApiKey": "API Key for the image hosting is not configured, unable to upload pictures. Please click the OK button to view the configuration instructions",
     "clickNumber": "Read",
+    "confirmBlockTopic": "Confirm blocking the topic [{title}] ? After blocking, you can go to the extension options page to manage the blocked topic list",
     "confirmDeleteAllEditHistory": "Are you sure you want to delete all displayed edit history?",
     "confirmDeleteEditHistory": "Are you sure you want to delete this edit history?",
     "confirmImportEditHistory": "Importing this edit history will overwrite the current content of the editor. Are you sure you want to continue?",
@@ -179,6 +183,7 @@
   },
   "navigation": {
     "basicSetting": "Basic Setting",
+    "blockedTopics": "Blocked Topics",
     "changeLog": "Change Log",
     "imageHosting": "Image Hosting"
   },

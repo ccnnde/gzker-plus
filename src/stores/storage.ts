@@ -8,6 +8,7 @@ import type { StorageSettings } from '@/types';
 export const useStorageStore = defineStore('storage', () => {
   const settings = ref<StorageSettings>();
   const options = computed(() => settings.value?.options);
+  const blockedTopicList = computed(() => settings.value?.blockedTopicList || []);
 
   watch(
     options,
@@ -30,6 +31,7 @@ export const useStorageStore = defineStore('storage', () => {
   return {
     settings,
     options,
+    blockedTopicList,
     setSettings,
   };
 });

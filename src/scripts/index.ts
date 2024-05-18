@@ -1,6 +1,6 @@
 import { createPinia } from 'pinia';
 
-import { getLoginUserId, getStorage, setStorage } from '@/utils';
+import { blockTopics, getLoginUserId, getStorage, setStorage } from '@/utils';
 import { OptionsKey } from '@/constants';
 
 import { createUserInfoApp } from './float-user-info';
@@ -18,7 +18,7 @@ import 'element-plus/es/components/message-box/style/css';
 const pinia = createPinia();
 
 const setupApp = async () => {
-  const { options } = await getStorage();
+  const { options, blockedTopicList } = await getStorage();
 
   await setStorage({
     loginUserId: getLoginUserId(),
@@ -31,6 +31,8 @@ const setupApp = async () => {
   }
 
   if (options[OptionsKey.EnhancedTopic].checked) {
+    const blockedTopicIds = blockedTopicList.map((item) => item.id);
+    blockTopics(blockedTopicIds);
     createTopicApp(pinia);
   }
 };

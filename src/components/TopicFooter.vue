@@ -30,6 +30,7 @@ defineEmits<{
   favoriteTopic: [];
   likeTopic: [];
   editTopic: [];
+  blockTopic: [];
 }>();
 
 const topicUrl = computed(() => {
@@ -102,6 +103,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       </template>
     </ElDropdown>
     <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
+    <OperateButton v-else :operate-text="$t('enhancedTopic.blockTopic')" @click="$emit('blockTopic')" />
     <ElButton class="reply-button" type="primary" size="small" @click="addReply?.()">
       {{ $t('enhancedTopic.writeReply') }}
     </ElButton>

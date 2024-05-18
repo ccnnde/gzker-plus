@@ -84,6 +84,7 @@ export interface StorageSettings {
   options: Options;
   lang: LanguageType;
   loginUserId?: string;
+  blockedTopicList: BlockedTopic[];
 }
 
 export type CreateScriptApp = (pinia: Pinia) => void;
@@ -264,4 +265,9 @@ export interface EditHistoryItem {
   createTimestamp: number;
   updateTime: string;
   updateTimestamp: number;
+}
+
+export interface BlockedTopic {
+  id: string;
+  title: string;
 }

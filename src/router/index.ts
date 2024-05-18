@@ -27,6 +27,15 @@ const routes: Readonly<RouteRecordRaw[]> = [
     },
   },
   {
+    path: OptionsRoutePaths[OptionsRouteNames.BlockedTopics],
+    name: OptionsRouteNames.BlockedTopics,
+    component: () => import('@/views/blocked-topics/BlockedTopics.vue'),
+    meta: {
+      title: OptionsRouteNames.BlockedTopics,
+      icon: 'i-mdi-file-document-remove-outline',
+    },
+  },
+  {
     path: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
     name: OptionsRouteNames.ImageHosting,
     component: () => import('@/markdown/ImageHosting.md'),

@@ -32,7 +32,7 @@
     },
     "enhancedTopic": {
       "title": "主题增强",
-      "titleDesc": "在当前页面直接浏览、创建和编辑主题，以及创建和编辑回复"
+      "titleDesc": "在当前页面直接浏览、创建、编辑和屏蔽主题，以及创建和编辑回复"
     },
     "floatUserInfo": {
       "title": "悬浮展示用户信息",
@@ -114,10 +114,14 @@
     "viewAll": "查看全部"
   },
   "enhancedTopic": {
+    "alreadyBlockTopic": "该主题已经被屏蔽，请勿重复操作",
+    "blockTopic": "屏蔽主题",
+    "blockTopicSuccessful": "屏蔽主题成功",
     "cannotReplyByInvalidUser": "未登录或未绑定手机号，无法回复",
     "cannotReplyByLockedPost": "本帖已锁，无法回复",
     "cannotUploadByEmptyApiKey": "未配置图床的 API Key，无法上传图片。请点击确定按钮查看配置说明",
     "clickNumber": "阅读",
+    "confirmBlockTopic": "确定屏蔽主题【{title}】？屏蔽后可前往扩展选项页面管理屏蔽主题列表",
     "confirmDeleteAllEditHistory": "确定要删除当前展示的所有历史记录吗？",
     "confirmDeleteEditHistory": "确定要删除该历史记录吗？",
     "confirmImportEditHistory": "导入该历史记录会覆盖编辑器当前的内容，确定继续吗？",
@@ -179,6 +183,7 @@
   },
   "navigation": {
     "basicSetting": "基础设置",
+    "blockedTopics": "屏蔽主题",
     "changeLog": "更新日志",
     "imageHosting": "图床说明"
   },

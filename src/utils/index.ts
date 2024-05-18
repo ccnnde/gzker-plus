@@ -6,7 +6,7 @@ import { storage } from 'webextension-polyfill';
 
 import i18n, { t } from '@/i18n';
 import { API_USER } from '@/api';
-import { defaultExtensionStorage, GZK_URL } from '@/constants';
+import { defaultExtensionStorage, GZK_URL, topicLinkRegExp } from '@/constants';
 import {
   ALREADY_LIKE,
   CAN_NOT_FAVORITE_YOUR_TOPIC,
@@ -15,7 +15,7 @@ import {
   SUCCESS_LIKE,
   USER_NOT_LOGIN,
 } from '@/constants/res-msg';
-import { SELECTOR_LOGIN_USER_LINK } from '@/constants/selector';
+import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
 import type { ApiJsonResponse, Base64File, ScriptAppOptions, StorageSettings, UserReplyItem } from '@/types';
 
@@ -155,4 +155,29 @@ export const base64ToFile = (file: Base64File): File => {
 
 export const checkMacOS = () => {
   return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+};
+
+export const blockTopics = (topicIds: string[]) => {
+  if (!topicIds.length) {
+    return;
+  }
+
+  const topicElements = [
+    ...document.querySelectorAll<HTMLElement>('.topic-item'),
+    ...document.querySelectorAll<HTMLElement>('.hot-topics .cell'),
+  ];
+
+  topicElements.forEach((element) => {
+    const topicLinkElement = element.querySelector<HTMLAnchorElement>(SELECTOR_TOPIC_LINK);
+
+    if (!topicLinkElement) {
+      return;
+    }
+
+    const topicId = topicLinkElement.href.match(topicLinkRegExp)?.[1];
+
+    if (topicIds.includes(topicId as string)) {
+      element.style.display = 'none';
+    }
+  });
 };

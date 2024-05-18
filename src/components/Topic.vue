@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref } from 'vue';
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
@@ -10,10 +10,10 @@ import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
-import { request, waitTime } from '@/utils';
+import { blockTopics, getStorage, request, setStorage, waitTime } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { DialogType, LOADING_BACKGROUND_DARK } from '@/constants';
+import { DialogType, LOADING_BACKGROUND_DARK, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -35,11 +35,10 @@ import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from 
 import 'viewerjs/dist/viewer.css';
 
 const PAGE_SIZE = 106;
-const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
 const createTopicLinkRegExp = /\/t\/create\/(\w+)/;
 
 const { closeOnClickModal } = useClickModal(DialogType.TopicViewer);
-const { dialogVisible, openDialog } = useDialog();
+const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
 const topicId = ref<string>();
 const topicDetail = ref<UserTopicDetail>();
@@ -182,6 +181,46 @@ const handleTopicEdit = () => {
     topicEditor.value?.openDialog();
     topicEditor.value?.editTopic(topicId.value as string, data);
   });
+};
+
+const handleTopicBlock = async () => {
+  try {
+    if (!topicId.value || !topicDetail.value?.title) {
+      return;
+    }
+
+    const id = topicId.value;
+    const { title } = topicDetail.value;
+    const { blockedTopicList } = await getStorage();
+    const blockedTopic = blockedTopicList.find((item) => item.id === id);
+
+    if (blockedTopic) {
+      ElMessage.error(t('enhancedTopic.alreadyBlockTopic'));
+      return;
+    }
+
+    await ElMessageBox.confirm(t('enhancedTopic.confirmBlockTopic', { title }), t('common.warning'), {
+      type: 'warning',
+      autofocus: false,
+    });
+
+    handleRequest(async () => {
+      blockedTopicList.push({
+        id,
+        title,
+      });
+
+      await setStorage({
+        blockedTopicList,
+      });
+
+      blockTopics([id]);
+      closeDialog();
+      ElMessage.success(t('enhancedTopic.blockTopicSuccessful'));
+    });
+  } catch {
+    ElMessage(t('common.canceled'));
+  }
 };
 
 const handleTopicSended = (data: UserTopic) => {
@@ -334,6 +373,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           @favorite-topic="handleTopicFavorite"
           @like-topic="handleTopicLike"
           @edit-topic="handleTopicEdit"
+          @block-topic="handleTopicBlock"
         />
       </div>
       <template #footer>

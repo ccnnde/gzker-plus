@@ -22,6 +22,7 @@ export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
  */
 export const enum OptionsRouteNames {
   BasicSetting = 'basicSetting',
+  BlockedTopics = 'blockedTopics',
   ImageHosting = 'imageHosting',
   ChangeLog = 'changeLog',
 }
@@ -31,6 +32,7 @@ export const enum OptionsRouteNames {
  */
 export const OptionsRoutePaths: Record<OptionsRouteNames, string> = {
   [OptionsRouteNames.BasicSetting]: '/basic-setting',
+  [OptionsRouteNames.BlockedTopics]: '/blocked-topics',
   [OptionsRouteNames.ImageHosting]: '/image-hosting',
   [OptionsRouteNames.ChangeLog]: '/change-log',
 };
@@ -134,6 +136,7 @@ export const defaultExtensionOptions: Options = {
 export const defaultExtensionStorage: StorageSettings = {
   options: defaultExtensionOptions,
   lang: LanguageType.ZH,
+  blockedTopicList: [],
 };
 
 export const initialElementPositionAndSize: ElementPositionAndSize = {
@@ -142,3 +145,5 @@ export const initialElementPositionAndSize: ElementPositionAndSize = {
   width: 0,
   height: 0,
 };
+
+export const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
