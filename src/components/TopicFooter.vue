@@ -4,8 +4,7 @@ import { ElMessage } from 'element-plus';
 import QrcodeVue from 'qrcode.vue';
 
 import { t } from '@/i18n';
-import { API_TOPIC } from '@/api';
-import { GZK_URL } from '@/constants';
+import { getTopicUrl } from '@/utils';
 import { ADD_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 
 import LikeButton from './LikeButton.vue';
@@ -34,7 +33,7 @@ defineEmits<{
 }>();
 
 const topicUrl = computed(() => {
-  return `${GZK_URL}${API_TOPIC}${props.topicId}`;
+  return getTopicUrl(props.topicId);
 });
 
 const favoriteIconClass = computed(() => {

@@ -5,7 +5,7 @@ import { cloneDeep, merge } from 'lodash-es';
 import { storage } from 'webextension-polyfill';
 
 import i18n, { t } from '@/i18n';
-import { API_USER } from '@/api';
+import { API_TOPIC, API_USER } from '@/api';
 import { defaultExtensionStorage, GZK_URL, topicLinkRegExp } from '@/constants';
 import {
   ALREADY_LIKE,
@@ -120,6 +120,10 @@ export const getLoginUserId = () => {
 
 export const getXsrfToken = () => {
   return Cookies.get('_xsrf') || '';
+};
+
+export const getTopicUrl = (topicId?: string) => {
+  return `${GZK_URL}${API_TOPIC}${topicId}`;
 };
 
 export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {

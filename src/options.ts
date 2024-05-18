@@ -8,6 +8,7 @@ import router from './router';
 import 'github-markdown-css/github-markdown.css';
 
 import 'element-plus/es/components/message/style/css';
+import 'element-plus/es/components/message-box/style/css';
 import './styles';
 
 const app = createApp(Options);
