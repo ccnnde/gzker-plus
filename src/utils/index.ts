@@ -63,7 +63,12 @@ export const initStorage = async () => {
 };
 
 export const setStorage = async (settings: Partial<StorageSettings>) => {
-  await storage.sync.set(settings);
+  try {
+    await storage.sync.set(settings);
+  } catch (err) {
+    console.error(err);
+    throw new Error(t('options.storageFailed'));
+  }
 };
 
 export const getStorage = async (): Promise<StorageSettings> => {

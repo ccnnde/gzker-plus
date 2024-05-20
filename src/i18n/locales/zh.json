@@ -190,6 +190,7 @@
     "imageHosting": "图床说明"
   },
   "options": {
+    "storageFailed": "无法存储数据，请按 F12 打开控制台查看报错信息",
     "title": "过早客 Plus 选项"
   },
   "resMessage": {

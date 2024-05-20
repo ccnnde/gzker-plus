@@ -190,6 +190,7 @@
     "imageHosting": "Image Hosting"
   },
   "options": {
+    "storageFailed": "Unable to store data. Please press F12 to open the console and view the error message",
     "title": "Gzker Plus Options"
   },
   "resMessage": {
