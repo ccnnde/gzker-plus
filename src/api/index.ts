@@ -1,3 +1,5 @@
+import { decode } from 'html-entities';
+
 import { getXsrfToken, request, waitTime } from '@/utils';
 import { ReplyType } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
@@ -32,10 +34,12 @@ const parseEditedReply = (htmlStr: string): string => {
 };
 
 const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
+  const title = htmlStr.match(
+    /<input class="form-control" id="prependedInput" type="text" placeholder="主题" name="title" value="(.+?)">/,
+  )?.[1];
+
   return {
-    title: htmlStr.match(
-      /<input class="form-control" id="prependedInput" type="text" placeholder="主题" name="title" value="(.+?)">/,
-    )?.[1],
+    title: decode(title),
     content: htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1],
   };
 };
@@ -66,7 +70,7 @@ const parseUserTopic = (htmlStr: string): UserTopic => {
 
 const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
   return {
-    title: htmlStr.match(/<h3 class="title">([^<]+)<\/h3>/)?.[1],
+    title: decode(htmlStr.match(/<h3 class="title">([^<]+)<\/h3>/)?.[1]),
     authorId: htmlStr.match(/<a href="\/u\/([^"]+)">/)?.[1],
     authorLink: htmlStr.match(/<a href="(\/u\/[^"]+)">/)?.[1],
     avatarUrl: htmlStr.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar" \/>/)?.[1],
