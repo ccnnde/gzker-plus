@@ -3,6 +3,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const path = require('path');
 const archiver = require('archiver');
+const AdmZip = require('adm-zip');
 const { execSync } = require('child_process');
 
 const EXT_NAME = 'gzker-plus';
@@ -52,6 +53,17 @@ function compressFolder(inputPath, outputPath, zipFileName, ignore) {
   });
 }
 
+function unzipFile(zipFilePath) {
+  const outputPath = zipFilePath.split('.zip')[0];
+
+  if (!fs.existsSync(outputPath)) {
+    fs.mkdirSync(outputPath);
+  }
+
+  const zip = new AdmZip(zipFilePath);
+  zip.extractAllTo(outputPath, true);
+}
+
 async function runCompression() {
   try {
     // 创建输出文件夹
@@ -67,6 +79,7 @@ async function runCompression() {
 
     // 压缩 Chrome 版本
     await compressFolder(distPath, chromeOutputPath, chromeZipFileName);
+    unzipFile(chromeOutputPath);
 
     // 执行 pnpm build:ff 构建 Firefox 版本
     console.log('📦 start compressing the firefox version...');
@@ -74,6 +87,7 @@ async function runCompression() {
 
     // 压缩 Firefox 版本
     await compressFolder(distPath, firefoxOutputPath, firefoxZipFileName);
+    unzipFile(firefoxOutputPath);
 
     console.log('📦 start compressing the source code of the project...');
 
