@@ -23,6 +23,8 @@
     "dev": "pnpm clean:dist && vite",
     "dev:ff": "cross-env TARGET=firefox pnpm dev",
     "format": "prettier --write .",
+    "git:push": "node git-push.cjs",
+    "git:release": "changelogen gh release",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue,.json",
     "lint:fix": "pnpm lint --fix",
     "lint:list": "DEBUG=eslint:cli-engine pnpm lint",
