@@ -48,12 +48,4 @@ img[src^="https://img.whzxc.cn/bd"]
   .navbar-right a[href^='/u/'] {
     @include blur-element;
   }
-
-  .usercard,
-  .profile {
-    img.avatar,
-    .username {
-      @include blur-element;
-    }
-  }
 }

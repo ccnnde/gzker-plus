@@ -1,6 +1,6 @@
 import { runtime } from 'webextension-polyfill';
 
-import { getStorage } from '@/utils';
+import { getLoginUserId, getStorage } from '@/utils';
 import { GzkInfoHideClass, GzkInfoType, OptionsKey } from '@/constants';
 
 const applyHideGzkInfo = async () => {
@@ -14,7 +14,27 @@ const applyHideGzkInfo = async () => {
       document.body.classList.add(hideClass);
     }
 
-    if (type === GzkInfoType.TabIcon) {
+    if (type === GzkInfoType.Profile) {
+      const loginUserId = getLoginUserId();
+
+      if (!loginUserId) {
+        return;
+      }
+
+      const style = document.createElement('style');
+      const loginUserSelector = `a[href='/u/${loginUserId}']`;
+
+      style.textContent = `
+        .usercard ${loginUserSelector} img.avatar,
+        .profile ${loginUserSelector} img.avatar,
+        .usercard ${loginUserSelector} + .username,
+        .profile ${loginUserSelector} + .username {
+          filter: blur(6px);
+        }
+      `;
+
+      document.head.appendChild(style);
+    } else if (type === GzkInfoType.TabIcon) {
       const iconLink = document.createElement('link');
       const iconUrl = runtime.getURL('icon/48.png');
 
