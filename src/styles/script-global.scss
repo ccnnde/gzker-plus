@@ -49,3 +49,14 @@ img[src^="https://img.whzxc.cn/bd"]
     @include blur-element;
   }
 }
+
+.hide-topic {
+  height: 100%;
+
+  & > body > {
+    div.container,
+    div.footer {
+      display: none;
+    }
+  }
+}

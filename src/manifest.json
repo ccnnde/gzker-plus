@@ -33,6 +33,11 @@
         "src/scripts/dblclick-to-top.ts",
         "src/scripts/hide-gzk-info.ts"
       ]
+    },
+    {
+      "matches": ["*://www.guozaoke.com/t/*"],
+      "js": ["src/scripts/hide-topic.ts"],
+      "run_at": "document_start"
     }
   ],
   "{{chrome}}.web_accessible_resources": [

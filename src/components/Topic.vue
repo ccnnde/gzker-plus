@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, provide, ref } from 'vue';
+import { computed, onBeforeMount, onMounted, provide, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
 
@@ -8,12 +9,13 @@ import { useClickModal } from '@/composables/click-modal';
 import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
+import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
 import { blockTopics, getStorage, request, setStorage, waitTime } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { DialogType, LOADING_BACKGROUND_DARK, topicLinkRegExp } from '@/constants';
+import { DialogType, LinkElementType, LOADING_BACKGROUND_DARK, OptionsKey, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -37,6 +39,8 @@ import 'viewerjs/dist/viewer.css';
 const PAGE_SIZE = 106;
 const createTopicLinkRegExp = /\/t\/create\/(\w+)/;
 
+const storage = useStorageStore();
+const { options } = storeToRefs(storage);
 const { closeOnClickModal } = useClickModal(DialogType.TopicViewer);
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
@@ -44,9 +48,19 @@ const topicId = ref<string>();
 const topicDetail = ref<UserTopicDetail>();
 const topicStatus = ref<UserTopicStatus>();
 const replyTotal = ref<string>('0');
+const isTopicPage = ref<boolean>(false);
 
 const showReply = computed(() => {
   return replyTotal.value !== '0';
+});
+
+const isTopicLinkBlank = computed(() => {
+  if (!options.value) {
+    return false;
+  }
+
+  const { checkedLinkTypes } = options.value[OptionsKey.BlankLink];
+  return checkedLinkTypes.includes(LinkElementType.Topic);
 });
 
 const getTopicCallback = async (page: number): Promise<UserReplyItem[]> => {
@@ -82,6 +96,20 @@ const {
   scrollToBottom,
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
+onBeforeMount(() => {
+  const { pathname } = location;
+
+  if (!topicLinkRegExp.test(pathname)) {
+    return;
+  }
+
+  topicId.value = pathname.match(topicLinkRegExp)?.[1];
+  isTopicPage.value = true;
+
+  openDialog();
+  getFirstPageData();
+});
+
 onMounted(() => {
   const topicLinkElements = document.querySelectorAll<HTMLAnchorElement>(SELECTOR_TOPIC_LINK);
 
@@ -99,6 +127,10 @@ onMounted(() => {
 });
 
 const handleTopicClick = (e: Event) => {
+  if (isTopicLinkBlank.value) {
+    return;
+  }
+
   e.preventDefault();
   openDialog();
 
@@ -214,8 +246,11 @@ const handleTopicBlock = async () => {
         blockedTopicList,
       });
 
-      blockTopics([id]);
-      closeDialog();
+      if (!isTopicPage.value) {
+        blockTopics([id]);
+        closeDialog();
+      }
+
       ElMessage.success(t('enhancedTopic.blockTopicSuccessful'));
     });
   } catch {
@@ -327,12 +362,13 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       :z-index="2000"
       :show-close="false"
       :before-close="handleDialogBeforeClose"
-      :close-on-click-modal="closeOnClickModal"
+      :close-on-click-modal="!isTopicPage && closeOnClickModal"
+      :close-on-press-escape="!isTopicPage"
       align-center
       @closed="handleTopicDialogClosed"
     >
       <template #header="{ close }">
-        <div class="topic-dialog-absolute">
+        <div v-if="!isTopicPage" class="topic-dialog-absolute">
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
