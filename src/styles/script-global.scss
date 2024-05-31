@@ -54,6 +54,7 @@ img[src^="https://img.whzxc.cn/bd"]
   height: 100%;
 
   & > body > {
+    div.google-auto-placed,
     div.container,
     div.footer {
       display: none;
