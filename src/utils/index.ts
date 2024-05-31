@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 import Cookies from 'js-cookie';
 import { cloneDeep, merge } from 'lodash-es';
 import { storage } from 'webextension-polyfill';
@@ -189,4 +189,18 @@ export const blockTopics = (topicIds: string[]) => {
       element.style.display = 'none';
     }
   });
+};
+
+export const showGlobalLoading = () => {
+  const loading = ElLoading.service({
+    target: document.documentElement,
+    background: 'var(--el-overlay-color-lighter)',
+  });
+
+  window.__GZK_ElLoading = loading;
+};
+
+export const hideGlobalLoading = () => {
+  window.__GZK_ElLoading?.close();
+  window.__GZK_ElLoading = undefined;
 };

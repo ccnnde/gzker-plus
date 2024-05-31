@@ -12,7 +12,7 @@ import { useScrollLoad } from '@/composables/scroll-load';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
-import { blockTopics, getStorage, request, setStorage, waitTime } from '@/utils';
+import { blockTopics, getStorage, hideGlobalLoading, request, setStorage, waitTime } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { DialogType, LinkElementType, LOADING_BACKGROUND_DARK, OptionsKey, topicLinkRegExp } from '@/constants';
@@ -97,7 +97,7 @@ const {
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
 onBeforeMount(() => {
-  const { pathname } = location;
+  const { pathname } = window.location;
 
   if (!topicLinkRegExp.test(pathname)) {
     return;
@@ -106,6 +106,7 @@ onBeforeMount(() => {
   topicId.value = pathname.match(topicLinkRegExp)?.[1];
   isTopicPage.value = true;
 
+  hideGlobalLoading();
   openDialog();
   getFirstPageData();
 });

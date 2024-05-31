@@ -1,5 +1,6 @@
 import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
+import type { LoadingInstance } from 'element-plus/es/components/loading/src/loading';
 import type Viewer from 'viewerjs';
 import type {
   BellStyle,
@@ -11,6 +12,15 @@ import type {
   OptionsKey,
   ReplyType,
 } from '@/constants';
+
+declare global {
+  interface Window {
+    /**
+     * ElLoading 实例
+     */
+    __GZK_ElLoading?: LoadingInstance;
+  }
+}
 
 interface SettingItem {
   name: string;
