@@ -132,7 +132,13 @@ const isMsgUnread = (index: number): boolean => {
     <template #reference>
       <div>
         <ElTooltip v-if="showBell" :content="bellTip" :show-arrow="false" :disabled="disableTooltip">
-          <ElBadge :value="unreadMessageNumber" :max="99" :hidden="disableBadge || hideBadge" :is-dot="isBadgeDot">
+          <ElBadge
+            class="message-badge"
+            :value="unreadMessageNumber"
+            :max="99"
+            :hidden="disableBadge || hideBadge"
+            :is-dot="isBadgeDot"
+          >
             <un-i-mdi-bell-outline class="header-icon" />
           </ElBadge>
         </ElTooltip>
@@ -241,6 +247,12 @@ a.notification-indicator {
 
 <style lang="scss" scoped>
 $msg-padding: 15px;
+
+.message-badge {
+  :deep(.el-badge__content) {
+    text-shadow: none;
+  }
+}
 
 .message-list-header {
   display: flex;
