@@ -466,8 +466,15 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 
   .main-content {
     margin: 15px 0;
+    font-size: 14px;
     color: var(--el-text-color-primary);
     word-break: break-all;
+
+    &.markdown-body {
+      blockquote {
+        font-size: inherit;
+      }
+    }
   }
 
   .number-info {

@@ -51,7 +51,11 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
         </div>
       </div>
     </header>
-    <section v-img-load="updateScrollbar" class="main-content" v-html="convertEmojiToNative(content)"></section>
+    <section
+      v-img-load="updateScrollbar"
+      class="main-content markdown-body"
+      v-html="convertEmojiToNative(content)"
+    ></section>
   </article>
 </template>
 

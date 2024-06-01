@@ -115,7 +115,7 @@ const handleReplyEdit = () => {
       <div
         ref="contentEl"
         v-img-load="updateScrollbar"
-        class="main-content"
+        class="main-content markdown-body"
         v-html="convertEmojiToNative(content)"
       ></div>
       <div class="reply-footer">
