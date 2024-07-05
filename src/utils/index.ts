@@ -204,3 +204,8 @@ export const hideGlobalLoading = () => {
   window.__GZK_ElLoading?.close();
   window.__GZK_ElLoading = undefined;
 };
+
+export const isGlobalLoadingVisible = () => {
+  const loadingEle = document.querySelector('.el-loading-mask.is-fullscreen');
+  return !!loadingEle;
+};

@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus';
 import QrcodeVue from 'qrcode.vue';
 
 import { t } from '@/i18n';
-import { getTopicUrl } from '@/utils';
+import { addUnit, getTopicUrl } from '@/utils';
 import { ADD_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 
 import LikeButton from './LikeButton.vue';
@@ -21,6 +21,7 @@ interface Props {
   liked?: boolean;
   likeNumber?: string;
   editable?: boolean;
+  height: number;
 }
 
 const props = defineProps<Props>();
@@ -50,6 +51,12 @@ const favoriteButtonStyle = computed<CSSProperties | undefined>(() => {
   return undefined;
 });
 
+const footerStyle = computed<CSSProperties>(() => {
+  return {
+    height: addUnit(props.height),
+  };
+});
+
 const copyTopicUrl = async () => {
   await navigator.clipboard.writeText(topicUrl.value);
   ElMessage.success(t('enhancedTopic.copyLinkSuccessfully'));
@@ -67,7 +74,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 </script>
 
 <template>
-  <div class="footer-container">
+  <div class="footer-container" :style="footerStyle">
     <OperateButton :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" :operate-text="replyTotal" />
     <OperateButton
       :tip-content="$t('common.favorite')"
@@ -103,9 +110,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
     </ElDropdown>
     <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
     <OperateButton v-else :operate-text="$t('enhancedTopic.blockTopic')" @click="$emit('blockTopic')" />
-    <ElButton class="reply-button" type="primary" size="small" @click="addReply?.()">
-      {{ $t('enhancedTopic.writeReply') }}
-    </ElButton>
+    <ElInput class="reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />
   </div>
 </template>
 
@@ -125,11 +130,10 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 .footer-container {
   display: flex;
   align-items: center;
-  height: 50px;
   padding: 0 var(--gzk-topic-padding);
+  border-top: 1px solid var(--el-border-color-lighter);
   border-bottom-right-radius: var(--el-border-radius-base);
   border-bottom-left-radius: var(--el-border-radius-base);
-  box-shadow: var(--el-box-shadow-lighter);
 }
 
 .share-icon {
@@ -149,8 +153,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
   color: #3fc15f;
 }
 
-.reply-button {
-  position: absolute;
-  right: var(--gzk-topic-padding);
+.reply-input {
+  flex: 1;
 }
 </style>

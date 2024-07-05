@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import type ContentEditor from '@/components/ContentEditor.vue';
 import type EmojiPicker from '@/components/EmojiPicker.vue';
 import type MentionPicker from '@/components/MentionPicker.vue';
-import { addUnit } from '@/utils';
+import { addUnit, isGlobalLoadingVisible } from '@/utils';
 
 import type { CSSProperties } from 'vue';
 import type { DialogBeforeCloseFn } from 'element-plus';
@@ -58,16 +58,18 @@ export const useContentEditor = () => {
     }, 50);
   };
 
-  const handleEditorBeforeClose: DialogBeforeCloseFn = (done) => {
-    const loadingEle = document.querySelector('.el-loading-mask.is-fullscreen');
-
-    if (loadingEle) {
-      return;
-    }
-
+  const isEmojiPickerVisible = () => {
     if (emojiPicker.value?.visible) {
       emojiPicker.value.hidePicker();
       contentEditor.value?.focusEditor();
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleEditorBeforeClose: DialogBeforeCloseFn = (done) => {
+    if (isGlobalLoadingVisible() || isEmojiPickerVisible()) {
       return;
     }
 
@@ -86,6 +88,7 @@ export const useContentEditor = () => {
     refreshEditor,
     resetEditorLayout,
     showMentionPicker,
+    isEmojiPickerVisible,
     handleEditorBeforeClose,
   };
 };

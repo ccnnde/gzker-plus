@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
+import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
@@ -32,6 +33,7 @@ const emit = defineEmits<{
 }>();
 
 const { isLoading, handleRequest } = useRequest();
+const replyItemEl = ref<HTMLDivElement | null>(null);
 const contentEl = ref<HTMLDivElement | null>(null);
 
 const handleReplyLike = () => {
@@ -79,6 +81,15 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 const handleUserReply = () => {
   const content = `@${props.uid} #${props.replyNo} `;
   addReply?.(content);
+
+  setTimeout(() => {
+    if (replyItemEl.value) {
+      scrollIntoView(replyItemEl.value, {
+        scrollMode: 'if-needed',
+        block: 'nearest',
+      });
+    }
+  });
 };
 
 const editReply = inject(EDIT_REPLY_INJECTION_KEY);
@@ -92,7 +103,7 @@ const handleReplyEdit = () => {
 </script>
 
 <template>
-  <div v-loading="isLoading" class="reply-container">
+  <div ref="replyItemEl" v-loading="isLoading" class="reply-container">
     <UserAvatar :uid="uid" :user-link="userLink" :avatar-url="avatarUrl" />
     <div class="reply-main">
       <div class="reply-header">

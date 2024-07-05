@@ -32,14 +32,19 @@ export const viewerOptions: Viewer.Options = {
   },
 };
 
+export const isImgViewerVisible = () => {
+  const imgViewer = document.querySelector(`.${VIEWER_CLASS_NAME}.viewer-container.viewer-in`);
+  return !!imgViewer;
+};
+
 /**
  * 按下 ESC 关闭 Dialog 时，判断是否在进行图片预览，若是则不关闭 Dialog
  * @param done 关闭 Dialog 的回调函数
  */
 export const handleDialogBeforeClose: DialogBeforeCloseFn = (done) => {
-  const imgViewer = document.querySelector(`.${VIEWER_CLASS_NAME}.viewer-container.viewer-in`);
-
-  if (!imgViewer) {
-    done();
+  if (isImgViewerVisible()) {
+    return;
   }
+
+  done();
 };

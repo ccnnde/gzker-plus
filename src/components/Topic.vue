@@ -12,9 +12,18 @@ import { useScrollLoad } from '@/composables/scroll-load';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
-import { blockTopics, getStorage, hideGlobalLoading, request, setStorage, waitTime } from '@/utils';
+import {
+  addUnit,
+  blockTopics,
+  getStorage,
+  hideGlobalLoading,
+  isGlobalLoadingVisible,
+  request,
+  setStorage,
+  waitTime,
+} from '@/utils';
 import { emitter } from '@/utils/event-bus';
-import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
+import { isImgViewerVisible, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { DialogType, LinkElementType, LOADING_BACKGROUND_DARK, OptionsKey, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
@@ -32,6 +41,8 @@ import TopicEditor from './TopicEditor.vue';
 import TopicFooter from './TopicFooter.vue';
 import TopicReply from './TopicReply.vue';
 
+import type { CSSProperties } from 'vue';
+import type { DialogBeforeCloseFn } from 'element-plus';
 import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 import 'viewerjs/dist/viewer.css';
@@ -282,12 +293,31 @@ const handleReplySended = (data: UserTopic) => {
   updateCurrentPageData(total, list);
 };
 
+const handleTopicDialogOpened = () => {
+  replyEditor.value?.generateCreateHistoryId();
+};
+
+const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
+  if (isImgViewerVisible() || isGlobalLoadingVisible() || replyEditor.value?.isEmojiPickerVisible()) {
+    return;
+  }
+
+  done();
+};
+
 const handleTopicDialogClosed = () => {
   topicId.value = undefined;
   topicDetail.value = undefined;
   replyTotal.value = '0';
   currentScrollDistance.value = 0;
+
+  isReplyEditorFullscreen.value = false;
+  replyEditor.value?.resetEditHistoryId();
+  replyEditor.value?.closeEditor();
   replyEditor.value?.clearContent();
+  replyEditor.value?.resetEditorLayout();
+
+  showTopicFooter();
   resetRequestState();
   resetScrollLoadState();
 };
@@ -327,6 +357,29 @@ const addTopic = (node: string) => {
 };
 
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
+const isReplyEditorFullscreen = ref(false);
+const topicFooterVisible = ref(true);
+const topicFooterHeight = 50;
+
+const replyEditorHeight = computed<number>(() => {
+  return isReplyEditorFullscreen.value ? 400 : 315;
+});
+
+const topicContainerStyle = computed<CSSProperties>(() => {
+  const footerHeight = topicFooterVisible.value ? topicFooterHeight : replyEditorHeight.value;
+
+  return {
+    height: `calc(95vh - ${addUnit(footerHeight)})`,
+  };
+});
+
+const showTopicFooter = () => {
+  topicFooterVisible.value = true;
+};
+
+const hideTopicFooter = () => {
+  topicFooterVisible.value = false;
+};
 
 const addReply = (content?: string) => {
   if (import.meta.env.PROD) {
@@ -341,14 +394,16 @@ const addReply = (content?: string) => {
     }
   }
 
-  replyEditor.value?.openDialog();
+  hideTopicFooter();
+  replyEditor.value?.openEditor();
   replyEditor.value?.addReply(content);
 };
 
 provide(ADD_REPLY_INJECTION_KEY, addReply);
 
 const editReply = (reply: UserReplyItem) => {
-  replyEditor.value?.openDialog();
+  hideTopicFooter();
+  replyEditor.value?.openEditor();
   replyEditor.value?.editReply(reply);
 };
 
@@ -362,10 +417,11 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       class="topic-dialog"
       :z-index="2000"
       :show-close="false"
-      :before-close="handleDialogBeforeClose"
+      :before-close="handleTopicDialogBeforeClose"
       :close-on-click-modal="!isTopicPage && closeOnClickModal"
       :close-on-press-escape="!isTopicPage"
       align-center
+      @opened="handleTopicDialogOpened"
       @closed="handleTopicDialogClosed"
     >
       <template #header="{ close }">
@@ -379,6 +435,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
             v-infinite-scroll="getNextPageData"
             v-viewer="viewerOptions"
             class="topic-container"
+            :style="topicContainerStyle"
             :infinite-scroll-disabled="disableInfiniteScroll"
             :infinite-scroll-distance="100"
           >
@@ -397,16 +454,27 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
             />
           </div>
         </ElScrollbar>
-        <TopicFooter
-          v-if="topicDetail"
+        <ReplyEditor
+          ref="replyEditor"
           :topic-id="topicId"
-          :topic-title="topicDetail.title"
+          :reply-list="replyList"
+          :height="replyEditorHeight"
+          :fullscreen="isReplyEditorFullscreen"
+          @sended="handleReplySended"
+          @closed="showTopicFooter"
+          @toggle-fullscreen="isReplyEditorFullscreen = !isReplyEditorFullscreen"
+        />
+        <TopicFooter
+          v-show="topicDetail && topicFooterVisible"
+          :topic-id="topicId"
+          :topic-title="topicDetail?.title"
           :reply-total="replyTotal"
-          :favorited="topicDetail.favorited"
-          :favorite-number="topicDetail.favoriteNumber"
-          :liked="topicDetail.liked"
-          :like-number="topicDetail.likeNumber"
-          :editable="topicDetail.editable"
+          :favorited="topicDetail?.favorited"
+          :favorite-number="topicDetail?.favoriteNumber"
+          :liked="topicDetail?.liked"
+          :like-number="topicDetail?.likeNumber"
+          :editable="topicDetail?.editable"
+          :height="topicFooterHeight"
           @favorite-topic="handleTopicFavorite"
           @like-topic="handleTopicLike"
           @edit-topic="handleTopicEdit"
@@ -433,7 +501,6 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       </template>
     </ElDialog>
     <TopicEditor ref="topicEditor" @sended="handleTopicSended" />
-    <ReplyEditor ref="replyEditor" :topic-id="topicId" :reply-list="replyList" @sended="handleReplySended" />
   </ElementConfig>
 </template>
 
@@ -519,7 +586,8 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
   }
 }
 
-.editor-dialog-fullscreen {
+.editor-dialog-fullscreen,
+.reply-editor-fullscreen {
   .cherry-toolbar {
     .ch-icon-dialog-fullscreen::before {
       content: '\EA42';
@@ -527,7 +595,8 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
   }
 }
 
-.editor-dialog-minscreen {
+.editor-dialog-minscreen,
+.reply-editor-minscreen {
   .cherry-toolbar {
     .ch-icon-dialog-fullscreen::before {
       content: '\EA41';
@@ -585,7 +654,6 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 
 .topic-container {
   width: 100%;
-  height: 85vh;
   padding: var(--gzk-topic-padding);
 }
 

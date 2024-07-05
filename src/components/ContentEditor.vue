@@ -549,6 +549,10 @@ defineExpose({
         pointer-events: none;
       }
     }
+
+    span.cherry-dropdown-item[title='五级标题'] {
+      display: none;
+    }
   }
 
   &:hover :deep(.cherry) {
