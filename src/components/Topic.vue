@@ -365,11 +365,19 @@ const replyEditorHeight = computed<number>(() => {
   return isReplyEditorFullscreen.value ? 400 : 315;
 });
 
-const topicContainerStyle = computed<CSSProperties>(() => {
-  const footerHeight = topicFooterVisible.value ? topicFooterHeight : replyEditorHeight.value;
+const currentFooterHeight = computed<number>(() => {
+  return topicFooterVisible.value ? topicFooterHeight : replyEditorHeight.value;
+});
 
+const topicContainerStyle = computed<CSSProperties>(() => {
   return {
-    height: `calc(95vh - ${addUnit(footerHeight)})`,
+    height: `calc(95vh - ${addUnit(currentFooterHeight.value)})`,
+  };
+});
+
+const topicBodyStyle = computed<CSSProperties>(() => {
+  return {
+    paddingBottom: addUnit(currentFooterHeight.value),
   };
 });
 
@@ -429,7 +437,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
-      <div v-loading="isLoading || isFirstPageLoading">
+      <div v-loading="isLoading || isFirstPageLoading" :style="topicBodyStyle">
         <ElScrollbar ref="scrollbar" @scroll="handleScroll">
           <div
             v-infinite-scroll="getNextPageData"
@@ -456,6 +464,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
         </ElScrollbar>
         <ReplyEditor
           ref="replyEditor"
+          class="topic-body-absolute"
           :topic-id="topicId"
           :reply-list="replyList"
           :height="replyEditorHeight"
@@ -466,6 +475,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
         />
         <TopicFooter
           v-show="topicDetail && topicFooterVisible"
+          class="topic-body-absolute"
           :topic-id="topicId"
           :topic-title="topicDetail?.title"
           :reply-total="replyTotal"
@@ -664,6 +674,13 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 .topic-container {
   width: 100%;
   padding: var(--gzk-topic-padding);
+}
+
+.topic-body-absolute {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .comment-icon {
