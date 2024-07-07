@@ -146,6 +146,7 @@
     "replyContentCannotBeEmpty": "The reply content cannot be empty",
     "replyContentIsUnderReview": "Reply moderation mode has been enabled on this site. Please wait for the administrator to review the reply content",
     "replyTotal": "Received {num} replies in total",
+    "selectWeiboEmoji": "Select weibo emoji",
     "share": "Share",
     "shareLink": "Copy Link",
     "shareWeChat": "Scan with WeChat",

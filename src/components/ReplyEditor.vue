@@ -20,6 +20,7 @@ import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
 import MentionPicker from './MentionPicker.vue';
+import WeiboEmojiPicker from './WeiboEmojiPicker.vue';
 
 import type { CSSProperties } from 'vue';
 import type { EditHistoryItem, UserReplyItem, UserTopic } from '@/types';
@@ -49,12 +50,16 @@ const {
   emojiPicker,
   mentionPicker,
   mentionPickerStyle,
+  weiboEmojiPicker,
+  weiboEmojiPickerStyle,
   insertUid,
   insertEmoji,
+  insertWeiboEmoji,
   clearContent,
   refreshEditor,
   resetEditorLayout,
   showMentionPicker,
+  showWeiboEmojiPicker,
   isEmojiPickerVisible,
 } = useContentEditor();
 
@@ -251,6 +256,7 @@ defineExpose({
         @submit-content="sendReply"
         @show-emoji-picker="emojiPicker?.showPicker"
         @show-mention-picker="showMentionPicker"
+        @show-weibo-emoji-picker="showWeiboEmojiPicker"
         @toggle-fullscreen="$emit('toggleFullscreen')"
       />
       <MentionPicker
@@ -258,6 +264,12 @@ defineExpose({
         :style="mentionPickerStyle"
         :uid-list="uidList"
         @picked="insertUid"
+        @hide="contentEditor?.focusEditor"
+      />
+      <WeiboEmojiPicker
+        ref="weiboEmojiPicker"
+        :style="weiboEmojiPickerStyle"
+        @picked="insertWeiboEmoji"
         @hide="contentEditor?.focusEditor"
       />
     </div>

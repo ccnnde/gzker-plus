@@ -14,6 +14,11 @@ export const SHORTCUT_SHOW_EDITOR_HISTORY = 'ctrl+h';
 export const SHORTCUT_SHOW_EMOJI_PICKER = 'ctrl+;';
 
 /**
+ * 显示微博 Emoji 选择器
+ */
+export const SHORTCUT_SHOW_WEIBO_EMOJI_PICKER = 'shift+:';
+
+/**
  * 显示可提及的用户列表
  */
 export const SHORTCUT_SHOW_MENTION_PICKER = 'shift+@';

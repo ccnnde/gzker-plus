@@ -23,6 +23,7 @@ import {
   SHORTCUT_SHOW_EDITOR_HISTORY,
   SHORTCUT_SHOW_EMOJI_PICKER,
   SHORTCUT_SHOW_MENTION_PICKER,
+  SHORTCUT_SHOW_WEIBO_EMOJI_PICKER,
   SHORTCUT_SUBMIT_CONTENT,
   SHORTCUT_TOGGLE_FULLSCREEN,
   SHORTCUT_TOGGLE_PREVIEW,
@@ -58,6 +59,7 @@ const emit = defineEmits<{
   importHistory: [data: EditHistoryItem];
   submitContent: [];
   showEmojiPicker: [];
+  showWeiboEmojiPicker: [coords: Coordinates];
   showMentionPicker: [coords: Coordinates];
   toggleFullscreen: [];
 }>();
@@ -232,6 +234,11 @@ const keybindings: Keybindings = {
   [SHORTCUT_SHOW_EMOJI_PICKER]: (e: KeyboardEvent) => {
     emit('showEmojiPicker');
     e.preventDefault();
+  },
+  [SHORTCUT_SHOW_WEIBO_EMOJI_PICKER]: () => {
+    setTimeout(() => {
+      emit('showWeiboEmojiPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
+    }, 50);
   },
   [SHORTCUT_SHOW_MENTION_PICKER]: () => {
     if (!props.mentionable) {

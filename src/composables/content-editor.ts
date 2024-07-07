@@ -3,7 +3,10 @@ import { computed, ref } from 'vue';
 import type ContentEditor from '@/components/ContentEditor.vue';
 import type EmojiPicker from '@/components/EmojiPicker.vue';
 import type MentionPicker from '@/components/MentionPicker.vue';
+import type WeiboEmojiPicker from '@/components/WeiboEmojiPicker.vue';
 import { addUnit, isGlobalLoadingVisible } from '@/utils';
+
+import { useShowPicker } from './show-picker';
 
 import type { CSSProperties } from 'vue';
 import type { DialogBeforeCloseFn } from 'element-plus';
@@ -16,6 +19,10 @@ export const useContentEditor = () => {
   const mentionPicker = ref<InstanceType<typeof MentionPicker> | null>(null);
   const mentionPickerLeft = ref(0);
   const mentionPickerTop = ref(0);
+  const weiboEmojiPicker = ref<InstanceType<typeof WeiboEmojiPicker> | null>(null);
+  const { pickerStyle: weiboEmojiPickerStyle, showPicker: showWeiboEmojiPicker } = useShowPicker(() => {
+    weiboEmojiPicker.value?.showPicker();
+  });
 
   const mentionPickerStyle = computed<CSSProperties>(() => {
     return {
@@ -33,6 +40,11 @@ export const useContentEditor = () => {
 
   const insertEmoji = (emoji: string) => {
     contentEditor.value?.insertValue(`:${emoji}:`);
+    contentEditor.value?.focusEditor();
+  };
+
+  const insertWeiboEmoji = (emoji: string) => {
+    contentEditor.value?.insertValue(`${emoji}:`);
     contentEditor.value?.focusEditor();
   };
 
@@ -82,12 +94,16 @@ export const useContentEditor = () => {
     emojiPicker,
     mentionPicker,
     mentionPickerStyle,
+    weiboEmojiPicker,
+    weiboEmojiPickerStyle,
     insertUid,
     insertEmoji,
+    insertWeiboEmoji,
     clearContent,
     refreshEditor,
     resetEditorLayout,
     showMentionPicker,
+    showWeiboEmojiPicker,
     isEmojiPickerVisible,
     handleEditorBeforeClose,
   };

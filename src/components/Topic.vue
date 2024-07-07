@@ -631,6 +631,15 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 
   @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);
 }
+
+.editor-picker-popper {
+  .el-select-dropdown__item {
+    &:hover,
+    &.hover {
+      color: var(--el-color-primary);
+    }
+  }
+}
 </style>
 
 <style lang="scss" scoped>

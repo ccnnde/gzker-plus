@@ -23,6 +23,7 @@ import { DialogType } from '@/constants';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
+import WeiboEmojiPicker from './WeiboEmojiPicker.vue';
 
 import type { CascaderProps, FormInstance, FormRules } from 'element-plus';
 import type { EditHistoryItem, TopicForm, TreeNode, UserTopic, UserTopicDetail } from '@/types';
@@ -66,10 +67,14 @@ const {
   isAddContent,
   contentEditor,
   emojiPicker,
+  weiboEmojiPicker,
+  weiboEmojiPickerStyle,
   insertEmoji,
+  insertWeiboEmoji,
   clearContent,
   refreshEditor,
   resetEditorLayout,
+  showWeiboEmojiPicker,
   handleEditorBeforeClose,
 } = useContentEditor();
 const { lockScroll, unlockScroll } = useLockscreen();
@@ -281,10 +286,17 @@ defineExpose({
           @import-history="importEditHistory"
           @submit-content="sendTopic"
           @show-emoji-picker="emojiPicker?.showPicker"
+          @show-weibo-emoji-picker="showWeiboEmojiPicker"
           @toggle-fullscreen="toggleDialogFullscreen"
         />
       </ElFormItem>
     </ElForm>
+    <WeiboEmojiPicker
+      ref="weiboEmojiPicker"
+      :style="weiboEmojiPickerStyle"
+      @picked="insertWeiboEmoji"
+      @hide="contentEditor?.focusEditor"
+    />
     <template #footer>
       <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
       <span>

@@ -146,6 +146,7 @@
     "replyContentCannotBeEmpty": "回复内容不能为空",
     "replyContentIsUnderReview": "本站已开启回复审核模式，请等待管理员审核回复内容",
     "replyTotal": "共收到 {num} 条回复",
+    "selectWeiboEmoji": "选择微博表情",
     "share": "分享",
     "shareLink": "复制链接",
     "shareWeChat": "微信扫码",
