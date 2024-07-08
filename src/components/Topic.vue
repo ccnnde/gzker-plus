@@ -462,17 +462,19 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
             />
           </div>
         </ElScrollbar>
-        <ReplyEditor
-          ref="replyEditor"
-          class="topic-body-absolute"
-          :topic-id="topicId"
-          :reply-list="replyList"
-          :height="replyEditorHeight"
-          :fullscreen="isReplyEditorFullscreen"
-          @sended="handleReplySended"
-          @closed="showTopicFooter"
-          @toggle-fullscreen="isReplyEditorFullscreen = !isReplyEditorFullscreen"
-        />
+        <Transition name="el-fade-in-linear" leave-active-class="">
+          <ReplyEditor
+            ref="replyEditor"
+            class="topic-body-absolute"
+            :topic-id="topicId"
+            :reply-list="replyList"
+            :height="replyEditorHeight"
+            :fullscreen="isReplyEditorFullscreen"
+            @sended="handleReplySended"
+            @closed="showTopicFooter"
+            @toggle-fullscreen="isReplyEditorFullscreen = !isReplyEditorFullscreen"
+          />
+        </Transition>
         <TopicFooter
           v-show="topicDetail && topicFooterVisible"
           class="topic-body-absolute"
