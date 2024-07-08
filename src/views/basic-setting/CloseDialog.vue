@@ -20,10 +20,6 @@ const checkDialogList = computed<CheckItem<DialogType>[]>(() => {
       value: DialogType.TopicEditor,
       label: t('basicSetting.closeDialogOnClickModal.topicEditor'),
     },
-    {
-      value: DialogType.ReplyEditor,
-      label: t('basicSetting.closeDialogOnClickModal.replyEditor'),
-    },
   ];
 });
 </script>
