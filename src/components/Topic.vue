@@ -139,15 +139,17 @@ onMounted(() => {
 });
 
 const handleTopicClick = (e: Event) => {
+  e.preventDefault();
+
+  const { href } = e.target as HTMLAnchorElement;
+
   if (isTopicLinkBlank.value) {
+    window.open(href);
     return;
   }
 
-  e.preventDefault();
+  topicId.value = href.match(topicLinkRegExp)?.[1];
   openDialog();
-
-  const topicLinkEle = e.target as HTMLAnchorElement;
-  topicId.value = topicLinkEle.href.match(topicLinkRegExp)?.[1];
   getFirstPageData();
 };
 
