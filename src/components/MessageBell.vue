@@ -178,13 +178,13 @@ const isMsgUnread = (index: number): boolean => {
                 </a>
                 <template v-if="item.replyType === ReplyType.Topic">
                   <span class="message-action">{{ $t('enhancedMsg.replyYou') }}</span>
-                  <a class="message-link" :href="item.topicLink" @click="handleTopicClick">
+                  <a class="message-link" :href="item.topicLink" target="_blank" @click="handleTopicClick">
                     {{ item.topicTitle }}
                   </a>
                 </template>
                 <template v-else-if="item.replyType === ReplyType.Mention">
                   <span class="message-action">{{ $t('enhancedMsg.inTopic') }}</span>
-                  <a class="message-link" :href="item.topicLink" @click="handleTopicClick">
+                  <a class="message-link" :href="item.topicLink" target="_blank" @click="handleTopicClick">
                     {{ item.topicTitle }}
                   </a>
                   <span class="message-action">{{ $t('enhancedMsg.mentionYou') }}</span>

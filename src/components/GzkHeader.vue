@@ -32,7 +32,7 @@ const openExtOptions = () => {
       <template #dropdown>
         <ElDropdownMenu>
           <ElDropdownItem>
-            <a href="/t/108340" @click="feedbackDropdown?.popperRef?.onClose">
+            <a href="/t/108340" target="_blank" @click="feedbackDropdown?.popperRef?.onClose">
               {{ $t('gzkHeader.gzkTopic') }}
             </a>
           </ElDropdownItem>
