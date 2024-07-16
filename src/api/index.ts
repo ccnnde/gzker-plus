@@ -73,7 +73,7 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
     title: decode(htmlStr.match(/<h3 class="title">([^<]+)<\/h3>/)?.[1]),
     authorId: htmlStr.match(/<a href="\/u\/([^"]+)">/)?.[1],
     authorLink: htmlStr.match(/<a href="(\/u\/[^"]+)">/)?.[1],
-    avatarUrl: htmlStr.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar" \/>/)?.[1],
+    avatarUrl: htmlStr.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar"/)?.[1],
     meta: {
       nodeInfo: htmlStr.match(/<span class="node">(.+)<\/span>/)?.[1],
       authorInfo: htmlStr.match(/<span class="username">(.+?)<\/span>/s)?.[1],
@@ -119,7 +119,7 @@ const parseTopicReplyList = (htmlStr: string): UserReplyItem[] => {
     return {
       uid: item.match(/<a href="\/u\/([^"]+)">/)?.[1],
       userLink: item.match(/<a href="(\/u\/[^"]+)">/)?.[1],
-      avatarUrl: item.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar" \/>/)?.[1],
+      avatarUrl: item.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar"/)?.[1],
       isOriginalPoster: /<span class="time">楼主<\/span>/.test(item),
       replyId: item.match(/<a class="J_replyVote" data-count="\d+" href="\/replyVote\?reply_id=(\d+)">/)?.[1],
       replyNo: item.match(/<span class="fr floor">#(\d+)<\/span>/)?.[1],
@@ -332,3 +332,5 @@ export const getNodeList = async (): Promise<TreeNode[]> => {
   const data = await request('/nodes');
   return parseNodeList(data);
 };
+
+export { parseUserTopic };

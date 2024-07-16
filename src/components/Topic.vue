@@ -11,7 +11,7 @@ import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
-import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic } from '@/api';
+import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, parseUserTopic, unfavoriteTopic } from '@/api';
 import {
   addUnit,
   blockTopics,
@@ -118,9 +118,28 @@ onBeforeMount(() => {
   topicId.value = pathname.match(topicLinkRegExp)?.[1];
   isTopicPage.value = true;
 
+  const {
+    detail,
+    status,
+    reply: { total, list },
+  } = parseUserTopic(document.body.innerHTML);
+
+  /**
+   * 新标签页查看主题时
+   * 1. 若为首页数据，则直接使用解析当前 DOM 得到的主题数据（减少重复请求）
+   * 2. 否则调用接口请求数据
+   */
+  if (total === '0' || list[0].replyNo === '1') {
+    topicDetail.value = detail;
+    topicStatus.value = status;
+    replyTotal.value = total;
+    updateCurrentPageData(total, list);
+  } else {
+    getFirstPageData();
+  }
+
   hideGlobalLoading();
   openDialog();
-  getFirstPageData();
 });
 
 onMounted(() => {
