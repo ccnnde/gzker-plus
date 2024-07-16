@@ -15,8 +15,9 @@ import {
   SUCCESS_LIKE,
   USER_NOT_LOGIN,
 } from '@/constants/res-msg';
-import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOPIC_LINK } from '@/constants/selector';
+import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOP_NAVBAR, SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
+import type { LoadingOptions } from 'element-plus';
 import type { ApiJsonResponse, Base64File, ScriptAppOptions, StorageSettings, UserReplyItem } from '@/types';
 
 const getResMessage = (msg: string): string => {
@@ -191,12 +192,8 @@ export const blockTopics = (topicIds: string[]) => {
   });
 };
 
-export const showGlobalLoading = () => {
-  const loading = ElLoading.service({
-    target: document.documentElement,
-    background: 'var(--el-overlay-color-lighter)',
-  });
-
+export const showGlobalLoading = (options?: LoadingOptions) => {
+  const loading = ElLoading.service(options);
   window.__GZK_ElLoading = loading;
 };
 
@@ -208,4 +205,16 @@ export const hideGlobalLoading = () => {
 export const isGlobalLoadingVisible = () => {
   const loadingEle = document.querySelector('.el-loading-mask.is-fullscreen');
   return !!loadingEle;
+};
+
+/**
+ * 计算主题页面中主题浏览框的视口高度比例（以 px 为单位进行计算）
+ */
+export const calcTopicPageDialogVH = () => {
+  const { innerHeight } = window;
+  const topNavBar = document.querySelector(SELECTOR_TOP_NAVBAR);
+  const topNavBarHeight = topNavBar?.clientHeight || 50;
+  const dialogVerticalMargin = 20;
+  const dialogVH = Math.floor(((innerHeight - topNavBarHeight - dialogVerticalMargin) * 100) / innerHeight);
+  return dialogVH;
 };

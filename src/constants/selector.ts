@@ -14,6 +14,11 @@ export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 export const SELECTOR_NODE_LINK = 'a[href^="/node/"]:not([href*="?p="])';
 
 /**
+ * 顶栏导航条元素
+ */
+export const SELECTOR_TOP_NAVBAR = '.navbar.top-navbar';
+
+/**
  * 导航条右侧元素
  */
 export const SELECTOR_NAVBAR_RIGHT = '.navbar-right';

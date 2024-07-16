@@ -12,7 +12,11 @@ const applyHideTopic = async () => {
     return;
   }
 
-  showGlobalLoading();
+  showGlobalLoading({
+    target: document.documentElement,
+    background: 'transparent',
+  });
+
   document.documentElement.classList.add('hide-topic');
 };
 

@@ -15,6 +15,7 @@ import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, unfavoriteTopic
 import {
   addUnit,
   blockTopics,
+  calcTopicPageDialogVH,
   getStorage,
   hideGlobalLoading,
   isGlobalLoadingVisible,
@@ -371,9 +372,13 @@ const currentFooterHeight = computed<number>(() => {
   return topicFooterVisible.value ? topicFooterHeight : replyEditorHeight.value;
 });
 
+const topicDialogVH = computed<number>(() => {
+  return isTopicPage.value ? calcTopicPageDialogVH() : 92;
+});
+
 const topicContainerStyle = computed<CSSProperties>(() => {
   return {
-    height: `calc(95vh - ${addUnit(currentFooterHeight.value)})`,
+    height: `calc(${topicDialogVH.value}vh - ${addUnit(currentFooterHeight.value)})`,
   };
 });
 
@@ -425,6 +430,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
     <ElDialog
       v-model="dialogVisible"
       class="topic-dialog"
+      :modal-class="isTopicPage ? 'topic-overlay' : ''"
       :z-index="2000"
       :show-close="false"
       :before-close="handleTopicDialogBeforeClose"
@@ -520,6 +526,15 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 
 <style lang="scss">
 @import '@/styles/mixin';
+
+.topic-overlay {
+  top: var(--gzk-top-navbar-height);
+  background-color: transparent;
+
+  & > .el-overlay-dialog {
+    top: var(--gzk-top-navbar-height);
+  }
+}
 
 .topic-dialog,
 .conversation-dialog {
