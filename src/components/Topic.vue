@@ -450,7 +450,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       v-model="dialogVisible"
       class="topic-dialog"
       :modal-class="isTopicPage ? 'topic-overlay' : ''"
-      :z-index="2000"
+      :z-index="isTopicPage ? 1000 : 2000"
       :show-close="false"
       :before-close="handleTopicDialogBeforeClose"
       :close-on-click-modal="!isTopicPage && closeOnClickModal"
