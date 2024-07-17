@@ -163,7 +163,7 @@ const handleTopicClick = (e: Event) => {
 
   const { href } = e.target as HTMLAnchorElement;
 
-  if (isTopicLinkBlank.value) {
+  if (isTopicPage.value || isTopicLinkBlank.value) {
     window.open(href);
     return;
   }
