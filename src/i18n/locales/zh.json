@@ -20,7 +20,7 @@
     },
     "dblclickToTop": {
       "title": "双击返回顶部",
-      "titleDesc": "双击任意位置返回网页顶部"
+      "titleDesc": "双击网页主要内容区域（除开顶栏、底栏后的中间部分）任意位置返回网页顶部"
     },
     "enhancedMsg": {
       "bellDot": "显示小红点",

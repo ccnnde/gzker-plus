@@ -464,7 +464,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
-      <div v-loading="isLoading || isFirstPageLoading" :style="topicBodyStyle" @dblclick.stop>
+      <div v-loading="isLoading || isFirstPageLoading" :style="topicBodyStyle">
         <ElScrollbar ref="scrollbar" @scroll="handleScroll">
           <div
             v-infinite-scroll="getNextPageData"

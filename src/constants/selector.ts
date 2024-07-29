@@ -19,6 +19,11 @@ export const SELECTOR_NODE_LINK = 'a[href^="/node/"]:not([href*="?p="])';
 export const SELECTOR_TOP_NAVBAR = '.navbar.top-navbar';
 
 /**
+ * 网页主要内容区域容器元素
+ */
+export const SELECTOR_MAIN_CONTAINER = '.navbar.top-navbar + div.container';
+
+/**
  * 导航条右侧元素
  */
 export const SELECTOR_NAVBAR_RIGHT = '.navbar-right';
