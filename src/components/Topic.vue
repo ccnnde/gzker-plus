@@ -589,6 +589,10 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       blockquote {
         font-size: inherit;
       }
+
+      pre > code {
+        white-space: pre-wrap;
+      }
     }
   }
 
