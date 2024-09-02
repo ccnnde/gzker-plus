@@ -130,9 +130,9 @@ const handleReplyEdit = () => {
         v-html="convertEmojiToNative(content)"
       ></div>
       <div class="reply-footer">
-        <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="handleReplyLike" />
+        <LikeButton :liked="liked" :like-number="likeNumber" hide-tip @handle-like="handleReplyLike" />
         <template v-if="isNotInConversation">
-          <OperateButton :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" @click="handleUserReply" />
+          <OperateButton icon-class="i-mdi-chat-outline" @click="handleUserReply" />
           <OperateButton :operate-text="$t('enhancedTopic.viewConversation')" @click="handleConversationView" />
           <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editReply')" @click="handleReplyEdit" />
         </template>

@@ -8,6 +8,7 @@ import type { CSSProperties } from 'vue';
 interface Props {
   liked?: boolean;
   likeNumber?: string;
+  hideTip?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -33,7 +34,7 @@ const likeButtonStyle = computed<CSSProperties | undefined>(() => {
 
 <template>
   <OperateButton
-    :tip-content="$t('enhancedTopic.like')"
+    :tip-content="hideTip ? undefined : $t('enhancedTopic.like')"
     :icon-class="likeIconClass"
     :operate-text="likeNumber"
     :custom-style="likeButtonStyle"
