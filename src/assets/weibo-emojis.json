@@ -505,6 +505,16 @@
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/75/2018new_gui_org.png"
   },
   {
+    "name": "开摆",
+    "short_names": ["wb_开摆"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/dc/2024_takeeasy_org.png"
+  },
+  {
+    "name": "淡淡的",
+    "short_names": ["wb_淡淡的"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/7b/2024_takearest_org.png"
+  },
+  {
     "name": "老师好",
     "short_names": ["wb_老师好"],
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/0d/2022_Teacher_org.png"
@@ -513,6 +523,11 @@
     "name": "收到",
     "short_names": ["wb_收到"],
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/8b/2022_get_org.png"
+  },
+  {
+    "name": "毕业快乐",
+    "short_names": ["wb_毕业快乐"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/d8/2024_Happygraduation_org.png"
   },
   {
     "name": "全力以赴",
