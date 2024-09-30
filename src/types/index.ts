@@ -254,6 +254,25 @@ export interface SMUploadedImg {
   page: string;
 }
 
+export interface BiliApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+}
+
+export interface BiliUserProfile {
+  mid: number;
+  name: string;
+  face: string;
+}
+
+export interface BiliUploadedImg {
+  image_url: string;
+  image_width: number;
+  image_height: number;
+  img_size: number;
+}
+
 export interface CherryFileUploadStatus {
   done: boolean;
   uploadedCallback?: () => void;

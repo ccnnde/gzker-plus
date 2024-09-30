@@ -38,6 +38,11 @@
       "matches": ["*://www.guozaoke.com/t/*"],
       "js": ["src/scripts/hide-topic.ts"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["https://www.bilibili.com/gzk-img-upload"],
+      "js": ["src/scripts/upload-bili-img.ts"],
+      "run_at": "document_start"
     }
   ],
   "{{chrome}}.web_accessible_resources": [

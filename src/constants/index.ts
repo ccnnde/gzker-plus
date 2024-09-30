@@ -43,6 +43,8 @@ export const OptionsRoutePaths: Record<OptionsRouteNames, string> = {
 export const enum ExtensionMessageType {
   OpenOptionsPage,
   UploadImg,
+  UploadBiliImg,
+  CloseBiliImgTab,
 }
 
 /**
