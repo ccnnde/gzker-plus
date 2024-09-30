@@ -95,6 +95,11 @@ export const enum ReplyType {
   Mention = 'mention',
 }
 
+export const enum ImageHostingPlatform {
+  Smms = 'smms',
+  Bili = 'bili',
+}
+
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DblclickToTop = 'dblclickToTop',
@@ -104,6 +109,7 @@ export const enum OptionsKey {
   SmApiKey = 'smApiKey',
   CloseDialogOnClickModal = 'closeDialogOnClickModal',
   HideGzkInfo = 'hideGzkInfo',
+  ImageHosting = 'imageHosting',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -130,6 +136,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.HideGzkInfo]: {
     checkedGzkInfoTypes: [],
+  },
+  [OptionsKey.ImageHosting]: {
+    platform: ImageHostingPlatform.Smms,
   },
 };
 

@@ -7,6 +7,7 @@ import type {
   DialogType,
   ExtensionMessageType,
   GzkInfoType,
+  ImageHostingPlatform,
   LanguageType,
   LinkElementType,
   OptionsKey,
@@ -78,6 +79,9 @@ export interface Options {
   };
   [OptionsKey.HideGzkInfo]: {
     checkedGzkInfoTypes: GzkInfoType[];
+  };
+  [OptionsKey.ImageHosting]: {
+    platform: ImageHostingPlatform;
   };
 }
 

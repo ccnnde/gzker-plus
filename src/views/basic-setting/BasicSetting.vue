@@ -9,6 +9,7 @@ import BlankLink from './BlankLink.vue';
 import CloseDialog from './CloseDialog.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
 import HideGzkInfo from './HideGzkInfo.vue';
+import ImageHosting from './ImageHosting.vue';
 import SmApiKey from './SmApiKey.vue';
 
 import type { CheckedOption, Setting } from '@/types';
@@ -46,6 +47,23 @@ const settings = computed<Setting[]>(() => {
       ],
     },
     {
+      category: t('basicSetting.category.imageHosting'),
+      list: [
+        {
+          name: t('basicSetting.imageHosting.title'),
+          description: t('basicSetting.imageHosting.titleDesc'),
+          key: OptionsKey.ImageHosting,
+          component: ImageHosting,
+        },
+        {
+          name: t('basicSetting.smApiKey.title'),
+          description: t('basicSetting.smApiKey.titleDesc'),
+          key: OptionsKey.SmApiKey,
+          component: SmApiKey,
+        },
+      ],
+    },
+    {
       category: t('basicSetting.category.other'),
       list: [
         {
@@ -63,12 +81,6 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.hideGzkInfo.titleDesc'),
           key: OptionsKey.HideGzkInfo,
           component: HideGzkInfo,
-        },
-        {
-          name: t('basicSetting.smApiKey.title'),
-          description: t('basicSetting.smApiKey.titleDesc'),
-          key: OptionsKey.SmApiKey,
-          component: SmApiKey,
         },
       ],
     },

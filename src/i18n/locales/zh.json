@@ -9,6 +9,7 @@
     },
     "category": {
       "browse": "浏览",
+      "imageHosting": "图床",
       "other": "其他"
     },
     "closeDialogOnClickModal": {
@@ -45,6 +46,14 @@
       "tabTitle": "标签页标题",
       "title": "隐藏信息",
       "titleDesc": "隐藏论坛中以下类型的信息，防止窥屏"
+    },
+    "imageHosting": {
+      "platform": {
+        "bili": "BiliBili 图床",
+        "smms": "SM.MS 图床"
+      },
+      "title": "选择图床",
+      "titleDesc": "请根据需要选择合适的图床平台，并进行对应的配置，即可在编辑器中上传图片"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS 接口可以使用",
