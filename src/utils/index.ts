@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import { ElLoading, ElMessage } from 'element-plus';
 import Cookies from 'js-cookie';
 import { cloneDeep, merge } from 'lodash-es';
-import { storage } from 'webextension-polyfill';
+import { storage, tabs } from 'webextension-polyfill';
 
 import i18n, { t } from '@/i18n';
 import { API_TOPIC, API_USER } from '@/api';
@@ -18,7 +18,14 @@ import {
 import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOP_NAVBAR, SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
 import type { LoadingOptions } from 'element-plus';
-import type { ApiJsonResponse, Base64File, ScriptAppOptions, StorageSettings, UserReplyItem } from '@/types';
+import type {
+  ApiJsonResponse,
+  Base64File,
+  ExtensionMessage,
+  ScriptAppOptions,
+  StorageSettings,
+  UserReplyItem,
+} from '@/types';
 
 const getResMessage = (msg: string): string => {
   switch (msg) {
@@ -217,4 +224,41 @@ export const calcTopicPageDialogVH = () => {
   const dialogVerticalMargin = 20;
   const dialogVH = Math.floor(((innerHeight - topNavBarHeight - dialogVerticalMargin) * 100) / innerHeight);
   return dialogVH;
+};
+
+export const sendMessageToTab = async (tabId: number | undefined, message: ExtensionMessage) => {
+  if (tabId === undefined) {
+    throw new Error('sendMessageToTab: Tab id is undefined');
+  }
+
+  const MAX_RETRY_COUNT = 10;
+  let attempts = 0;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const trySending = async (): Promise<any> => {
+    attempts++;
+
+    try {
+      const res = await tabs.sendMessage(tabId, message);
+      console.log(`sendMessageToTab: Message successfully sent to Tab ${tabId}`);
+      return res;
+    } catch (err) {
+      const { message } = err as Error;
+      console.error(`sendMessageToTab: Failed to send message: ${message}`);
+
+      if (!message.includes('Could not establish connection. Receiving end does not exist')) {
+        throw err;
+      }
+
+      if (attempts < MAX_RETRY_COUNT) {
+        console.log(`sendMessageToTab: Retrying to send message... (Attempted ${attempts} times)`);
+        await waitTime(50);
+        return await trySending();
+      } else {
+        throw new Error(`sendMessageToTab: Reached maximum retry count ${MAX_RETRY_COUNT}`);
+      }
+    }
+  };
+
+  return await trySending();
 };
