@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { useRequest } from '@/composables/request';
@@ -35,6 +35,10 @@ const emit = defineEmits<{
 const { isLoading, handleRequest } = useRequest();
 const replyItemEl = ref<HTMLDivElement | null>(null);
 const contentEl = ref<HTMLDivElement | null>(null);
+
+const hasMention = computed(() => {
+  return props.content?.includes('class="user-mention">@');
+});
 
 const handleReplyLike = () => {
   handleRequest(async () => {
@@ -133,7 +137,11 @@ const handleReplyEdit = () => {
         <LikeButton :liked="liked" :like-number="likeNumber" hide-tip @handle-like="handleReplyLike" />
         <template v-if="isNotInConversation">
           <OperateButton icon-class="i-mdi-chat-outline" @click="handleUserReply" />
-          <OperateButton :operate-text="$t('enhancedTopic.viewConversation')" @click="handleConversationView" />
+          <OperateButton
+            v-if="hasMention"
+            :operate-text="$t('enhancedTopic.viewConversation')"
+            @click="handleConversationView"
+          />
           <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editReply')" @click="handleReplyEdit" />
         </template>
       </div>
