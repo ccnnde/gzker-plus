@@ -128,6 +128,7 @@
     "blockTopicSuccessful": "屏蔽主题成功",
     "cannotReplyByInvalidUser": "未登录或未绑定手机号，无法回复",
     "cannotReplyByLockedPost": "本帖已锁，无法回复",
+    "cannotUploadByBiliLogout": "未登录 BiliBili 网站，无法上传图片。请点击确定按钮打开 BiliBili 并登录",
     "cannotUploadByEmptyApiKey": "未配置图床的 API Key，无法上传图片。请点击确定按钮查看配置说明",
     "clickNumber": "阅读",
     "confirmBlockTopic": "确定屏蔽主题【{title}】？屏蔽后可前往扩展选项页面管理屏蔽主题列表",

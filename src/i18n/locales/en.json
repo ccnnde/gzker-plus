@@ -128,6 +128,7 @@
     "blockTopicSuccessful": "Topic blocked successfully",
     "cannotReplyByInvalidUser": "Not logged in or not bound to a phone number, unable to reply",
     "cannotReplyByLockedPost": "This post has been locked and cannot be replied to",
+    "cannotUploadByBiliLogout": "You are not logged into the BiliBili website, unable to upload images. Please click the OK button to open BiliBili and log in",
     "cannotUploadByEmptyApiKey": "API Key for the image hosting is not configured, unable to upload pictures. Please click the OK button to view the configuration instructions",
     "clickNumber": "Read",
     "confirmBlockTopic": "Confirm blocking the topic [{title}] ? After blocking, you can go to the extension options page to manage the blocked topic list",

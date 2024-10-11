@@ -12,6 +12,7 @@ import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/uti
 import type { EditHistoryType } from '@/utils/edit-history';
 import {
   ExtensionMessageType,
+  ImageHostingPlatform,
   LOADING_BACKGROUND_DARK,
   OptionsKey,
   OptionsRouteNames,
@@ -311,7 +312,7 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
 
   try {
     const msg: ExtensionMessage = {
-      msgType: ExtensionMessageType.UploadImg,
+      msgType: uploadImgMsgType,
       imgFile: {
         name: file.name,
         type: file.type,
@@ -324,6 +325,11 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
     const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
     uploadStatus.uploadedCallback = () => callback(imgUrl);
   } catch (err) {
+    if (isBiliImgHosting && (err as Error).message === '账号未登录') {
+      shouldOpenBiliLoginConfirm = true;
+      return;
+    }
+
     ElMessage.error({
       message: t('enhancedTopic.uploadFailed'),
       grouping: true,
@@ -339,15 +345,49 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
     if (uploadedFileNum === imgFileUploadStatusMap.size) {
       imgFileUploadStatusMap.forEach((item) => item.uploadedCallback?.());
       imgFileUploadStatusMap.clear();
+
+      if (isBiliImgHosting) {
+        const msg: ExtensionMessage = {
+          msgType: ExtensionMessageType.CloseBiliImgTab,
+        };
+
+        await runtime.sendMessage(msg);
+      }
+
       loading.close();
+
+      if (shouldOpenBiliLoginConfirm) {
+        shouldOpenBiliLoginConfirm = false;
+
+        try {
+          await ElMessageBox.confirm(t('enhancedTopic.cannotUploadByBiliLogout'), t('common.warning'), {
+            type: 'warning',
+            autofocus: false,
+            closeOnClickModal: false,
+          });
+
+          window.open('https://passport.bilibili.com/login');
+        } catch {
+          ElMessage(t('common.canceled'));
+        }
+      }
     }
   }
 };
 
 const storage = useStorageStore();
+const imgHostingPlatform = storage.options?.[OptionsKey.ImageHosting].platform;
+const isBiliImgHosting = imgHostingPlatform === ImageHostingPlatform.Bili;
+const uploadImgMsgType = isBiliImgHosting ? ExtensionMessageType.UploadBiliImg : ExtensionMessageType.UploadImg;
+let shouldOpenBiliLoginConfirm = false;
 let isApiKeyConfirmShown = false;
 
 const getApiKey = async (): Promise<string | undefined> => {
+  // BiliBili 图床不需要 api key，此处使用固定值避免校验不通过
+  if (isBiliImgHosting) {
+    return 'bili';
+  }
+
   const apiKey = storage.options?.[OptionsKey.SmApiKey].apiKey;
 
   if (apiKey || isApiKeyConfirmShown) {
@@ -383,6 +423,10 @@ const validateImgFile = (file: File): string => {
 
   if (!isImgFile) {
     return t('enhancedTopic.uploadImgOnly');
+  }
+
+  if (isBiliImgHosting) {
+    return '';
   }
 
   const imgFileSize = file.size / 1024 / 1024;
