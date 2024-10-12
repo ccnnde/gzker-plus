@@ -8,7 +8,7 @@
   },
   "{{chrome}}.permissions": ["storage", "tabs"],
   "{{chrome}}.host_permissions": ["https://sm.ms/"],
-  "{{firefox}}.permissions": ["storage", "https://sm.ms/"],
+  "{{firefox}}.permissions": ["storage", "https://sm.ms/", "https://api.bilibili.com/"],
   "icons": {
     "16": "icon/16.png",
     "32": "icon/32.png",
