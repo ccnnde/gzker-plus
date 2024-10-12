@@ -53,7 +53,7 @@
         "smms": "SM.MS"
       },
       "title": "Select Image Hosting",
-      "titleDesc": "Please choose the appropriate image hosting platform based on your needs and configure it accordingly to upload images in the editor"
+      "titleDesc": "Please choose the appropriate image hosting platform based on your needs and make the corresponding configurations (refer to the 'Image Hosting' page) to upload images in the editor"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS API is available",
