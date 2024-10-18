@@ -64,7 +64,7 @@ watch(
 .options-main {
   padding-right: 0;
 
-  & > :deep(.el-scrollbar) .el-scrollbar__view {
+  & > :deep(.el-scrollbar) > .el-scrollbar__wrap > .el-scrollbar__view {
     margin-right: var(--el-main-padding);
   }
 }

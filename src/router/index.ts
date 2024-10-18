@@ -36,6 +36,15 @@ const routes: Readonly<RouteRecordRaw[]> = [
     },
   },
   {
+    path: OptionsRoutePaths[OptionsRouteNames.BiliImages],
+    name: OptionsRouteNames.BiliImages,
+    component: () => import('@/views/bili-images/BiliImages.vue'),
+    meta: {
+      title: OptionsRouteNames.BiliImages,
+      icon: 'i-mdi-television-classic',
+    },
+  },
+  {
     path: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
     name: OptionsRouteNames.ImageHosting,
     component: () => import('@/markdown/ImageHosting.md'),

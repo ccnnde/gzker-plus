@@ -7,6 +7,7 @@ import router from './router';
 
 import 'github-markdown-css/github-markdown-light.css';
 
+import 'element-plus/es/components/table/style/css';
 import 'element-plus/es/components/message/style/css';
 import 'element-plus/es/components/message-box/style/css';
 import './styles';

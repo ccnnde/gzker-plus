@@ -59,7 +59,7 @@
       "apiAvailable": "SM.MS API is available",
       "checkApi": "Check API",
       "explanation": "Explanation",
-      "managePicture": "Manage pictures",
+      "managePicture": "Manage Pictures",
       "plzEnterApiKey": "Please enter API Key",
       "title": "SM.MS Image Hosting API Key",
       "titleDesc": "After configuring the API Key, you can directly upload images in the editor. Click the verify button to test if the API is available",
@@ -77,12 +77,32 @@
       }
     }
   },
+  "biliImages": {
+    "confirmDeleteAllImgHistory": "Are you sure you want to delete all image records?",
+    "confirmDeleteImgHistory": "Are you sure you want to delete this image record?",
+    "confirmDeleteSelectedImgHistory": "Are you sure you want to delete the selected image records?",
+    "copyImage": "Copy Original Image",
+    "copyMarkdown": "Copy Markdown",
+    "deleteImgTip": "The delete operation only affects local history records and will not delete images that have already been uploaded to the BiliBili server",
+    "fileName": "File Name",
+    "operations": "Operations",
+    "plzSelectAtLeastOneImgHistory": "Please select at least one image record",
+    "preview": "Preview",
+    "resolution": "Resolution",
+    "size": "Size",
+    "uploadDate": "Upload Date"
+  },
   "common": {
     "cancel": "Cancel",
     "canceled": "Canceled",
     "checkAll": "Check All",
     "clear": "Clear",
+    "clearSelections": "Clear Selections",
+    "copySuccessfully": "Copy Successful",
     "delete": "Delete",
+    "deleteAll": "Delete All",
+    "deleteInBatches": "Delete in Batches",
+    "deleteSuccessfully": "Delete Successful",
     "emptyData": "The query returned no results. Please try again later",
     "extName": "Gzker Plus",
     "favorite": "Favorite",
@@ -196,6 +216,7 @@
   },
   "navigation": {
     "basicSetting": "Basic Setting",
+    "biliImages": "BiliBili Images",
     "blockedTopics": "Blocked Topics",
     "changeLog": "Change Log",
     "imageHosting": "Image Hosting"

@@ -77,12 +77,32 @@
       }
     }
   },
+  "biliImages": {
+    "confirmDeleteAllImgHistory": "确定要删除所有图片记录吗？",
+    "confirmDeleteImgHistory": "确定要删除该图片记录吗？",
+    "confirmDeleteSelectedImgHistory": "确定要删除选中的图片记录吗？",
+    "copyImage": "复制原图",
+    "copyMarkdown": "复制 Markdown",
+    "deleteImgTip": "删除操作仅影响本地的历史记录，不会删除已经上传到 BiliBili 服务器的图片",
+    "fileName": "文件名",
+    "operations": "操作",
+    "plzSelectAtLeastOneImgHistory": "请至少选中一条图片记录",
+    "preview": "预览",
+    "resolution": "分辨率",
+    "size": "大小",
+    "uploadDate": "上传日期"
+  },
   "common": {
     "cancel": "取消",
     "canceled": "已取消",
     "checkAll": "全选",
     "clear": "清空",
+    "clearSelections": "清空选中",
+    "copySuccessfully": "复制成功",
     "delete": "删除",
+    "deleteAll": "删除全部",
+    "deleteInBatches": "批量删除",
+    "deleteSuccessfully": "删除成功",
     "emptyData": "查询数据为空，请稍后再做尝试",
     "extName": "过早客 Plus",
     "favorite": "收藏",
@@ -196,6 +216,7 @@
   },
   "navigation": {
     "basicSetting": "基础设置",
+    "biliImages": "哔哩图床",
     "blockedTopics": "屏蔽主题",
     "changeLog": "更新日志",
     "imageHosting": "图床说明"

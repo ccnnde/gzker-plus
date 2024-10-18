@@ -304,3 +304,13 @@ export interface BlockedTopic {
   id: string;
   title: string;
 }
+
+export interface BiliImgHistoryItem {
+  id: string;
+  name: string;
+  url: string;
+  width: number;
+  height: number;
+  size: number;
+  date: number;
+}

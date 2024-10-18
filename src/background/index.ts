@@ -1,7 +1,9 @@
+import { nanoid } from 'nanoid';
 import { runtime, tabs } from 'webextension-polyfill';
 
 import { uploadImg } from '@/api/sm-img';
 import { base64ToFile, initStorage, sendMessageToTab, waitTime } from '@/utils';
+import { addImgHistory } from '@/utils/bili-img-store';
 import { ExtensionMessageType, OptionsRouteNames, OptionsRoutePaths } from '@/constants';
 
 import type { Tabs } from 'webextension-polyfill';
@@ -66,6 +68,17 @@ runtime.onMessage.addListener(async (message: ExtensionMessage) => {
       }
 
       const imgData: BiliUploadedImg = await sendMessageToTab(biliImgTab?.id, message);
+
+      await addImgHistory({
+        id: nanoid(),
+        name: message.imgFile?.name as string,
+        url: imgData.image_url,
+        width: imgData.image_width,
+        height: imgData.image_height,
+        size: imgData.img_size,
+        date: Date.now(),
+      });
+
       return imgData.image_url;
     }
     case ExtensionMessageType.CloseBiliImgTab:
