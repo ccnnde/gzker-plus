@@ -48,6 +48,7 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
     - 预览时自动将图片链接渲染为图片，链接文本和 `@uid` 渲染为可点击的链接
   - 提供丰富的操作按钮和快捷键，诸如加粗、斜体、预览、全屏、提交等
   - 可通过拖拽、复制粘贴、选择文件等方式上传图片
+  - 支持 SMMS、BiliBili 图床，所以需要访问 sm.ms、www.bilibili.com 的权限
   - 自动保存所编辑的内容，并生成历史记录（本地存储），且可导入到编辑器中
   - 支持插入微博表情和更丰富的 emoji 表情
   - 支持 @ 其他用户，并可快捷清除 `@uid`
