@@ -1,4 +1,16 @@
-# 过早客 Plus
+# 过早客 Plus [![github stars][github-stars]][github-repo]
+
+[![chrome version][chrome-version]][chrome-link]
+[![chrome users][chrome-users]][chrome-link]
+[![chrome stars][chrome-stars]][chrome-link]
+
+[![edge version][edge-version]][edge-link]
+[![edge users][edge-users]][edge-link]
+[![edge stars][edge-stars]][edge-link]
+
+[![firefox version][firefox-version]][firefox-link]
+[![firefox users][firefox-users]][firefox-link]
+[![firefox stars][firefox-stars]][firefox-link]
 
 [过早客论坛](https://www.guozaoke.com/) 增强插件，提供了丰富的扩展功能，全方位提升您的浏览体验～
 
@@ -48,7 +60,7 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
     - 预览时自动将图片链接渲染为图片，链接文本和 `@uid` 渲染为可点击的链接
   - 提供丰富的操作按钮和快捷键，诸如加粗、斜体、预览、全屏、提交等
   - 可通过拖拽、复制粘贴、选择文件等方式上传图片
-  - 支持 SMMS、BiliBili 图床，所以需要访问 sm.ms、www.bilibili.com 的权限
+  - 支持 SMMS、BiliBili 图床，所以需要访问 `sm.ms`、`www.bilibili.com` 的权限
   - 自动保存所编辑的内容，并生成历史记录（本地存储），且可导入到编辑器中
   - 支持插入微博表情和更丰富的 emoji 表情
   - 支持 @ 其他用户，并可快捷清除 `@uid`
@@ -104,3 +116,23 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
 ## License
 
 [AGPLv3](LICENSE) © Nor Cod
+
+<!-- badge -->
+
+[github-stars]: https://img.shields.io/github/stars/ccnnde/gzker-plus?label=Star%20Project
+[chrome-version]: https://img.shields.io/chrome-web-store/v/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge&logo=googlechrome&logoColor=white&color=d8a217
+[chrome-users]: https://img.shields.io/chrome-web-store/users/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge&color=deepgreen
+[chrome-stars]: https://img.shields.io/chrome-web-store/stars/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge
+[edge-version]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&logo=singlestore&logoColor=white&label=EDGE%20WEB%20STORE&color=32a88a&prefix=v&query=$.version&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/eoindkoinilbnhiaajccmhjdlifeodfm
+[edge-users]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=USERS&color=deepgreen&query=$.activeInstallCount&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/eoindkoinilbnhiaajccmhjdlifeodfm
+[edge-stars]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=RATING&color=deepgreen&suffix=/5&query=$.averageRating&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/eoindkoinilbnhiaajccmhjdlifeodfm
+[firefox-version]: https://img.shields.io/amo/v/gzker-plus?style=for-the-badge&logo=firefoxbrowser&logoColor=white&color=orange
+[firefox-users]: https://img.shields.io/amo/users/gzker-plus?style=for-the-badge&color=deepgreen
+[firefox-stars]: https://img.shields.io/amo/rating/gzker-plus?style=for-the-badge&color=deepgreen
+
+<!-- link -->
+
+[github-repo]: https://github.com/ccnnde/gzker-plus
+[chrome-link]: https://chromewebstore.google.com/detail/lbdkjckninkejnacdmbnakdfalglfmkd
+[edge-link]: https://microsoftedge.microsoft.com/addons/detail/eoindkoinilbnhiaajccmhjdlifeodfm
+[firefox-link]: https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus
