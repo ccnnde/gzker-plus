@@ -53,6 +53,10 @@ watch(
   ul {
     list-style: initial;
   }
+
+  img {
+    display: inline;
+  }
 }
 </style>
 

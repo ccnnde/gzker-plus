@@ -26,6 +26,7 @@ export const enum OptionsRouteNames {
   BiliImages = 'biliImages',
   ImageHosting = 'imageHosting',
   ChangeLog = 'changeLog',
+  About = 'about',
 }
 
 /**
@@ -37,6 +38,7 @@ export const OptionsRoutePaths: Record<OptionsRouteNames, string> = {
   [OptionsRouteNames.BiliImages]: '/bili-images',
   [OptionsRouteNames.ImageHosting]: '/image-hosting',
   [OptionsRouteNames.ChangeLog]: '/change-log',
+  [OptionsRouteNames.About]: '/about',
 };
 
 /**

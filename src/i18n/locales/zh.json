@@ -215,6 +215,7 @@
     "unreadMessage": "你有 {num} 条未读消息"
   },
   "navigation": {
+    "about": "关于插件",
     "basicSetting": "基础设置",
     "biliImages": "哔哩图床",
     "blockedTopics": "屏蔽主题",

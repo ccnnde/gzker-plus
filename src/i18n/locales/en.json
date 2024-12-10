@@ -215,6 +215,7 @@
     "unreadMessage": "You have {num} unread messages"
   },
   "navigation": {
+    "about": "About Extension",
     "basicSetting": "Basic Setting",
     "biliImages": "BiliBili Images",
     "blockedTopics": "Blocked Topics",

@@ -62,6 +62,15 @@ const routes: Readonly<RouteRecordRaw[]> = [
       icon: 'i-mdi-update',
     },
   },
+  {
+    path: OptionsRoutePaths[OptionsRouteNames.About],
+    name: OptionsRouteNames.About,
+    component: () => import('@/markdown/About.md'),
+    meta: {
+      title: OptionsRouteNames.About,
+      icon: 'i-mdi-information-outline',
+    },
+  },
 ];
 
 const router = createRouter({
