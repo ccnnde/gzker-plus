@@ -187,6 +187,14 @@ const parseNodeList = (htmlStr: string): TreeNode[] => {
   });
 };
 
+const parseBlockedUserList = (htmlStr: string): string[] => {
+  const blockedUsersHtmlStr = [...htmlStr.matchAll(/<span class="username">.+?<\/span>/gs)];
+
+  return blockedUsersHtmlStr.map(([item]) => {
+    return item.match(/<a href="\/u\/([^"]+)">/)?.[1] as string;
+  });
+};
+
 const checkAlertInfo = (htmlStr: string) => {
   const alertHtmlStr = htmlStr.match(/<form [^>]*>.+?<ul class="alert alert-danger">(.+?)<\/ul>.+?<textarea/s)?.[1];
 
@@ -335,6 +343,11 @@ export const modifyReply = async (replyId: string, content: string): Promise<Use
 export const getNodeList = async (): Promise<TreeNode[]> => {
   const data = await request('/nodes');
   return parseNodeList(data);
+};
+
+export const getBlockedUserList = async (): Promise<string[]> => {
+  const data = await request('/setting/blockedUser');
+  return parseBlockedUserList(data);
 };
 
 export { parseUserTopic };

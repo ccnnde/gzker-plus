@@ -35,6 +35,11 @@
       ]
     },
     {
+      "matches": ["*://www.guozaoke.com/", "*://www.guozaoke.com/?p=*"],
+      "js": ["src/scripts/block-user.ts"],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["*://www.guozaoke.com/t/*"],
       "js": ["src/scripts/hide-topic.ts"],
       "run_at": "document_start"
