@@ -41,6 +41,9 @@ const openExtOptions = () => {
               {{ $t('gzkHeader.gzkIssue') }}
             </a>
           </ElDropdownItem>
+          <ElDropdownItem>
+            <img class="qq-group-qrcode" src="@/assets/img/qq-group-qrcode.png" />
+          </ElDropdownItem>
         </ElDropdownMenu>
       </template>
     </ElDropdown>
@@ -88,7 +91,15 @@ $gzker-header-width: 9em;
     &:not(.is-disabled):focus a {
       color: var(--el-color-primary);
     }
+
+    &:has(.qq-group-qrcode) {
+      padding: 0;
+    }
   }
+}
+
+.qq-group-qrcode {
+  width: 150px;
 }
 
 .navbar-right {

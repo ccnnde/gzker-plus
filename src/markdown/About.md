@@ -12,9 +12,7 @@
 [![firefox users][firefox-users]][firefox-link]&nbsp;
 [![firefox stars][firefox-stars]][firefox-link]
 
-[过早客论坛](https://www.guozaoke.com/) 增强插件，提供了丰富的扩展功能，全方位提升您的浏览体验～
-
-如果本项目对您有所帮助，可以通过以下方式支持一下，谢谢 🙏
+[过早客论坛](https://www.guozaoke.com/) 增强插件，提供丰富的扩展功能，全方位提升您的浏览体验。若对您有所帮助，可以通过以下方式支持一下，谢谢
 
 - 点个 Star 🌟 : <https://github.com/ccnnde/gzker-plus>
 - 在应用商店给予好评
@@ -24,8 +22,11 @@
 
 如果有任何使用上的问题或者建议，可以通过以下途径反馈
 
-- <https://www.guozaoke.com/t/108340>
-- <https://github.com/ccnnde/gzker-plus/issues>
+- 在本帖留言: <https://www.guozaoke.com/t/108340>
+- 在 GitHub 上提交 issue: <https://github.com/ccnnde/gzker-plus/issues>
+- 在 QQ 群里反馈 **431161905**
+
+![qq-group-qrcode](../assets/img/qq-group-qrcode.png)
 
 <!-- badge -->
 
