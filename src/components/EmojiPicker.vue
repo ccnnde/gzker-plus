@@ -8,7 +8,6 @@ import { EMOJI_CLASS_NAME, emojiIndex, NOTO_EMOJI_FONT } from '@/utils/emoji';
 
 import type { CSSProperties } from 'vue';
 import type { EmojiObject } from 'emoji-mart-vue-fast/src';
-import type { IFontFaceSet } from '@/types';
 
 import 'emoji-mart-vue-fast/css/emoji-mart.css';
 
@@ -86,7 +85,7 @@ const loadEmojiFont = () => {
  */
 const getFontFaceList = (): FontFace[] => {
   const fontFaceList: FontFace[] = [];
-  const iterator = (document.fonts as IFontFaceSet).values();
+  const iterator = (document.fonts as FontFaceSet).values();
   let result = iterator.next();
 
   while (!result.done) {

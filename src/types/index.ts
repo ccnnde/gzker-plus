@@ -30,10 +30,6 @@ interface SettingItem {
   component?: Component;
 }
 
-export interface IFontFaceSet extends FontFaceSet {
-  values: () => IterableIterator<FontFace>;
-}
-
 export interface ImageViewer extends Viewer {
   index: number;
   length: number;
