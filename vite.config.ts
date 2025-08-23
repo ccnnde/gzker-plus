@@ -78,6 +78,7 @@ export default defineConfig({
     WebExtension({
       browser: target,
       manifest: generateManifest,
+      skipManifestValidation: true,
       watchFilePaths: ['package.json', 'manifest.json'],
       webExtConfig: {
         startUrl: ['https://www.guozaoke.com/'],
