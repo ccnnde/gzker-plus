@@ -263,7 +263,7 @@ export interface BiliUserProfile {
 }
 
 export interface BiliUploadedImg {
-  image_url: string;
+  location: string;
   image_width: number;
   image_height: number;
   img_size: number;

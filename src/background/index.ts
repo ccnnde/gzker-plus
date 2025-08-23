@@ -72,14 +72,14 @@ runtime.onMessage.addListener(async (message: ExtensionMessage) => {
       await addImgHistory({
         id: nanoid(),
         name: message.imgFile?.name as string,
-        url: imgData.image_url,
+        url: imgData.location,
         width: imgData.image_width,
         height: imgData.image_height,
         size: imgData.img_size,
         date: Date.now(),
       });
 
-      return imgData.image_url;
+      return imgData.location;
     }
     case ExtensionMessageType.CloseBiliImgTab:
       if (biliImgTab) {
