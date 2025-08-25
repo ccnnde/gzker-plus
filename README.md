@@ -54,6 +54,7 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
   - 可查看主题回复中用户之间的对话
   - 滚动到底部时自动加载下一页回复
   - 点击图片后可以进行放大、缩小等操作，还可快速浏览其他图片
+  - 完善用户屏蔽，解决论坛屏蔽用户后，仍有可能看到对方主题的问题
 - 📝 编辑器增强
   - 支持 Markdown 语法，实时预览内容，所见即所得
     - 提供 Markdown 语法的帮助文档
