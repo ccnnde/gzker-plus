@@ -675,9 +675,34 @@
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/39/2018new_nvhai_org.png"
   },
   {
+    "name": "太阳",
+    "short_names": ["wb_太阳"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/cd/2018new_taiyang_org.png"
+  },
+  {
+    "name": "月亮",
+    "short_names": ["wb_月亮"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/d5/2018new_yueliang_org.png"
+  },
+  {
     "name": "许愿星",
     "short_names": ["wb_许愿星"],
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/a8/2022_WishingStar_org.png"
+  },
+  {
+    "name": "雪糕",
+    "short_names": ["wb_雪糕"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/e0/2022_icecream_org.png"
+  },
+  {
+    "name": "咖啡",
+    "short_names": ["wb_咖啡"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/0b/2022_coffee_org.png"
+  },
+  {
+    "name": "干杯",
+    "short_names": ["wb_干杯"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/40/2018new_ganbei_org.png"
   },
   {
     "name": "白蜡烛",
@@ -688,6 +713,11 @@
     "name": "蜡烛",
     "short_names": ["wb_蜡烛"],
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/16/2018new_lazhu_org.png"
+  },
+  {
+    "name": "蛋糕",
+    "short_names": ["wb_蛋糕"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/f9/2018new_dangao_org.png"
   },
   {
     "name": "给力",
@@ -733,5 +763,95 @@
     "name": "赞啊",
     "short_names": ["wb_赞啊"],
     "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/00/lxhzan_thumb.gif"
+  },
+  {
+    "name": "不愧是你",
+    "short_names": ["wb_不愧是你"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/ef/2025_ItsYou_org.png"
+  },
+  {
+    "name": "点赞",
+    "short_names": ["wb_点赞"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/91/2025_like_org.png"
+  },
+  {
+    "name": "yeah",
+    "short_names": ["wb_yeah"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/c5/2025_yeah_org.png"
+  },
+  {
+    "name": "期待",
+    "short_names": ["wb_期待"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/23/2025_qidai_org.png"
+  },
+  {
+    "name": "么么哒",
+    "short_names": ["wb_么么哒"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/54/2025_memeda_org.png"
+  },
+  {
+    "name": "流鼻血",
+    "short_names": ["wb_流鼻血"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/68/2025_liubixie_org.png"
+  },
+  {
+    "name": "皱眉",
+    "short_names": ["wb_皱眉"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/a6/2025_frown_org.png"
+  },
+  {
+    "name": "拜托",
+    "short_names": ["wb_拜托"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/45/2025_please_org.png"
+  },
+  {
+    "name": "呵呵",
+    "short_names": ["wb_呵呵"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/f9/2025_hehe_org.png"
+  },
+  {
+    "name": "无聊",
+    "short_names": ["wb_无聊"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/cf/2025_bored_org.png"
+  },
+  {
+    "name": "写作业",
+    "short_names": ["wb_写作业"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/c0/2025_Domyhomework_org.png"
+  },
+  {
+    "name": "震惊",
+    "short_names": ["wb_震惊"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/d0/2025_shock_org.png"
+  },
+  {
+    "name": "惊恐",
+    "short_names": ["wb_惊恐"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/3a/2025_jingkong_org.png"
+  },
+  {
+    "name": "捂嘴哭",
+    "short_names": ["wb_捂嘴哭"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/25/2025_wuzuiku_org.png"
+  },
+  {
+    "name": "泪奔",
+    "short_names": ["wb_泪奔"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/08/2025_ShedTears_org.png"
+  },
+  {
+    "name": "达咩",
+    "short_names": ["wb_达咩"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/fb/2025_damie_org.png"
+  },
+  {
+    "name": "祈祷",
+    "short_names": ["wb_祈祷"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/9c/2025_pray_org.png"
+  },
+  {
+    "name": "手指比心",
+    "short_names": ["wb_手指比心"],
+    "imageUrl": "https://face.t.sinajs.cn/t4/appstyle/expression/ext/normal/08/2025_HandHeart_org.png"
   }
 ]
