@@ -144,7 +144,7 @@ export const defaultExtensionOptions: Options = {
     checkedGzkInfoTypes: [],
   },
   [OptionsKey.ImageHosting]: {
-    platform: ImageHostingPlatform.Smms,
+    platform: ImageHostingPlatform.Bili,
   },
 };
 

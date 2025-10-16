@@ -12,12 +12,12 @@ defineProps<SettingProps<OptionsKey.ImageHosting>>();
 const imagePlatformList = computed<CheckItem<ImageHostingPlatform>[]>(() => {
   return [
     {
-      value: ImageHostingPlatform.Smms,
-      label: t('basicSetting.imageHosting.platform.smms'),
-    },
-    {
       value: ImageHostingPlatform.Bili,
       label: t('basicSetting.imageHosting.platform.bili'),
+    },
+    {
+      value: ImageHostingPlatform.Smms,
+      label: t('basicSetting.imageHosting.platform.smms'),
     },
   ];
 });
