@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, h, onMounted, toRaw } from 'vue';
+import { ElNotification } from 'element-plus';
 
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
+import { setStorage } from '@/utils';
 import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
@@ -14,7 +16,8 @@ import SmApiKey from './SmApiKey.vue';
 
 import type { CheckedOption, Setting } from '@/types';
 
-const { options } = useStorageStore();
+const storage = useStorageStore();
+const { options } = storage;
 
 const settings = computed<Setting[]>(() => {
   return [
@@ -85,6 +88,32 @@ const settings = computed<Setting[]>(() => {
       ],
     },
   ];
+});
+
+onMounted(() => {
+  if (!storage.settings?.displayTip.refreshGZK) {
+    ElNotification.warning({
+      title: t('common.plzRefreshGZK'),
+      message: h(
+        'span',
+        {
+          class: 'no-more-tip-button',
+          onClick: () => {
+            if (storage.settings) {
+              storage.settings.displayTip.refreshGZK = true;
+
+              setStorage({
+                displayTip: toRaw(storage.settings.displayTip),
+              });
+            }
+
+            ElNotification.closeAll();
+          },
+        },
+        t('common.noMoreTip'),
+      ),
+    });
+  }
 });
 </script>
 

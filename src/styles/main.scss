@@ -9,3 +9,12 @@ body,
 :-moz-focusring {
   outline: none;
 }
+
+.no-more-tip-button {
+  color: var(--el-color-warning);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--el-color-warning-light-5);
+  }
+}

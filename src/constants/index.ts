@@ -152,6 +152,9 @@ export const defaultExtensionStorage: StorageSettings = {
   options: defaultExtensionOptions,
   lang: LanguageType.ZH,
   blockedTopicList: [],
+  displayTip: {
+    refreshGZK: false,
+  },
 };
 
 export const initialElementPositionAndSize: ElementPositionAndSize = {

@@ -95,6 +95,9 @@ export interface StorageSettings {
   lang: LanguageType;
   loginUserId?: string;
   blockedTopicList: BlockedTopic[];
+  displayTip: {
+    refreshGZK: boolean;
+  };
 }
 
 export type CreateScriptApp = (pinia: Pinia) => void;

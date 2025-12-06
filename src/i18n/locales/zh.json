@@ -110,7 +110,9 @@
     "imported": "已导入",
     "loadFailed": "加载失败",
     "loadFailedAndRetry": "加载失败，请点击重试",
+    "noMoreTip": "不再提示",
     "plzLogin": "请先登录社区再完成操作",
+    "plzRefreshGZK": "修改设置以后，刷新论坛生效",
     "post": "发布",
     "reply": "回复",
     "warning": "警告"
