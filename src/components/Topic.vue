@@ -109,6 +109,8 @@ const {
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
 onBeforeMount(() => {
+  insertTopicButton();
+
   const { pathname } = window.location;
 
   if (!topicLinkRegExp.test(pathname)) {
@@ -158,6 +160,24 @@ onMounted(() => {
   emitter.on('clickTopic', handleTopicClick);
 });
 
+const insertTopicButton = () => {
+  const publishBtn = document.querySelector<HTMLButtonElement>('button.dropdown-toggle');
+  const parentEle = publishBtn?.parentElement;
+
+  if (publishBtn?.innerText.includes('发布新主题') && parentEle) {
+    const button = document.createElement('a');
+    const editIcon = document.createElement('div');
+
+    button.href = '/t/create/water';
+    button.className = 'btn btn-primary';
+    editIcon.className = 'i-mdi-lead-pencil';
+
+    parentEle.prepend(button);
+    button.prepend(editIcon);
+    button.addEventListener('click', handleCreateTopicClick);
+  }
+};
+
 const handleTopicClick = (e: Event) => {
   e.preventDefault();
 
@@ -181,7 +201,7 @@ const handleCreateTopicClick = async (e: Event) => {
   });
 
   try {
-    const createTopicLinkEle = e.target as HTMLAnchorElement;
+    const createTopicLinkEle = e.currentTarget as HTMLAnchorElement;
     const href = createTopicLinkEle.getAttribute('href') as string;
     await waitTime();
 
