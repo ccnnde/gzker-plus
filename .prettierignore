@@ -15,6 +15,7 @@ pnpm-lock.yaml
 
 # Built-files
 dist
+.output
 
 # Other
 MarkdownGrammar.md

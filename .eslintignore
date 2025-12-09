@@ -1,3 +1,4 @@
 dist
+.output
 *.json
 !src/i18n/locales/*.json
