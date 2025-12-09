@@ -129,8 +129,8 @@ const deleteSelectedImg = async () => {
           :src="`${scope.row.url}@40w_40h_1e_1c.webp`"
           :initial-index="scope.$index"
           :preview-src-list="previewImgList"
-          
-           hide-on-click-modal preview-teleported 
+          hide-on-click-modal
+          preview-teleported
         />
       </template>
     </ElTableColumn>
