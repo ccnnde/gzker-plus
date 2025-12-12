@@ -116,6 +116,7 @@ export const enum OptionsKey {
   CloseDialogOnClickModal = 'closeDialogOnClickModal',
   HideGzkInfo = 'hideGzkInfo',
   ImageHosting = 'imageHosting',
+  TopicKeywordBlock = 'topicKeywordBlock',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -145,6 +146,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.ImageHosting]: {
     platform: ImageHostingPlatform.Bili,
+  },
+  [OptionsKey.TopicKeywordBlock]: {
+    keywords: '',
   },
 };
 

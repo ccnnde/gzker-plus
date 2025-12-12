@@ -79,6 +79,9 @@ export interface Options {
   [OptionsKey.ImageHosting]: {
     platform: ImageHostingPlatform;
   };
+  [OptionsKey.TopicKeywordBlock]: {
+    keywords: string;
+  };
 }
 
 export interface CheckedOption {

@@ -13,6 +13,7 @@ import EnhancedMsg from './EnhancedMsg.vue';
 import HideGzkInfo from './HideGzkInfo.vue';
 import ImageHosting from './ImageHosting.vue';
 import SmApiKey from './SmApiKey.vue';
+import TopicKeywordBlock from './TopicKeywordBlock.vue';
 
 import type { CheckedOption, Setting } from '@/types';
 
@@ -40,6 +41,12 @@ const settings = computed<Setting[]>(() => {
           name: t('basicSetting.enhancedTopic.title'),
           description: t('basicSetting.enhancedTopic.titleDesc'),
           key: OptionsKey.EnhancedTopic,
+        },
+        {
+          name: t('basicSetting.topicKeywordBlock.title'),
+          description: t('basicSetting.topicKeywordBlock.titleDesc'),
+          key: OptionsKey.TopicKeywordBlock,
+          component: TopicKeywordBlock,
         },
         {
           name: t('basicSetting.closeDialogOnClickModal.title'),

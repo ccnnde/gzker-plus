@@ -75,6 +75,11 @@
         "verified": "Verified",
         "vipUser": "VIP user"
       }
+    },
+    "topicKeywordBlock": {
+      "placeholder": "Please enter keywords (one per line)",
+      "title": "Topic Keyword Blocking",
+      "titleDesc": "Enter the keywords to be blocked, one per line. Topics that match the keywords will be hidden"
     }
   },
   "biliImages": {

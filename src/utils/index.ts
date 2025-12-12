@@ -174,8 +174,8 @@ export const checkMacOS = () => {
   return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 };
 
-export const blockTopics = (topicIds: string[]) => {
-  if (!topicIds.length) {
+export const blockTopics = (topicIds: string[], keywords?: string[]) => {
+  if (!topicIds.length && !keywords?.length) {
     return;
   }
 
@@ -192,8 +192,10 @@ export const blockTopics = (topicIds: string[]) => {
     }
 
     const topicId = topicLinkElement.href.match(topicLinkRegExp)?.[1];
+    const topicTitle = topicLinkElement.innerText;
+    const isKeywordHit = keywords?.some((w) => topicTitle.includes(w));
 
-    if (topicIds.includes(topicId as string)) {
+    if (isKeywordHit || topicIds.includes(topicId as string)) {
       element.style.display = 'none';
     }
   });

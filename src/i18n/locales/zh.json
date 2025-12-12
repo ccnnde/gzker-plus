@@ -75,6 +75,11 @@
         "verified": "已验证",
         "vipUser": "VIP 用户"
       }
+    },
+    "topicKeywordBlock": {
+      "placeholder": "请输入关键字（一行一个）",
+      "title": "主题关键字屏蔽",
+      "titleDesc": "输入要屏蔽的关键字，一行一个，匹配到关键字的主题将被隐藏"
     }
   },
   "biliImages": {

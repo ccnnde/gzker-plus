@@ -32,7 +32,12 @@ const setupApp = async () => {
 
   if (options[OptionsKey.EnhancedTopic].checked) {
     const blockedTopicIds = blockedTopicList.map((item) => item.id);
-    blockTopics(blockedTopicIds);
+    const blockedKeywords = options.topicKeywordBlock.keywords
+      .split('\n')
+      .filter((w) => w)
+      .map((w) => w.trim());
+
+    blockTopics(blockedTopicIds, blockedKeywords);
     createTopicApp(pinia);
   }
 };
