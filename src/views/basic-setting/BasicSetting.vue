@@ -147,34 +147,39 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .setting-category-content {
-  padding: 0.8em;
-  border-radius: var(--el-border-radius-base);
-  transition: background-color 0.3s ease-in;
-
-  &:hover {
-    background-color: var(--el-color-primary-light-9);
-  }
-
   & + & {
     margin-top: 2em;
   }
 }
 
 .setting-category-title {
-  padding-left: 0.5em;
-  margin-bottom: 1em;
+  position: relative;
+  padding-left: 12px;
+  margin-bottom: 8px;
   font-size: 1.5em;
   font-weight: bold;
-  border-left: 5px solid var(--el-color-primary);
-  border-radius: var(--el-border-radius-base);
+
+  &::before {
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    width: 3px;
+    height: 1.5em;
+    content: '';
+    background-color: var(--el-color-primary);
+    border-radius: var(--el-border-radius-small);
+  }
 }
 
 .setting-item-list {
   display: flex;
   flex-direction: column;
+  padding: 8px 12px;
+  border-radius: var(--el-border-radius-base);
+  transition: background-color 0.3s ease-in;
 
-  & + & {
-    margin-top: 1em;
+  &:hover {
+    background-color: var(--el-color-primary-light-9);
   }
 }
 
