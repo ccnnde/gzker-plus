@@ -65,3 +65,48 @@ img[src^="https://img.whzxc.cn/bd"]
     }
   }
 }
+
+.gzk-create-btn {
+  position: relative;
+
+  div.i-mdi-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: none;
+    transform: translate(-50%, -50%);
+  }
+
+  &-loading {
+    pointer-events: none;
+
+    &::before {
+      position: absolute;
+      inset: -1px;
+      z-index: 1;
+      pointer-events: none;
+      content: '';
+      border-radius: inherit;
+    }
+
+    span,
+    div.i-mdi-lead-pencil {
+      opacity: 0;
+    }
+
+    div.i-mdi-loading {
+      display: block;
+      animation: loading-rotate 0.5s linear infinite;
+    }
+  }
+}
+
+@keyframes loading-rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

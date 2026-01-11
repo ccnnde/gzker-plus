@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, onMounted, provide, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import FadeTransition from '@/transitions/FadeTransition.vue';
@@ -25,7 +25,7 @@ import {
 } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { isImgViewerVisible, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { DialogType, LinkElementType, LOADING_BACKGROUND_DARK, OptionsKey, topicLinkRegExp } from '@/constants';
+import { DialogType, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -160,6 +160,9 @@ onMounted(() => {
   emitter.on('clickTopic', handleTopicClick);
 });
 
+const CREATE_BTN_CLASS = 'gzk-create-btn';
+const CREATE_BTN_LOAD_CLASS = CREATE_BTN_CLASS + '-loading';
+
 const insertTopicButton = () => {
   const publishBtn = document.querySelector<HTMLButtonElement>('button.dropdown-toggle');
   const parentEle = publishBtn?.parentElement;
@@ -167,14 +170,27 @@ const insertTopicButton = () => {
   if (publishBtn?.innerText.includes('发布新主题') && parentEle) {
     const button = document.createElement('a');
     const editIcon = document.createElement('div');
+    const loadingIcon = document.createElement('div');
 
     button.href = '/t/create/water';
-    button.className = 'btn btn-primary';
+    button.className = `btn btn-primary ${CREATE_BTN_CLASS}`;
     editIcon.className = 'i-mdi-lead-pencil';
+    loadingIcon.className = 'i-mdi-loading';
 
     parentEle.prepend(button);
     button.prepend(editIcon);
+    button.prepend(loadingIcon);
     button.addEventListener('click', handleCreateTopicClick);
+  }
+
+  const nodePublishBtn = document.querySelector<HTMLAnchorElement>('.node-topics > .ui-header a[href^="/t/create"]');
+
+  if (nodePublishBtn?.innerText.includes('创建新主题')) {
+    const loadingIcon = document.createElement('div');
+    loadingIcon.className = 'i-mdi-loading';
+    nodePublishBtn.classList.add(CREATE_BTN_CLASS);
+    nodePublishBtn.innerHTML = '<span>创建新主题</span>';
+    nodePublishBtn.prepend(loadingIcon);
   }
 };
 
@@ -196,14 +212,13 @@ const handleTopicClick = (e: Event) => {
 const handleCreateTopicClick = async (e: Event) => {
   e.preventDefault();
 
-  const loading = ElLoading.service({
-    background: LOADING_BACKGROUND_DARK,
-  });
+  const createBtn = document.querySelector<HTMLAnchorElement>(`.${CREATE_BTN_CLASS}`);
+  createBtn?.classList.add(CREATE_BTN_LOAD_CLASS);
 
   try {
     const createTopicLinkEle = e.currentTarget as HTMLAnchorElement;
     const href = createTopicLinkEle.getAttribute('href') as string;
-    await waitTime();
+    await waitTime(300);
 
     if (import.meta.env.PROD) {
       await request(href);
@@ -215,7 +230,8 @@ const handleCreateTopicClick = async (e: Event) => {
     ElMessage.error((err as Error).message);
     console.error(err);
   } finally {
-    loading.close();
+    createBtn?.classList.remove(CREATE_BTN_LOAD_CLASS);
+    (document.activeElement as HTMLElement)?.blur();
   }
 };
 
