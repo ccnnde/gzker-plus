@@ -47,12 +47,19 @@ const handleInput = (value: string) => {
     type="textarea"
     :placeholder="$t('basicSetting.topicKeywordBlock.placeholder')"
     :rows="6"
+    spellcheck="false"
     @input="handleInput"
   />
 </template>
 
 <style lang="scss" scoped>
 .topic-keyword-block-textarea {
-  max-width: 980px;
+  max-width: 620px;
+
+  :deep(.el-textarea__inner) {
+    overflow: auto;
+    word-wrap: normal;
+    white-space: pre;
+  }
 }
 </style>
