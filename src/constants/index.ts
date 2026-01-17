@@ -8,6 +8,11 @@ import type { ElementPositionAndSize, Options, StorageSettings } from '@/types';
 export const GZK_URL = 'https://www.guozaoke.com';
 
 /**
+ * 过早客论坛地址匹配模式
+ */
+export const GZK_URL_PATTERN = '*://www.guozaoke.com/*';
+
+/**
  * 根组件类名前缀
  */
 export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
@@ -16,6 +21,19 @@ export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
  * Loading 暗色背景
  */
 export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
+
+/**
+ * 右键菜单 ID
+ */
+export const GzkCtxMenuIds = {
+  Root: 'root',
+  BlockKeyword: 'block-keyword',
+};
+
+/**
+ * 关键字屏蔽最大长度
+ */
+export const BLOCK_KEYWORD_MAX = 40;
 
 /**
  * Options 页面路由名称
@@ -49,6 +67,7 @@ export const enum ExtensionMessageType {
   UploadImg,
   UploadBiliImg,
   CloseBiliImgTab,
+  BlockKeyword,
 }
 
 /**

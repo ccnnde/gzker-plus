@@ -219,6 +219,14 @@
     "message": "Message",
     "unreadMessage": "You have {num} unread messages"
   },
+  "keywordBlock": {
+    "addFailed": "Failed to add, please try again",
+    "addSuccess": "Added successfully, refresh page to take effect",
+    "alreadyExists": "This keyword already exists",
+    "confirmMessage": "Are you sure to block topics containing '{keyword}'?",
+    "emptyText": "Please select valid text",
+    "tooLong": "Keyword cannot exceed {max} characters"
+  },
   "navigation": {
     "about": "About Extension",
     "basicSetting": "Basic Setting",

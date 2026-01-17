@@ -221,6 +221,14 @@
     "message": "消息",
     "unreadMessage": "你有 {num} 条未读消息"
   },
+  "keywordBlock": {
+    "addFailed": "添加失败，请重试",
+    "addSuccess": "添加成功，手动刷新后生效",
+    "alreadyExists": "该关键字已存在",
+    "confirmMessage": "确定屏蔽包含【{keyword}】的主题？",
+    "emptyText": "请选中有效文本",
+    "tooLong": "关键字不能超过 {max} 个字符"
+  },
   "navigation": {
     "about": "关于插件",
     "basicSetting": "基础设置",

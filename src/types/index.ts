@@ -46,6 +46,7 @@ export interface ExtensionMessage {
   extPagePath?: string;
   imgFile?: Base64File;
   apiKey?: string;
+  keyword?: string;
 }
 
 export interface Setting {

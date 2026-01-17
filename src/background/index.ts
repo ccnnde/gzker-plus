@@ -1,10 +1,17 @@
 import { nanoid } from 'nanoid';
-import { runtime, tabs } from 'webextension-polyfill';
+import { commands, contextMenus, runtime, tabs } from 'webextension-polyfill';
 
 import { uploadImg } from '@/api/sm-img';
 import { base64ToFile, initStorage, sendMessageToTab, waitTime } from '@/utils';
 import { addImgHistory } from '@/utils/bili-img-store';
-import { ExtensionMessageType, OptionsRouteNames, OptionsRoutePaths } from '@/constants';
+import {
+  ExtensionMessageType,
+  GZK_URL,
+  GZK_URL_PATTERN,
+  GzkCtxMenuIds,
+  OptionsRouteNames,
+  OptionsRoutePaths,
+} from '@/constants';
 
 import type { Tabs } from 'webextension-polyfill';
 import type { Base64File, BiliUploadedImg, ExtensionMessage } from '@/types';
@@ -90,5 +97,52 @@ runtime.onMessage.addListener(async (message: ExtensionMessage) => {
       isBiliImgTabOpened = false;
 
       return;
+  }
+});
+
+contextMenus.create({
+  id: GzkCtxMenuIds.Root,
+  title: '过早客 Plus',
+  contexts: ['all'],
+  documentUrlPatterns: [GZK_URL_PATTERN],
+});
+
+contextMenus.create({
+  id: GzkCtxMenuIds.BlockKeyword,
+  parentId: GzkCtxMenuIds.Root,
+  title: '屏蔽包含"%s"的主题',
+  contexts: ['selection'],
+  documentUrlPatterns: [GZK_URL_PATTERN],
+});
+
+contextMenus.onClicked.addListener((info, tab) => {
+  switch (info.menuItemId) {
+    case GzkCtxMenuIds.BlockKeyword: {
+      if (tab?.id) {
+        tabs.sendMessage(tab.id, {
+          msgType: ExtensionMessageType.BlockKeyword,
+          keyword: info.selectionText?.trim(),
+        });
+      }
+
+      break;
+    }
+  }
+});
+
+commands.onCommand.addListener(async (command) => {
+  switch (command) {
+    case GzkCtxMenuIds.BlockKeyword: {
+      const [tab] = await tabs.query({ active: true, currentWindow: true });
+
+      if (tab?.id && tab?.url?.includes(GZK_URL)) {
+        tabs.sendMessage(tab.id, {
+          msgType: ExtensionMessageType.BlockKeyword,
+          keyword: '',
+        });
+      }
+
+      break;
+    }
   }
 });
