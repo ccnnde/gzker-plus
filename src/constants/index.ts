@@ -27,6 +27,7 @@ export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
  */
 export const GzkCtxMenuIds = {
   Root: 'root',
+  OpenExtOptions: 'open-ext-options',
   BlockKeyword: 'block-keyword',
 };
 

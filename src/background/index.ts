@@ -108,6 +108,14 @@ contextMenus.create({
 });
 
 contextMenus.create({
+  id: GzkCtxMenuIds.OpenExtOptions,
+  parentId: GzkCtxMenuIds.Root,
+  title: '过早客 Plus 设置',
+  contexts: ['all'],
+  documentUrlPatterns: [GZK_URL_PATTERN],
+});
+
+contextMenus.create({
   id: GzkCtxMenuIds.BlockKeyword,
   parentId: GzkCtxMenuIds.Root,
   title: '屏蔽包含"%s"的主题',
@@ -117,6 +125,9 @@ contextMenus.create({
 
 contextMenus.onClicked.addListener((info, tab) => {
   switch (info.menuItemId) {
+    case GzkCtxMenuIds.OpenExtOptions:
+      openOptionsPage();
+      break;
     case GzkCtxMenuIds.BlockKeyword: {
       if (tab?.id) {
         tabs.sendMessage(tab.id, {
