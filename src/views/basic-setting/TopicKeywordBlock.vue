@@ -49,7 +49,30 @@ const handleInput = (value: string) => {
     overflow: auto;
     word-wrap: normal;
     white-space: pre;
-    scrollbar-color: rgb(144 147 153 / 30%) transparent;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      /* stylelint-disable-next-line color-function-notation */
+      background: rgba(var(--el-color-info-rgb), 0.3);
+      border-radius: var(--el-border-radius-base);
+
+      &:hover {
+        /* stylelint-disable-next-line color-function-notation */
+        background: rgba(var(--el-color-info-rgb), 0.5);
+      }
+    }
   }
 }
 
