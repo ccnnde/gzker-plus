@@ -58,6 +58,13 @@ watch(
     display: inline;
   }
 }
+
+.options-dialog {
+  .el-dialog__body {
+    padding-top: 0;
+    padding-bottom: 15px;
+  }
+}
 </style>
 
 <style lang="scss" scoped>
