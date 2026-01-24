@@ -16,3 +16,39 @@
 @mixin blur-element() {
   filter: blur(6px);
 }
+
+@mixin el-scrollbar(
+  $width: 6px,
+  $thumb-color: rgba(var(--el-color-info-rgb), 0.3),
+  $thumb-hover-color: rgba(var(--el-color-info-rgb), 0.5),
+  $track-color: transparent,
+  $corner-color: transparent,
+  $border-radius: var(--el-border-radius-base)
+) {
+  @supports (-moz-appearance: auto) {
+    scrollbar-width: thin;
+    scrollbar-color: $thumb-color $track-color;
+  }
+
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: $corner-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: $border-radius;
+
+    &:hover {
+      background: $thumb-hover-color;
+    }
+  }
+}
