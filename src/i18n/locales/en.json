@@ -79,7 +79,7 @@
     "topicKeywordBlock": {
       "placeholder": "Please enter keywords (one per line)",
       "title": "Topic Keyword Blocking",
-      "titleDesc": "Enter the keywords to be blocked, one per line. Topics that match the keywords will be hidden"
+      "titleDesc": "Enter the keywords to be blocked (supports regular expressions, must start with /), one per line. Topics that match the keywords will be hidden"
     }
   },
   "biliImages": {

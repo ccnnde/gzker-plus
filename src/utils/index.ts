@@ -193,7 +193,26 @@ export const blockTopics = (topicIds: string[], keywords?: string[]) => {
 
     const topicId = topicLinkElement.href.match(topicLinkRegExp)?.[1];
     const topicTitle = topicLinkElement.innerText;
-    const isKeywordHit = keywords?.some((w) => topicTitle.includes(w));
+    const isKeywordHit = keywords?.some((k) => {
+      if (k.startsWith('/')) {
+        const isKeywordReg = k.match(/^\/(.*)\/([gimsuy]*)$/);
+
+        if (isKeywordReg) {
+          const [pattern, flags] = isKeywordReg;
+
+          try {
+            const regExp = new RegExp(pattern, flags);
+            return regExp.test(topicTitle);
+          } catch {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+
+      return topicTitle.includes(k);
+    });
 
     if (isKeywordHit || topicIds.includes(topicId as string)) {
       element.style.display = 'none';
