@@ -195,10 +195,10 @@ export const blockTopics = (topicIds: string[], keywords?: string[]) => {
     const topicTitle = topicLinkElement.innerText;
     const isKeywordHit = keywords?.some((k) => {
       if (k.startsWith('/')) {
-        const isKeywordReg = k.match(/^\/(.*)\/([gimsuy]*)$/);
+        const isKeywordReg = k.match(/^\/(.+)\/([gimsuy]*)$/);
 
         if (isKeywordReg) {
-          const [pattern, flags] = isKeywordReg;
+          const [, pattern, flags] = isKeywordReg;
 
           try {
             const regExp = new RegExp(pattern, flags);
