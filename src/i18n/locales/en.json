@@ -77,6 +77,7 @@
       }
     },
     "topicKeywordBlock": {
+      "keywordBlockHelp": "Keyword blocking description",
       "placeholder": "Please enter keywords (one per line)",
       "title": "Topic Keyword Blocking",
       "titleDesc": "Enter the keywords to be blocked (supports regular expressions, must start with /), one per line. Topics that match the keywords will be hidden"
@@ -115,7 +116,9 @@
     "imported": "Imported",
     "loadFailed": "Load failed",
     "loadFailedAndRetry": "Load failed, please click to retry",
+    "noMoreTip": "No more prompts",
     "plzLogin": "Please log in to the community before proceeding with the operation",
+    "plzRefreshGZK": "After modifying the settings, refreshing the forum takes effect",
     "post": "Post",
     "reply": "Reply",
     "warning": "Warning"
