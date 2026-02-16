@@ -6,7 +6,7 @@
 
 ![keyword-block](../assets/img/keyword-block.png)
 
-您还可在浏览器中自定义扩展快捷键：
+您还可在浏览器中自定义扩展快捷键，**复制地址后在浏览器的地址栏中输入，然后按回车即可**
 
 - **Chrome**: [chrome://extensions/shortcuts](chrome://extensions/shortcuts)
 - **Edge**: [edge://extensions/shortcuts](edge://extensions/shortcuts)
