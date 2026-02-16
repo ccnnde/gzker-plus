@@ -116,6 +116,12 @@ export const enum BellStyle {
   BadgeNum = 'badgeNum',
 }
 
+export const enum DarkMode {
+  Off = 'off',
+  On = 'on',
+  System = 'system',
+}
+
 export const enum ReplyType {
   Topic = 'topic',
   Mention = 'mention',
@@ -128,6 +134,7 @@ export const enum ImageHostingPlatform {
 
 export const enum OptionsKey {
   BlankLink = 'blankLink',
+  DarkMode = 'darkMode',
   DblclickToTop = 'dblclickToTop',
   FloatUserInfo = 'floatUserInfo',
   EnhancedMsg = 'enhancedMsg',
@@ -142,6 +149,9 @@ export const enum OptionsKey {
 export const defaultExtensionOptions: Options = {
   [OptionsKey.BlankLink]: {
     checkedLinkTypes: [],
+  },
+  [OptionsKey.DarkMode]: {
+    mode: DarkMode.System,
   },
   [OptionsKey.DblclickToTop]: {
     checked: false,

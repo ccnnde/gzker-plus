@@ -4,6 +4,7 @@ import type { LoadingInstance } from 'element-plus/es/components/loading/src/loa
 import type Viewer from 'viewerjs';
 import type {
   BellStyle,
+  DarkMode,
   DialogType,
   ExtensionMessageType,
   GzkInfoType,
@@ -82,6 +83,9 @@ export interface Options {
   };
   [OptionsKey.TopicKeywordBlock]: {
     keywords: string;
+  };
+  [OptionsKey.DarkMode]: {
+    mode: DarkMode;
   };
 }
 

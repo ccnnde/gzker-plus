@@ -9,6 +9,7 @@ import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
 import CloseDialog from './CloseDialog.vue';
+import DarkMode from './DarkMode.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
 import HideGzkInfo from './HideGzkInfo.vue';
 import ImageHosting from './ImageHosting.vue';
@@ -30,6 +31,12 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.blankLink.titleDesc'),
           key: OptionsKey.BlankLink,
           component: BlankLink,
+        },
+        {
+          name: t('basicSetting.darkMode.title'),
+          description: t('basicSetting.darkMode.titleDesc'),
+          key: OptionsKey.DarkMode,
+          component: DarkMode,
         },
         {
           name: t('basicSetting.enhancedMsg.title'),

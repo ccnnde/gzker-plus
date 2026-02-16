@@ -19,6 +19,13 @@
       "topicEditor": "Topic Editor",
       "topicViewer": "Topic Viewer"
     },
+    "darkMode": {
+      "off": "Off",
+      "on": "On",
+      "system": "Follow System",
+      "title": "Dark Mode",
+      "titleDesc": "Set the extension options page and forum display theme"
+    },
     "dblclickToTop": {
       "title": "Double Click To Return To The Top",
       "titleDesc": "Double-click anywhere in the main content area of the webpage (excluding the top and bottom bars) to return to the top of the page"

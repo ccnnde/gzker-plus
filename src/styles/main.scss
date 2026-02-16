@@ -18,3 +18,31 @@ body,
     color: var(--el-color-warning-light-5);
   }
 }
+
+.radio-group-transparent.el-radio-group {
+  .el-radio-button {
+    --el-radio-button-checked-bg-color: transparent;
+    --el-radio-button-checked-text-color: var(--el-color-primary);
+    --el-radio-button-checked-border-color: transparent;
+
+    .el-radio-button__inner {
+      padding-right: 2em;
+      padding-left: 0;
+      background-color: transparent;
+      border: 0;
+    }
+  }
+}
+
+.radio-content-with-icon {
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-left: 0.4em;
+  }
+
+  .radio-icon {
+    font-size: 1.5em;
+  }
+}

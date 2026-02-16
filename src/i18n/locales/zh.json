@@ -19,6 +19,13 @@
       "topicEditor": "主题编辑框",
       "topicViewer": "主题浏览框"
     },
+    "darkMode": {
+      "off": "关闭",
+      "on": "开启",
+      "system": "跟随系统",
+      "title": "深色模式",
+      "titleDesc": "设置扩展选项页面以及论坛的显示主题"
+    },
     "dblclickToTop": {
       "title": "双击返回顶部",
       "titleDesc": "双击网页主要内容区域（除开顶栏、底栏后的中间部分）任意位置返回网页顶部"
