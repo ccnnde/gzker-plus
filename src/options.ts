@@ -5,7 +5,7 @@ import Options from './pages/Options.vue';
 import i18n from './i18n';
 import router from './router';
 
-import 'github-markdown-css/github-markdown-light.css';
+import 'element-plus/theme-chalk/dark/css-vars.css';
 
 import 'element-plus/es/components/table/style/css';
 import 'element-plus/es/components/message/style/css';

@@ -51,7 +51,7 @@ const switchLanguage = (lang: LanguageType) => {
   align-items: center;
   font-size: 1.2em;
   font-weight: 500;
-  color: #333;
+  color: var(--el-text-color-primary);
 }
 
 .header-operate {
@@ -61,12 +61,12 @@ const switchLanguage = (lang: LanguageType) => {
 
 .operate-icon {
   font-size: 1.6em;
-  color: rgb(60 60 60 / 70%);
+  color: var(--el-text-color-regular);
   cursor: pointer;
   transition: color 0.1s ease-in;
 
   &:hover {
-    color: #213547;
+    color: var(--el-text-color-primary);
   }
 }
 </style>
