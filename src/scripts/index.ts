@@ -11,8 +11,9 @@ import { createTopicApp } from './topic';
 
 import type { ExtensionMessage } from '@/types';
 
-import 'github-markdown-css/github-markdown-light.css';
+import 'element-plus/theme-chalk/dark/css-vars.css';
 import 'virtual:uno.css';
+import '@/styles/github-markdown.css';
 import '@/styles/script-vars.scss';
 import '@/styles/script-global.scss';
 

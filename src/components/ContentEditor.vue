@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
 
+import { useDarkMode } from '@/composables/dark-mode';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
@@ -65,13 +66,22 @@ const emit = defineEmits<{
   toggleFullscreen: [];
 }>();
 
-const LIGHT_THEME = 'light';
 let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
 let isEditorFirstRender = true;
 
+const { isDark } = useDarkMode();
 const isEditorFocused = ref(false);
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
+
+const editorTheme = computed(() => {
+  return isDark.value ? 'dark' : 'light';
+});
+
+watch(editorTheme, () => {
+  cherryEditor?.setTheme(editorTheme.value);
+  updateToolbarTheme();
+});
 
 onMounted(() => {
   initCherryMarkdown();
@@ -106,7 +116,7 @@ const initCherryMarkdown = () => {
       bubble: ['bold', 'italic', 'strikethrough', 'quote'],
       float: false,
       sidebar: false,
-      theme: LIGHT_THEME,
+      theme: editorTheme.value,
       customMenu: {
         history: Cherry.createMenuHook(t('enhancedTopic.editorHistory'), {
           iconName: 'insertSeq',
@@ -178,7 +188,7 @@ const initCherryMarkdown = () => {
     },
   });
 
-  cherryEditor.setTheme(LIGHT_THEME);
+  cherryEditor.setTheme(editorTheme.value);
   cmEditor = cherryEditor.editor.editor;
 
   cmEditor.on('keydown', (editor, e) => {
@@ -194,6 +204,12 @@ const initCherryMarkdown = () => {
     isEditorFocused.value = false;
     emit('blur');
   });
+};
+
+const updateToolbarTheme = () => {
+  if (cherryEditor?.wrapperDom) {
+    cherryEditor.wrapperDom.dataset.toolbarTheme = editorTheme.value;
+  }
 };
 
 const isMacOS = checkMacOS();
@@ -544,6 +560,7 @@ defineExpose({
   <EditorHistory
     ref="editorHistory"
     :editor-history-type="editorHistoryType"
+    :markdown-theme="editorTheme"
     :render-markdown="makeHtml"
     @import-history="$emit('importHistory', $event)"
   />
@@ -559,6 +576,14 @@ defineExpose({
   blockquote {
     font-size: inherit;
   }
+
+  &.theme__dark {
+    border-left-color: var(--el-border-color-darker);
+
+    .cherry-highlight-line {
+      background-color: rgb(255 255 255 / 5%);
+    }
+  }
 }
 </style>
 
@@ -568,6 +593,7 @@ defineExpose({
 
   :deep(.cherry) {
     display: flex;
+    background-color: var(--el-border-color);
     border: 1px solid var(--el-border-color);
     border-radius: var(--el-border-radius-base);
     box-shadow: none;
@@ -581,7 +607,6 @@ defineExpose({
     }
 
     .cherry-editor {
-      border-bottom-right-radius: var(--el-border-radius-base);
       border-bottom-left-radius: var(--el-border-radius-base);
 
       /* stylelint-disable-next-line selector-class-pattern */
@@ -593,7 +618,6 @@ defineExpose({
     .cherry-previewer {
       padding: 15px;
       border-bottom-right-radius: var(--el-border-radius-base);
-      border-bottom-left-radius: var(--el-border-radius-base);
 
       img {
         max-width: 100%;
@@ -601,16 +625,26 @@ defineExpose({
       }
     }
 
+    &:has(.cherry-previewer--hidden) .cherry-editor {
+      border-bottom-right-radius: var(--el-border-radius-base);
+    }
+
     span.cherry-dropdown-item[title='五级标题'] {
       display: none;
+    }
+
+    &[data-toolbar-theme='dark'] .cherry-insert-table-menu-item.active {
+      background-color: rgb(255 255 255 / 50%);
     }
   }
 
   &:hover :deep(.cherry) {
+    background-color: var(--el-border-color-hover);
     border-color: var(--el-border-color-hover);
   }
 
   &.is-focus :deep(.cherry) {
+    background-color: var(--el-color-primary);
     border-color: var(--el-color-primary);
   }
 }

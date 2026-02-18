@@ -346,6 +346,7 @@ defineExpose({
   overflow: hidden;
 
   &.is-error :deep(.cherry) {
+    background-color: var(--el-color-danger);
     border-color: var(--el-color-danger);
   }
 }

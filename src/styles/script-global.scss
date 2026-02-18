@@ -110,3 +110,41 @@ img[src^="https://img.whzxc.cn/bd"]
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+html.dark {
+  .markdown-body {
+    code {
+      color: var(--el-text-color-regular);
+    }
+  }
+
+  .emoji-mart {
+    background: transparent;
+
+    .emoji-mart-anchor:hover {
+      color: var(--el-text-color-primary);
+    }
+
+    .emoji-mart-category-label h3 {
+      color: var(--el-text-color-primary);
+      background-color: transparent;
+    }
+
+    .emoji-mart-category {
+      .emoji-mart-emoji {
+        &:hover::before,
+        &.emoji-mart-emoji-selected::before {
+          background-color: rgb(255 255 255 / 20%);
+        }
+      }
+    }
+
+    .emoji-mart-preview-name {
+      color: var(--el-text-color-primary);
+    }
+
+    .emoji-mart-preview-shortname {
+      color: var(--el-text-color-secondary);
+    }
+  }
+}

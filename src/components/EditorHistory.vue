@@ -11,6 +11,7 @@ import type { EditHistoryItem } from '@/types';
 
 interface Props {
   editorHistoryType: EditHistoryType;
+  markdownTheme: string;
   renderMarkdown: (md?: string) => string;
 }
 
@@ -174,7 +175,7 @@ defineExpose({
                   <label class="history-card-label">{{ $t('enhancedTopic.topicContent') }}</label>
                 </template>
                 <p
-                  class="history-card-content cherry-markdown theme__light"
+                  :class="`history-card-content cherry-markdown theme__${markdownTheme}`"
                   v-html="renderMarkdown(item.content) || '-'"
                 ></p>
               </ElCard>
@@ -283,6 +284,11 @@ defineExpose({
 
   &.theme__light {
     color: var(--el-text-color-primary);
+  }
+
+  &.theme__dark {
+    color: var(--el-text-color-primary);
+    background-color: transparent;
   }
 
   :deep(img) {

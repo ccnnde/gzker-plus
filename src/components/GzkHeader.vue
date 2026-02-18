@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { ElDropdown } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
 
+import { useDarkMode } from '@/composables/dark-mode';
 import { ExtensionMessageType } from '@/constants';
 
 import ElementConfig from './ElementConfig.vue';
@@ -10,6 +11,7 @@ import MessageBell from './MessageBell.vue';
 
 import type { ExtensionMessage } from '@/types';
 
+const { isDark } = useDarkMode();
 const feedbackDropdown = ref<InstanceType<typeof ElDropdown> | null>(null);
 
 const openExtOptions = () => {
@@ -42,7 +44,8 @@ const openExtOptions = () => {
             </a>
           </ElDropdownItem>
           <ElDropdownItem>
-            <img class="qq-group-qrcode" src="@/assets/img/qq-group-qrcode.png" />
+            <img v-if="isDark" class="qq-group-qrcode" src="@/assets/img/qq-group-qrcode-dark.png" />
+            <img v-else class="qq-group-qrcode" src="@/assets/img/qq-group-qrcode.png" />
           </ElDropdownItem>
         </ElDropdownMenu>
       </template>
@@ -94,6 +97,10 @@ $gzker-header-width: 9em;
 
     &:has(.qq-group-qrcode) {
       padding: 0;
+
+      &:not(.is-disabled):focus {
+        background-color: transparent;
+      }
     }
   }
 }

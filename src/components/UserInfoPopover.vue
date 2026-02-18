@@ -77,6 +77,7 @@ const handleUserBlock = () => {
 <template>
   <ElPopover
     :width="300"
+    :popper-style="{ padding: 0 }"
     :show-after="showAfter"
     :hide-after="hideAfter"
     :disabled="!uid"
@@ -153,7 +154,8 @@ const handleUserBlock = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 165px;
+  height: 189px;
+  padding: 12px;
 }
 
 .user-basic-info {

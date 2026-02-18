@@ -46,3 +46,38 @@ body,
     font-size: 1.5em;
   }
 }
+
+.options-main {
+  .markdown-body {
+    .options-about {
+      &-qq-qrcode {
+        &,
+        &-dark {
+          width: 233px;
+        }
+
+        &-dark {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+html.dark {
+  .options-main {
+    .markdown-body {
+      .options-about {
+        &-qq-qrcode {
+          display: none;
+
+          &-dark {
+            display: inline;
+            border: 1px solid var(--el-border-color);
+            border-radius: 0.5em;
+          }
+        }
+      }
+    }
+  }
+}

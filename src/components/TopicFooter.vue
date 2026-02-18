@@ -3,6 +3,7 @@ import { computed, inject } from 'vue';
 import { ElMessage } from 'element-plus';
 import QrcodeVue from 'qrcode.vue';
 
+import { useDarkMode } from '@/composables/dark-mode';
 import { t } from '@/i18n';
 import { addUnit, getTopicUrl } from '@/utils';
 import { ADD_REPLY_INJECTION_KEY } from '@/constants/inject-key';
@@ -32,6 +33,22 @@ defineEmits<{
   editTopic: [];
   blockTopic: [];
 }>();
+
+const { isDark } = useDarkMode();
+
+const qrcodeStyle = computed(() => {
+  if (isDark.value) {
+    return {
+      background: '#000',
+      foreground: '#fff',
+    };
+  }
+
+  return {
+    background: '#fff',
+    foreground: '#000',
+  };
+});
 
 const topicUrl = computed(() => {
   return getTopicUrl(props.topicId);
@@ -103,7 +120,12 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
               <un-i-mdi-wechat class="share-icon share-icon-wechat" />
               {{ $t('enhancedTopic.shareWeChat') }}
             </div>
-            <QrcodeVue :value="topicUrl" :size="65" />
+            <QrcodeVue
+              :value="topicUrl"
+              :size="65"
+              :background="qrcodeStyle.background"
+              :foreground="qrcodeStyle.foreground"
+            />
           </ElDropdownItem>
         </ElDropdownMenu>
       </template>
