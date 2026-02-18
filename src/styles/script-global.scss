@@ -96,12 +96,12 @@ img[src^="https://img.whzxc.cn/bd"]
 
     div.i-mdi-loading {
       display: block;
-      animation: loading-rotate 0.5s linear infinite;
+      animation: gzk-loading-rotate 0.5s linear infinite;
     }
   }
 }
 
-@keyframes loading-rotate {
+@keyframes gzk-loading-rotate {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
