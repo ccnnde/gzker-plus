@@ -8,6 +8,7 @@
       "user": "User"
     },
     "category": {
+      "appearance": "Appearance",
       "browse": "Browse",
       "imageHosting": "Image Hosting",
       "other": "Other"
@@ -24,7 +25,7 @@
       "on": "On",
       "system": "Follow System",
       "title": "Dark Mode",
-      "titleDesc": "Set the extension options page and forum display theme"
+      "titleDesc": "Set the extension options page and forum display mode"
     },
     "dblclickToTop": {
       "title": "Double Click To Return To The Top",

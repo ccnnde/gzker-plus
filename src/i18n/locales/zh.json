@@ -8,6 +8,7 @@
       "user": "用户"
     },
     "category": {
+      "appearance": "外观",
       "browse": "浏览",
       "imageHosting": "图床",
       "other": "其他"
@@ -24,7 +25,7 @@
       "on": "开启",
       "system": "跟随系统",
       "title": "深色模式",
-      "titleDesc": "设置扩展选项页面以及论坛的显示主题"
+      "titleDesc": "设置扩展选项页面以及论坛的显示模式"
     },
     "dblclickToTop": {
       "title": "双击返回顶部",

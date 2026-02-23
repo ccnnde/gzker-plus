@@ -33,12 +33,6 @@ const settings = computed<Setting[]>(() => {
           component: BlankLink,
         },
         {
-          name: t('basicSetting.darkMode.title'),
-          description: t('basicSetting.darkMode.titleDesc'),
-          key: OptionsKey.DarkMode,
-          component: DarkMode,
-        },
-        {
           name: t('basicSetting.enhancedMsg.title'),
           description: t('basicSetting.enhancedMsg.titleDesc'),
           key: OptionsKey.EnhancedMsg,
@@ -60,6 +54,17 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.closeDialogOnClickModal.titleDesc'),
           key: OptionsKey.CloseDialogOnClickModal,
           component: CloseDialog,
+        },
+      ],
+    },
+    {
+      category: t('basicSetting.category.appearance'),
+      list: [
+        {
+          name: t('basicSetting.darkMode.title'),
+          description: t('basicSetting.darkMode.titleDesc'),
+          key: OptionsKey.DarkMode,
+          component: DarkMode,
         },
       ],
     },
