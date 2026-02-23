@@ -71,12 +71,12 @@ $gzker-header-width: 9em;
 
   .header-icon {
     font-size: 1.4em;
-    color: #333;
+    color: var(--el-text-color-primary);
     cursor: pointer;
     transition: color 0.1s ease-in;
 
     &:hover {
-      color: #db4937;
+      color: var(--gzk-navbar-text-hover);
     }
   }
 }

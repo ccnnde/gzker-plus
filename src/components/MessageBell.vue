@@ -237,7 +237,7 @@ a.notification-indicator {
   .mail-status {
     &,
     &.unread {
-      background-color: #ddd;
+      background-color: var(--el-color-info-light-7);
       background-image: none;
       box-shadow: none;
     }

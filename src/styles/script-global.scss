@@ -26,6 +26,10 @@ img[src^="https://img.whzxc.cn/bd"]
     color: #1f2328;
   }
 
+  pre {
+    border: none;
+  }
+
   ol ol,
   ul ol {
     list-style-type: decimal;
@@ -39,6 +43,10 @@ img[src^="https://img.whzxc.cn/bd"]
     input[type='checkbox'] {
       margin-right: 5px;
     }
+  }
+
+  .highlight {
+    background: transparent;
   }
 }
 
