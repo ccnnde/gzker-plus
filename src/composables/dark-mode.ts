@@ -2,7 +2,8 @@ import { computed, watch } from 'vue';
 import { usePreferredDark } from '@vueuse/core';
 
 import { useStorageStore } from '@/stores/storage';
-import { DarkMode, OptionsKey } from '@/constants';
+import { isCurrentDarkMode, shouldBeDarkMode, updateDarkModeClass } from '@/utils';
+import { OptionsKey } from '@/constants';
 
 export const useDarkMode = () => {
   const store = useStorageStore();
@@ -10,31 +11,14 @@ export const useDarkMode = () => {
 
   const isDark = computed(() => {
     if (!store.options) {
-      return false;
+      return isCurrentDarkMode();
     }
 
-    const mode = store.options[OptionsKey.DarkMode].mode;
-
-    if (mode === DarkMode.On) {
-      return true;
-    }
-
-    if (mode === DarkMode.Off) {
-      return false;
-    }
-
-    return preferredDark.value;
+    const { mode } = store.options[OptionsKey.DarkMode];
+    return shouldBeDarkMode(mode, preferredDark.value);
   });
 
-  watch(isDark, updateDarkClass, { immediate: true });
-
-  function updateDarkClass() {
-    if (isDark.value) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }
+  watch(isDark, updateDarkModeClass);
 
   return {
     isDark,

@@ -122,6 +122,8 @@ export const enum DarkMode {
   System = 'system',
 }
 
+export const DARK_MODE_CLASS = 'dark';
+
 export const enum ReplyType {
   Topic = 'topic',
   Mention = 'mention',

@@ -6,7 +6,7 @@ import { storage, tabs } from 'webextension-polyfill';
 
 import i18n, { t } from '@/i18n';
 import { API_TOPIC, API_USER } from '@/api';
-import { defaultExtensionStorage, GZK_URL, topicLinkRegExp } from '@/constants';
+import { DARK_MODE_CLASS, DarkMode, defaultExtensionStorage, GZK_URL, topicLinkRegExp } from '@/constants';
 import {
   ALREADY_LIKE,
   CAN_NOT_FAVORITE_YOUR_TOPIC,
@@ -282,4 +282,47 @@ export const sendMessageToTab = async (tabId: number | undefined, message: Exten
   };
 
   return await trySending();
+};
+
+/**
+ * 判断是否应该使用深色模式
+ * @param mode 用户设置的深色模式
+ * @param isSystemDark 系统是否为深色模式
+ */
+export const shouldBeDarkMode = (mode: DarkMode, isSystemDark: boolean): boolean => {
+  if (mode === DarkMode.On) {
+    return true;
+  }
+
+  if (mode === DarkMode.Off) {
+    return false;
+  }
+
+  return isSystemDark;
+};
+
+/**
+ * 更新 DOM 的 dark class
+ * @param isDark 是否为深色模式
+ */
+export const updateDarkModeClass = (isDark: boolean) => {
+  if (isDark) {
+    document.documentElement.classList.add(DARK_MODE_CLASS);
+  } else {
+    document.documentElement.classList.remove(DARK_MODE_CLASS);
+  }
+};
+
+/**
+ * 检查系统是否为深色模式
+ */
+export const isSystemDarkMode = () => {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+};
+
+/**
+ * 检查当前是否为深色模式（基于 DOM class）
+ */
+export const isCurrentDarkMode = () => {
+  return document.documentElement.classList.contains(DARK_MODE_CLASS);
 };

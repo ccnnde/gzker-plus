@@ -83,6 +83,15 @@ export default defineConfig({
       webExtConfig: {
         startUrl: ['https://www.guozaoke.com/'],
       },
+      scriptViteConfig: {
+        build: {
+          rollupOptions: {
+            output: {
+              assetFileNames: '[name]-[hash].[ext]',
+            },
+          },
+        },
+      },
     }),
   ],
   resolve: {

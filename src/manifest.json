@@ -36,6 +36,11 @@
   "content_scripts": [
     {
       "matches": ["*://www.guozaoke.com/*"],
+      "js": ["src/scripts/set-appearance.ts"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://www.guozaoke.com/*"],
       "js": [
         "src/scripts/index.ts",
         "src/scripts/blank-link.ts",
