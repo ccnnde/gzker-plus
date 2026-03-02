@@ -6,15 +6,15 @@ import { isCurrentDarkMode, shouldBeDarkMode, updateDarkModeClass } from '@/util
 import { OptionsKey } from '@/constants';
 
 export const useDarkMode = () => {
-  const store = useStorageStore();
+  const storage = useStorageStore();
   const preferredDark = usePreferredDark();
 
   const isDark = computed(() => {
-    if (!store.options) {
+    if (!storage.options) {
       return isCurrentDarkMode();
     }
 
-    const { mode } = store.options[OptionsKey.DarkMode];
+    const { mode } = storage.options[OptionsKey.DarkMode];
     return shouldBeDarkMode(mode, preferredDark.value);
   });
 

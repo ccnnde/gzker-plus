@@ -1,9 +1,10 @@
 import { createApp } from 'vue';
 import { ElLoading, ElMessage } from 'element-plus';
 import Cookies from 'js-cookie';
-import { cloneDeep, merge } from 'lodash-es';
+import { cloneDeep, debounce, merge } from 'lodash-es';
 import { storage, tabs } from 'webextension-polyfill';
 
+import { useStorageStore } from '@/stores/storage';
 import i18n, { t } from '@/i18n';
 import { API_TOPIC, API_USER } from '@/api';
 import { DARK_MODE_CLASS, DarkMode, defaultExtensionStorage, GZK_URL, topicLinkRegExp } from '@/constants';
@@ -82,6 +83,24 @@ export const setStorage = async (settings: Partial<StorageSettings>) => {
 export const getStorage = async (): Promise<StorageSettings> => {
   const settings = await storage.sync.get();
   return settings as StorageSettings;
+};
+
+/**
+ * 创建防抖的 storage 同步函数
+ * - 从 storage 同步设置到 store
+ * - 用于 `storage.sync.onChanged` 监听
+ * - 添加防抖，避免频繁修改导致大量 I/O
+ */
+export const createDebouncedStorageSync = () => {
+  return debounce(
+    async () => {
+      const store = useStorageStore();
+      const settings = await getStorage();
+      store.updateSettingsFromStorage(settings);
+    },
+    300,
+    { maxWait: 1000 },
+  );
 };
 
 export const request = async (url: string, init?: RequestInit): Promise<string> => {
