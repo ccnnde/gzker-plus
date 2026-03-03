@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import type { CheckboxValueType } from 'element-plus';
 import type { CheckItem } from '@/types';
@@ -26,19 +26,24 @@ const allCheckItems = computed(() => {
   return props.checkItemList.map((item) => item.value);
 });
 
+watch(
+  () => props.modelValue.length,
+  () => {
+    updateCheckAllState(props.modelValue.length);
+  },
+);
+
 onMounted(() => {
   updateCheckAllState(props.modelValue.length);
 });
 
 const handleCheckAllChange = () => {
   const checkedItems = checkAll.value ? allCheckItems.value : [];
-  isIndeterminate.value = false;
   emit('update:modelValue', checkedItems);
 };
 
 const handleCheckedItemsChange = (value: CheckboxValueType[]) => {
   emit('update:modelValue', value);
-  updateCheckAllState(value.length);
 };
 
 const updateCheckAllState = (checkedCount: number) => {
