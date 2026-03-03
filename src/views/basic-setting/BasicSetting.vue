@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, h, onMounted, toRaw } from 'vue';
+import { storeToRefs } from 'pinia';
 import { ElNotification } from 'element-plus';
 
 import { useStorageStore } from '@/stores/storage';
@@ -19,7 +20,7 @@ import TopicKeywordBlock from './TopicKeywordBlock.vue';
 import type { CheckedOption, Setting } from '@/types';
 
 const storage = useStorageStore();
-const { options } = storage;
+const { options } = storeToRefs(storage);
 
 const settings = computed<Setting[]>(() => {
   return [
