@@ -484,7 +484,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
   <ElementConfig>
     <ElDialog
       v-model="dialogVisible"
-      class="topic-dialog"
+      :class="['topic-dialog', { 'topic-page-dialog': isTopicPage }]"
       :modal-class="isTopicPage ? 'topic-overlay' : ''"
       :z-index="isTopicPage ? 1000 : 2000"
       :show-close="false"

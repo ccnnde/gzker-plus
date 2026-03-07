@@ -120,6 +120,20 @@ img[src^="https://img.whzxc.cn/bd"]
 }
 
 html.dark {
+  .topic-dialog {
+    --el-mask-color: var(--el-bg-color);
+  }
+
+  .topic-page-dialog {
+    border: 1px solid var(--el-border-color);
+    box-shadow: none;
+
+    .reply-editor-container,
+    .footer-container {
+      border-color: var(--el-border-color);
+    }
+  }
+
   .el-dark-popper {
     --el-mask-color: var(--el-bg-color-overlay);
   }
