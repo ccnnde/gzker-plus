@@ -58,16 +58,24 @@ const openExtOptions = () => {
 </template>
 
 <style lang="scss">
-$gzker-header-width: 9em;
-
 #gzk-app-header {
+  --gzk-header-width: 9em;
+
   position: absolute;
-  left: -$gzker-header-width;
+  left: calc(-1 * var(--gzk-header-width));
   display: flex;
   align-items: center;
   justify-content: space-around;
-  width: $gzker-header-width;
+  width: var(--gzk-header-width);
   height: 100%;
+
+  &:not(:has(un-i-mdi-bell-outline)) {
+    --gzk-header-width: 6.5em;
+
+    div:nth-child(2) {
+      display: none;
+    }
+  }
 
   .header-icon {
     font-size: 1.4em;
