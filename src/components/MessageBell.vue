@@ -124,6 +124,7 @@ const isMsgUnread = (index: number): boolean => {
 <template>
   <ElPopover
     :width="350"
+    popper-class="el-dark-popper"
     :popper-style="{ padding: 0, zIndex: 2000 }"
     trigger="click"
     @show="handlePopoverShow"

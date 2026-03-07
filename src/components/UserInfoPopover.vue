@@ -77,6 +77,7 @@ const handleUserBlock = () => {
 <template>
   <ElPopover
     :width="300"
+    popper-class="el-dark-popper"
     :popper-style="{ padding: 0 }"
     :show-after="showAfter"
     :hide-after="hideAfter"

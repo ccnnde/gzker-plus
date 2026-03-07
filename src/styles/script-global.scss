@@ -120,6 +120,10 @@ img[src^="https://img.whzxc.cn/bd"]
 }
 
 html.dark {
+  .el-dark-popper {
+    --el-mask-color: var(--el-bg-color-overlay);
+  }
+
   .markdown-body {
     code {
       color: var(--el-text-color-regular);
