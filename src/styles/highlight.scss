@@ -1,0 +1,213 @@
+// 重置论坛原始代码块样式，与 GitHub 风格一致
+.markdown-body,
+.topic-detail .ui-content,
+.topic-reply .ui-content {
+  .highlight {
+    // Comment - 注释
+    .c,
+    .ch,
+    .cm,
+    .cp,
+    .cpf,
+    .c1,
+    .cs {
+      font-style: normal;
+      color: var(--color-prettylights-syntax-comment);
+    }
+
+    // Error - 错误
+    .err {
+      color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+      border: none;
+    }
+
+    // Literal - 字面量
+    .l,
+    .ld {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    // Generic - 通用类
+    .g,
+    .gd {
+      font-style: normal;
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-markup-deleted-text);
+    }
+
+    .ge {
+      font-style: normal;
+      color: var(--color-prettylights-syntax-markup-italic);
+    }
+
+    .ges {
+      font-style: normal;
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-markup-bold);
+    }
+
+    .gr {
+      color: var(--color-prettylights-syntax-invalid-illegal-text);
+    }
+
+    .gh,
+    .gp,
+    .gu {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-markup-heading);
+    }
+
+    .gi {
+      font-style: normal;
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-markup-inserted-text);
+    }
+
+    .go {
+      color: var(--color-fg-muted);
+    }
+
+    .gs {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-markup-bold);
+    }
+
+    .gt {
+      color: var(--color-prettylights-syntax-carriage-return-text);
+    }
+
+    // Keyword - 关键字
+    .k,
+    .kc,
+    .kd,
+    .kn,
+    .kp,
+    .kr,
+    .kt {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-keyword);
+    }
+
+    // Literal.Number - 数字
+    .m,
+    .mb,
+    .mf,
+    .mh,
+    .mi,
+    .mo,
+    .il {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    // Literal.String - 字符串
+    .s,
+    .sa,
+    .sb,
+    .sc,
+    .dl,
+    .sd,
+    .s2,
+    .sh,
+    .s1 {
+      font-style: normal;
+      color: var(--color-prettylights-syntax-string);
+    }
+
+    .se,
+    .si {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-string);
+    }
+
+    .sr {
+      color: var(--color-prettylights-syntax-string-regexp);
+    }
+
+    .sx {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    .ss {
+      color: var(--color-prettylights-syntax-variable);
+    }
+
+    // Name - 名称类
+    .n,
+    .na,
+    .nx,
+    .py {
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    .nb,
+    .bp,
+    .no {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    .nc,
+    .nn {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    .nd {
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    .ni {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    .ne,
+    .nf,
+    .fm {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    .nl {
+      color: var(--color-prettylights-syntax-variable);
+    }
+
+    .nt {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-entity-tag);
+    }
+
+    .nv,
+    .vc,
+    .vg,
+    .vi,
+    .vm {
+      color: var(--color-prettylights-syntax-variable);
+    }
+
+    // Operator - 操作符
+    .o {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    .ow {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-keyword);
+    }
+
+    // Punctuation - 标点符号
+    .p,
+    .pm {
+      color: var(--color-fg-default);
+    }
+
+    // Text.Whitespace - 空白字符
+    .w {
+      color: var(--color-fg-subtle);
+    }
+
+    // Highlight Line - 高亮行
+    .hll {
+      background-color: var(--color-attention-subtle);
+    }
+  }
+}
