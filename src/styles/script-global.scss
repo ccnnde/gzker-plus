@@ -22,6 +22,11 @@ img[src^="https://img.whzxc.cn/bd"]
     height: 0.1em;
   }
 
+  a:focus,
+  a:hover {
+    color: var(--color-accent-fg);
+  }
+
   code {
     color: #1f2328;
   }
