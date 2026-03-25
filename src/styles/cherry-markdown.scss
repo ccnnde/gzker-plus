@@ -1,0 +1,349 @@
+/* stylelint-disable selector-class-pattern */
+@import '@/styles/mixin';
+
+// 编辑器样式
+.cherry.theme__github {
+  // 顶部按钮, 选中文字时弹出的按钮, 光标focus到空行时联想出的按钮, 侧边栏按钮
+  .cherry-toolbar,
+  .cherry-floatmenu,
+  .cherry-bubble,
+  .cherry-sidebar {
+    background: var(--el-bg-color-overlay);
+    border-color: var(--el-bg-color-overlay);
+
+    .cherry-toolbar-button {
+      color: var(--el-text-color-primary);
+
+      i {
+        color: var(--el-text-color-primary);
+      }
+
+      &:hover {
+        color: var(--el-color-primary);
+        background-color: transparent;
+        border-color: transparent;
+
+        i {
+          color: var(--el-color-primary);
+        }
+      }
+    }
+  }
+
+  // 二级菜单
+  .cherry-dropdown {
+    background: var(--el-bg-color-overlay);
+    border: 1px solid var(--el-border-color-light);
+
+    .cherry-dropdown-item {
+      color: var(--el-text-color-primary);
+
+      &:hover {
+        color: var(--el-color-primary);
+        background-color: var(--el-color-primary-light-9);
+      }
+    }
+
+    &.cherry-insert-table-menu {
+      border: none;
+      box-shadow: 0 0 5px rgb(128 145 165 / 20%);
+    }
+  }
+
+  .cherry-insert-table-menu-item {
+    border-color: var(--el-border-color-lighter);
+
+    &.active {
+      background-color: var(--el-color-primary-light-9);
+    }
+  }
+
+  // 选中文字时弹出的按钮
+  .cherry-bubble {
+    .cherry-bubble-top {
+      border-bottom-color: var(--el-bg-color-overlay);
+    }
+
+    .cherry-bubble-bottom {
+      border-top-color: var(--el-bg-color-overlay);
+    }
+
+    // 粘贴HTML内容时弹出的选择按钮
+    &.cherry-switch-paste {
+      .switch-btn--bg {
+        background-color: var(--el-color-primary);
+        opacity: 1;
+      }
+
+      &[data-type='md'] .cherry-md-btn,
+      &[data-type='text'] .cherry-text-btn {
+        color: var(--el-color-white);
+
+        &:hover {
+          color: var(--el-color-white);
+        }
+      }
+    }
+  }
+
+  .cherry-editor {
+    padding-top: 1px;
+    padding-right: 1px;
+    background-color: var(--el-bg-color);
+
+    .CodeMirror {
+      background-color: var(--el-bg-color);
+
+      .CodeMirror-cursor {
+        border-left-color: var(--el-text-color-primary);
+      }
+
+      .CodeMirror-scroll {
+        span,
+        .cm-variable-2,
+        .cm-string,
+        .cm-strong,
+        .cm-em,
+        .cm-meta,
+        .cm-image-marker,
+        .cm-quote,
+        .cm-comment,
+        .cm-header {
+          color: var(--el-text-color-primary);
+        }
+
+        .cm-url {
+          color: var(--el-text-color-primary);
+          background-color: transparent;
+        }
+
+        .cm-link {
+          text-decoration: none;
+        }
+      }
+
+      .CodeMirror-selected {
+        background-color: var(--el-fill-color);
+      }
+    }
+  }
+
+  .cherry-previewer {
+    background-color: var(--el-bg-color);
+    border-left-color: var(--el-border-color);
+
+    .cherry-mobile-previewer-content {
+      background-color: var(--el-bg-color);
+    }
+  }
+
+  // 表格输入框
+  .cherry-previewer-table-content-handler {
+    .cherry-previewer-table-content-handler__input {
+      textarea {
+        color: var(--el-text-color-primary);
+      }
+    }
+  }
+
+  * {
+    @include el-scrollbar;
+  }
+}
+
+// 预览区域样式
+.cherry-markdown.theme__github {
+  blockquote {
+    background: transparent;
+  }
+
+  :not(pre) > code {
+    color: var(--el-text-color-regular);
+  }
+
+  // 重置代码块样式，与 GitHub 风格一致
+  div[data-type='codeBlock'] {
+    color: var(--el-text-color-regular);
+
+    // Comment - 注释
+    .token.comment,
+    .token.block-comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+      color: var(--color-prettylights-syntax-comment);
+    }
+
+    // Punctuation - 标点符号
+    .token.punctuation {
+      color: var(--color-fg-default);
+    }
+
+    // Tag - 标签
+    .token.tag {
+      color: var(--color-prettylights-syntax-entity-tag);
+    }
+
+    // Attr-name - 属性名
+    .token.attr-name {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    // Namespace - 命名空间
+    .token.namespace {
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    // Deleted - 删除
+    .token.deleted {
+      color: var(--color-prettylights-syntax-markup-deleted-text);
+    }
+
+    // Function-name - 函数名
+    .token.function-name {
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    // Boolean, Number - 布尔值、数字
+    .token.boolean,
+    .token.number {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    // Function - 函数
+    .token.function {
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    // Property, Symbol - 属性、符号
+    .token.property,
+    .token.symbol {
+      color: var(--color-prettylights-syntax-variable);
+    }
+
+    // Class-name - 类名
+    .token.class-name {
+      color: var(--color-prettylights-syntax-entity);
+    }
+
+    // Constant - 常量
+    .token.constant {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    // Keyword, Atrule, Builtin - 关键字类
+    .token.selector,
+    .token.atrule,
+    .token.keyword,
+    .token.builtin {
+      font-weight: normal;
+      color: var(--color-prettylights-syntax-keyword);
+    }
+
+    // String, Char, Attr-value - 字符串
+    .token.string,
+    .token.char,
+    .token.attr-value {
+      color: var(--color-prettylights-syntax-string);
+    }
+
+    // Regex - 正则表达式
+    .token.regex {
+      color: var(--color-prettylights-syntax-string-regexp);
+    }
+
+    // Variable - 变量
+    .token.variable {
+      color: var(--color-prettylights-syntax-variable);
+    }
+
+    // Operator - 操作符
+    .token.operator {
+      color: var(--color-prettylights-syntax-constant);
+    }
+
+    // Entity - 实体
+    .token.entity {
+      color: var(--color-prettylights-syntax-entity);
+      cursor: auto;
+    }
+
+    // Inserted - 插入
+    .token.inserted {
+      color: var(--color-prettylights-syntax-markup-inserted-text);
+    }
+
+    // Bold - 重置加粗样式
+    .token.bold {
+      font-weight: normal;
+    }
+
+    // Italic - 重置斜体样式
+    .token.italic {
+      font-style: normal;
+    }
+
+    // Table - 表格
+    .token.table {
+      display: inline;
+      width: initial;
+      max-width: min-content;
+      margin-bottom: 0;
+    }
+
+    // 其他
+    .token.url,
+    .token.title,
+    .token.code-snippet {
+      color: inherit;
+    }
+
+    .token.url {
+      .token.operator {
+        color: inherit;
+      }
+    }
+
+    .token.title,
+    .token.table {
+      .punctuation {
+        color: inherit;
+      }
+    }
+
+    .token.hr,
+    .token.list,
+    .token.blockquote {
+      &.punctuation {
+        color: inherit;
+      }
+    }
+  }
+
+  .cherry-table-container {
+    .cherry-table {
+      th {
+        background-color: transparent;
+      }
+
+      th,
+      td {
+        border-color: var(--color-border-default);
+      }
+    }
+  }
+
+  .cherry-highlight-line {
+    background-color: transparent;
+  }
+}
+
+html.dark {
+  .cherry.theme__github {
+    .cherry-drag {
+      &.cherry-drag--show {
+        background: var(--el-border-color-darker);
+      }
+    }
+  }
+}

@@ -137,7 +137,7 @@ defineExpose({
               placement="top"
               hollow
             >
-              <ElCard body-class="history-card-body" shadow="hover">
+              <ElCard class="history-card-container" body-class="history-card-body" shadow="hover">
                 <template #header>
                   <div class="history-card-header">
                     <span>
@@ -219,8 +219,26 @@ defineExpose({
   position: absolute;
 }
 
+.history-card-container {
+  background-color: transparent;
+}
+
 .history-card-body {
   padding-bottom: 4px;
+
+  .cherry-markdown {
+    ul {
+      list-style: disc;
+
+      ul {
+        list-style-type: circle;
+
+        ul {
+          list-style-type: square;
+        }
+      }
+    }
+  }
 }
 </style>
 

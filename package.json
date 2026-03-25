@@ -119,6 +119,7 @@
   "pnpm": {
     "patchedDependencies": {
       "changelogen@0.5.5": "patches/changelogen@0.5.5.patch",
+      "cherry-markdown@0.8.39": "patches/cherry-markdown@0.8.39.patch",
       "emoji-mart-vue-fast@15.0.0": "patches/emoji-mart-vue-fast@15.0.0.patch"
     }
   }

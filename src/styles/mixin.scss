@@ -21,6 +21,7 @@
   $width: 6px,
   $thumb-color: rgba(var(--el-color-info-rgb), 0.3),
   $thumb-hover-color: rgba(var(--el-color-info-rgb), 0.5),
+  $scrollbar-hover-color: transparent,
   $track-color: transparent,
   $corner-color: transparent,
   $border-radius: var(--el-border-radius-base)
@@ -33,6 +34,10 @@
   &::-webkit-scrollbar {
     width: $width;
     height: $width;
+
+    &:hover {
+      background: $scrollbar-hover-color;
+    }
   }
 
   &::-webkit-scrollbar-track {

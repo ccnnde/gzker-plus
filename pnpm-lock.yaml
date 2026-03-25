@@ -8,6 +8,9 @@ patchedDependencies:
   changelogen@0.5.5:
     hash: 6a329eaee6aa0e2d9c4430fe1fdbbaa6f45d14eefe543d9211fe21d9cbcae7f4
     path: patches/changelogen@0.5.5.patch
+  cherry-markdown@0.8.39:
+    hash: 2772bf21d1fc46af21162e74b326cc0739abc37208799d367ecfa28c51aaa45f
+    path: patches/cherry-markdown@0.8.39.patch
   emoji-mart-vue-fast@15.0.0:
     hash: 974c4a0e97d1470553fbd31588d1cbc8d33062bc2d403cc53134a35335c9370b
     path: patches/emoji-mart-vue-fast@15.0.0.patch
@@ -24,7 +27,7 @@ importers:
         version: 10.11.1(vue@3.3.8(typescript@5.0.4))
       cherry-markdown:
         specifier: 0.8.39
-        version: 0.8.39
+        version: 0.8.39(patch_hash=2772bf21d1fc46af21162e74b326cc0739abc37208799d367ecfa28c51aaa45f)
       element-plus:
         specifier: 2.4.2
         version: 2.4.2(vue@3.3.8(typescript@5.0.4))
@@ -7157,7 +7160,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
 
-  cherry-markdown@0.8.39:
+  cherry-markdown@0.8.39(patch_hash=2772bf21d1fc46af21162e74b326cc0739abc37208799d367ecfa28c51aaa45f):
     dependencies:
       '@types/codemirror': 0.0.108
       '@types/dompurify': 2.4.0

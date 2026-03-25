@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 @import 'mixin';
 
 img[src^='/static/emoji'],
@@ -9,14 +10,10 @@ img[src^="https://img.whzxc.cn/bd"]
   vertical-align: -0.214em !important;
 }
 
-.markdown-body {
+.markdown-body,
+.cherry-markdown.theme__github {
   --base-size-8: 8px;
   --base-size-16: 16px;
-
-  h1,
-  h2 {
-    border-bottom: none;
-  }
 
   hr {
     height: 0.1em;
@@ -28,7 +25,7 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 
   code {
-    color: #1f2328;
+    color: var(--el-text-color-regular);
   }
 
   pre {
@@ -141,12 +138,6 @@ html.dark {
 
   .el-dark-popper {
     --el-mask-color: var(--el-bg-color-overlay);
-  }
-
-  .markdown-body {
-    code {
-      color: var(--el-text-color-regular);
-    }
   }
 
   .emoji-mart {

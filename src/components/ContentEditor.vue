@@ -4,7 +4,6 @@ import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
 
-import { useDarkMode } from '@/composables/dark-mode';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
@@ -70,12 +69,11 @@ let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
 let isEditorFirstRender = true;
 
-const { isDark } = useDarkMode();
 const isEditorFocused = ref(false);
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
 
 const editorTheme = computed(() => {
-  return isDark.value ? 'dark' : 'light';
+  return 'github';
 });
 
 watch(editorTheme, () => {
@@ -116,7 +114,7 @@ const initCherryMarkdown = () => {
       bubble: ['bold', 'italic', 'strikethrough', 'quote'],
       float: false,
       sidebar: false,
-      theme: editorTheme.value,
+      theme: 'light',
       customMenu: {
         history: Cherry.createMenuHook(t('enhancedTopic.editorHistory'), {
           iconName: 'insertSeq',

@@ -44,11 +44,6 @@ watch(
 .options-main .markdown-body {
   max-width: 980px;
 
-  h1,
-  h2 {
-    border-bottom: none;
-  }
-
   ol,
   ul {
     list-style: initial;

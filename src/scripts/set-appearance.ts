@@ -2,7 +2,8 @@ import { getStorage, isSystemDarkMode, shouldBeDarkMode, updateDarkModeClass } f
 import { OptionsKey } from '@/constants';
 
 import 'element-plus/theme-chalk/dark/css-vars.css';
-import '@/styles/github-markdown.css';
+import '@/styles/github-markdown.scss';
+import '@/styles/cherry-markdown.scss';
 import '@/styles/highlight.scss';
 import '@/styles/script-vars.scss';
 import '@/styles/script-global.scss';
