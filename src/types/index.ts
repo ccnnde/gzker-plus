@@ -228,11 +228,9 @@ export interface Keybindings {
 
 export interface SMApiResponse<T> {
   success: boolean;
-  code: string;
+  code: number;
   message: string;
   data: T;
-  images?: string;
-  RequestId: string;
 }
 
 export interface SMUserProfile {

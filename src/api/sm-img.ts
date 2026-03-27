@@ -1,26 +1,16 @@
 import type { SMApiResponse, SMUploadedImg, SMUserProfile } from '@/types';
 
-const BASE_URL = 'https://sm.ms/api/v2'; // SM.MS API Doc https://doc.sm.ms
+const BASE_URL = 'https://s.ee/api/v1'; // S.EE API Doc https://s.ee/docs/developers/
 
 const request = async <T>(url: string, init?: RequestInit): Promise<T> => {
   const res = await fetch(BASE_URL + url, init);
-
-  if (!res.ok || res.status !== 200) {
-    throw new Error(res.statusText);
-  }
-
   const json = (await res.json()) as SMApiResponse<T>;
 
+  if (!res.ok || res.status !== 200) {
+    throw new Error(`${res.status} ${json.message}`);
+  }
+
   if (!json.success) {
-    // 若上传了重复图片，则直接返回该图片地址
-    if (json.code === 'image_repeated' && json.images) {
-      const data = {
-        url: json.images,
-      };
-
-      return data as T;
-    }
-
     throw new Error(json.message);
   }
 
@@ -52,7 +42,7 @@ export const uploadImg = async (apiKey: string, file: File): Promise<string> => 
   const formData = new FormData();
   formData.append('smfile', file);
 
-  const data = await request<SMUploadedImg>('/upload', {
+  const data = await request<SMUploadedImg>('/file/upload', {
     method: 'POST',
     headers: {
       Authorization: apiKey,
