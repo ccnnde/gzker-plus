@@ -171,6 +171,7 @@
     "cannotReplyByLockedPost": "本帖已锁，无法回复",
     "cannotUploadByBiliLogout": "未登录 BiliBili 网站，无法上传图片。请点击确定按钮打开 BiliBili 并登录",
     "cannotUploadByEmptyApiKey": "未配置图床的 API Key，无法上传图片。请点击确定按钮查看配置说明",
+    "cannotUploadBySmmsUnauthorized": "SM.MS 图床 API Key 已过期或无效，无法上传图片。请点击确定按钮查看配置说明并重新配置",
     "clickNumber": "阅读",
     "confirmBlockTopic": "确定屏蔽主题【{title}】？屏蔽后可前往扩展选项页面管理屏蔽主题列表",
     "confirmDeleteAllEditHistory": "确定要删除当前展示的所有历史记录吗？",

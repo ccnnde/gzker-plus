@@ -339,8 +339,13 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
     const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
     uploadStatus.uploadedCallback = () => callback(imgUrl);
   } catch (err) {
-    if (isBiliImgHosting && (err as Error).message === '账号未登录') {
+    if (isBiliImgHosting && (err as Error).message.includes('账号未登录')) {
       shouldOpenBiliLoginConfirm = true;
+      return;
+    }
+
+    if (!isBiliImgHosting && (err as Error).message.includes('401 Unauthorized')) {
+      shouldOpenSmmsAuthConfirm = true;
       return;
     }
 
@@ -384,6 +389,25 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
         } catch {
           ElMessage(t('common.canceled'));
         }
+      } else if (shouldOpenSmmsAuthConfirm) {
+        shouldOpenSmmsAuthConfirm = false;
+
+        try {
+          await ElMessageBox.confirm(t('enhancedTopic.cannotUploadBySmmsUnauthorized'), t('common.warning'), {
+            type: 'warning',
+            autofocus: false,
+            closeOnClickModal: false,
+          });
+
+          const msg: ExtensionMessage = {
+            msgType: ExtensionMessageType.OpenOptionsPage,
+            extPagePath: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
+          };
+
+          runtime.sendMessage(msg);
+        } catch {
+          ElMessage(t('common.canceled'));
+        }
       }
     }
   }
@@ -394,6 +418,7 @@ const imgHostingPlatform = storage.options?.[OptionsKey.ImageHosting].platform;
 const isBiliImgHosting = imgHostingPlatform === ImageHostingPlatform.Bili;
 const uploadImgMsgType = isBiliImgHosting ? ExtensionMessageType.UploadBiliImg : ExtensionMessageType.UploadImg;
 let shouldOpenBiliLoginConfirm = false;
+let shouldOpenSmmsAuthConfirm = false;
 let isApiKeyConfirmShown = false;
 
 const getApiKey = async (): Promise<string | undefined> => {

@@ -171,6 +171,7 @@
     "cannotReplyByLockedPost": "This post has been locked and cannot be replied to",
     "cannotUploadByBiliLogout": "You are not logged into the BiliBili website, unable to upload images. Please click the OK button to open BiliBili and log in",
     "cannotUploadByEmptyApiKey": "API Key for the image hosting is not configured, unable to upload pictures. Please click the OK button to view the configuration instructions",
+    "cannotUploadBySmmsUnauthorized": "SM.MS image hosting API Key has expired or is invalid, unable to upload pictures. Please click the OK button to view the configuration instructions and reconfigure",
     "clickNumber": "Read",
     "confirmBlockTopic": "Confirm blocking the topic [{title}] ? After blocking, you can go to the extension options page to manage the blocked topic list",
     "confirmDeleteAllEditHistory": "Are you sure you want to delete all displayed edit history?",
