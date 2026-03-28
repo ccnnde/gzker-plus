@@ -25,7 +25,7 @@ export const IMG_MAX_SIZE = 5;
 /**
  * 同时上传的最大图片数
  */
-export const IMG_MAX_NUM = 10;
+export const IMG_MAX_NUM = 5;
 
 export const getUserProfile = async (apiKey: string): Promise<SMUserProfile> => {
   const data = await request<SMUserProfile>('/profile', {

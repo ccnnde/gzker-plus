@@ -71,7 +71,7 @@ Token 过期时间选择 **No expiration（永不过期）**
 
 ## 编辑器上传图片
 
-支持以下方式进行图片上传（**批量上传最多 10 张图片，每张图片最大不能超过 5MB**，BiliBili 图床无此限制）
+支持以下方式进行图片上传（**批量上传最多 5 张图片，每张图片最大不能超过 5MB**，BiliBili 图床无此限制）
 
 ![smms-editor](../assets/img/smms-editor.png)
 
