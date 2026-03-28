@@ -5,28 +5,27 @@ import { ElMessage } from 'element-plus';
 import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
-import { getUserProfile } from '@/api/sm-img';
+import { getUsage } from '@/api/sm-img';
 import { OptionsRouteNames } from '@/constants';
 
 import type { OptionsKey } from '@/constants';
-import type { SettingProps, SMUserProfile } from '@/types';
+import type { SettingProps, SMUsage } from '@/types';
 
 const props = defineProps<SettingProps<OptionsKey.SmApiKey>>();
 
 const { isLoading, handleRequest } = useRequest();
 const { dialogVisible, openDialog } = useDialog();
-const userProfile = ref<SMUserProfile>();
+const usage = ref<SMUsage>();
 
-const userType = computed(() => {
-  return userProfile.value?.role === 'VIP'
-    ? t('basicSetting.smApiKey.userProfile.vipUser')
-    : t('basicSetting.smApiKey.userProfile.regularUser');
-});
+const storageInfo = computed(() => {
+  if (!usage.value) {
+    return '-';
+  }
 
-const emailStatus = computed(() => {
-  return userProfile.value?.email_verified
-    ? t('basicSetting.smApiKey.userProfile.verified')
-    : t('basicSetting.smApiKey.userProfile.notVerified');
+  const usedMb = usage.value.storage_usage_mb;
+  const limitGb = (parseFloat(usage.value.storage_usage_limit_mb) / 1024).toFixed(2);
+
+  return `${usedMb} MB / ${limitGb} GB`;
 });
 
 const checkApiKey = () => {
@@ -38,18 +37,18 @@ const checkApiKey = () => {
   }
 
   handleRequest(async () => {
-    userProfile.value = await getUserProfile(apiKey);
+    usage.value = await getUsage(apiKey);
     ElMessage.success(t('basicSetting.smApiKey.apiAvailable'));
     openDialog();
   });
 };
 
 const openSMPicturePage = () => {
-  window.open('https://smms.app/home/picture');
+  window.open('https://s.ee/user/files/');
 };
 
 const handleDialogClosed = () => {
-  userProfile.value = undefined;
+  usage.value = undefined;
 };
 </script>
 
@@ -78,34 +77,24 @@ const handleDialogClosed = () => {
   </div>
   <ElDialog
     v-model="dialogVisible"
-    class="user-profile-dialog"
-    :title="$t('basicSetting.smApiKey.userProfile.title')"
+    class="usage-dialog"
+    :title="$t('basicSetting.smApiKey.usage.title')"
     width="400px"
     @closed="handleDialogClosed"
   >
-    <ElDescriptions v-if="userProfile" :column="1" border>
-      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.userProfile.name')">
-        {{ userProfile.username }}
+    <ElDescriptions v-if="usage" :column="1" border>
+      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.usage.fileCount')">
+        {{ usage.file_count }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.userProfile.group')">
-        {{ userType }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.userProfile.expireDate')">
-        {{ userProfile.group_expire || '-' }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.userProfile.email')">
-        {{ userProfile.email }}
-        ({{ emailStatus }})
-      </ElDescriptionsItem>
-      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.userProfile.diskSpace')">
-        {{ userProfile.disk_usage }} / {{ userProfile.disk_limit }}
+      <ElDescriptionsItem :label="$t('basicSetting.smApiKey.usage.storage')">
+        {{ storageInfo }}
       </ElDescriptionsItem>
     </ElDescriptions>
   </ElDialog>
 </template>
 
 <style lang="scss">
-.user-profile-dialog {
+.usage-dialog {
   .el-dialog__body {
     padding-top: 0;
     padding-bottom: 15px;

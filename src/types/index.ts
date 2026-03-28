@@ -245,6 +245,32 @@ export interface SMUserProfile {
   disk_limit_raw: number;
 }
 
+export interface SMUsage {
+  api_count_day: number;
+  api_count_day_limit: number;
+  api_count_month: number;
+  api_count_month_limit: number;
+  link_count_day: number;
+  link_count_day_limit: number;
+  link_count_month: number;
+  link_count_month_limit: number;
+  qrcode_count_day: number;
+  qrcode_count_day_limit: number;
+  qrcode_count_month: number;
+  qrcode_count_month_limit: number;
+  file_count: number;
+  storage_usage_limit_mb: string;
+  storage_usage_mb: string;
+  text_count_day: number;
+  text_count_day_limit: number;
+  text_count_month: number;
+  text_count_month_limit: number;
+  upload_count_day: number;
+  upload_count_day_limit: number;
+  upload_count_month: number;
+  upload_count_month_limit: number;
+}
+
 export interface SMUploadedImg {
   file_id: number;
   width: number;

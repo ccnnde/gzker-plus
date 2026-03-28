@@ -71,6 +71,11 @@
       "plzEnterApiKey": "Please enter API Key",
       "title": "SM.MS Image Hosting API Key",
       "titleDesc": "After configuring the API Key, you can directly upload images in the editor. Click the verify button to test if the API is available",
+      "usage": {
+        "fileCount": "File Count",
+        "storage": "Storage Space",
+        "title": "SM.MS Usage"
+      },
       "userProfile": {
         "diskSpace": "Used / Total",
         "email": "Email",

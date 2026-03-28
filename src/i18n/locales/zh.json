@@ -71,6 +71,11 @@
       "plzEnterApiKey": "请输入 API Key",
       "title": "SM.MS 图床 API Key",
       "titleDesc": "配置 API Key 后可以直接在编辑器中上传图片，点击验证按钮测试接口是否可用",
+      "usage": {
+        "fileCount": "文件数量",
+        "storage": "存储空间",
+        "title": "SM.MS 使用情况"
+      },
       "userProfile": {
         "diskSpace": "已使用 / 总容量",
         "email": "邮箱",

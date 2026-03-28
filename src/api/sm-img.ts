@@ -1,4 +1,4 @@
-import type { SMApiResponse, SMUploadedImg, SMUserProfile } from '@/types';
+import type { SMApiResponse, SMUploadedImg, SMUsage, SMUserProfile } from '@/types';
 
 const BASE_URL = 'https://s.ee/api/v1'; // S.EE API Doc https://s.ee/docs/developers/
 
@@ -10,7 +10,7 @@ const request = async <T>(url: string, init?: RequestInit): Promise<T> => {
     throw new Error(`${res.status} ${json.message}`);
   }
 
-  if (!json.success) {
+  if (json.code !== 200) {
     throw new Error(json.message);
   }
 
@@ -30,6 +30,17 @@ export const IMG_MAX_NUM = 10;
 export const getUserProfile = async (apiKey: string): Promise<SMUserProfile> => {
   const data = await request<SMUserProfile>('/profile', {
     method: 'POST',
+    headers: {
+      Authorization: apiKey,
+    },
+  });
+
+  return data;
+};
+
+export const getUsage = async (apiKey: string): Promise<SMUsage> => {
+  const data = await request<SMUsage>('/usage', {
+    method: 'GET',
     headers: {
       Authorization: apiKey,
     },
