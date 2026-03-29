@@ -1,6 +1,8 @@
 import { createPinia } from 'pinia';
+import { ElMessage } from 'element-plus';
 import { runtime, storage } from 'webextension-polyfill';
 
+import { t } from '@/i18n';
 import { blockTopics, createDebouncedStorageSync, getLoginUserId, getStorage, setStorage } from '@/utils';
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 
@@ -20,6 +22,15 @@ runtime.onMessage.addListener((message: ExtensionMessage) => {
   switch (message.msgType) {
     case ExtensionMessageType.BlockKeyword:
       handleBlockKeyword(message.keyword || '');
+      break;
+    case ExtensionMessageType.Base64Decode:
+      if (message.decodedError) {
+        ElMessage.error(t('base64Decode.decodeFailed'));
+      } else {
+        navigator.clipboard.writeText(message.decodedText as string);
+        ElMessage.success(t('base64Decode.copySuccess', { text: message.decodedText }));
+      }
+
       break;
   }
 });

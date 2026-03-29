@@ -123,6 +123,14 @@ contextMenus.create({
   documentUrlPatterns: [GZK_URL_PATTERN],
 });
 
+contextMenus.create({
+  id: GzkCtxMenuIds.Base64Decode,
+  parentId: GzkCtxMenuIds.Root,
+  title: 'Base64 解码 "%s"',
+  contexts: ['selection'],
+  documentUrlPatterns: [GZK_URL_PATTERN],
+});
+
 contextMenus.onClicked.addListener((info, tab) => {
   switch (info.menuItemId) {
     case GzkCtxMenuIds.OpenExtOptions:
@@ -134,6 +142,35 @@ contextMenus.onClicked.addListener((info, tab) => {
           msgType: ExtensionMessageType.BlockKeyword,
           keyword: info.selectionText?.trim(),
         });
+      }
+
+      break;
+    }
+    case GzkCtxMenuIds.Base64Decode: {
+      const selectedText = info.selectionText?.trim();
+
+      if (selectedText) {
+        try {
+          const binaryStr = atob(selectedText);
+          const bytes = Uint8Array.from(binaryStr, (c) => c.charCodeAt(0));
+          const decoded = new TextDecoder().decode(bytes);
+
+          if (tab?.id) {
+            tabs.sendMessage(tab.id, {
+              msgType: ExtensionMessageType.Base64Decode,
+              decodedText: decoded,
+            });
+          }
+        } catch (err) {
+          if (tab?.id) {
+            tabs.sendMessage(tab.id, {
+              msgType: ExtensionMessageType.Base64Decode,
+              decodedError: true,
+            });
+          }
+
+          console.error(err);
+        }
       }
 
       break;

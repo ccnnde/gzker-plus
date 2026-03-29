@@ -48,6 +48,8 @@ export interface ExtensionMessage {
   imgFile?: Base64File;
   apiKey?: string;
   keyword?: string;
+  decodedText?: string;
+  decodedError?: boolean;
 }
 
 export interface Setting {

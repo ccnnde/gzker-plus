@@ -1,4 +1,8 @@
 {
+  "base64Decode": {
+    "copySuccess": "已复制: {text}",
+    "decodeFailed": "Base64 解码失败"
+  },
   "basicSetting": {
     "blankLink": {
       "node": "节点",

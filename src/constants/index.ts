@@ -29,6 +29,7 @@ export const GzkCtxMenuIds = {
   Root: 'root',
   OpenExtOptions: 'open-ext-options',
   BlockKeyword: 'block-keyword',
+  Base64Decode: 'base64-decode',
 };
 
 /**
@@ -69,6 +70,7 @@ export const enum ExtensionMessageType {
   UploadBiliImg,
   CloseBiliImgTab,
   BlockKeyword,
+  Base64Decode,
 }
 
 /**

@@ -1,4 +1,8 @@
 {
+  "base64Decode": {
+    "copySuccess": "Copied: {text}",
+    "decodeFailed": "Base64 decode failed"
+  },
   "basicSetting": {
     "blankLink": {
       "node": "Node",
