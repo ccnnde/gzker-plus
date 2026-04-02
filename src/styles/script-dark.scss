@@ -362,7 +362,7 @@ html.dark {
     }
 
     .ui-content {
-      background: var(--el-fill-color-light);
+      background: var(--el-bg-color);
     }
 
     .ui-footer {
@@ -425,13 +425,14 @@ html.dark {
   }
 
   .topic-detail .ui-content,
-  .topic-reply .ui-content {
+  .topic-reply .ui-content,
+  .replies-lists .ui-content {
     hr {
       border-color: var(--el-border-color-light);
     }
 
     code {
-      color: var(--el-text-color-secondary);
+      color: var(--el-text-color-regular);
       background-color: var(--el-color-info-light-7);
     }
 

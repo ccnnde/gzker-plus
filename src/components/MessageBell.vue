@@ -267,6 +267,10 @@ $msg-padding: 15px;
 
   .message-all {
     text-decoration: none;
+
+    &:focus {
+      color: var(--el-link-hover-text-color);
+    }
   }
 }
 
