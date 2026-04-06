@@ -5,6 +5,17 @@ html {
 
 html[data-theme] {
   --el-fill-color-blank: transparent;
+
+  .markdown-body,
+  .cherry-markdown.theme__github,
+  .topic-detail .ui-content,
+  .topic-reply .ui-content {
+    --color-fg-default: var(--el-text-color-primary);
+    --color-fg-muted: var(--el-text-color-secondary);
+    --color-fg-subtle: var(--el-text-color-placeholder);
+    --color-border-default: var(--el-border-color);
+    --color-border-muted: var(--el-border-color-light);
+  }
 }
 
 html[data-theme^='dark'] {
