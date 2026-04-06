@@ -77,7 +77,8 @@
       "default": "Light Default",
       "solarized": "Light Solarized",
       "title": "浅色主题",
-      "titleDesc": "选择浅色模式的主题风格"
+      "titleDesc": "选择浅色模式的主题风格",
+      "tokyoNight": "Light Tokyo Night"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS 接口可以使用",

@@ -228,3 +228,131 @@ html[data-theme='light-solarized'] {
     --color-canvas-subtle: #eee8d5;
   }
 }
+
+// Light Tokyo Night Theme (Tokyo Night Light inspired)
+html[data-theme='light-tokyo-night'] {
+  // 主题色 - Tokyo Night blue
+  --el-color-primary: #2959aa;
+  --el-color-primary-light-3: #5885c9;
+  --el-color-primary-light-5: #8aadde;
+  --el-color-primary-light-7: #b6d2f0;
+  --el-color-primary-light-8: #d1e3f7;
+  --el-color-primary-light-9: #e8f1fb;
+  --el-color-primary-dark-2: #1e4585;
+
+  // 功能色 success - Tokyo Night green (brightened)
+  --el-color-success: #4a9b8e;
+  --el-color-success-light-3: #6bb5aa;
+  --el-color-success-light-5: #8ecfc6;
+  --el-color-success-light-7: #b2e2db;
+  --el-color-success-light-8: #c9edea;
+  --el-color-success-light-9: #e0f5f2;
+  --el-color-success-dark-2: #3a7d72;
+
+  // 功能色 warning - Tokyo Night yellow (brightened)
+  --el-color-warning: #c4821e;
+  --el-color-warning-light-3: #d9a04a;
+  --el-color-warning-light-5: #e8bf7a;
+  --el-color-warning-light-7: #f2d9a8;
+  --el-color-warning-light-8: #f7e8c8;
+  --el-color-warning-light-9: #fbf3e0;
+  --el-color-warning-dark-2: #9e6818;
+
+  // 功能色 danger - Tokyo Night red (brightened)
+  --el-color-danger: #c4566a;
+  --el-color-danger-light-3: #d67a8b;
+  --el-color-danger-light-5: #e3a0ad;
+  --el-color-danger-light-7: #eec6cd;
+  --el-color-danger-light-8: #f5dbe1;
+  --el-color-danger-light-9: #faedf0;
+  --el-color-danger-dark-2: #9d4555;
+
+  // 功能色 error - Tokyo Night red (brightened)
+  --el-color-error: #c4566a;
+  --el-color-error-light-3: #d67a8b;
+  --el-color-error-light-5: #e3a0ad;
+  --el-color-error-light-7: #eec6cd;
+  --el-color-error-light-8: #f5dbe1;
+  --el-color-error-light-9: #faedf0;
+  --el-color-error-dark-2: #9d4555;
+
+  // 功能色 info - Tokyo Night gray
+  --el-color-info: #707280;
+  --el-color-info-light-3: #9093a0;
+  --el-color-info-light-5: #b0b2bc;
+  --el-color-info-light-7: #cfd1d8;
+  --el-color-info-light-8: #dfe0e5;
+  --el-color-info-light-9: #eff0f2;
+  --el-color-info-dark-2: #585a66;
+
+  // 阴影
+  --el-box-shadow: 0px 12px 32px 4px rgb(54 60 77 / 12%), 0px 8px 20px rgb(54 60 77 / 8%);
+  --el-box-shadow-light: 0px 0px 12px rgb(54 60 77 / 8%);
+  --el-box-shadow-lighter: 0px 0px 6px rgb(54 60 77 / 6%);
+  --el-box-shadow-dark: 0px 16px 48px 16px rgb(54 60 77 / 12%), 0px 12px 32px rgb(54 60 77 / 10%),
+    0px 8px 16px -8px rgb(54 60 77 / 8%);
+
+  // 背景色
+  --el-bg-color-page: #e6e7ed;
+  --el-bg-color: #f0f1f5;
+  --el-bg-color-overlay: #d6d8df;
+
+  // 文字色
+  --el-text-color-primary: #363c4d;
+  --el-text-color-regular: #4a5069;
+  --el-text-color-secondary: #707280;
+  --el-text-color-placeholder: #9da0ab;
+  --el-text-color-disabled: #b0b3bd;
+
+  // 边框色
+  --el-border-color-darker: #363c4d;
+  --el-border-color-dark: #4a5069;
+  --el-border-color: #c1c2c7;
+  --el-border-color-light: #d1d3d8;
+  --el-border-color-lighter: #dfe0e5;
+  --el-border-color-extra-light: #e8e9ed;
+
+  // 填充色
+  --el-fill-color-darker: #c1c2c7;
+  --el-fill-color-dark: #cdd0d6;
+  --el-fill-color: #dfe0e5;
+  --el-fill-color-light: #e8e9ed;
+  --el-fill-color-lighter: #f0f1f5;
+  --el-fill-color-extra-light: #f6f7f9;
+
+  // 遮罩
+  --el-mask-color: rgb(54 60 77 / 50%);
+  --el-mask-color-extra-light: rgb(54 60 77 / 20%);
+
+  // 其他
+  --gzk-reply-count-bg-color: #c1c2c7;
+  --gzk-reply-count-visited-bg-color: #dfe0e5;
+
+  // 组件相关
+  .el-empty {
+    --el-empty-fill-color-0: var(--el-color-white);
+    --el-empty-fill-color-1: #e6e7ed;
+    --el-empty-fill-color-2: #d6d8df;
+    --el-empty-fill-color-3: #c8cad1;
+    --el-empty-fill-color-4: #babcc4;
+    --el-empty-fill-color-5: #acafb7;
+    --el-empty-fill-color-6: #9ea1aa;
+    --el-empty-fill-color-7: #90939d;
+    --el-empty-fill-color-8: #828690;
+    --el-empty-fill-color-9: #747884;
+  }
+
+  .el-popper {
+    color: var(--el-text-color-primary);
+    background: var(--el-bg-color-overlay);
+    border: 1px solid var(--el-border-color-light);
+  }
+
+  // Markdown 相关
+  .markdown-body,
+  .cherry-markdown.theme__github,
+  .topic-detail .ui-content,
+  .topic-reply .ui-content {
+    --color-canvas-subtle: #dcdee3;
+  }
+}

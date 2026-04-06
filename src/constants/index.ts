@@ -134,6 +134,7 @@ export const enum DarkTheme {
 export const enum LightTheme {
   Default = 'default',
   Solarized = 'solarized',
+  TokyoNight = 'tokyo-night',
 }
 
 export const THEME_ATTR = 'data-theme';

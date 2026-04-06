@@ -77,7 +77,8 @@
       "default": "Light Default",
       "solarized": "Light Solarized",
       "title": "Light Theme",
-      "titleDesc": "Select the theme style for light mode"
+      "titleDesc": "Select the theme style for light mode",
+      "tokyoNight": "Light Tokyo Night"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS API is available",

@@ -15,5 +15,8 @@ defineProps<SettingProps<OptionsKey.LightTheme>>();
     <ElRadio :label="LightTheme.Solarized">
       {{ $t('basicSetting.lightTheme.solarized') }}
     </ElRadio>
+    <ElRadio :label="LightTheme.TokyoNight">
+      {{ $t('basicSetting.lightTheme.tokyoNight') }}
+    </ElRadio>
   </ElRadioGroup>
 </template>
