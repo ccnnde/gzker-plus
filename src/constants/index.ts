@@ -173,7 +173,7 @@ export const defaultExtensionOptions: Options = {
     mode: DarkMode.System,
   },
   [OptionsKey.DarkTheme]: {
-    theme: DarkTheme.Default,
+    theme: DarkTheme.Soft,
   },
   [OptionsKey.LightTheme]: {
     theme: LightTheme.Default,
