@@ -126,6 +126,18 @@ export const enum DarkMode {
 
 export const DARK_MODE_CLASS = 'dark';
 
+export const enum DarkTheme {
+  Default = 'default',
+  Soft = 'soft',
+}
+
+export const enum LightTheme {
+  Default = 'default',
+  Solarized = 'solarized',
+}
+
+export const THEME_ATTR = 'data-theme';
+
 export const enum ReplyType {
   Topic = 'topic',
   Mention = 'mention',
@@ -139,6 +151,8 @@ export const enum ImageHostingPlatform {
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DarkMode = 'darkMode',
+  DarkTheme = 'darkTheme',
+  LightTheme = 'lightTheme',
   DblclickToTop = 'dblclickToTop',
   FloatUserInfo = 'floatUserInfo',
   EnhancedMsg = 'enhancedMsg',
@@ -156,6 +170,12 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.DarkMode]: {
     mode: DarkMode.System,
+  },
+  [OptionsKey.DarkTheme]: {
+    theme: DarkTheme.Default,
+  },
+  [OptionsKey.LightTheme]: {
+    theme: LightTheme.Default,
   },
   [OptionsKey.DblclickToTop]: {
     checked: false,

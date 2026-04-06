@@ -11,9 +11,11 @@ import { OptionsKey } from '@/constants';
 import BlankLink from './BlankLink.vue';
 import CloseDialog from './CloseDialog.vue';
 import DarkMode from './DarkMode.vue';
+import DarkTheme from './DarkTheme.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
 import HideGzkInfo from './HideGzkInfo.vue';
 import ImageHosting from './ImageHosting.vue';
+import LightTheme from './LightTheme.vue';
 import SmApiKey from './SmApiKey.vue';
 import TopicKeywordBlock from './TopicKeywordBlock.vue';
 
@@ -66,6 +68,18 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.darkMode.titleDesc'),
           key: OptionsKey.DarkMode,
           component: DarkMode,
+        },
+        {
+          name: t('basicSetting.darkTheme.title'),
+          description: t('basicSetting.darkTheme.titleDesc'),
+          key: OptionsKey.DarkTheme,
+          component: DarkTheme,
+        },
+        {
+          name: t('basicSetting.lightTheme.title'),
+          description: t('basicSetting.lightTheme.titleDesc'),
+          key: OptionsKey.LightTheme,
+          component: LightTheme,
         },
       ],
     },

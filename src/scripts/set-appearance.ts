@@ -1,4 +1,11 @@
-import { getStorage, isSystemDarkMode, shouldBeDarkMode, updateDarkModeClass } from '@/utils';
+import {
+  getStorage,
+  isSystemDarkMode,
+  shouldBeDarkMode,
+  updateDarkModeClass,
+  updateDarkTheme,
+  updateLightTheme,
+} from '@/utils';
 import { OptionsKey } from '@/constants';
 
 import 'element-plus/theme-chalk/dark/css-vars.css';
@@ -15,6 +22,15 @@ const applyAppearance = async () => {
   const isDark = shouldBeDarkMode(mode, isSystemDarkMode());
 
   updateDarkModeClass(isDark);
+
+  // 应用对应主题
+  if (isDark) {
+    const { theme } = options[OptionsKey.DarkTheme];
+    updateDarkTheme(theme);
+  } else {
+    const { theme } = options[OptionsKey.LightTheme];
+    updateLightTheme(theme);
+  }
 };
 
 applyAppearance();

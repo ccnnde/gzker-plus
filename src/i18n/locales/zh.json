@@ -31,6 +31,12 @@
       "title": "深色模式",
       "titleDesc": "设置扩展选项页面以及论坛的显示模式"
     },
+    "darkTheme": {
+      "default": "Dark Default",
+      "soft": "Dark Soft",
+      "title": "深色主题",
+      "titleDesc": "选择深色模式的主题风格"
+    },
     "dblclickToTop": {
       "title": "双击返回顶部",
       "titleDesc": "双击网页主要内容区域（除开顶栏、底栏后的中间部分）任意位置返回网页顶部"
@@ -66,6 +72,12 @@
       },
       "title": "选择图床",
       "titleDesc": "请根据需要选择合适的图床平台，并进行对应的配置（参考“图床说明”页面），即可在编辑器中上传图片"
+    },
+    "lightTheme": {
+      "default": "Light Default",
+      "solarized": "Light Solarized",
+      "title": "浅色主题",
+      "titleDesc": "选择浅色模式的主题风格"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS 接口可以使用",

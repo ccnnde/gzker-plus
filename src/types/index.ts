@@ -5,11 +5,13 @@ import type Viewer from 'viewerjs';
 import type {
   BellStyle,
   DarkMode,
+  DarkTheme,
   DialogType,
   ExtensionMessageType,
   GzkInfoType,
   ImageHostingPlatform,
   LanguageType,
+  LightTheme,
   LinkElementType,
   OptionsKey,
   ReplyType,
@@ -88,6 +90,12 @@ export interface Options {
   };
   [OptionsKey.DarkMode]: {
     mode: DarkMode;
+  };
+  [OptionsKey.DarkTheme]: {
+    theme: DarkTheme;
+  };
+  [OptionsKey.LightTheme]: {
+    theme: LightTheme;
   };
 }
 

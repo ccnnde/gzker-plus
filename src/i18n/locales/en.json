@@ -31,6 +31,12 @@
       "title": "Dark Mode",
       "titleDesc": "Set the extension options page and forum display mode"
     },
+    "darkTheme": {
+      "default": "Dark Default",
+      "soft": "Dark Soft",
+      "title": "Dark Theme",
+      "titleDesc": "Select the theme style for dark mode"
+    },
     "dblclickToTop": {
       "title": "Double Click To Return To The Top",
       "titleDesc": "Double-click anywhere in the main content area of the webpage (excluding the top and bottom bars) to return to the top of the page"
@@ -66,6 +72,12 @@
       },
       "title": "Select Image Hosting",
       "titleDesc": "Please choose the appropriate image hosting platform based on your needs and make the corresponding configurations (refer to the 'Image Hosting' page) to upload images in the editor"
+    },
+    "lightTheme": {
+      "default": "Light Default",
+      "solarized": "Light Solarized",
+      "title": "Light Theme",
+      "titleDesc": "Select the theme style for light mode"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS API is available",

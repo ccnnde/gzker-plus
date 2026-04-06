@@ -47,6 +47,32 @@ body,
   }
 }
 
+.radio-group-solid.el-radio-group {
+  .el-radio {
+    .el-radio__inner {
+      width: 18px;
+      height: 18px;
+
+      &::after {
+        width: 13px;
+        height: 13px;
+        background-color: var(--el-color-primary);
+      }
+    }
+
+    &.is-checked {
+      .el-radio__inner {
+        background-color: transparent;
+        border-color: var(--el-color-primary);
+
+        &::after {
+          background-color: var(--el-color-primary);
+        }
+      }
+    }
+  }
+}
+
 .options-main {
   .markdown-body {
     .options-about {

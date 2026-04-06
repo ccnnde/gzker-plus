@@ -7,7 +7,7 @@ import { storage, tabs } from 'webextension-polyfill';
 import { useStorageStore } from '@/stores/storage';
 import i18n, { t } from '@/i18n';
 import { API_TOPIC, API_USER } from '@/api';
-import { DARK_MODE_CLASS, DarkMode, defaultExtensionStorage, GZK_URL, topicLinkRegExp } from '@/constants';
+import { DARK_MODE_CLASS, DarkMode, defaultExtensionStorage, GZK_URL, THEME_ATTR, topicLinkRegExp } from '@/constants';
 import {
   ALREADY_LIKE,
   CAN_NOT_FAVORITE_YOUR_TOPIC,
@@ -19,6 +19,7 @@ import {
 import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOP_NAVBAR, SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
 import type { LoadingOptions } from 'element-plus';
+import type { DarkTheme, LightTheme } from '@/constants';
 import type {
   ApiJsonResponse,
   Base64File,
@@ -344,4 +345,33 @@ export const isSystemDarkMode = () => {
  */
 export const isCurrentDarkMode = () => {
   return document.documentElement.classList.contains(DARK_MODE_CLASS);
+};
+
+/**
+ * 更新主题属性
+ * @param theme 主题名称
+ * @param mode 'dark' | 'light'
+ */
+export const updateThemeAttribute = (theme: string, mode: 'dark' | 'light') => {
+  if (theme === 'default' && mode === 'light') {
+    document.documentElement.removeAttribute(THEME_ATTR);
+  } else {
+    document.documentElement.setAttribute(THEME_ATTR, `${mode}-${theme}`);
+  }
+};
+
+/**
+ * 更新深色主题
+ * @param theme 深色主题
+ */
+export const updateDarkTheme = (theme: DarkTheme) => {
+  updateThemeAttribute(theme, 'dark');
+};
+
+/**
+ * 更新浅色主题
+ * @param theme 浅色主题
+ */
+export const updateLightTheme = (theme: LightTheme) => {
+  updateThemeAttribute(theme, 'light');
 };
