@@ -29,6 +29,10 @@ html.dark {
     &:focus {
       border-color: var(--el-color-primary);
     }
+
+    &::placeholder {
+      color: var(--el-text-color-placeholder);
+    }
   }
 
   .help-block {
@@ -186,6 +190,7 @@ html.dark {
     }
 
     .divider-vertical {
+      height: 52px;
       border-right-color: var(--el-border-color-lighter);
       border-left-color: var(--el-border-color-lighter);
     }
@@ -247,6 +252,11 @@ html.dark {
     color: var(--el-text-color-primary);
     background: var(--el-bg-color);
     border-bottom: 1px solid var(--el-border-color-light);
+
+    .user-number {
+      color: var(--el-text-color-primary);
+      text-shadow: none;
+    }
   }
 
   .usercard .ui-content .status,
@@ -516,6 +526,7 @@ html.dark {
     > li.active {
       a,
       a:hover {
+        color: #fff;
         background-color: var(--el-color-primary);
         border-color: var(--el-color-primary);
       }
