@@ -79,7 +79,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #777;
+  color: var(--el-text-color-regular);
 
   :deep(span) {
     font-size: 0.8em;
