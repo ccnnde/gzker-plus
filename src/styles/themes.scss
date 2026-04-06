@@ -1,0 +1,230 @@
+/* stylelint-disable no-descending-specificity */
+html {
+  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.png');
+}
+
+html[data-theme] {
+  --el-fill-color-blank: transparent;
+}
+
+html[data-theme^='dark'] {
+  --gzk-node-bg-color: rgb(255 255 255 / 10%);
+  --gzk-topic-hover-bg-color: rgb(255 255 255 / 5%);
+  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.png');
+}
+
+html[data-theme^='light'] {
+  --gzk-node-bg-color: rgb(0 0 0 / 10%);
+  --gzk-topic-hover-bg-color: rgb(0 0 0 / 5%);
+  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.png');
+}
+
+html.dark[data-theme='dark-default'] {
+  --gzk-reply-count-bg-color: var(--el-color-info-light-5);
+  --gzk-reply-count-visited-bg-color: var(--el-color-info);
+}
+
+// Dark Soft Theme (GitHub Dark Dimmed inspired)
+html.dark[data-theme='dark-soft'] {
+  // 功能色 info
+  --el-color-info: #7d8590;
+  --el-color-info-light-3: #6e7681;
+  --el-color-info-light-5: #5d656d;
+  --el-color-info-light-7: #4c5359;
+  --el-color-info-light-8: #3d444d;
+  --el-color-info-light-9: #2d333b;
+  --el-color-info-dark-2: #9da4ae;
+
+  // 阴影
+  --el-box-shadow: 0px 12px 32px 4px rgb(1 4 9 / 36%), 0px 8px 20px rgb(1 4 9 / 72%);
+  --el-box-shadow-light: 0px 0px 12px rgb(1 4 9 / 72%);
+  --el-box-shadow-lighter: 0px 0px 6px rgb(1 4 9 / 72%);
+  --el-box-shadow-dark: 0px 16px 48px 16px rgb(1 4 9 / 72%), 0px 12px 32px rgb(1 4 9 / 72%),
+    0px 8px 16px -8px rgb(1 4 9 / 72%);
+
+  // 背景色
+  --el-bg-color-page: #0d1117;
+  --el-bg-color: #212830;
+  --el-bg-color-overlay: #262c36;
+
+  // 文字色
+  --el-text-color-primary: #d1d7e0;
+  --el-text-color-regular: #b7bcc4;
+  --el-text-color-secondary: #9198a1;
+  --el-text-color-placeholder: #656c76;
+  --el-text-color-disabled: #484f58;
+
+  // 边框色
+  --el-border-color-darker: #6e7681;
+  --el-border-color-dark: #484f58;
+  --el-border-color: #3d444d;
+  --el-border-color-light: #394049;
+  --el-border-color-lighter: #30363d;
+  --el-border-color-extra-light: #161b22;
+
+  // 填充色
+  --el-fill-color-darker: #363b41;
+  --el-fill-color-dark: #2d3238;
+  --el-fill-color: #262c36;
+  --el-fill-color-light: #1e2328;
+  --el-fill-color-lighter: #161b22;
+  --el-fill-color-extra-light: #0d1117;
+
+  // 遮罩
+  --el-mask-color: rgb(1 4 9 / 80%);
+  --el-mask-color-extra-light: rgb(1 4 9 / 30%);
+
+  // 其他
+  --gzk-reply-count-bg-color: #4c5359;
+  --gzk-reply-count-visited-bg-color: #757b83;
+
+  // 组件相关
+  .el-empty {
+    --el-empty-fill-color-0: var(--el-color-black);
+    --el-empty-fill-color-1: #3d434d;
+    --el-empty-fill-color-2: #2d333b;
+    --el-empty-fill-color-3: #21262d;
+    --el-empty-fill-color-4: #262c36;
+    --el-empty-fill-color-5: #1e2328;
+    --el-empty-fill-color-6: #1f2428;
+    --el-empty-fill-color-7: #1a1e22;
+    --el-empty-fill-color-8: #1a1e22;
+    --el-empty-fill-color-9: #161b1f;
+  }
+
+  // Markdown 相关
+  .markdown-body,
+  .cherry-markdown.theme__github,
+  .topic-detail .ui-content,
+  .topic-reply .ui-content {
+    --color-canvas-subtle: #161b22;
+  }
+}
+
+// Light Solarized Theme (Solarized Light inspired)
+html[data-theme='light-solarized'] {
+  // 主题色 - Solarized yellow
+  --el-color-primary: #b58900;
+  --el-color-primary-light-3: #c9a01a;
+  --el-color-primary-light-5: #d4b033;
+  --el-color-primary-light-7: #dec04d;
+  --el-color-primary-light-8: #e5ca66;
+  --el-color-primary-light-9: #f2dd8f;
+  --el-color-primary-dark-2: #8f6c00;
+
+  // 功能色 success - Solarized green
+  --el-color-success: #859900;
+  --el-color-success-light-3: #9ab31a;
+  --el-color-success-light-5: #aec233;
+  --el-color-success-light-7: #c2d14d;
+  --el-color-success-light-8: #d0db66;
+  --el-color-success-light-9: #dde580;
+  --el-color-success-dark-2: #6b7a00;
+
+  // 功能色 warning - Solarized yellow
+  --el-color-warning: #b58900;
+  --el-color-warning-light-3: #c9a01a;
+  --el-color-warning-light-5: #d4b033;
+  --el-color-warning-light-7: #dec04d;
+  --el-color-warning-light-8: #e5ca66;
+  --el-color-warning-light-9: #f2dd8f;
+  --el-color-warning-dark-2: #8f6c00;
+
+  // 功能色 danger - Solarized red
+  --el-color-danger: #dc322f;
+  --el-color-danger-light-3: #e24b48;
+  --el-color-danger-light-5: #e76461;
+  --el-color-danger-light-7: #ec7d7b;
+  --el-color-danger-light-8: #f09694;
+  --el-color-danger-light-9: #f4afae;
+  --el-color-danger-dark-2: #b02826;
+
+  // 功能色 error - Solarized red
+  --el-color-error: #dc322f;
+  --el-color-error-light-3: #e24b48;
+  --el-color-error-light-5: #e76461;
+  --el-color-error-light-7: #ec7d7b;
+  --el-color-error-light-8: #f09694;
+  --el-color-error-light-9: #f4afae;
+  --el-color-error-dark-2: #b02826;
+
+  // 功能色 info - Solarized base00
+  --el-color-info: #839496;
+  --el-color-info-light-3: #96a5a7;
+  --el-color-info-light-5: #a9b6b8;
+  --el-color-info-light-7: #bcc7c9;
+  --el-color-info-light-8: #cfd2da;
+  --el-color-info-light-9: #e2e3eb;
+  --el-color-info-dark-2: #697678;
+
+  // 阴影
+  --el-box-shadow: 0px 12px 32px 4px rgb(7 54 66 / 20%), 0px 8px 20px rgb(7 54 66 / 12%);
+  --el-box-shadow-light: 0px 0px 12px rgb(7 54 66 / 12%);
+  --el-box-shadow-lighter: 0px 0px 6px rgb(7 54 66 / 8%);
+  --el-box-shadow-dark: 0px 16px 48px 16px rgb(7 54 66 / 20%), 0px 12px 32px rgb(7 54 66 / 16%),
+    0px 8px 16px -8px rgb(7 54 66 / 12%);
+
+  // 背景色
+  --el-bg-color-page: #fdf6e3;
+  --el-bg-color: #fdf6e3;
+  --el-bg-color-overlay: #eee8d5;
+
+  // 文字色
+  --el-text-color-primary: #586e75;
+  --el-text-color-regular: #657b83;
+  --el-text-color-secondary: #839496;
+  --el-text-color-placeholder: #93a1a1;
+  --el-text-color-disabled: #93a1a1;
+
+  // 边框色
+  --el-border-color-darker: #586e75;
+  --el-border-color-dark: #657b83;
+  --el-border-color: #839496;
+  --el-border-color-light: #93a1a1;
+  --el-border-color-lighter: #cdc8b8;
+  --el-border-color-extra-light: #eee8d5;
+
+  // 填充色
+  --el-fill-color-darker: #cdc8b8;
+  --el-fill-color-dark: #d6d1c1;
+  --el-fill-color: #eee8d5;
+  --el-fill-color-light: #f4efdf;
+  --el-fill-color-lighter: #f9f4e4;
+  --el-fill-color-extra-light: #fdf6e3;
+
+  // 遮罩
+  --el-mask-color: rgb(7 54 66 / 50%);
+  --el-mask-color-extra-light: rgb(7 54 66 / 20%);
+
+  // 其他
+  --gzk-reply-count-bg-color: #bcc7c9;
+  --gzk-reply-count-visited-bg-color: #e2e3eb;
+
+  // 组件相关
+  .el-empty {
+    --el-empty-fill-color-0: var(--el-color-white);
+    --el-empty-fill-color-1: #f4efdf;
+    --el-empty-fill-color-2: #eee8d5;
+    --el-empty-fill-color-3: #e4dfcf;
+    --el-empty-fill-color-4: #d9d4c4;
+    --el-empty-fill-color-5: #cfcab8;
+    --el-empty-fill-color-6: #c4bfad;
+    --el-empty-fill-color-7: #bab4a2;
+    --el-empty-fill-color-8: #afa997;
+    --el-empty-fill-color-9: #a59e8b;
+  }
+
+  .el-popper {
+    color: var(--el-text-color-primary);
+    background: var(--el-bg-color-overlay);
+    border: 1px solid var(--el-border-color-light);
+  }
+
+  // Markdown 相关
+  .markdown-body,
+  .cherry-markdown.theme__github,
+  .topic-detail .ui-content,
+  .topic-reply .ui-content {
+    --color-canvas-subtle: #eee8d5;
+  }
+}

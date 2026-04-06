@@ -1,6 +1,6 @@
 /* stylelint-disable selector-class-pattern */
 /* stylelint-disable no-descending-specificity */
-html.dark {
+html[data-theme] {
   background: var(--el-bg-color);
 
   body {
@@ -313,7 +313,7 @@ html.dark {
       border-bottom: 1px solid var(--el-border-color-light);
 
       &:hover {
-        background-color: rgb(255 255 255 / 5%);
+        background-color: var(--gzk-topic-hover-bg-color);
       }
 
       .title a {
@@ -325,7 +325,7 @@ html.dark {
         color: var(--el-color-info-light-3);
 
         .node {
-          background: var(--el-color-info-light-7);
+          background: var(--gzk-node-bg-color);
 
           a {
             color: var(--el-text-color-secondary);
@@ -346,10 +346,10 @@ html.dark {
 
         a {
           color: var(--el-text-color-primary);
-          background: var(--el-color-info-light-5);
+          background: var(--gzk-reply-count-bg-color);
 
           &:visited {
-            background: var(--el-color-info);
+            background: var(--gzk-reply-count-visited-bg-color);
           }
         }
       }
@@ -443,7 +443,7 @@ html.dark {
 
     code {
       color: var(--el-text-color-regular);
-      background-color: var(--el-color-info-light-7);
+      background-color: var(--gzk-node-bg-color);
     }
 
     pre {
@@ -551,8 +551,8 @@ html.dark {
   .hot-nodes a {
     color: var(--el-text-color-secondary);
     text-shadow: none;
-    background: var(--el-color-info-light-7);
-    border-color: var(--el-color-info-light-7);
+    background: var(--gzk-node-bg-color);
+    border-color: var(--gzk-node-bg-color);
   }
 
   .nodes-cloud {

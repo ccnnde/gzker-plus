@@ -338,7 +338,7 @@
   }
 }
 
-html.dark {
+html[data-theme] {
   .cherry.theme__github {
     .cherry-drag {
       &.cherry-drag--show {

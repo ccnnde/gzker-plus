@@ -121,7 +121,7 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
-html.dark {
+html[data-theme] {
   .topic-dialog {
     --el-mask-color: var(--el-bg-color);
   }

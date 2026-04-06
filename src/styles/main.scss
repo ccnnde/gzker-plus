@@ -1,3 +1,7 @@
+html {
+  background: var(--el-bg-color);
+}
+
 html,
 body,
 #app {
@@ -77,31 +81,25 @@ body,
   .markdown-body {
     .options-about {
       &-qq-qrcode {
-        &,
-        &-dark {
-          width: 233px;
-        }
-
-        &-dark {
-          display: none;
-        }
+        width: 233px;
+        height: 296px;
+        background-image: var(--gzk-qq-group-qrcode);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
       }
     }
   }
 }
 
-html.dark {
+html[data-theme] {
   .options-main {
     .markdown-body {
       .options-about {
         &-qq-qrcode {
-          display: none;
-
-          &-dark {
-            display: inline;
-            border: 1px solid var(--el-border-color);
-            border-radius: 0.5em;
-          }
+          height: 311px;
+          border: 1px solid var(--el-border-color);
+          border-radius: 0.5em;
         }
       }
     }

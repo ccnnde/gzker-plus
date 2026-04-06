@@ -26,8 +26,7 @@
 - 在 GitHub 上提交 issue: <https://github.com/ccnnde/gzker-plus/issues>
 - 在 QQ 群里反馈 **431161905**
 
-<img class="options-about-qq-qrcode" src="../assets/img/qq-group-qrcode.png" />
-<img class="options-about-qq-qrcode-dark" src="../assets/img/qq-group-qrcode-dark.png" />
+<div class="options-about-qq-qrcode"></div>
 
 <!-- badge -->
 

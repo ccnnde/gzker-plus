@@ -15,6 +15,7 @@ import '@/styles/highlight.scss';
 import '@/styles/script-vars.scss';
 import '@/styles/script-global.scss';
 import '@/styles/script-dark.scss';
+import '@/styles/themes.scss';
 
 const applyAppearance = async () => {
   const { options } = await getStorage();

@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { ElDropdown } from 'element-plus';
 import { runtime } from 'webextension-polyfill';
 
-import { useDarkMode } from '@/composables/dark-mode';
 import { ExtensionMessageType } from '@/constants';
 
 import ElementConfig from './ElementConfig.vue';
@@ -11,7 +10,6 @@ import MessageBell from './MessageBell.vue';
 
 import type { ExtensionMessage } from '@/types';
 
-const { isDark } = useDarkMode();
 const feedbackDropdown = ref<InstanceType<typeof ElDropdown> | null>(null);
 
 const openExtOptions = () => {
@@ -44,8 +42,7 @@ const openExtOptions = () => {
             </a>
           </ElDropdownItem>
           <ElDropdownItem>
-            <img v-if="isDark" class="qq-group-qrcode" src="@/assets/img/qq-group-qrcode-dark.png" />
-            <img v-else class="qq-group-qrcode" src="@/assets/img/qq-group-qrcode.png" />
+            <div class="qq-group-qrcode"></div>
           </ElDropdownItem>
         </ElDropdownMenu>
       </template>
@@ -115,6 +112,11 @@ const openExtOptions = () => {
 
 .qq-group-qrcode {
   width: 150px;
+  height: 200px;
+  background-image: var(--gzk-qq-group-qrcode);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .navbar-right {
