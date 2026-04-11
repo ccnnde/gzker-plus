@@ -1,5 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 html {
+  --gzk-cm-selected-bg-color: var(--el-fill-color);
   --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.png');
 }
 
@@ -21,6 +22,7 @@ html[data-theme] {
 html[data-theme^='dark'] {
   --gzk-node-bg-color: rgb(255 255 255 / 10%);
   --gzk-topic-hover-bg-color: rgb(255 255 255 / 5%);
+  --gzk-cm-selected-bg-color: rgb(255 255 255 / 20%);
   --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.png');
 }
 
