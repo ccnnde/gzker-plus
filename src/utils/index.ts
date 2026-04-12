@@ -375,3 +375,10 @@ export const updateDarkTheme = (theme: DarkTheme) => {
 export const updateLightTheme = (theme: LightTheme) => {
   updateThemeAttribute(theme, 'light');
 };
+
+/**
+ * 清除当前活动元素的焦点
+ */
+export const blurActiveElement = () => {
+  (document.activeElement as HTMLElement | null)?.blur();
+};

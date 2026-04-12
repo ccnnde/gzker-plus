@@ -7,7 +7,7 @@ import type { Ref } from 'vue';
 
 export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: number) => Promise<T[]>) => {
   const { isLoading, errorOccurred, handleRequest, resetRequestState } = useRequest();
-  const { scrollbar, scrollToTop, scrollToBottom } = useScrollbar();
+  const { scrollbar, scrollToTop, scrollToBottom, scrollBy } = useScrollbar();
   const dataList = ref<T[]>([]) as Ref<T[]>;
   const currentPage = ref(1);
   const noMoreData = ref(true);
@@ -121,5 +121,6 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
     resetScrollLoadState,
     scrollToTop,
     scrollToBottom,
+    scrollBy,
   };
 };

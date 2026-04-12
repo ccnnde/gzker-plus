@@ -23,9 +23,17 @@ export const useScrollbar = () => {
     });
   };
 
+  const scrollBy = (options: ScrollToOptions, smooth: boolean = true) => {
+    scrollbar.value?.wrapRef?.scrollBy({
+      ...options,
+      behavior: getScrollBehavior(smooth),
+    });
+  };
+
   return {
     scrollbar,
     scrollToTop,
     scrollToBottom,
+    scrollBy,
   };
 };
