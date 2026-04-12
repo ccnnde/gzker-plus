@@ -15,6 +15,7 @@ import { favoriteTopic, getEditedTopic, getUserTopic, likeTopic, parseUserTopic,
 import {
   addUnit,
   blockTopics,
+  blurActiveElement,
   calcTopicPageDialogVH,
   getStorage,
   hideGlobalLoading,
@@ -106,6 +107,7 @@ const {
   resetScrollLoadState,
   scrollToTop,
   scrollToBottom,
+  scrollBy,
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
 onBeforeMount(() => {
@@ -352,6 +354,8 @@ const handleReplySended = (data: UserTopic) => {
 };
 
 const handleTopicDialogOpened = () => {
+  blurActiveElement();
+  document.addEventListener('keydown', handleKeydown);
   replyEditor.value?.generateCreateHistoryId();
 };
 
@@ -364,6 +368,8 @@ const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
 };
 
 const handleTopicDialogClosed = () => {
+  document.removeEventListener('keydown', handleKeydown);
+
   topicId.value = undefined;
   topicDetail.value = undefined;
   replyTotal.value = '0';
@@ -380,8 +386,78 @@ const handleTopicDialogClosed = () => {
   resetScrollLoadState();
 };
 
+const ARROW_SCROLL_DISTANCE = 50;
 const SCROLL_BUTTON_VISIBLE_HEIGHT = 200;
 const currentScrollDistance = ref(0);
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (isImgViewerVisible() || isGlobalLoadingVisible()) {
+    return;
+  }
+
+  const wrapRef = scrollbar.value?.wrapRef;
+
+  if (!wrapRef) {
+    return;
+  }
+
+  // 如果同时有多个对话框，不处理快捷键
+  const overlayEle = [...document.querySelectorAll<HTMLElement>('.el-overlay')].filter(
+    (item) => item.style.display !== 'none',
+  );
+
+  if (overlayEle.length > 1) {
+    return;
+  }
+
+  // 如果焦点在输入框中，不处理快捷键
+  const activeElement = document.activeElement;
+
+  if (
+    activeElement?.tagName === 'INPUT' ||
+    activeElement?.tagName === 'TEXTAREA' ||
+    activeElement?.closest('.cherry-editor') ||
+    activeElement?.closest('.el-select__wrapper') ||
+    activeElement?.closest('.el-dropdown') ||
+    activeElement?.closest('.el-dropdown__popper')
+  ) {
+    return;
+  }
+
+  // PageUp/PageDown/Space 滚动距离为视口高度的 90%
+  const pageScrollDistance = wrapRef.clientHeight * 0.9;
+
+  switch (e.key) {
+    case 'Home':
+      e.preventDefault();
+      scrollToTop();
+      break;
+    case 'End':
+      e.preventDefault();
+      scrollToBottom();
+      break;
+    case 'PageUp':
+      e.preventDefault();
+      scrollBy({ top: -pageScrollDistance });
+      break;
+    case 'PageDown':
+      e.preventDefault();
+      scrollBy({ top: pageScrollDistance });
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      scrollBy({ top: -ARROW_SCROLL_DISTANCE });
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      scrollBy({ top: ARROW_SCROLL_DISTANCE });
+      break;
+    case ' ':
+      e.preventDefault();
+      scrollBy({ top: e.shiftKey ? -pageScrollDistance : pageScrollDistance }); // Shift + Space 向上翻页，Space 向下翻页
+      break;
+  }
+};
 
 const showScrollTopButton = computed(() => {
   return currentScrollDistance.value > SCROLL_BUTTON_VISIBLE_HEIGHT;
