@@ -33,7 +33,7 @@ watch(
         </ElMain>
       </ElContainer>
       <ElFooter class="footer-content">
-        <span class="mr-1"> {{ $t('common.extName') }} © {{ currentYear }} by </span>
+        <span class="mr-1"> {{ $t('common.extName') }} © 2024 - {{ currentYear }} by </span>
         <ElLink type="primary" href="https://github.com/ccnnde" target="_blank">ccnnde</ElLink>
       </ElFooter>
     </ElContainer>
