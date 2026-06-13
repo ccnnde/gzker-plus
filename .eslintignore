@@ -1,4 +1,5 @@
 dist
 .output
+.codebuddy
 *.json
 !src/i18n/locales/*.json
