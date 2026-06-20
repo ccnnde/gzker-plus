@@ -86,16 +86,19 @@ if (topicId === undefined) { throw new Error('Topic id is undefined'); }
 - `try` 和 `catch` 之间不需要空行（它们是紧密关联的）
 - `if`/`else if`/`else` 之间不需要空行
 - 不同职责的函数/方法之间添加空行
-- 变量声明与后续逻辑之间添加空行
-- `return` 语句前添加空行
+- `return` 语句前添加空行 — **仅当 return 前有多个语句构成完整逻辑块时**；若 return 紧接单条赋值或调用，不需要空行
+- **语义段落分隔：** 函数内部，多条语义相关的语句视为一个段落，段落间添加空行。每个段落至少两条语句，单条语句不单独成段
 
 **例外（不需要空行）：**
 - `if` → `else if` → `else` 之间
 - `try` → `catch` → `finally` 之间
 - 连续的 `}` 闭合（如嵌套结构末尾）
+- 单条赋值/调用紧接 `return`（语义上同属一步操作）
+- 变量声明后紧接唯一使用该变量的语句（声明与使用是一体的）
+- 简单函数（单一逻辑、3-5 行）不需要内部空行
 
 ```typescript
-// ✅ 正确
+// ✅ 正确 - 函数之间空行
 const isFirstPage = computed(() => {
   return currentPage.value === 1;
 });
@@ -103,6 +106,30 @@ const isFirstPage = computed(() => {
 const isFirstPageLoading = computed(() => {
   return isFirstPage.value && isLoading.value;
 });
+
+// ✅ 正确 - 语义段落分隔：状态重置 / 执行搜索
+const doSearch = () => {
+  const keyword = inputValue.value.trim();
+
+  if (!keyword) {
+    return;
+  }
+
+  resetSearchState();
+  isFirstPageLoading.value = true;
+  showHistory.value = false;
+
+  currentPageUrl = BING_SITE_SEARCH_PREFIX + encodeURIComponent(keyword);
+  loadIframe(currentPageUrl);
+  saveToHistory(keyword);
+};
+
+// ✅ 正确 - 简单函数：单一逻辑，不需要内部空行
+const closePanel = () => {
+  isFocused.value = false;
+  highLightIndex.value = -1;
+  blurActiveElement();
+};
 
 // ✅ 正确 - if/else if/else 之间不需要空行
 if (mode === DarkMode.On) {
@@ -136,6 +163,27 @@ const getXsrfToken = () => {
 };
 const getTopicUrl = (topicId?: string) => {
   return `${GZK_URL}${API_TOPIC}${topicId}`;
+};
+
+// ❌ 错误 - 空行过多：单行语句切碎，丧失分组聚合意义
+const doSearchBad = () => {
+  const keyword = inputValue.value.trim();
+
+  if (!keyword) {
+    return;
+  }
+
+  resetSearchState();
+
+  isFirstPageLoading.value = true;
+
+  showHistory.value = false;
+
+  currentPageUrl = BING_SITE_SEARCH_PREFIX + encodeURIComponent(keyword);
+
+  loadIframe(currentPageUrl);
+
+  saveToHistory(keyword);
 };
 ```
 

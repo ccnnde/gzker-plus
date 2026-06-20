@@ -112,10 +112,21 @@ export const useStorageStore = defineStore('storage', () => {
 
 ## CSS 类名命名
 
-所有类名使用 **kebab-case**，以组件名为前缀，形成 `{组件前缀}-{元素名}` 的层级结构：
+**所有 scoped 样式中的类名必须带组件前缀，无一例外。** 前缀由组件 PascalCase 文件名转为 kebab-case 得到：
+
+```
+{组件名.kebab-case}-{元素名}
+```
+
+如 `GzkSearch.vue` → 前缀 `gzk-search-` → `gzk-search-wrapper`、 `gzk-search-history-item-remove`。
+
+现有组件前缀速查：
 
 | 组件 | 前缀 | 示例 |
 |------|------|------|
+| `CheckAll` | `check-all-` | `check-all-container` |
+| `ContentEditor` | `content-editor-` | `content-editor-header`、`content-editor-form` |
+| `GzkSearch` | `gzk-search-` | `gzk-search-wrapper`、`gzk-search-history-item` |
 | `ReplyEditor` | `reply-editor-` | `reply-editor-container`、`reply-editor-header`、`reply-editor-body` |
 | `ReplyItem` | `reply-` | `reply-container`、`reply-main`、`reply-header`、`reply-footer` |
 | `Topic` | `topic-` | `topic-dialog`、`topic-container`、`topic-body-absolute` |
@@ -124,6 +135,8 @@ export const useStorageStore = defineStore('storage', () => {
 | `TopicFooter` | `footer-` | `footer-container`、`share-icon` |
 
 层级结构为 `{组件前缀}-{区块}-{子元素}`，如 `detail-header-top`（组件块 block 子元素）。
+
+名称过长时可删减重复或冗余的中间区块，但必须确保含义清晰。例如 `gzk-search-history-item` 不应简化为 `gzk-search-item`（失去"历史记录条目"的含义），而 `gzk-search-result-item` 中的 `item` 在上下文清晰时可以接受。
 
 **例外：** 跨组件复用的公共类不加前缀，定义在非 scoped 的 `<style lang="scss">` 中：
 - `.user-id` — 用户 ID 链接

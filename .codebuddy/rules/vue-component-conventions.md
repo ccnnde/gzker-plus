@@ -72,13 +72,62 @@ const emit = defineEmits<{
 
 **例外：** 全局样式文件（如 `src/styles/` 下的 `.scss`）不需要 scoped。
 
+**子组件样式穿透：** 始终使用 scoped，需要覆盖任何子组件（Element Plus 或自定义组件）内部样式时用 `:deep()` 穿透，不允许额外的非 scoped 块。
+
+```vue
+<style lang="scss" scoped>
+.gzk-search-wrapper {
+  position: relative;
+
+  .gzk-search-input {
+    :deep(.el-input__wrapper) {
+      background-color: var(--el-bg-color);
+      border-color: var(--el-border-color);
+    }
+
+    :deep(.el-input__inner) {
+      color: var(--el-text-color-primary);
+    }
+  }
+}
+
+.gzk-search-icon {
+  cursor: pointer;
+}
+</style>
+```
+
+> **DRY 原则：** 避免重复字面量，提取为共享常量。详见 `development-workflow.md`。
+
+## 全局事件监听
+
+`window.addEventListener` / `document.addEventListener` 必须在 `onMounted` 中注册、`onUnmounted` 中移除，避免内存泄漏。
+
+```vue
+<script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
+
+onMounted(() => {
+  window.addEventListener('message', handleMessage);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('message', handleMessage);
+});
+
+const handleMessage = (event: MessageEvent) => {
+  // ...
+};
+</script>
+```
+
 ## 组件结构顺序
 
 Vue 单文件组件按以下顺序组织：
 
 1. `<script setup lang="ts">` - 脚本
 2. `<template>` - 模板
-3. `<style lang="scss" scoped>` - 样式
+3. `<style lang="scss" scoped>` - 样式（子组件穿透用 `:deep()`，无需额外块）
 
 ```vue
 <script setup lang="ts">
@@ -101,7 +150,22 @@ const fullName = computed(() => {
   return `${props.firstName} ${props.lastName}`;
 });
 
-// 6. 方法
+// 6. Watcher / 生命周期钩子
+watch(isLoading, (val) => {
+  if (!val) {
+    scrollToTop();
+  }
+});
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
+// 7. 方法
 const handleClick = () => {
   isVisible.value = !isVisible.value;
 };

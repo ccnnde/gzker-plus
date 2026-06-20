@@ -1,8 +1,35 @@
 ---
 description: 标准开发工作流。从编码到质量检查到提交的完整流程。
+alwaysApply: true
 ---
 
 # 开发工作流
+
+## 编码原则
+
+### DRY (Don't Repeat Yourself)
+
+避免重复字面量。跨函数/跨文件使用的字符串常量、URL 片段、配置值等应提取为共享常量或配置。
+
+```typescript
+// ❌ 错误 - 重复字面量
+const doSearch = () => {
+  const url = 'https://example.com/search?q=' + keyword;
+};
+const openExternal = () => {
+  window.open('https://example.com/search?q=' + keyword);
+};
+
+// ✅ 正确 - 提取为共享常量
+import { SEARCH_PREFIX } from '@/constants';
+
+const doSearch = () => {
+  const url = SEARCH_PREFIX + keyword;
+};
+const openExternal = () => {
+  window.open(SEARCH_PREFIX + keyword);
+};
+```
 
 ## 标准流程
 
@@ -15,9 +42,15 @@ description: 标准开发工作流。从编码到质量检查到提交的完整�
 - 遵守所有 `.codebuddy/rules/` 中定义的规则
 - 生成代码后执行 `pnpm lint:fix` 自动修复导入排序等 ESLint 可处理的问题
 
-### 2. 质量检查
+### 2. 质量检查（强制）
 
-具体检查流程见 `code-quality-check` skill。AI 生成代码后应执行 `pnpm format && pnpm lint:fix`。
+**每次代码改动后必须执行质量检查，不允许跳过。** 具体流程见 `code-quality-check` skill。
+
+最小检查流程：
+```bash
+pnpm format && pnpm lint:fix && pnpm styl-lint:fix
+```
+然后使用 `read_lints` 检查所有变更文件，确保零诊断。
 
 ### 3. Git 提交
 
