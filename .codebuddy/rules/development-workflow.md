@@ -31,6 +31,73 @@ const openExternal = () => {
 };
 ```
 
+### 优先使用已有常量
+
+生成代码时，先检查 `src/constants/index.ts` 和 `src/constants/selector.ts` 是否有可复用的常量、选择器、枚举值。没有则新增，不要硬编码字符串。
+
+```typescript
+// ❌ 错误 - 硬编码
+const isGzkFrame = origins[0] === 'https://www.guozaoke.com';
+
+// ✅ 正确 - 使用已有常量
+import { GZK_URL } from '@/constants';
+
+const isGzkFrame = origins[0] === GZK_URL;
+```
+
+### 控制流简化
+
+优先使用 early return 减少嵌套层级。但 ES 模块顶层不能用 `return`（报 TS1108），此时用条件反转替代。
+
+```typescript
+// ❌ 错误 - 模块顶层 return
+if (window.self === window.top) {
+  return;
+}
+// 执行逻辑...
+
+// ✅ 正确 - 模块顶层用条件反转
+if (window.self !== window.top) {
+  // 执行逻辑...
+}
+
+// ✅ 正确 - 函数内部优先 early return 避免嵌套
+const doSearch = () => {
+  const keyword = inputValue.value.trim();
+
+  if (!keyword) {
+    return;
+  }
+
+  // 主逻辑...
+};
+```
+
+**跨域 iframe 检测：** 读取父窗口 origin 应使用 `window.location.ancestorOrigins`，它在跨域场景下始终可读。不要使用 `window.top.location`，那在跨域时会抛出 `DOMException`。
+
+```typescript
+// ❌ 错误 - 跨域不可读
+const parentHost = window.top?.location.hostname;
+
+// ✅ 正确 - ancestorOrigins 始终可读
+const origins = window.location.ancestorOrigins;
+const isGzkFrame = origins.length > 0 && origins[0] === GZK_URL;
+```
+
+### 表达式可读性
+
+复杂表达式应提取为命名变量，避免内联过长的链式调用或多条件拼接。
+
+```typescript
+// ❌ 错误 - 内联复杂表达式
+isGzkFrame = window.location.ancestorOrigins.length > 0 &&
+  window.location.ancestorOrigins[0] === GZK_URL;
+
+// ✅ 正确 - 提取命名变量，条件拆开
+const origins = window.location.ancestorOrigins;
+isGzkFrame = origins.length > 0 && origins[0] === GZK_URL;
+```
+
 ## 标准流程
 
 ```

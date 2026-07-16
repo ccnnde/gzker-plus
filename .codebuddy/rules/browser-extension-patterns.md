@@ -47,6 +47,45 @@ export const enum ExtensionMessageType {
 | Background → Content Script | `tabs.sendMessage` | 推送事件到特定标签页（右键菜单等） |
 | Options Page → Content Script | `storage.sync.onChanged` | 设置变更同步到所有标签页 |
 
+### 消息发送格式
+
+发送消息时，**先将消息对象提取为类型化变量，再传递**，禁止内联构造。
+
+```typescript
+// ✅ 正确 - 提取消息对象为变量，一行一个属性
+const msg: ExtensionMessage = {
+  msgType: ExtensionMessageType.OpenOptionsPage,
+};
+
+runtime.sendMessage(msg);
+
+// ✅ 正确 - postMessage 同理
+const msg: FetchNextPageMessage = {
+  type: IframeMessageType.GzkFetchNextPage,
+  url: nextPageUrl.value,
+};
+
+iframeEl?.contentWindow?.postMessage(msg, '*');
+
+// ✅ 正确 - 复杂消息同理
+const message: SearchResultMessage = {
+  type: IframeMessageType.GzkSearchResult,
+  results: data?.results || [],
+  nextPageUrl: data?.nextPageUrl || null,
+  pageUrl: window.location.href,
+};
+
+window.parent.postMessage(message, '*');
+
+// ❌ 错误 - 内联构造，可读性差
+runtime.sendMessage({ msgType: ExtensionMessageType.OpenOptionsPage });
+
+// ❌ 错误 - 内联构造，链式调用尾部过长
+iframeEl?.contentWindow?.postMessage({ type: IframeMessageType.GzkFetchNextPage, url: nextPageUrl.value }, '*');
+```
+
+适用场景：`runtime.sendMessage`、`tabs.sendMessage`、`window.postMessage`、`iframe.contentWindow.postMessage`。
+
 ## 存储约束
 
 - **使用 `browser.storage.sync`**：跨设备同步，容量 ~100KB，写入频率 ~2次/秒

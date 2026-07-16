@@ -94,7 +94,7 @@ if (topicId === undefined) { throw new Error('Topic id is undefined'); }
 - `try` → `catch` → `finally` 之间
 - 连续的 `}` 闭合（如嵌套结构末尾）
 - 单条赋值/调用紧接 `return`（语义上同属一步操作）
-- 变量声明后紧接唯一使用该变量的语句（声明与使用是一体的）
+- 变量声明后紧接该变量的唯一使用语句（声明与使用是一体的）——不需要空行。**"唯一"指该变量仅在紧随的语句（或同段落紧接的少量语句组）中使用一次**。此例外仅在同一作用域层级生效——若使用发生在 `if`/`for`/函数等嵌套块内部，块前仍须保留空行。
 - 简单函数（单一逻辑、3-5 行）不需要内部空行
 
 ```typescript
@@ -147,7 +147,16 @@ try {
   console.error(err);
 }
 
-// ✅ 正确 - 变量声明后空行
+// ✅ 正确 - 变量声明后紧接唯一使用，不需要空行
+const ke = e as KeyboardEvent;
+ke.preventDefault();
+
+// ✅ 正确 - 变量声明后紧接唯一使用（同段落多条语句组），不需要空行
+const oldId = historyList.value[existingIndex].id;
+await deleteSearchHistory(oldId);
+historyList.value.splice(existingIndex, 1);
+
+// ✅ 正确 - 变量声明后空行（两个独立声明之间）
 const settings = ref<StorageSettings>();
 
 const options = computed(() => settings.value?.options);

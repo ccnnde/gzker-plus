@@ -115,8 +115,8 @@ onUnmounted(() => {
   window.removeEventListener('message', handleMessage);
 });
 
-const handleMessage = (event: MessageEvent) => {
-  // ...
+const handleMessage = (event: MessageEvent<SomeMessage>) => {
+  const data = event.data; // 类型自动推导
 };
 </script>
 ```

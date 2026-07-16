@@ -61,3 +61,19 @@ const dataList = ref<T[]>([]) as Ref<T[]>;
 const avatarWrapperStyle = ref(initialElementPositionAndSize);
 const isDark = computed(() => { /* ... */ });
 ```
+
+### 事件类型使用泛型
+
+`MessageEvent`、`CustomEvent` 等应使用泛型指定消息结构，而非裸类型。裸类型需要手动断言，泛型自动推导，避免重复类型声明。
+
+```typescript
+// ❌ 错误 - 裸 MessageEvent
+const handleMessage = (event: MessageEvent) => {
+  const data = event.data as SearchResultMessage; // 需要断言
+};
+
+// ✅ 正确 - MessageEvent 泛型
+const handleMessage = (event: MessageEvent<SearchResultMessage>) => {
+  const data = event.data; // 类型自动推导
+};
+```
