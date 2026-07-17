@@ -42,6 +42,11 @@ const settings = computed<Setting[]>(() => {
           component: EnhancedMsg,
         },
         {
+          name: t('basicSetting.enhancedSearch.title'),
+          description: t('basicSetting.enhancedSearch.titleDesc'),
+          key: OptionsKey.EnhancedSearch,
+        },
+        {
           name: t('basicSetting.enhancedTopic.title'),
           description: t('basicSetting.enhancedTopic.titleDesc'),
           key: OptionsKey.EnhancedTopic,

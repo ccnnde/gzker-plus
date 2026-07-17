@@ -9,6 +9,7 @@ import type {
   DialogType,
   ExtensionMessageType,
   GzkInfoType,
+  IframeMessageType,
   ImageHostingPlatform,
   LanguageType,
   LightTheme,
@@ -72,6 +73,7 @@ export interface Options {
   [OptionsKey.EnhancedMsg]: {
     bellStyle: BellStyle;
   };
+  [OptionsKey.EnhancedSearch]: CheckedOption;
   [OptionsKey.EnhancedTopic]: CheckedOption;
   [OptionsKey.SmApiKey]: {
     apiKey: string;
@@ -354,4 +356,28 @@ export interface BiliImgHistoryItem {
   height: number;
   size: number;
   date: number;
+}
+
+export interface SearchResultItem {
+  url: string;
+  title: string;
+  description: string;
+}
+
+export interface SearchResultMessage {
+  type: IframeMessageType.GzkSearchResult;
+  results: SearchResultItem[];
+  nextPageUrl: string | null;
+  pageUrl: string;
+}
+
+export interface FetchNextPageMessage {
+  type: IframeMessageType.GzkFetchNextPage;
+  url: string;
+}
+
+export interface SearchHistoryItem {
+  id: string;
+  keyword: string;
+  timestamp: number;
 }

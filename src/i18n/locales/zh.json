@@ -49,6 +49,10 @@
       "title": "消息增强",
       "titleDesc": "使用更醒目的图标进行消息提醒，并可内联展示消息列表"
     },
+    "enhancedSearch": {
+      "title": "搜索增强",
+      "titleDesc": "在导航栏搜索框直接展示必应站内搜索结果，支持键盘导航和搜索历史"
+    },
     "enhancedTopic": {
       "title": "主题增强",
       "titleDesc": "在当前页面直接浏览、创建、编辑和屏蔽主题，以及创建和编辑回复"
@@ -278,5 +282,12 @@
     "canNotFavoriteYourTopic": "不能收藏自己的主题",
     "canNotLikeYourReply": "不能赞自己的回复",
     "canNotLikeYourTopic": "不能赞自己的主题"
+  },
+  "search": {
+    "clearAllHistory": "清空",
+    "noResult": "暂无搜索结果",
+    "openInBing": "在必应中打开搜索",
+    "placeholder": "搜索过早客…",
+    "searchHistory": "搜索历史"
   }
 }

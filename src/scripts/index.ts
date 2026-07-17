@@ -9,6 +9,7 @@ import { ExtensionMessageType, OptionsKey } from '@/constants';
 import { getKeywordList, handleBlockKeyword } from './block-keyword';
 import { createUserInfoApp } from './float-user-info';
 import { createHeaderApp } from './header';
+import { createSearchApp } from './search';
 import { createTopicApp } from './topic';
 
 import type { ExtensionMessage } from '@/types';
@@ -48,6 +49,10 @@ const setupApp = async () => {
 
   if (options[OptionsKey.FloatUserInfo].checked) {
     createUserInfoApp(pinia);
+  }
+
+  if (options[OptionsKey.EnhancedSearch].checked) {
+    createSearchApp(pinia);
   }
 
   if (options[OptionsKey.EnhancedTopic].checked) {

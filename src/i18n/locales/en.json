@@ -49,6 +49,10 @@
       "title": "Enhanced Messages",
       "titleDesc": "Use more noticeable icons for message notifications and display message list inline"
     },
+    "enhancedSearch": {
+      "title": "Enhanced Search",
+      "titleDesc": "Display Bing on-site search results directly in the navbar search box, with keyboard navigation and search history support"
+    },
     "enhancedTopic": {
       "title": "Enhanced Topic",
       "titleDesc": "Browse, create, edit and block topics directly on the current page, as well as create and edit replies"
@@ -278,5 +282,12 @@
     "canNotFavoriteYourTopic": "Cannot favorite your own topic",
     "canNotLikeYourReply": "Cannot like your own reply",
     "canNotLikeYourTopic": "Cannot like your own topic"
+  },
+  "search": {
+    "clearAllHistory": "Clear",
+    "noResult": "No search results",
+    "openInBing": "Open search in Bing",
+    "placeholder": "Search guozaoke…",
+    "searchHistory": "Search History"
   }
 }

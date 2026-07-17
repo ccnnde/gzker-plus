@@ -74,6 +74,14 @@ export const enum ExtensionMessageType {
 }
 
 /**
+ * iframe 与父页面的 postMessage 类型
+ */
+export const enum IframeMessageType {
+  GzkSearchResult = 'gzk-search-result',
+  GzkFetchNextPage = 'gzk-fetch-next-page',
+}
+
+/**
  * 多语言类型
  */
 export const enum LanguageType {
@@ -157,6 +165,7 @@ export const enum OptionsKey {
   DblclickToTop = 'dblclickToTop',
   FloatUserInfo = 'floatUserInfo',
   EnhancedMsg = 'enhancedMsg',
+  EnhancedSearch = 'enhancedSearch',
   EnhancedTopic = 'enhancedTopic',
   SmApiKey = 'smApiKey',
   CloseDialogOnClickModal = 'closeDialogOnClickModal',
@@ -186,6 +195,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.EnhancedMsg]: {
     bellStyle: BellStyle.BadgeNum,
+  },
+  [OptionsKey.EnhancedSearch]: {
+    checked: true,
   },
   [OptionsKey.EnhancedTopic]: {
     checked: true,
@@ -224,3 +236,13 @@ export const initialElementPositionAndSize: ElementPositionAndSize = {
 };
 
 export const topicLinkRegExp = /\/t\/(\d+)(#reply(\d+)?)?$/;
+
+/**
+ * 必应搜索 URL
+ */
+export const BING_SEARCH_URL = 'https://cn.bing.com/search';
+
+/**
+ * 必应站内搜索前缀
+ */
+export const BING_SITE_SEARCH_PREFIX = `${BING_SEARCH_URL}?q=site:guozaoke.com/t+`;
