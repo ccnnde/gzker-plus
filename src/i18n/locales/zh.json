@@ -51,7 +51,7 @@
     },
     "enhancedSearch": {
       "title": "搜索增强",
-      "titleDesc": "在导航栏搜索框直接展示必应站内搜索结果，支持键盘导航和搜索历史"
+      "titleDesc": "优化导航栏搜索框样式，以及支持搜索历史"
     },
     "enhancedTopic": {
       "title": "主题增强",
@@ -286,8 +286,6 @@
   },
   "search": {
     "clearAllHistory": "清空",
-    "noResult": "暂无搜索结果",
-    "openInBing": "在必应中打开搜索",
     "placeholder": "搜索过早客…",
     "searchHistory": "搜索历史"
   }

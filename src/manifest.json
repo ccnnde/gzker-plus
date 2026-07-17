@@ -7,7 +7,7 @@
     }
   },
   "{{chrome}}.permissions": ["storage", "tabs", "contextMenus"],
-  "{{chrome}}.host_permissions": ["https://s.ee/", "*://cn.bing.com/*"],
+  "{{chrome}}.host_permissions": ["https://s.ee/"],
   "{{firefox}}.permissions": ["storage", "tabs", "contextMenus", "https://s.ee/", "https://api.bilibili.com/"],
   "icons": {
     "16": "icon/16.png",
@@ -62,12 +62,6 @@
       "matches": ["https://www.bilibili.com/gzk-img-upload"],
       "js": ["src/scripts/upload-bili-img.ts"],
       "run_at": "document_start"
-    },
-    {
-      "matches": ["*://cn.bing.com/*"],
-      "js": ["src/scripts/search-bing-extract.ts"],
-      "all_frames": true,
-      "run_at": "document_idle"
     }
   ],
   "{{chrome}}.web_accessible_resources": [

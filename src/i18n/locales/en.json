@@ -51,7 +51,7 @@
     },
     "enhancedSearch": {
       "title": "Enhanced Search",
-      "titleDesc": "Display Bing on-site search results directly in the navbar search box, with keyboard navigation and search history support"
+      "titleDesc": "Enhance the navbar search box style and support search history"
     },
     "enhancedTopic": {
       "title": "Enhanced Topic",
@@ -286,8 +286,6 @@
   },
   "search": {
     "clearAllHistory": "Clear",
-    "noResult": "No search results",
-    "openInBing": "Open search in Bing",
     "placeholder": "Search guozaoke…",
     "searchHistory": "Search History"
   }

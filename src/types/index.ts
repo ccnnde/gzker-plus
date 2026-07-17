@@ -9,7 +9,6 @@ import type {
   DialogType,
   ExtensionMessageType,
   GzkInfoType,
-  IframeMessageType,
   ImageHostingPlatform,
   LanguageType,
   LightTheme,
@@ -356,24 +355,6 @@ export interface BiliImgHistoryItem {
   height: number;
   size: number;
   date: number;
-}
-
-export interface SearchResultItem {
-  url: string;
-  title: string;
-  description: string;
-}
-
-export interface SearchResultMessage {
-  type: IframeMessageType.GzkSearchResult;
-  results: SearchResultItem[];
-  nextPageUrl: string | null;
-  pageUrl: string;
-}
-
-export interface FetchNextPageMessage {
-  type: IframeMessageType.GzkFetchNextPage;
-  url: string;
 }
 
 export interface SearchHistoryItem {

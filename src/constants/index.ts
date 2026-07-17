@@ -74,14 +74,6 @@ export const enum ExtensionMessageType {
 }
 
 /**
- * iframe 与父页面的 postMessage 类型
- */
-export const enum IframeMessageType {
-  GzkSearchResult = 'gzk-search-result',
-  GzkFetchNextPage = 'gzk-fetch-next-page',
-}
-
-/**
  * 多语言类型
  */
 export const enum LanguageType {
