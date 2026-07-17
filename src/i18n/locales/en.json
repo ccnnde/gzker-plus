@@ -216,6 +216,7 @@
     "mentionWho": "mention whom?",
     "noReply": "No replies yet, what do you think?",
     "originalPoster": "OP",
+    "parseTopicFailed": "Failed to parse topic data, please refresh the page and try again",
     "replyContentCannotBeEmpty": "The reply content cannot be empty",
     "replyContentIsUnderReview": "Reply moderation mode has been enabled on this site. Please wait for the administrator to review the reply content",
     "replyTotal": "Received {num} replies in total",

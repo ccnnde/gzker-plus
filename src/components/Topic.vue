@@ -122,11 +122,22 @@ onBeforeMount(() => {
   topicId.value = pathname.match(topicLinkRegExp)?.[1];
   isTopicPage.value = true;
 
+  let parsedTopic: UserTopic;
+
+  try {
+    parsedTopic = parseUserTopic(document.body.innerHTML);
+  } catch (err) {
+    console.error(err);
+    hideGlobalLoading();
+    ElMessage.error(t('enhancedTopic.parseTopicFailed'));
+    return;
+  }
+
   const {
     detail,
     status,
     reply: { total, list },
-  } = parseUserTopic(document.body.innerHTML);
+  } = parsedTopic;
 
   /**
    * 新标签页查看主题时

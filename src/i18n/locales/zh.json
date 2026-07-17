@@ -216,6 +216,7 @@
     "mentionWho": "想提到谁？",
     "noReply": "暂无回复，这事你怎么看",
     "originalPoster": "楼主",
+    "parseTopicFailed": "解析主题数据失败，请刷新页面重试",
     "replyContentCannotBeEmpty": "回复内容不能为空",
     "replyContentIsUnderReview": "本站已开启回复审核模式，请等待管理员审核回复内容",
     "replyTotal": "共收到 {num} 条回复",
