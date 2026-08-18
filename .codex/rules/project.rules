@@ -1,0 +1,50 @@
+# 在沙箱外修改仓库历史或远端状态前要求明确审批。
+# 这些规则只控制审批行为，不代表已获得执行操作的授权。
+prefix_rule(
+    pattern = ["git", ["commit", "push", "tag"]],
+    decision = "prompt",
+    justification = "提交、创建标签或推送变更需要用户明确批准",
+    match = [
+        "git commit -m update",
+        "git push origin main",
+        "git tag v1.0.0",
+    ],
+    not_match = [
+        "git status --short",
+        "git diff --check",
+    ],
+)
+
+# 以下项目脚本会暂存文件、修改依赖、删除依赖目录，或发布、推送版本状态。
+prefix_rule(
+    pattern = [["pnpm", "pnpm.cmd"], ["git:push", "git:release", "log:auto", "up-all", "clean:node"]],
+    decision = "prompt",
+    justification = "该项目脚本会产生较大范围的本地或外部副作用，需要用户批准",
+    match = [
+        "pnpm git:push",
+        "pnpm git:release",
+        "pnpm log:auto",
+        "pnpm up-all",
+        "pnpm clean:node",
+        "pnpm.cmd git:release",
+    ],
+    not_match = [
+        "pnpm lint",
+        "pnpm type-check",
+        "pnpm build",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "release"],
+    decision = "prompt",
+    justification = "创建或修改 GitHub Release 需要用户明确批准",
+    match = [
+        "gh release create v1.0.0",
+        "gh release edit v1.0.0",
+    ],
+    not_match = [
+        "gh auth status",
+        "gh pr view 1",
+    ],
+)
