@@ -97,6 +97,13 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
     dataList.value = dataList.value.slice(0, currentPageStartIndex).concat(lastPageData);
   };
 
+  const replaceLoadedData = (loadedPage: number, loadedData: T[], isComplete: boolean) => {
+    currentPage.value = Math.max(loadedPage, 1);
+    dataList.value = loadedData;
+    noMoreData.value = isComplete;
+    resetRequestState();
+  };
+
   const resetScrollLoadState = () => {
     dataList.value = [];
     currentPage.value = 1;
@@ -118,6 +125,7 @@ export const useScrollLoad = <T>(pageSize: number, requestCallback: (page: numbe
     reloadPageData,
     reloadFirstPageData,
     updateCurrentPageData,
+    replaceLoadedData,
     resetScrollLoadState,
     scrollToTop,
     scrollToBottom,

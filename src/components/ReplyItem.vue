@@ -20,11 +20,17 @@ import UserAvatar from './UserAvatar.vue';
 import type { UserReplyItem, UserReplyMention } from '@/types';
 
 interface Props extends UserReplyItem {
+  avatarSize?: number;
+  compact?: boolean;
   isNotInConversation?: boolean;
+  showConversationAction?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  avatarSize: 40,
+  compact: false,
   isNotInConversation: true,
+  showConversationAction: true,
 });
 
 const emit = defineEmits<{
@@ -107,8 +113,10 @@ const handleReplyEdit = () => {
 </script>
 
 <template>
-  <div ref="replyItemEl" v-loading="isLoading" class="reply-container">
-    <UserAvatar :uid="uid" :user-link="userLink" :avatar-url="avatarUrl" />
+  <div ref="replyItemEl" v-loading="isLoading" :class="['reply-container', { 'reply-container-compact': compact }]">
+    <div class="reply-avatar">
+      <UserAvatar :uid="uid" :user-link="userLink" :avatar-url="avatarUrl" :avatar-size="avatarSize" />
+    </div>
     <div class="reply-main">
       <div class="reply-header">
         <span>
@@ -138,7 +146,7 @@ const handleReplyEdit = () => {
         <template v-if="isNotInConversation">
           <OperateButton icon-class="i-mdi-chat-outline" @click="handleUserReply" />
           <OperateButton
-            v-if="hasMention"
+            v-if="showConversationAction && hasMention"
             :operate-text="$t('enhancedTopic.viewConversation')"
             @click="handleConversationView"
           />
@@ -158,6 +166,16 @@ const handleReplyEdit = () => {
   & + .reply-container {
     border-top: 1px solid var(--el-border-color);
   }
+}
+
+.reply-container-compact {
+  padding: 10px 0;
+}
+
+.reply-avatar {
+  display: flex;
+  flex: 0 0 40px;
+  justify-content: flex-start;
 }
 
 .reply-main {

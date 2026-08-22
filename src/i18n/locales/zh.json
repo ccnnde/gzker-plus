@@ -15,6 +15,7 @@
       "appearance": "外观",
       "browse": "浏览",
       "imageHosting": "图床",
+      "layout": "布局",
       "other": "其他"
     },
     "closeDialogOnClickModal": {
@@ -83,6 +84,24 @@
       "title": "浅色主题",
       "titleDesc": "选择浅色模式的主题风格",
       "tokyoNight": "Light Tokyo Night"
+    },
+    "nestedReplyDisplay": {
+      "align": "左侧对齐",
+      "indent": "逐层缩进",
+      "off": "不使用",
+      "title": "楼中楼展示",
+      "titleDesc": "设置主题回复的展示结构，可按层级嵌套或保持平铺"
+    },
+    "nestedReplyMultipleInsideOne": {
+      "title": "多人提及嵌套",
+      "titleDesc": "一条回复提及多人时，也将其归入楼中楼；仅在启用楼中楼时生效"
+    },
+    "replyPreload": {
+      "noPreload": "不预加载",
+      "onePage": "预加载 1 页",
+      "title": "回复预加载",
+      "titleDesc": "启用楼中楼时，设置每批除当前页外预加载的回复页数；浏览到当前批次底部后再加载下一批",
+      "twoPages": "预加载 2 页"
     },
     "smApiKey": {
       "apiAvailable": "SM.MS 接口可以使用",

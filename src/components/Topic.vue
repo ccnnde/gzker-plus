@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, provide, ref } from 'vue';
+import { computed, nextTick, onBeforeMount, onMounted, provide, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
@@ -7,6 +7,7 @@ import { debounce } from 'lodash-es';
 import FadeTransition from '@/transitions/FadeTransition.vue';
 import { useClickModal } from '@/composables/click-modal';
 import { useDialog } from '@/composables/dialog';
+import { useReplyBatchLoad } from '@/composables/reply-batch-load';
 import { useRequest } from '@/composables/request';
 import { useScrollLoad } from '@/composables/scroll-load';
 import { useStorageStore } from '@/stores/storage';
@@ -26,7 +27,15 @@ import {
 } from '@/utils';
 import { emitter } from '@/utils/event-bus';
 import { isImgViewerVisible, viewerOptions, vViewer } from '@/utils/img-viewer';
-import { DialogType, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
+import {
+  DialogType,
+  LinkElementType,
+  NestedReplyDisplay,
+  OptionsKey,
+  REPLY_PRELOAD_PAGE_COUNT,
+  ReplyPreloadMode,
+  topicLinkRegExp,
+} from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -67,6 +76,26 @@ const showReply = computed(() => {
   return replyTotal.value !== '0';
 });
 
+const nestedReplyDisplay = computed<NestedReplyDisplay>(() => {
+  return options.value?.[OptionsKey.NestedReplyDisplay]?.display || NestedReplyDisplay.Indent;
+});
+
+const multipleInsideOne = computed<boolean>(() => {
+  return options.value?.[OptionsKey.NestedReplyMultipleInsideOne]?.checked ?? true;
+});
+
+const replyPreloadMode = computed<ReplyPreloadMode>(() => {
+  return options.value?.[OptionsKey.ReplyPreload]?.mode || ReplyPreloadMode.TwoPages;
+});
+
+const replyBatchPageCount = computed<number>(() => {
+  return REPLY_PRELOAD_PAGE_COUNT[replyPreloadMode.value] || REPLY_PRELOAD_PAGE_COUNT[ReplyPreloadMode.TwoPages];
+});
+
+const isNestedReplyEnabled = computed<boolean>(() => {
+  return nestedReplyDisplay.value !== NestedReplyDisplay.Off;
+});
+
 const isTopicLinkBlank = computed(() => {
   if (!options.value) {
     return false;
@@ -95,7 +124,6 @@ const {
   scrollbar,
   isFirstPage,
   isFirstPageLoading,
-  isFirstPageEmpty,
   isNextPageLoading,
   disableInfiniteScroll,
   errorOccurred,
@@ -104,11 +132,146 @@ const {
   reloadPageData,
   reloadFirstPageData,
   updateCurrentPageData,
+  replaceLoadedData,
   resetScrollLoadState,
   scrollToTop,
   scrollToBottom,
   scrollBy,
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
+
+const handleBatchPageLoaded = (data: UserTopic, page: number): void => {
+  const {
+    detail,
+    status,
+    reply: { total },
+  } = data;
+
+  replyTotal.value = total;
+
+  if (page === 1) {
+    topicDetail.value = detail;
+    topicStatus.value = status;
+  }
+};
+
+const {
+  batches: replyBatches,
+  dataList: nestedReplyList,
+  lastLoadedPage: lastNestedReplyPage,
+  isFirstBatchLoading,
+  isNextBatchLoading,
+  disableBatchLoad,
+  errorOccurred: batchLoadError,
+  startBatchLoad,
+  getNextBatchData,
+  reloadBatchData,
+  setBatchPageCount,
+  updateLastPageData,
+  resetBatchLoadState,
+} = useReplyBatchLoad({
+  pageSize: PAGE_SIZE,
+  requestCallback: async (id, page, signal) => {
+    return getUserTopic(id, page, signal);
+  },
+  pageLoadedCallback: handleBatchPageLoaded,
+  errorCallback: (err) => {
+    ElMessage.error(err.message);
+  },
+});
+
+const effectiveReplyList = computed<UserReplyItem[]>(() => {
+  return isNestedReplyEnabled.value ? nestedReplyList.value : replyList.value;
+});
+
+const isReplyFirstPageLoading = computed<boolean>(() => {
+  return isNestedReplyEnabled.value ? isFirstBatchLoading.value : isFirstPageLoading.value;
+});
+
+const isReplyNextPageLoading = computed<boolean>(() => {
+  return isNestedReplyEnabled.value ? isNextBatchLoading.value : isNextPageLoading.value;
+});
+
+const replyLoadError = computed<boolean>(() => {
+  return isNestedReplyEnabled.value ? batchLoadError.value : errorOccurred.value;
+});
+
+const disableReplyInfiniteScroll = computed<boolean>(() => {
+  return isNestedReplyEnabled.value ? disableBatchLoad.value : disableInfiniteScroll.value;
+});
+
+const isReplyFirstPage = computed<boolean>(() => {
+  return isNestedReplyEnabled.value ? replyBatches.value.length === 0 : isFirstPage.value;
+});
+
+watch(isNextBatchLoading, async (nextBatchLoading) => {
+  if (!nextBatchLoading) {
+    return;
+  }
+
+  await nextTick();
+  scrollToBottom();
+});
+
+const getNextReplyData = (): void => {
+  if (isNestedReplyEnabled.value) {
+    getNextBatchData();
+    return;
+  }
+
+  getNextPageData();
+};
+
+const reloadReplyData = (): void => {
+  if (isNestedReplyEnabled.value) {
+    reloadBatchData();
+    return;
+  }
+
+  reloadPageData();
+};
+
+const getFirstPageTopicData = (list: UserReplyItem[]): UserTopic | undefined => {
+  if (!topicDetail.value || !topicStatus.value) {
+    return undefined;
+  }
+
+  return {
+    detail: topicDetail.value,
+    status: topicStatus.value,
+    reply: {
+      total: replyTotal.value,
+      list: list.slice(0, PAGE_SIZE),
+    },
+  };
+};
+
+watch(replyBatchPageCount, (pageCount) => {
+  setBatchPageCount(pageCount);
+});
+
+watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => {
+  if (nestedReplyEnabled === previousNestedReplyEnabled || !topicId.value || !dialogVisible.value) {
+    return;
+  }
+
+  if (nestedReplyEnabled) {
+    const firstPageData = getFirstPageTopicData(replyList.value);
+    resetScrollLoadState();
+    startBatchLoad(topicId.value, replyBatchPageCount.value, firstPageData);
+    return;
+  }
+
+  const loadedReplyList = nestedReplyList.value;
+  const loadedPage = lastNestedReplyPage.value;
+  const isComplete = loadedReplyList.length >= Number(replyTotal.value);
+  resetBatchLoadState();
+
+  if (loadedReplyList.length) {
+    replaceLoadedData(loadedPage, loadedReplyList, isComplete);
+  } else if (Number(replyTotal.value) > 0) {
+    getFirstPageData();
+  }
+});
 
 onBeforeMount(() => {
   insertTopicButton();
@@ -148,9 +311,18 @@ onBeforeMount(() => {
     topicDetail.value = detail;
     topicStatus.value = status;
     replyTotal.value = total;
-    updateCurrentPageData(total, list);
+
+    if (isNestedReplyEnabled.value && topicId.value) {
+      startBatchLoad(topicId.value, replyBatchPageCount.value, parsedTopic);
+    } else {
+      updateCurrentPageData(total, list);
+    }
   } else {
-    getFirstPageData();
+    if (isNestedReplyEnabled.value && topicId.value) {
+      startBatchLoad(topicId.value, replyBatchPageCount.value);
+    } else {
+      getFirstPageData();
+    }
   }
 
   hideGlobalLoading();
@@ -219,7 +391,12 @@ const handleTopicClick = (e: Event) => {
 
   topicId.value = href.match(topicLinkRegExp)?.[1];
   openDialog();
-  getFirstPageData();
+
+  if (isNestedReplyEnabled.value && topicId.value) {
+    startBatchLoad(topicId.value, replyBatchPageCount.value);
+  } else {
+    getFirstPageData();
+  }
 };
 
 const handleCreateTopicClick = async (e: Event) => {
@@ -349,7 +526,13 @@ const handleTopicSended = (data: UserTopic) => {
 
   topicDetail.value = detail;
   replyTotal.value = total;
-  reloadFirstPageData(list);
+
+  if (isNestedReplyEnabled.value && topicId.value) {
+    startBatchLoad(topicId.value, replyBatchPageCount.value, data);
+  } else {
+    reloadFirstPageData(list);
+  }
+
   setTimeout(scrollToTop, 0);
 };
 
@@ -361,7 +544,12 @@ const handleReplySended = (data: UserTopic) => {
 
   topicDetail.value = detail;
   replyTotal.value = total;
-  updateCurrentPageData(total, list);
+
+  if (isNestedReplyEnabled.value) {
+    updateLastPageData(total, list);
+  } else {
+    updateCurrentPageData(total, list);
+  }
 };
 
 const handleTopicDialogOpened = () => {
@@ -395,6 +583,7 @@ const handleTopicDialogClosed = () => {
   showTopicFooter();
   resetRequestState();
   resetScrollLoadState();
+  resetBatchLoadState();
 };
 
 const ARROW_SCROLL_DISTANCE = 50;
@@ -587,28 +776,38 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
-      <div v-loading="isLoading || isFirstPageLoading" :style="topicBodyStyle">
+      <div v-loading="isLoading || isReplyFirstPageLoading" :style="topicBodyStyle">
         <ElScrollbar ref="scrollbar" @scroll="handleScroll">
           <div
-            v-infinite-scroll="getNextPageData"
+            v-infinite-scroll="getNextReplyData"
             v-viewer="viewerOptions"
             class="topic-container"
             :style="topicContainerStyle"
-            :infinite-scroll-disabled="disableInfiniteScroll"
+            :infinite-scroll-disabled="disableReplyInfiniteScroll"
             :infinite-scroll-distance="100"
           >
             <TopicDetail v-if="topicDetail" v-bind="topicDetail" />
             <ElDivider v-if="topicDetail" border-style="dashed">
               <un-i-mdi-comment-processing-outline class="comment-icon" />
             </ElDivider>
-            <TopicReply v-if="showReply" :total="replyTotal" :list="replyList" />
-            <ElSkeleton v-if="isNextPageLoading" animated />
-            <ElEmpty v-if="topicDetail && isFirstPageEmpty" :description="$t('enhancedTopic.noReply')" />
+            <TopicReply
+              v-if="showReply && (!isNestedReplyEnabled || replyBatches.length)"
+              :total="replyTotal"
+              :list="effectiveReplyList"
+              :batches="replyBatches"
+              :nested-reply-display="nestedReplyDisplay"
+              :multiple-inside-one="multipleInsideOne"
+            />
+            <ElSkeleton v-if="isReplyNextPageLoading" animated />
+            <ElEmpty
+              v-if="topicDetail && replyTotal === '0' && !isReplyFirstPageLoading"
+              :description="$t('enhancedTopic.noReply')"
+            />
             <LoadError
-              v-show="errorOccurred"
-              :show-icon="isFirstPage"
+              v-show="replyLoadError"
+              :show-icon="isReplyFirstPage"
               :error-text="$t('common.loadFailedAndRetry')"
-              @retry="reloadPageData"
+              @retry="reloadReplyData"
             />
           </div>
         </ElScrollbar>
@@ -617,7 +816,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
             ref="replyEditor"
             class="topic-body-absolute"
             :topic-id="topicId"
-            :reply-list="replyList"
+            :reply-list="effectiveReplyList"
             :height="replyEditorHeight"
             :fullscreen="isReplyEditorFullscreen"
             @sended="handleReplySended"

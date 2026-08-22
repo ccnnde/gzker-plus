@@ -247,8 +247,15 @@ export const getUnreadUserMsgNum = (): number => {
   return unreadNum ? Number(unreadNum) : 0;
 };
 
-export const getUserTopic = async (topicId: string | undefined, page: number): Promise<UserTopic> => {
-  const data = await request(`${API_TOPIC}${topicId}?p=${page}`);
+export const getUserTopic = async (
+  topicId: string | undefined,
+  page: number,
+  signal?: AbortSignal,
+): Promise<UserTopic> => {
+  const data = await request(`${API_TOPIC}${topicId}?p=${page}`, {
+    signal,
+  });
+
   return parseUserTopic(data);
 };
 

@@ -5,7 +5,7 @@ import { debounce } from 'lodash-es';
 
 import { useDialog } from '@/composables/dialog';
 import { useScrollbar } from '@/composables/scrollbar';
-import { handleReplyLike } from '@/utils';
+import { getReplyKey, handleReplyLike } from '@/utils';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
@@ -67,7 +67,7 @@ defineExpose({
       <div v-viewer="viewerOptions" class="conversation-container">
         <ReplyItem
           v-for="(item, index) in conversations"
-          :key="index"
+          :key="getReplyKey(item, index)"
           v-bind="item"
           :is-not-in-conversation="false"
           @like-reply="handleReplyLike(item, $event)"

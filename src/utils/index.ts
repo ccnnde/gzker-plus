@@ -159,6 +159,18 @@ export const getTopicUrl = (topicId?: string) => {
   return `${GZK_URL}${API_TOPIC}${topicId}`;
 };
 
+export const getReplyKey = (replyItem: UserReplyItem, index: number): string => {
+  if (replyItem.replyId) {
+    return `reply-id:${replyItem.replyId}`;
+  }
+
+  if (replyItem.replyNo) {
+    return `reply-no:${replyItem.replyNo}`;
+  }
+
+  return `reply-index:${index}`;
+};
+
 export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {
   if (msg === SUCCESS_LIKE || msg === ALREADY_LIKE) {
     replyItem.liked = true;

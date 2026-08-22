@@ -16,6 +16,8 @@ import EnhancedMsg from './EnhancedMsg.vue';
 import HideGzkInfo from './HideGzkInfo.vue';
 import ImageHosting from './ImageHosting.vue';
 import LightTheme from './LightTheme.vue';
+import NestedReplyDisplay from './NestedReplyDisplay.vue';
+import ReplyPreload from './ReplyPreload.vue';
 import SmApiKey from './SmApiKey.vue';
 import TopicKeywordBlock from './TopicKeywordBlock.vue';
 
@@ -62,6 +64,28 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.closeDialogOnClickModal.titleDesc'),
           key: OptionsKey.CloseDialogOnClickModal,
           component: CloseDialog,
+        },
+      ],
+    },
+    {
+      category: t('basicSetting.category.layout'),
+      list: [
+        {
+          name: t('basicSetting.nestedReplyDisplay.title'),
+          description: t('basicSetting.nestedReplyDisplay.titleDesc'),
+          key: OptionsKey.NestedReplyDisplay,
+          component: NestedReplyDisplay,
+        },
+        {
+          name: t('basicSetting.replyPreload.title'),
+          description: t('basicSetting.replyPreload.titleDesc'),
+          key: OptionsKey.ReplyPreload,
+          component: ReplyPreload,
+        },
+        {
+          name: t('basicSetting.nestedReplyMultipleInsideOne.title'),
+          description: t('basicSetting.nestedReplyMultipleInsideOne.titleDesc'),
+          key: OptionsKey.NestedReplyMultipleInsideOne,
         },
       ],
     },

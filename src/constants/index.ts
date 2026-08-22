@@ -149,6 +149,24 @@ export const enum ImageHostingPlatform {
   Bili = 'bili',
 }
 
+export const enum NestedReplyDisplay {
+  Off = 'off',
+  Indent = 'indent',
+  Align = 'align',
+}
+
+export const enum ReplyPreloadMode {
+  NoPreload = 'noPreload',
+  OnePage = 'onePage',
+  TwoPages = 'twoPages',
+}
+
+export const REPLY_PRELOAD_PAGE_COUNT: Record<ReplyPreloadMode, number> = {
+  [ReplyPreloadMode.NoPreload]: 1,
+  [ReplyPreloadMode.OnePage]: 2,
+  [ReplyPreloadMode.TwoPages]: 3,
+};
+
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DarkMode = 'darkMode',
@@ -164,6 +182,9 @@ export const enum OptionsKey {
   HideGzkInfo = 'hideGzkInfo',
   ImageHosting = 'imageHosting',
   TopicKeywordBlock = 'topicKeywordBlock',
+  NestedReplyDisplay = 'nestedReplyDisplay',
+  ReplyPreload = 'replyPreload',
+  NestedReplyMultipleInsideOne = 'nestedReplyMultipleInsideOne',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -208,6 +229,15 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.TopicKeywordBlock]: {
     keywords: '',
+  },
+  [OptionsKey.NestedReplyDisplay]: {
+    display: NestedReplyDisplay.Indent,
+  },
+  [OptionsKey.ReplyPreload]: {
+    mode: ReplyPreloadMode.TwoPages,
+  },
+  [OptionsKey.NestedReplyMultipleInsideOne]: {
+    checked: true,
   },
 };
 

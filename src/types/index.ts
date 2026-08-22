@@ -13,7 +13,9 @@ import type {
   LanguageType,
   LightTheme,
   LinkElementType,
+  NestedReplyDisplay,
   OptionsKey,
+  ReplyPreloadMode,
   ReplyType,
 } from '@/constants';
 
@@ -98,6 +100,13 @@ export interface Options {
   [OptionsKey.LightTheme]: {
     theme: LightTheme;
   };
+  [OptionsKey.NestedReplyDisplay]: {
+    display: NestedReplyDisplay;
+  };
+  [OptionsKey.ReplyPreload]: {
+    mode: ReplyPreloadMode;
+  };
+  [OptionsKey.NestedReplyMultipleInsideOne]: CheckedOption;
 }
 
 export interface CheckedOption {
@@ -220,6 +229,19 @@ export interface UserReplyItem {
 export interface UserReplyMention {
   uid: string;
   floor?: string;
+}
+
+export interface UserReplyTreeNode {
+  reply: UserReplyItem;
+  children: UserReplyTreeNode[];
+  depth: number;
+  parentReplyNo?: string;
+}
+
+export interface UserReplyBatch {
+  startPage: number;
+  endPage: number;
+  list: UserReplyItem[];
 }
 
 export interface TreeNode {
