@@ -12,6 +12,7 @@ pnpm-lock.yaml
 
 # Local
 .husky
+.nvmrc
 
 # Built-files
 dist
