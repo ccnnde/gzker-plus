@@ -18,6 +18,22 @@ const weiboEmojiMarkdownMap: WeiboEmojiMarkdownMap = weiboEmojis.reduce<WeiboEmo
   return acc;
 }, {});
 
+const convertEmojiImageToNative = (imageTag: string): string => {
+  if (!/^<img\b/i.test(imageTag)) {
+    return imageTag;
+  }
+
+  const imageSrc = imageTag.match(/\ssrc\s*=\s*(["'])([^"']+)\1/i)?.[2];
+  const emojiId = imageSrc?.match(/\/+static\/emoji\/([^/?#]+)\.png(?:[?#].*)?$/i)?.[1];
+
+  if (!emojiId || gzkSpecialEmojis.includes(emojiId)) {
+    return imageTag;
+  }
+
+  const emoji = getEmojiById(emojiId);
+  return emoji || imageTag;
+};
+
 export const NOTO_EMOJI_FONT = 'Noto-COLRv1';
 
 export const EMOJI_CLASS_NAME = 'emoji-type-native';
@@ -86,16 +102,17 @@ export const convertWeiboImgToEmoji = (content: string): string => {
  * @param htmlStr html 内容字符串
  */
 export const convertEmojiToNative = (htmlStr?: string): string | undefined => {
-  const emojiImgReg = '<img src="/static/emoji/(.+?)\\.png" (?:height="20" width="20" )?align="absmiddle"/?>';
-  const emojiColonsReg = ':([-a-zA-Z0-9\\u4e00-\\u9fa5+_]+?):';
-  const emojiFullReg = new RegExp(`${emojiImgReg}|${emojiColonsReg}`, 'g');
+  const htmlTagOrEmojiReg = /<[^>]+>|:([-a-zA-Z0-9\u4e00-\u9fa5+_]+?):/g;
 
-  return htmlStr?.replace(emojiFullReg, (match: string, p1: string, p2: string) => {
-    if (gzkSpecialEmojis.includes(p1)) {
+  return htmlStr?.replace(htmlTagOrEmojiReg, (match: string, emojiId?: string) => {
+    if (match.startsWith('<')) {
+      return convertEmojiImageToNative(match);
+    }
+
+    if (!emojiId) {
       return match;
     }
 
-    const emojiId = p1 || p2;
     const emoji = getEmojiById(emojiId);
     return emoji || match;
   });
