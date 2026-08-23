@@ -906,6 +906,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
     font-size: 14px;
     color: var(--el-text-color-primary);
     word-break: break-all;
+    overflow-wrap: anywhere;
 
     &.markdown-body {
       blockquote {
