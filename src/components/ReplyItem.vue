@@ -4,20 +4,20 @@ import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
-import { API_USER, getEditedReply, likeReply } from '@/api';
+import { getEditedReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
+import { parseReplyMentions, renderReplyContent } from '@/utils/reply-content';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
-import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
 import UserAvatar from './UserAvatar.vue';
 
-import type { UserReplyItem, UserReplyMention } from '@/types';
+import type { UserReplyItem } from '@/types';
 
 interface Props extends UserReplyItem {
   avatarSize?: number;
@@ -40,10 +40,19 @@ const emit = defineEmits<{
 
 const { isLoading, handleRequest } = useRequest();
 const replyItemEl = ref<HTMLDivElement | null>(null);
-const contentEl = ref<HTMLDivElement | null>(null);
 
-const hasMention = computed(() => {
-  return props.content?.includes('class="user-mention">@');
+const renderedContent = computed<string>(() => {
+  const content = convertEmojiToNative(props.content) || '';
+  return renderReplyContent(content);
+});
+
+const mentionUids = computed<string[]>(() => {
+  const uids = parseReplyMentions(props.content).map(({ uid }) => uid);
+  return [...new Set(uids)];
+});
+
+const hasMention = computed<boolean>(() => {
+  return Boolean(mentionUids.value.length);
 });
 
 const handleReplyLike = () => {
@@ -54,34 +63,7 @@ const handleReplyLike = () => {
 };
 
 const handleConversationView = () => {
-  const mentionElements = contentEl.value?.querySelectorAll<HTMLAnchorElement>(SELECTOR_USER_MENTION_LINK);
-  let mentionUsers: string[] = [];
-
-  mentionElements?.forEach((element) => {
-    const uid = element.href.split(API_USER)[1];
-    mentionUsers.push(uid);
-  });
-
-  mentionUsers = [...new Set(mentionUsers)];
-
-  const mentionList: UserReplyMention[] = [];
-  const contentText = contentEl.value ? contentEl.value.innerText : '';
-
-  mentionUsers.forEach((uid) => {
-    const mentionRegExp = new RegExp(`@${uid}\\s?(#(\\d+)\\s?)?`, 'g');
-    const currentMentionUsers = [...contentText.matchAll(mentionRegExp)];
-    const currentMentionFloors = [...new Set(currentMentionUsers.map((item) => item[2]))];
-
-    currentMentionFloors.forEach((floor) =>
-      mentionList.push({
-        uid,
-        floor,
-      }),
-    );
-  });
-
-  const mentionUids = [...new Set(mentionList.map((item) => item.uid))];
-  emit('viewConversation', mentionUids);
+  emit('viewConversation', mentionUids.value);
 };
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
@@ -135,12 +117,7 @@ const handleReplyEdit = () => {
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
       </div>
-      <div
-        ref="contentEl"
-        v-img-load="updateScrollbar"
-        class="main-content markdown-body"
-        v-html="convertEmojiToNative(content)"
-      ></div>
+      <div v-img-load="updateScrollbar" class="main-content markdown-body" v-html="renderedContent"></div>
       <div class="reply-footer">
         <LikeButton :liked="liked" :like-number="likeNumber" hide-tip @handle-like="handleReplyLike" />
         <template v-if="isNotInConversation">
