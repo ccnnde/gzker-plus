@@ -1,4 +1,4 @@
-import { SELECTOR_USER_MENTION_LINK, USER_MENTION_CLASS_NAME } from '@/constants/selector';
+import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import type { UserReplyMention } from '@/types';
 
@@ -8,11 +8,12 @@ const FLOOR_TEXT_REGEXP = /^\s*#(\d+)/;
 const HAS_HTTP_LINK_REGEXP = /https?:\/\//i;
 const HTTP_LINK_PREFIX_REGEXP = /^https?:\/\//i;
 const IMAGE_PATH_REGEXP = /\.(?:avif|bmp|gif|jpe?g|png|svg|webp)$/i;
-const LINKIFY_TOKEN_REGEXP = /https?:\/\/[^\s<>"'\x60]+|@[\p{L}\p{N}_-]+/giu;
-const MENTION_BOUNDARY_CHAR_REGEXP = /[\p{L}\p{N}_-]/u;
-const PLAIN_TEXT_MENTION_REGEXP = /(?:^|[^\p{L}\p{N}_-])@([\p{L}\p{N}_-]+)(?:\s+#(\d+))?/gu;
+const LINKIFY_TOKEN_REGEXP = /https?:\/\/[^\s<>"'\x60]+|@[a-z][a-z0-9_]{2,13}(?![a-z0-9_])/gi;
+const MENTION_BOUNDARY_CHAR_REGEXP = /[a-z0-9_]/i;
+const MENTION_LINK_TEXT_REGEXP = /^@([a-z][a-z0-9_]{2,13})$/i;
+const PLAIN_TEXT_MENTION_REGEXP = /(?:^|[^a-z0-9_])@([a-z][a-z0-9_]{2,13})(?![a-z0-9_])(?:\s+#(\d+))?/gi;
 const TRAILING_URL_PUNCTUATION_REGEXP = /[.,!?;:，。！？；：]+$/u;
-const USER_LINK_REGEXP = /^\/u\/([^/?#]+)/;
+const USER_LINK_REGEXP = /^\/u\/([a-z][a-z0-9_]{2,13})\/?(?:[?#].*)?$/i;
 const URL_BRACKET_PAIRS = [
   ['(', ')'],
   ['[', ']'],
@@ -127,7 +128,6 @@ const createMentionReplacement = (candidate: string, previousCharacter: string):
 
   const uid = candidate.slice(1);
   const link = createExternalLink('/u/' + uid, candidate);
-  link.classList.add(USER_MENTION_CLASS_NAME);
 
   return {
     node: link,
@@ -181,12 +181,25 @@ const replaceTextNodeLinks = (textNode: Text): void => {
   textNode.replaceWith(fragment);
 };
 
+const getMentionCandidateUid = (mentionElement: HTMLAnchorElement): string | undefined => {
+  const userLink = mentionElement.getAttribute('href') || '';
+  const linkedUid = userLink.match(USER_LINK_REGEXP)?.[1];
+  const mentionText = mentionElement.textContent?.trim() || '';
+  const textUid = mentionText.match(MENTION_LINK_TEXT_REGEXP)?.[1];
+
+  if (!linkedUid || !textUid || linkedUid.toLowerCase() !== textUid.toLowerCase()) {
+    return undefined;
+  }
+
+  return linkedUid;
+};
+
 const normalizeExistingReplyLinks = (container: DocumentFragment): void => {
   const anchorElements = container.querySelectorAll<HTMLAnchorElement>('a[href]');
 
   anchorElements.forEach((element) => {
     const href = element.getAttribute('href') || '';
-    const isMentionLink = element.matches(SELECTOR_USER_MENTION_LINK);
+    const isMentionLink = Boolean(getMentionCandidateUid(element));
     const isHttpLink = HTTP_LINK_PREFIX_REGEXP.test(href);
 
     if (isMentionLink || isHttpLink) {
@@ -219,6 +232,16 @@ const getMentionFloor = (mentionElement: HTMLAnchorElement): string | undefined 
   return nextSiblingText.match(FLOOR_TEXT_REGEXP)?.[1];
 };
 
+const getReplyMentionUid = (mentionElement: HTMLAnchorElement): string | undefined => {
+  const excludedContainer = mentionElement.closest(EXCLUDED_MENTION_CONTAINER_SELECTOR);
+
+  if (!mentionElement.matches(SELECTOR_USER_MENTION_LINK) || excludedContainer) {
+    return undefined;
+  }
+
+  return getMentionCandidateUid(mentionElement);
+};
+
 const parsePlainTextMentions = (content: string): UserReplyMention[] => {
   return [...content.matchAll(PLAIN_TEXT_MENTION_REGEXP)].map((match) => ({
     uid: match[1],
@@ -241,17 +264,13 @@ const appendReplyMentions = (node: Node, mentions: UserReplyMention[]): void => 
 
     if (element.tagName === 'A') {
       const anchorElement = element as HTMLAnchorElement;
+      const uid = getReplyMentionUid(anchorElement);
 
-      if (anchorElement.matches(SELECTOR_USER_MENTION_LINK)) {
-        const userLink = anchorElement.getAttribute('href') || '';
-        const uid = userLink.match(USER_LINK_REGEXP)?.[1];
-
-        if (uid) {
-          mentions.push({
-            uid,
-            floor: getMentionFloor(anchorElement),
-          });
-        }
+      if (uid) {
+        mentions.push({
+          uid,
+          floor: getMentionFloor(anchorElement),
+        });
       }
 
       return;
@@ -292,3 +311,5 @@ export const parseReplyMentions = (content?: string): UserReplyMention[] => {
 
   return mentions;
 };
+
+export { getReplyMentionUid };
