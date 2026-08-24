@@ -2,6 +2,7 @@ import { createPinia } from 'pinia';
 import { ElMessage } from 'element-plus';
 import { runtime, storage } from 'webextension-polyfill';
 
+import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { blockTopics, createDebouncedStorageSync, getLoginUserId, getStorage, setStorage } from '@/utils';
 import { ExtensionMessageType, OptionsKey } from '@/constants';
@@ -39,11 +40,17 @@ runtime.onMessage.addListener((message: ExtensionMessage) => {
 const pinia = createPinia();
 
 const setupApp = async () => {
-  const { options, blockedTopicList } = await getStorage();
+  const settings = await getStorage();
+  settings.loginUserId = getLoginUserId();
 
   await setStorage({
-    loginUserId: getLoginUserId(),
+    loginUserId: settings.loginUserId,
   });
+
+  const storageStore = useStorageStore(pinia);
+  storageStore.setSettings(settings);
+
+  const { options, blockedTopicList } = settings;
 
   createHeaderApp(pinia);
 

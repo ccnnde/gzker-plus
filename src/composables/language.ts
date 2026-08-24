@@ -6,12 +6,17 @@ import { getStorage } from '@/utils';
 
 export const useLanguage = () => {
   const { locale } = useI18n();
-  const { setSettings } = useStorageStore();
+  const storage = useStorageStore();
 
   onBeforeMount(async () => {
-    const settings = await getStorage();
+    let settings = storage.settings;
+
+    if (!settings) {
+      settings = await getStorage();
+      storage.setSettings(settings);
+    }
+
     locale.value = settings.lang;
-    setSettings(settings);
   });
 
   return {
