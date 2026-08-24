@@ -17,6 +17,22 @@
   filter: blur(6px);
 }
 
+@mixin reply-root-divider() {
+  position: relative;
+  margin-top: 4px;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 50px;
+    height: 1px;
+    content: '';
+    background-color: var(--el-border-color-light);
+    opacity: 0.65;
+  }
+}
+
 @mixin el-scrollbar(
   $width: 6px,
   $thumb-color: rgba(var(--el-color-info-rgb), 0.3),

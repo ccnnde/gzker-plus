@@ -135,13 +135,15 @@ const handleReplyEdit = () => {
 </template>
 
 <style lang="scss" scoped>
+@import '@/styles/mixin';
+
 .reply-container {
   display: flex;
   align-items: flex-start;
   padding: 15px 0;
 
-  & + .reply-container {
-    border-top: 1px solid var(--el-border-color);
+  & + & {
+    @include reply-root-divider;
   }
 }
 

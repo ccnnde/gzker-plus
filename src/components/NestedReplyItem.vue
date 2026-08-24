@@ -135,22 +135,13 @@ const isChildSharedRailTerminalPath = (index: number): boolean => {
 </template>
 
 <style lang="scss" scoped>
+@import '@/styles/mixin';
+
 .nested-reply-item-container {
   position: relative;
 
   &-root + &-root {
-    margin-top: 4px;
-
-    &::before {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 50px;
-      height: 1px;
-      content: '';
-      background-color: var(--el-border-color-light);
-      opacity: 0.65;
-    }
+    @include reply-root-divider;
   }
 }
 
