@@ -21,8 +21,8 @@
 ```bash
 pnpm dev             # Chrome 开发环境
 pnpm dev:ff          # Firefox 开发环境
-pnpm build           # Chrome 类型检查与生产构建
-pnpm build:ff        # Firefox 类型检查与生产构建
+pnpm build           # Chrome 类型检查与生产构建，仅在打包相关改动时使用
+pnpm build:ff        # Firefox 类型检查与生产构建，仅在打包相关改动时使用
 pnpm lint            # ESLint，只读检查
 pnpm styl-lint       # Stylelint，只读检查
 pnpm type-check      # vue-tsc，只读检查
@@ -100,7 +100,16 @@ pnpm type-check      # vue-tsc，只读检查
 
 ## 验证与交付
 
-代码改动后使用 `code-quality-check` skill。至少运行覆盖已变更文件类型的检查。TypeScript 或 Vue 行为改动必须运行 `pnpm type-check`；Manifest、打包、平台或构建配置改动应运行受影响目标的生产构建。
+代码改动完成并趋于稳定后使用 `code-quality-check` skill，根据改动范围选择最小充分检查集。该 skill 是检查选择指南，不表示每次编辑后都要执行所有命令。检查应集中在交付前运行一次；修复检查结果后，只重跑失败项或受修复影响的项目。
+
+- 仅修改 Markdown、注释或其他不参与编译的文档时，不运行 lint、类型检查或构建。
+- 修改 TypeScript 或 Vue 行为时运行 `pnpm type-check`，并对变更文件执行适用的 ESLint 检查。
+- 修改 Vue 样式、SCSS 或 CSS 时，对变更文件执行适用的 Stylelint 检查。
+- 只有改动 `src/manifest.json`、Vite 或构建配置、脚本入口与注册、浏览器平台差异、依赖或其他可能改变产物的内容时，才运行受影响目标的生产构建。
+- 普通组件逻辑、解析器、文案或局部样式改动，不以生产构建代替类型检查和针对性 lint，也不默认运行生产构建。
+- 仅影响 Chrome 或 Firefox 一端时只构建对应目标；共享打包配置或跨浏览器行为发生变化时才构建两端。
+
+不要为了“更保险”重复运行已经通过且未受后续修改影响的检查。若检查无法运行或失败原因与当前改动无关，交付时如实说明，不要声称“测试已通过”。
 
 交付前检查最终 diff，并说明所有未能运行的检查。除非用户明确要求，否则不要提交、打 tag、推送、发布、更新依赖或暂存更新日志。
 
