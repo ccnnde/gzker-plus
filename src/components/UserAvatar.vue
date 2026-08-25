@@ -3,8 +3,6 @@ import { computed } from 'vue';
 
 import { addUnit } from '@/utils';
 
-import UserInfoPopover from './UserInfoPopover.vue';
-
 import type { CSSProperties } from 'vue';
 
 interface Props {
@@ -32,11 +30,9 @@ const imgStyle = computed<CSSProperties>(() => {
 </script>
 
 <template>
-  <UserInfoPopover :uid="uid" :show-after="300">
-    <a :href="userLink" target="_blank">
-      <img class="avatar-img" :style="imgStyle" :src="avatarUrl" />
-    </a>
-  </UserInfoPopover>
+  <a data-gzk-user-info-trigger :data-user-uid="uid" :href="userLink" target="_blank">
+    <img class="avatar-img" :style="imgStyle" :src="avatarUrl" />
+  </a>
 </template>
 
 <style lang="scss" scoped>

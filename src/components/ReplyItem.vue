@@ -152,7 +152,13 @@ const handleReplyEdit = () => {
     <div class="reply-main">
       <div class="reply-header">
         <span>
-          <a class="reply-user user-id" :href="userLink" target="_blank">
+          <a
+            class="reply-user user-id"
+            data-gzk-user-info-trigger
+            :data-user-uid="uid"
+            :href="userLink"
+            target="_blank"
+          >
             {{ uid }}
           </a>
           <span v-if="isOriginalPoster" class="relative">

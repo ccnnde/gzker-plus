@@ -51,6 +51,7 @@ import TopicDetail from './TopicDetail.vue';
 import TopicEditor from './TopicEditor.vue';
 import TopicFooter from './TopicFooter.vue';
 import TopicReply from './TopicReply.vue';
+import TopicUserInfoPopover from './TopicUserInfoPopover.vue';
 
 import type { CSSProperties } from 'vue';
 import type { DialogBeforeCloseFn } from 'element-plus';
@@ -71,6 +72,7 @@ const topicDetail = ref<UserTopicDetail>();
 const topicStatus = ref<UserTopicStatus>();
 const replyTotal = ref<string>('0');
 const isTopicPage = ref<boolean>(false);
+const topicContainer = ref<HTMLDivElement | null>(null);
 
 const showReply = computed(() => {
   return replyTotal.value !== '0';
@@ -779,6 +781,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
       <div v-loading="isLoading || isReplyFirstPageLoading" :style="topicBodyStyle">
         <ElScrollbar ref="scrollbar" @scroll="handleScroll">
           <div
+            ref="topicContainer"
             v-infinite-scroll="getNextReplyData"
             v-viewer="viewerOptions"
             class="topic-container"
@@ -811,6 +814,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
             />
           </div>
         </ElScrollbar>
+        <TopicUserInfoPopover v-if="dialogVisible" :container="topicContainer" />
         <Transition name="el-fade-in-linear" leave-active-class="">
           <ReplyEditor
             ref="replyEditor"

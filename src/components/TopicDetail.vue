@@ -4,6 +4,7 @@ import { inject } from 'vue';
 import { vImgLoad } from '@/directives';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import { SELECTOR_USER_LINK } from '@/constants/selector';
 
 import UserAvatar from './UserAvatar.vue';
 
@@ -25,6 +26,32 @@ const vBlankAnchor: ObjectDirective<HTMLElement> = {
   },
 };
 
+const updateUserInfoTrigger = (el: HTMLElement, uid: string | undefined): void => {
+  const authorAnchor = el.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK);
+
+  if (!authorAnchor) {
+    return;
+  }
+
+  if (!uid) {
+    delete authorAnchor.dataset.gzkUserInfoTrigger;
+    delete authorAnchor.dataset.userUid;
+    return;
+  }
+
+  authorAnchor.dataset.gzkUserInfoTrigger = '';
+  authorAnchor.dataset.userUid = uid;
+};
+
+const vUserInfoTrigger: ObjectDirective<HTMLElement, string | undefined> = {
+  mounted: (el, binding) => {
+    updateUserInfoTrigger(el, binding.value);
+  },
+  updated: (el, binding) => {
+    updateUserInfoTrigger(el, binding.value);
+  },
+};
+
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 </script>
 
@@ -41,7 +68,12 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
       <div class="detail-header-bottom">
         <UserAvatar :uid="authorId" :user-link="authorLink" :avatar-url="avatarUrl" :avatar-size="50" />
         <div v-if="meta" class="detail-info">
-          <span v-blank-anchor class="user-id detail-author" v-html="meta.authorInfo"></span>
+          <span
+            v-blank-anchor
+            v-user-info-trigger="authorId"
+            class="user-id detail-author"
+            v-html="meta.authorInfo"
+          ></span>
           <div class="user-meta detail-meta">
             <span v-blank-anchor v-html="meta.nodeInfo"></span>
             <span v-html="meta.createdTime"></span>

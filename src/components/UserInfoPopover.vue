@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
+import { ElMessage } from 'element-plus';
 
-import { useRequest } from '@/composables/request';
 import { useStorageStore } from '@/stores/storage';
 import { API_USER, blockUser, followUser, getUserInfo, unblockUser } from '@/api';
 
@@ -13,63 +13,136 @@ import type { UserInfo } from '@/types';
 
 interface Props extends Partial<PopoverProps> {
   uid: string;
+  virtualRef?: HTMLElement;
+  virtualTriggering?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  persistent: true,
+  teleported: true,
+  visible: null,
+  virtualTriggering: false,
+});
 
 const emit = defineEmits<{
+  contentFocusin: [event: FocusEvent];
+  contentFocusout: [event: FocusEvent];
+  contentMouseenter: [event: MouseEvent];
+  contentMouseleave: [event: MouseEvent];
   hide: [];
 }>();
 
 const storage = useStorageStore();
 const { settings } = storeToRefs(storage);
 
-const { isLoading, errorOccurred, handleRequest, resetRequestState } = useRequest();
+const isLoading = ref<boolean>(false);
+const errorOccurred = ref<boolean>(false);
 const userInfo = ref<UserInfo>();
+
+let requestVersion = 0;
 
 const isUserMySelf = computed(() => {
   return userInfo.value?.uid === settings.value?.loginUserId;
 });
 
-const handlePopoverShow = () => {
-  handleRequest(async () => {
-    userInfo.value = await getUserInfo(props.uid);
+const isCurrentRequest = (version: number, uid: string): boolean => {
+  return version === requestVersion && uid === props.uid;
+};
+
+const resetRequestState = (): void => {
+  requestVersion += 1;
+  isLoading.value = false;
+  errorOccurred.value = false;
+};
+
+const handleRequestError = (error: unknown): void => {
+  errorOccurred.value = true;
+
+  const requestError = error as Error;
+  ElMessage.error(requestError.message);
+  console.error(error);
+};
+
+const handleUserInfoRequest = async (uid: string, callback: () => Promise<UserInfo>): Promise<void> => {
+  const version = ++requestVersion;
+  isLoading.value = true;
+  errorOccurred.value = false;
+
+  try {
+    const nextUserInfo = await callback();
+
+    if (!isCurrentRequest(version, uid)) {
+      return;
+    }
+
+    userInfo.value = nextUserInfo;
+  } catch (error) {
+    if (!isCurrentRequest(version, uid)) {
+      return;
+    }
+
+    handleRequestError(error);
+  } finally {
+    if (isCurrentRequest(version, uid)) {
+      isLoading.value = false;
+    }
+  }
+};
+
+const handlePopoverShow = (): void => {
+  const uid = props.uid;
+
+  if (!uid) {
+    return;
+  }
+
+  userInfo.value = undefined;
+  handleUserInfoRequest(uid, () => {
+    return getUserInfo(uid);
   });
 };
 
-const handlePopoverHide = () => {
+const handlePopoverHide = (): void => {
+  if (props.visible) {
+    return;
+  }
+
   userInfo.value = undefined;
   resetRequestState();
   emit('hide');
 };
 
-const openUserPage = (path: string = '') => {
+const openUserPage = (path: string = ''): void => {
   window.open(`${API_USER}${userInfo.value?.uid}${path}`);
 };
 
-const handleUserFollow = () => {
-  handleRequest(async () => {
-    if (!userInfo.value) {
-      return;
-    }
+const handleUserFollow = (): void => {
+  const currentUserInfo = userInfo.value;
 
-    userInfo.value = await followUser(userInfo.value.uid);
+  if (!currentUserInfo) {
+    return;
+  }
+
+  handleUserInfoRequest(props.uid, () => {
+    return followUser(currentUserInfo.uid);
   });
 };
 
-const handleUserBlock = () => {
-  handleRequest(async () => {
-    if (!userInfo.value) {
-      return;
-    }
+const handleUserBlock = (): void => {
+  const currentUserInfo = userInfo.value;
 
-    const { memberNo, blocked } = userInfo.value;
+  if (!currentUserInfo) {
+    return;
+  }
+
+  handleUserInfoRequest(props.uid, () => {
+    const { memberNo, blocked } = currentUserInfo;
 
     if (blocked) {
-      userInfo.value = await unblockUser(memberNo);
-    } else {
-      userInfo.value = await blockUser(memberNo);
+      return unblockUser(memberNo);
     }
+
+    return blockUser(memberNo);
   });
 };
 </script>
@@ -81,16 +154,28 @@ const handleUserBlock = () => {
     :popper-style="{ padding: 0 }"
     :show-after="showAfter"
     :hide-after="hideAfter"
+    :visible="visible"
     :disabled="!uid"
+    :virtual-ref="virtualRef"
+    :virtual-triggering="virtualTriggering"
+    :persistent="persistent"
+    :teleported="teleported"
     placement="top"
     @show="handlePopoverShow"
     @hide="handlePopoverHide"
   >
-    <template #reference>
+    <template v-if="!virtualTriggering" #reference>
       <slot></slot>
     </template>
     <template #default>
-      <div v-loading="isLoading" class="user-info-container">
+      <div
+        v-loading="isLoading"
+        class="user-info-container"
+        @mouseenter="emit('contentMouseenter', $event)"
+        @mouseleave="emit('contentMouseleave', $event)"
+        @focusin="emit('contentFocusin', $event)"
+        @focusout="emit('contentFocusout', $event)"
+      >
         <template v-if="userInfo">
           <div class="user-basic-info">
             <img class="user-basic-info-avatar" :src="userInfo.avatarUrl" />
