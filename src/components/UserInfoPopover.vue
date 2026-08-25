@@ -49,13 +49,13 @@ const isCurrentRequest = (version: number, uid: string): boolean => {
   return version === requestVersion && uid === props.uid;
 };
 
-const resetRequestState = (): void => {
+const resetRequestState = () => {
   requestVersion += 1;
   isLoading.value = false;
   errorOccurred.value = false;
 };
 
-const handleRequestError = (error: unknown): void => {
+const handleRequestError = (error: unknown) => {
   errorOccurred.value = true;
 
   const requestError = error as Error;
@@ -63,7 +63,7 @@ const handleRequestError = (error: unknown): void => {
   console.error(error);
 };
 
-const handleUserInfoRequest = async (uid: string, callback: () => Promise<UserInfo>): Promise<void> => {
+const handleUserInfoRequest = async (uid: string, callback: () => Promise<UserInfo>) => {
   const version = ++requestVersion;
   isLoading.value = true;
   errorOccurred.value = false;
@@ -89,7 +89,7 @@ const handleUserInfoRequest = async (uid: string, callback: () => Promise<UserIn
   }
 };
 
-const handlePopoverShow = (): void => {
+const handlePopoverShow = () => {
   const uid = props.uid;
 
   if (!uid) {
@@ -102,7 +102,7 @@ const handlePopoverShow = (): void => {
   });
 };
 
-const handlePopoverHide = (): void => {
+const handlePopoverHide = () => {
   if (props.visible) {
     return;
   }
@@ -112,11 +112,11 @@ const handlePopoverHide = (): void => {
   emit('hide');
 };
 
-const openUserPage = (path: string = ''): void => {
+const openUserPage = (path: string = '') => {
   window.open(`${API_USER}${userInfo.value?.uid}${path}`);
 };
 
-const handleUserFollow = (): void => {
+const handleUserFollow = () => {
   const currentUserInfo = userInfo.value;
 
   if (!currentUserInfo) {
@@ -128,7 +128,7 @@ const handleUserFollow = (): void => {
   });
 };
 
-const handleUserBlock = (): void => {
+const handleUserBlock = () => {
   const currentUserInfo = userInfo.value;
 
   if (!currentUserInfo) {

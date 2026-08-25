@@ -40,17 +40,17 @@ let pointerClientY: number | undefined;
 let pointerInsidePopover = false;
 let imageViewerActive = false;
 
-const clearShowTimer = (): void => {
+const clearShowTimer = () => {
   window.clearTimeout(showTimer);
   showTimer = undefined;
 };
 
-const clearHideTimer = (): void => {
+const clearHideTimer = () => {
   window.clearTimeout(hideTimer);
   hideTimer = undefined;
 };
 
-const clearPositionFrame = (): void => {
+const clearPositionFrame = () => {
   if (positionFrame !== undefined) {
     window.cancelAnimationFrame(positionFrame);
   }
@@ -58,7 +58,7 @@ const clearPositionFrame = (): void => {
   positionFrame = undefined;
 };
 
-const clearPointerCheckFrame = (): void => {
+const clearPointerCheckFrame = () => {
   if (pointerCheckFrame !== undefined) {
     window.cancelAnimationFrame(pointerCheckFrame);
   }
@@ -66,13 +66,13 @@ const clearPointerCheckFrame = (): void => {
   pointerCheckFrame = undefined;
 };
 
-const updateScrollbar = debounce((): void => {
+const updateScrollbar = debounce(() => {
   scrollbar.value?.update();
 }, 500);
 
 provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 
-const close = (): void => {
+const close = () => {
   clearShowTimer();
   clearHideTimer();
   clearPositionFrame();
@@ -82,11 +82,11 @@ const close = (): void => {
   visible.value = false;
 };
 
-const cancelHide = (): void => {
+const cancelHide = () => {
   clearHideTimer();
 };
 
-const updatePointerPosition = (event: MouseEvent): void => {
+const updatePointerPosition = (event: MouseEvent) => {
   pointerClientX = event.clientX;
   pointerClientY = event.clientY;
 };
@@ -105,7 +105,7 @@ const isPointerOverPopover = (): boolean => {
   return Boolean(pointerTarget && mentionRepliesContainer.value?.contains(pointerTarget));
 };
 
-const schedulePointerCheck = (): void => {
+const schedulePointerCheck = () => {
   clearPointerCheckFrame();
   pointerCheckFrame = window.requestAnimationFrame(() => {
     pointerCheckFrame = undefined;
@@ -131,7 +131,7 @@ const getFocusedReplyElement = (): HTMLElement | undefined => {
   return Array.from(replyElements).find(({ dataset }) => dataset.replyNo === focusReplyNo.value);
 };
 
-const positionFocusedReply = (): void => {
+const positionFocusedReply = () => {
   const scrollbarElement = scrollbar.value?.wrapRef;
   const focusedReplyElement = getFocusedReplyElement();
 
@@ -153,7 +153,7 @@ const positionFocusedReply = (): void => {
   scrollbar.value?.update();
 };
 
-const handleBeforeEnter = (): void => {
+const handleBeforeEnter = () => {
   clearPositionFrame();
   positionReady.value = false;
   scrollbar.value?.setScrollTop(0);
@@ -170,7 +170,7 @@ const handleBeforeEnter = (): void => {
   });
 };
 
-const flashFocusedReply = (): void => {
+const flashFocusedReply = () => {
   if (mentionReplies.value.length <= 1) {
     return;
   }
@@ -186,11 +186,11 @@ const flashFocusedReply = (): void => {
   focusedReplyElement.classList.add(REPLY_FLASH_CLASS);
 };
 
-const handleAfterEnter = (): void => {
+const handleAfterEnter = () => {
   flashFocusedReply();
 };
 
-const handleWindowScroll = (event: Event): void => {
+const handleWindowScroll = (event: Event) => {
   if (!visible.value && showTimer === undefined) {
     return;
   }
@@ -207,7 +207,7 @@ const handleWindowScroll = (event: Event): void => {
   schedulePointerCheck();
 };
 
-const handleWindowWheel = (event: WheelEvent): void => {
+const handleWindowWheel = (event: WheelEvent) => {
   if (!visible.value && showTimer === undefined) {
     return;
   }
@@ -228,7 +228,7 @@ const handleWindowWheel = (event: WheelEvent): void => {
   close();
 };
 
-const handleWindowResize = (): void => {
+const handleWindowResize = () => {
   if (imageViewerActive) {
     return;
   }
@@ -261,14 +261,14 @@ const hide = (targetElement?: HTMLAnchorElement): void => {
   }, HIDE_DELAY);
 };
 
-const handlePopoverMouseEnter = (event: MouseEvent): void => {
+const handlePopoverMouseEnter = (event: MouseEvent) => {
   updatePointerPosition(event);
   pointerInsidePopover = true;
   clearPointerCheckFrame();
   cancelHide();
 };
 
-const handlePopoverMouseLeave = (event: MouseEvent): void => {
+const handlePopoverMouseLeave = (event: MouseEvent) => {
   updatePointerPosition(event);
   pointerInsidePopover = false;
 
@@ -277,11 +277,11 @@ const handlePopoverMouseLeave = (event: MouseEvent): void => {
   }
 };
 
-const handleViewerPointerMove = (event: PointerEvent): void => {
+const handleViewerPointerMove = (event: PointerEvent) => {
   updatePointerPosition(event);
 };
 
-const handleImageViewerShow = (): void => {
+const handleImageViewerShow = () => {
   imageViewerActive = true;
   clearHideTimer();
   clearPointerCheckFrame();
@@ -290,7 +290,7 @@ const handleImageViewerShow = (): void => {
   });
 };
 
-const handleImageViewerHidden = (): void => {
+const handleImageViewerHidden = () => {
   window.removeEventListener('pointermove', handleViewerPointerMove);
   imageViewerActive = false;
   schedulePointerCheck();

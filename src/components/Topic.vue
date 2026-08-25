@@ -141,7 +141,7 @@ const {
   scrollBy,
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
-const handleBatchPageLoaded = (data: UserTopic, page: number): void => {
+const handleBatchPageLoaded = (data: UserTopic, page: number) => {
   const {
     detail,
     status,
@@ -214,7 +214,7 @@ watch(isNextBatchLoading, async (nextBatchLoading) => {
   scrollToBottom();
 });
 
-const getNextReplyData = (): void => {
+const getNextReplyData = () => {
   if (isNestedReplyEnabled.value) {
     getNextBatchData();
     return;
@@ -223,7 +223,7 @@ const getNextReplyData = (): void => {
   getNextPageData();
 };
 
-const reloadReplyData = (): void => {
+const reloadReplyData = () => {
   if (isNestedReplyEnabled.value) {
     reloadBatchData();
     return;

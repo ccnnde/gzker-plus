@@ -19,7 +19,7 @@ const renderedContent = computed<string>(() => {
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 
-const handleAnimationEnd = (event: AnimationEvent): void => {
+const handleAnimationEnd = (event: AnimationEvent) => {
   const replyElement = event.currentTarget;
 
   if (replyElement instanceof HTMLElement) {

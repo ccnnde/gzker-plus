@@ -27,7 +27,7 @@ interface LinkifyReplacement {
   trailingText: string;
 }
 
-const setExternalLinkAttributes = (element: HTMLAnchorElement): void => {
+const setExternalLinkAttributes = (element: HTMLAnchorElement) => {
   element.target = '_blank';
   element.relList.add('noopener', 'noreferrer');
 };
@@ -143,7 +143,7 @@ const createLinkifyReplacement = (candidate: string, previousCharacter: string):
   return createUrlReplacement(candidate);
 };
 
-const replaceTextNodeLinks = (textNode: Text): void => {
+const replaceTextNodeLinks = (textNode: Text) => {
   const content = textNode.textContent || '';
   const matches = [...content.matchAll(LINKIFY_TOKEN_REGEXP)];
 
@@ -194,7 +194,7 @@ const getMentionCandidateUid = (mentionElement: HTMLAnchorElement): string | und
   return linkedUid;
 };
 
-const normalizeExistingReplyLinks = (container: DocumentFragment): void => {
+const normalizeExistingReplyLinks = (container: DocumentFragment) => {
   const anchorElements = container.querySelectorAll<HTMLAnchorElement>('a[href]');
 
   anchorElements.forEach((element) => {
@@ -249,7 +249,7 @@ const parsePlainTextMentions = (content: string): UserReplyMention[] => {
   }));
 };
 
-const appendReplyMentions = (node: Node, mentions: UserReplyMention[]): void => {
+const appendReplyMentions = (node: Node, mentions: UserReplyMention[]) => {
   if (node.nodeType === Node.TEXT_NODE) {
     mentions.push(...parsePlainTextMentions(node.textContent || ''));
     return;

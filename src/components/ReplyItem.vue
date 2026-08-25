@@ -72,7 +72,7 @@ const isSameMentionTarget = (mentionAnchor: HTMLAnchorElement, relatedTarget: Ev
   return relatedTarget instanceof Node && mentionAnchor.contains(relatedTarget);
 };
 
-const handleMentionEnter = (event: MouseEvent | FocusEvent): void => {
+const handleMentionEnter = (event: MouseEvent | FocusEvent) => {
   const mentionAnchor = getMentionAnchor(event);
 
   if (!mentionAnchor || isSameMentionTarget(mentionAnchor, event.relatedTarget)) {
@@ -94,7 +94,7 @@ const handleMentionEnter = (event: MouseEvent | FocusEvent): void => {
   });
 };
 
-const handleMentionLeave = (event: MouseEvent | FocusEvent): void => {
+const handleMentionLeave = (event: MouseEvent | FocusEvent) => {
   const mentionAnchor = getMentionAnchor(event);
 
   if (!mentionAnchor || isSameMentionTarget(mentionAnchor, event.relatedTarget)) {

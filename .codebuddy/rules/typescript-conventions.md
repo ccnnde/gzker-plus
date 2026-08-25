@@ -51,7 +51,8 @@ export async function request(url: string, init?: RequestInit): Promise<string> 
 
 ## 类型注解
 
-- 函数参数和返回值必须显式标注类型
+- 函数参数和公开返回值必须显式标注类型
+- 文件内局部函数的返回值能明确推导时省略，尤其不要为无返回值的局部箭头函数添加冗余的 `: void` 或 `Promise<void>`
 - 变量类型能推导时可以不标注
 - `ref` / `computed` 需要显式泛型参数
 

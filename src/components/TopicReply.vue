@@ -68,10 +68,10 @@ const getMentionedUserReplies = (target: MentionRepliesTarget): MentionRepliesRe
 };
 
 const mentionRepliesController: MentionRepliesController = {
-  hide: (referenceElement: HTMLAnchorElement): void => {
+  hide: (referenceElement: HTMLAnchorElement) => {
     mentionRepliesPopover.value?.hide(referenceElement);
   },
-  show: (target: MentionRepliesTarget): void => {
+  show: (target: MentionRepliesTarget) => {
     const { replies, focusReplyNo } = getMentionedUserReplies(target);
     mentionRepliesPopover.value?.show(target.referenceElement, replies, focusReplyNo);
   },

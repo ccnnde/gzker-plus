@@ -25,12 +25,12 @@ let focusedTrigger: HTMLElement | undefined;
 let pointerInsidePopover = false;
 let focusInsidePopover = false;
 
-const clearShowTimer = (): void => {
+const clearShowTimer = () => {
   window.clearTimeout(showTimer);
   showTimer = undefined;
 };
 
-const clearHideTimer = (): void => {
+const clearHideTimer = () => {
   window.clearTimeout(hideTimer);
   hideTimer = undefined;
 };
@@ -68,7 +68,7 @@ const canKeepOpen = (): boolean => {
   );
 };
 
-const close = (): void => {
+const close = () => {
   clearShowTimer();
   clearHideTimer();
   pointerTrigger = undefined;
@@ -78,7 +78,7 @@ const close = (): void => {
   visible.value = false;
 };
 
-const scheduleShow = (): void => {
+const scheduleShow = () => {
   if (showTimer !== undefined) {
     return;
   }
@@ -103,7 +103,7 @@ const scheduleShow = (): void => {
   showTimer = pendingShowTimer;
 };
 
-const show = (triggerElement: HTMLElement): void => {
+const show = (triggerElement: HTMLElement) => {
   const nextUid = triggerElement.dataset.userUid;
 
   if (!nextUid) {
@@ -129,7 +129,7 @@ const show = (triggerElement: HTMLElement): void => {
   scheduleShow();
 };
 
-const hide = (triggerElement?: HTMLElement): void => {
+const hide = (triggerElement?: HTMLElement) => {
   if (triggerElement && referenceElement.value !== triggerElement) {
     return;
   }
@@ -148,7 +148,7 @@ const hide = (triggerElement?: HTMLElement): void => {
   }, HIDE_DELAY);
 };
 
-const handleTriggerEnter = (event: MouseEvent | FocusEvent): void => {
+const handleTriggerEnter = (event: MouseEvent | FocusEvent) => {
   const triggerElement = getTriggerElement(event.target);
 
   if (!triggerElement || isSameTriggerTarget(triggerElement, event.relatedTarget)) {
@@ -164,7 +164,7 @@ const handleTriggerEnter = (event: MouseEvent | FocusEvent): void => {
   show(triggerElement);
 };
 
-const handleTriggerLeave = (event: MouseEvent | FocusEvent): void => {
+const handleTriggerLeave = (event: MouseEvent | FocusEvent) => {
   const triggerElement = getTriggerElement(event.target);
 
   if (!triggerElement || isSameTriggerTarget(triggerElement, event.relatedTarget)) {
@@ -187,22 +187,22 @@ const handleTriggerLeave = (event: MouseEvent | FocusEvent): void => {
   hide(triggerElement);
 };
 
-const handleContentMouseEnter = (): void => {
+const handleContentMouseEnter = () => {
   pointerInsidePopover = true;
   clearHideTimer();
 };
 
-const handleContentMouseLeave = (): void => {
+const handleContentMouseLeave = () => {
   pointerInsidePopover = false;
   hide();
 };
 
-const handleContentFocusIn = (): void => {
+const handleContentFocusIn = () => {
   focusInsidePopover = true;
   clearHideTimer();
 };
 
-const handleContentFocusOut = (event: FocusEvent): void => {
+const handleContentFocusOut = (event: FocusEvent) => {
   const currentTarget = event.currentTarget;
 
   if (
@@ -217,14 +217,14 @@ const handleContentFocusOut = (event: FocusEvent): void => {
   hide();
 };
 
-const addContainerListeners = (container: HTMLDivElement): void => {
+const addContainerListeners = (container: HTMLDivElement) => {
   container.addEventListener('mouseover', handleTriggerEnter);
   container.addEventListener('mouseout', handleTriggerLeave);
   container.addEventListener('focusin', handleTriggerEnter);
   container.addEventListener('focusout', handleTriggerLeave);
 };
 
-const removeContainerListeners = (container: HTMLDivElement): void => {
+const removeContainerListeners = (container: HTMLDivElement) => {
   container.removeEventListener('mouseover', handleTriggerEnter);
   container.removeEventListener('mouseout', handleTriggerLeave);
   container.removeEventListener('focusin', handleTriggerEnter);

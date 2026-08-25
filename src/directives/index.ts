@@ -4,7 +4,7 @@ interface HTMLElementWithRemoveListeners extends HTMLElement {
   __removeListeners__?: () => void;
 }
 
-const setupImgListeners = (el: HTMLElementWithRemoveListeners, callback: (() => void) | undefined): void => {
+const setupImgListeners = (el: HTMLElementWithRemoveListeners, callback: (() => void) | undefined) => {
   el.__removeListeners__?.();
 
   const imgElements = el.querySelectorAll('img');

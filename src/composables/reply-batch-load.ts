@@ -77,7 +77,7 @@ export const useReplyBatchLoad = ({
     return context.sessionVersion === sessionVersion && context.loadVersion === loadVersion;
   };
 
-  const updatePageData = (page: number, data: UserTopic): void => {
+  const updatePageData = (page: number, data: UserTopic) => {
     totalReplyNumber = Number(data.reply.total);
     pageCache.set(page, data.reply.list);
     pageLoadedCallback(data, page);
@@ -87,7 +87,7 @@ export const useReplyBatchLoad = ({
     return Array.from({ length: lastPage - firstPage + 1 }, (_, index) => firstPage + index);
   };
 
-  const loadPageNumbers = async (pageNumbers: number[], context: LoadContext): Promise<void> => {
+  const loadPageNumbers = async (pageNumbers: number[], context: LoadContext) => {
     const missingPageNumbers = pageNumbers.filter((page) => !pageCache.has(page));
 
     if (!missingPageNumbers.length) {
@@ -122,7 +122,7 @@ export const useReplyBatchLoad = ({
     }
   };
 
-  const commitBatch = (firstPage: number, lastPage: number): void => {
+  const commitBatch = (firstPage: number, lastPage: number) => {
     const pageNumbers = getPageNumbers(firstPage, lastPage);
     const list = pageNumbers.flatMap((page) => pageCache.get(page) || []);
     const batch: UserReplyBatch = {
@@ -136,7 +136,7 @@ export const useReplyBatchLoad = ({
     noMoreData.value = lastPage >= getTotalPageNumber();
   };
 
-  const getNextBatchData = async (): Promise<void> => {
+  const getNextBatchData = async () => {
     if (!currentTopicId || isLoading.value || noMoreData.value) {
       return;
     }
@@ -195,7 +195,7 @@ export const useReplyBatchLoad = ({
     }
   };
 
-  const startBatchLoad = async (topicId: string, batchPageCount: number, firstPageData?: UserTopic): Promise<void> => {
+  const startBatchLoad = async (topicId: string, batchPageCount: number, firstPageData?: UserTopic) => {
     resetBatchLoadState();
 
     currentTopicId = topicId;
@@ -209,13 +209,13 @@ export const useReplyBatchLoad = ({
     await getNextBatchData();
   };
 
-  const reloadBatchData = async (): Promise<void> => {
+  const reloadBatchData = async () => {
     errorOccurred.value = false;
     noMoreData.value = false;
     await getNextBatchData();
   };
 
-  const setBatchPageCount = (batchPageCount: number): void => {
+  const setBatchPageCount = (batchPageCount: number) => {
     if (currentBatchPageCount === batchPageCount) {
       return;
     }
@@ -234,7 +234,7 @@ export const useReplyBatchLoad = ({
     getNextBatchData();
   };
 
-  const updateLastPageData = (total: string, lastPageData: UserReplyItem[]): void => {
+  const updateLastPageData = (total: string, lastPageData: UserReplyItem[]) => {
     const previousNoMoreData = noMoreData.value;
     totalReplyNumber = Number(total);
 
@@ -274,7 +274,7 @@ export const useReplyBatchLoad = ({
     noMoreData.value = lastLoadedPage.value >= getTotalPageNumber();
   };
 
-  const resetBatchLoadState = (): void => {
+  const resetBatchLoadState = () => {
     sessionVersion++;
     loadVersion++;
     abortController?.abort();

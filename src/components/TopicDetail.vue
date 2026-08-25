@@ -26,7 +26,7 @@ const vBlankAnchor: ObjectDirective<HTMLElement> = {
   },
 };
 
-const updateUserInfoTrigger = (el: HTMLElement, uid: string | undefined): void => {
+const updateUserInfoTrigger = (el: HTMLElement, uid: string | undefined) => {
   const authorAnchor = el.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK);
 
   if (!authorAnchor) {
