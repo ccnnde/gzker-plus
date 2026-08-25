@@ -187,7 +187,7 @@ const getMentionCandidateUid = (mentionElement: HTMLAnchorElement): string | und
   const mentionText = mentionElement.textContent?.trim() || '';
   const textUid = mentionText.match(MENTION_LINK_TEXT_REGEXP)?.[1];
 
-  if (!linkedUid || !textUid || linkedUid.toLowerCase() !== textUid.toLowerCase()) {
+  if (!linkedUid || !textUid || linkedUid !== textUid) {
     return undefined;
   }
 
@@ -227,7 +227,7 @@ const getLinkifiableTextNodes = (container: DocumentFragment): Text[] => {
   return textNodes;
 };
 
-const getMentionFloor = (mentionElement: HTMLAnchorElement): string | undefined => {
+const getReplyMentionFloor = (mentionElement: HTMLAnchorElement): string | undefined => {
   const nextSiblingText = mentionElement.nextSibling?.textContent || '';
   return nextSiblingText.match(FLOOR_TEXT_REGEXP)?.[1];
 };
@@ -269,7 +269,7 @@ const appendReplyMentions = (node: Node, mentions: UserReplyMention[]): void => 
       if (uid) {
         mentions.push({
           uid,
-          floor: getMentionFloor(anchorElement),
+          floor: getReplyMentionFloor(anchorElement),
         });
       }
 
@@ -312,4 +312,4 @@ export const parseReplyMentions = (content?: string): UserReplyMention[] => {
   return mentions;
 };
 
-export { getReplyMentionUid };
+export { getReplyMentionFloor, getReplyMentionUid };

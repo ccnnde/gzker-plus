@@ -878,7 +878,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .topic-dialog,
-.conversation-dialog {
+.mention-replies-popover {
   img {
     max-width: 100%;
   }
@@ -921,6 +921,12 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 
   .number-info {
     color: var(--el-text-color-secondary);
+  }
+}
+
+.mention-replies-popover {
+  .mention-reply-item-content {
+    margin: 0;
   }
 }
 
@@ -982,7 +988,6 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 .topic-dialog,
 .topic-editor-dialog,
 .reply-editor-dialog,
-.conversation-dialog,
 .editor-help-dialog {
   border-radius: var(--el-border-radius-base);
 
@@ -1000,8 +1005,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .reply-editor-dialog,
-.editor-history-dialog,
-.conversation-dialog {
+.editor-history-dialog {
   width: 40%;
 
   @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);

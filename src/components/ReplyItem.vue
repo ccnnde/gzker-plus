@@ -6,12 +6,14 @@ import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
 import { getEditedReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
-import { parseReplyMentions, renderReplyContent } from '@/utils/reply-content';
+import { getReplyMentionFloor, getReplyMentionUid, renderReplyContent } from '@/utils/reply-content';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
+  MENTION_REPLIES_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
+import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
 
 import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
@@ -23,19 +25,16 @@ interface Props extends UserReplyItem {
   avatarSize?: number;
   compact?: boolean;
   isNotInConversation?: boolean;
-  showConversationAction?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   avatarSize: 40,
   compact: false,
   isNotInConversation: true,
-  showConversationAction: true,
 });
 
 const emit = defineEmits<{
   likeReply: [msg: string];
-  viewConversation: [mentionUids: string[]];
 }>();
 
 const { isLoading, handleRequest } = useRequest();
@@ -46,24 +45,70 @@ const renderedContent = computed<string>(() => {
   return renderReplyContent(content);
 });
 
-const mentionUids = computed<string[]>(() => {
-  const uids = parseReplyMentions(props.content).map(({ uid }) => uid);
-  return [...new Set(uids)];
-});
+const mentionReplies = inject(MENTION_REPLIES_INJECTION_KEY);
 
-const hasMention = computed<boolean>(() => {
-  return Boolean(mentionUids.value.length);
-});
+const getMentionAnchor = (event: Event): HTMLAnchorElement | null => {
+  if (!mentionReplies) {
+    return null;
+  }
+
+  const target = event.target;
+  const currentTarget = event.currentTarget;
+
+  if (!(target instanceof Element) || !(currentTarget instanceof HTMLElement)) {
+    return null;
+  }
+
+  const mentionAnchor = target.closest<HTMLAnchorElement>(SELECTOR_USER_MENTION_LINK);
+
+  if (!mentionAnchor || !currentTarget.contains(mentionAnchor)) {
+    return null;
+  }
+
+  return mentionAnchor;
+};
+
+const isSameMentionTarget = (mentionAnchor: HTMLAnchorElement, relatedTarget: EventTarget | null): boolean => {
+  return relatedTarget instanceof Node && mentionAnchor.contains(relatedTarget);
+};
+
+const handleMentionEnter = (event: MouseEvent | FocusEvent): void => {
+  const mentionAnchor = getMentionAnchor(event);
+
+  if (!mentionAnchor || isSameMentionTarget(mentionAnchor, event.relatedTarget)) {
+    return;
+  }
+
+  const mentionUid = getReplyMentionUid(mentionAnchor);
+
+  if (!mentionUid) {
+    return;
+  }
+
+  mentionReplies?.show({
+    replyId: props.replyId,
+    replyNo: props.replyNo,
+    mentionFloor: getReplyMentionFloor(mentionAnchor),
+    mentionUid,
+    referenceElement: mentionAnchor,
+  });
+};
+
+const handleMentionLeave = (event: MouseEvent | FocusEvent): void => {
+  const mentionAnchor = getMentionAnchor(event);
+
+  if (!mentionAnchor || isSameMentionTarget(mentionAnchor, event.relatedTarget)) {
+    return;
+  }
+
+  mentionReplies?.hide(mentionAnchor);
+};
 
 const handleReplyLike = () => {
   handleRequest(async () => {
     const data = await likeReply(props.replyId);
     emit('likeReply', data);
   });
-};
-
-const handleConversationView = () => {
-  emit('viewConversation', mentionUids.value);
 };
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
@@ -95,7 +140,12 @@ const handleReplyEdit = () => {
 </script>
 
 <template>
-  <div ref="replyItemEl" v-loading="isLoading" :class="['reply-container', { 'reply-container-compact': compact }]">
+  <div
+    ref="replyItemEl"
+    v-loading="isLoading"
+    :class="['reply-container', { 'reply-container-compact': compact }]"
+    :data-reply-no="replyNo"
+  >
     <div class="reply-avatar">
       <UserAvatar :uid="uid" :user-link="userLink" :avatar-url="avatarUrl" :avatar-size="avatarSize" />
     </div>
@@ -117,16 +167,19 @@ const handleReplyEdit = () => {
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
       </div>
-      <div v-img-load="updateScrollbar" class="main-content markdown-body" v-html="renderedContent"></div>
+      <div
+        v-img-load="updateScrollbar"
+        class="main-content markdown-body"
+        @mouseover="handleMentionEnter"
+        @mouseout="handleMentionLeave"
+        @focusin="handleMentionEnter"
+        @focusout="handleMentionLeave"
+        v-html="renderedContent"
+      ></div>
       <div class="reply-footer">
         <LikeButton :liked="liked" :like-number="likeNumber" hide-tip @handle-like="handleReplyLike" />
         <template v-if="isNotInConversation">
           <OperateButton icon-class="i-mdi-chat-outline" @click="handleUserReply" />
-          <OperateButton
-            v-if="showConversationAction && hasMention"
-            :operate-text="$t('enhancedTopic.viewConversation')"
-            @click="handleConversationView"
-          />
           <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editReply')" @click="handleReplyEdit" />
         </template>
       </div>

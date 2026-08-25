@@ -218,7 +218,6 @@
     "confirmDeleteEditHistory": "Are you sure you want to delete this edit history?",
     "confirmImportEditHistory": "Importing this edit history will overwrite the current content of the editor. Are you sure you want to continue?",
     "confirmUnblockTopic": "Are you sure you want to unblock the topic [{title}] ? Refresh the forum after unblocking to take effect",
-    "conversationList": "List of conversations",
     "copyLinkSuccessfully": "Link copied successfully",
     "createReply": "Create reply",
     "createTopic": "Create topic",
@@ -230,8 +229,8 @@
     "editTopicSuccessful": "Edit topic successful",
     "editorHelp": "Editor help",
     "editorHistory": "History record",
-    "haveNotMentionAnyUser": "This reply hasn't mentioned any user",
     "like": "Like",
+    "mentionRepliesTitle": "{uid}'s previous replies",
     "mentionWho": "mention whom?",
     "noReply": "No replies yet, what do you think?",
     "originalPoster": "OP",
@@ -256,7 +255,6 @@
     "uploadImgMaxSize": "Image size cannot exceed {size}MB",
     "uploadImgOnly": "Only image files can be uploaded",
     "uploading": "Uploading",
-    "viewConversation": "View conversation",
     "writeReply": "Write reply"
   },
   "floatUserInfo": {

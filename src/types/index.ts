@@ -226,6 +226,19 @@ export interface UserReplyItem {
   editable?: boolean;
 }
 
+export interface MentionRepliesTarget {
+  replyId?: string;
+  replyNo?: string;
+  mentionFloor?: string;
+  mentionUid: string;
+  referenceElement: HTMLAnchorElement;
+}
+
+export interface MentionRepliesController {
+  hide: (referenceElement: HTMLAnchorElement) => void;
+  show: (target: MentionRepliesTarget) => void;
+}
+
 export interface UserReplyMention {
   uid: string;
   floor?: string;

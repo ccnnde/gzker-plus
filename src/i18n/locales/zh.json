@@ -218,7 +218,6 @@
     "confirmDeleteEditHistory": "确定要删除该历史记录吗？",
     "confirmImportEditHistory": "导入该历史记录会覆盖编辑器当前的内容，确定继续吗？",
     "confirmUnblockTopic": "确定解除屏蔽主题【{title}】？解除屏蔽后刷新论坛即可生效",
-    "conversationList": "对话列表",
     "copyLinkSuccessfully": "复制链接成功",
     "createReply": "创建回复",
     "createTopic": "创建主题",
@@ -230,8 +229,8 @@
     "editTopicSuccessful": "编辑主题成功",
     "editorHelp": "编辑器帮助",
     "editorHistory": "历史记录",
-    "haveNotMentionAnyUser": "此回复未提及任何用户",
     "like": "点赞",
+    "mentionRepliesTitle": "{uid} 之前的回复",
     "mentionWho": "想提到谁？",
     "noReply": "暂无回复，这事你怎么看",
     "originalPoster": "楼主",
@@ -256,7 +255,6 @@
     "uploadImgMaxSize": "图片大小不能超过 {size}MB",
     "uploadImgOnly": "只能上传图片文件",
     "uploading": "上传中",
-    "viewConversation": "查看对话",
     "writeReply": "写回复"
   },
   "floatUserInfo": {

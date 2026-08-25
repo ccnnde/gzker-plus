@@ -117,7 +117,6 @@ const isChildSharedRailTerminalPath = (index: number): boolean => {
         v-bind="node.reply"
         :avatar-size="node.depth === 0 ? 40 : 32"
         :compact="node.depth > 0"
-        :show-conversation-action="false"
         @like-reply="handleReplyLike(node.reply, $event)"
       />
     </div>
