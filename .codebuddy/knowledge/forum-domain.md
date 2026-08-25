@@ -166,9 +166,12 @@ export const CAN_NOT_FAVORITE_YOUR_TOPIC = 'can_not_favorite_your_topic';
 ### 用户 @ 提及
 
 ```html
-<a href="/u/{uid}" class="user-mention">@用户名</a>
+<a href="/u/{uid}">@用户名</a>
 <!-- SELECTOR_USER_MENTION_LINK -->
 ```
+
+提及识别不依赖特定 class。候选链接必须同时满足 `/u/{uid}` 路径、可见文本为 `@{uid}`，并且两处 UID
+按大小写敏感方式一致；引用块和代码块中的候选链接不作为有效提及。
 
 ## 论坛行为特性
 

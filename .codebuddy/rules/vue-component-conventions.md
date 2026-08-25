@@ -186,6 +186,14 @@ const handleClick = () => {
 
 ## 模板规范
 
+### 多语言
+
+模板中的国际化统一使用 `$t()`，脚本中使用 `t()`。普通文本占位符直接通过参数对象传入，不使用 `I18nT` 或 `<i18n-t>`，也不要从 `vue-i18n` 导入 `I18nT`。
+
+```vue
+<span>{{ $t('enhancedTopic.replyTotal', { num: total }) }}</span>
+```
+
 | 类型              | 命名方式       | 示例                                                       |
 | ----------------- | -------------- | ---------------------------------------------------------- |
 | Vue 组件          | **PascalCase** | `<ElementConfig>`, `<TopicDetail>`, `<ReplyEditor>`        |

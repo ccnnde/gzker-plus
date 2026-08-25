@@ -14,7 +14,8 @@ description: '在中英文 locale JSON 及其调用位置中新增、重命名�
 - key 使用 camelCase，占位符使用 `{variableName}`。
 - 同一改动中同步新增、删除或重命名两个 locale 的 key，保持对象结构和占位符名称完全一致。
 - 在修改的对象层级维持仓库现有的字母顺序。
-- TypeScript 中使用 `t()`，模板中使用 `$t()`，具体方式遵循相邻代码。路由标题使用 `options.{routeName}`。
+- Locale JSON 中的用户可见文案直接写可读字符，不使用 `\uXXXX` Unicode 转义。
+- TypeScript 中使用 `t()`，模板中使用 `$t()`；普通占位符通过参数对象传入，不使用 `I18nT` 或 `<i18n-t>`。路由标题使用 `options.{routeName}`。
 - 不要翻译 API token、存储 key、选择器或其他机器可读值。
 
 编辑后解析两个 JSON 文件，对比修改过的 key 路径，并通过 `$code-quality-check` 运行适用的格式化和 lint 检查。

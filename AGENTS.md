@@ -66,6 +66,7 @@ pnpm type-check      # vue-tsc，只读检查
 - Props 和 Emits 使用类型参数定义；只有需要默认值时才使用 `withDefaults`。
 - 全局事件监听在 `onMounted` 中注册，并在 `onUnmounted` 中移除。
 - Vue、Element Plus 和 Vue 内置组件使用 PascalCase；HTML 元素使用小写；模板属性和事件使用 kebab-case。
+- 模板中的国际化统一使用 `$t()`，脚本中使用 `t()`；普通占位符通过参数对象传入，不使用 `I18nT` 或 `<i18n-t>`。Locale JSON 中的用户可见文案直接写可读字符，不使用 `\uXXXX` Unicode 转义。
 - 多行标签每行一个属性，顺序为：`ref`、Vue 指令、class/style、其他 props、事件。`>` 与最后一个属性同行，闭合标签与开始标签对齐。
 - 组件样式保持 scoped。覆盖子组件时使用 `:deep()`，不要额外添加非 scoped 的 SFC 样式块。
 - Scoped CSS 类必须带由组件名转换而来的 kebab-case 前缀。跨组件公共类应定义在全局非 scoped 样式中。
