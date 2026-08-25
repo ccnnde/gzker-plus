@@ -116,7 +116,11 @@ const parseTopicReplyList = (htmlStr: string): UserReplyItem[] => {
   replyList.shift();
 
   return replyList.map((item): UserReplyItem => {
-    const [timeMatch, ipMatch] = [...item.matchAll(/<span class="time">([^<|楼主]+)<\/span>/g)];
+    const metaHtmlStr = item.match(/<div class="meta">(.+?)<\/div>/s)?.[1] || '';
+    const uncommentedMetaHtmlStr = metaHtmlStr.replace(/<!--.*?-->/gs, '');
+    const [timeMatch, ipMatch] = [
+      ...uncommentedMetaHtmlStr.matchAll(/<span class="time">(?!(?:楼主|管理员)<\/span>)([^<]+)<\/span>/g),
+    ];
 
     return {
       uid: item.match(/<a href="\/u\/([^"]+)"( target="_blank")?>/)?.[1],
@@ -124,7 +128,10 @@ const parseTopicReplyList = (htmlStr: string): UserReplyItem[] => {
       avatarUrl: item.match(
         /<a href="\/u\/[^"]+"(?: target="_blank")?>\n\s+<img src="([^"]+)" alt="" class="avatar"( \/)?>/,
       )?.[1],
-      isOriginalPoster: /<span class="time">楼主<\/span>/.test(item),
+      isOriginalPoster: /<span class="time">楼主<\/span>/.test(uncommentedMetaHtmlStr),
+      isAdministrator: /<i class="icon-group" title="管理员"><\/i>|<span class="time">管理员<\/span>/.test(
+        uncommentedMetaHtmlStr,
+      ),
       replyId: item.match(/<a class="J_replyVote" data-count="\d+" href="\/replyVote\?reply_id=(\d+)">/)?.[1],
       replyNo: item.match(/<span class="fr floor">#(\d+)<\/span>/)?.[1],
       replyTime: timeMatch?.[1],

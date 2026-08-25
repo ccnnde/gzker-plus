@@ -204,6 +204,7 @@
     "viewAll": "查看全部"
   },
   "enhancedTopic": {
+    "administrator": "管理员",
     "alreadyBlockTopic": "该主题已经被屏蔽，请勿重复操作",
     "blockTopic": "屏蔽主题",
     "blockTopicSuccessful": "屏蔽主题成功",

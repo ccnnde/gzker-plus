@@ -216,6 +216,7 @@ export interface UserReplyItem {
   userLink?: string;
   avatarUrl?: string;
   isOriginalPoster?: boolean;
+  isAdministrator?: boolean;
   replyId?: string;
   replyNo?: string;
   replyTime?: string;

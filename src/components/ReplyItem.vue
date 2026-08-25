@@ -160,6 +160,11 @@ const handleReplyEdit = () => {
               {{ $t('enhancedTopic.originalPoster') }}
             </ElTag>
           </span>
+          <span v-else-if="isAdministrator" class="relative">
+            <ElTag class="absolute" type="danger" size="small">
+              {{ $t('enhancedTopic.administrator') }}
+            </ElTag>
+          </span>
         </span>
         <span class="number-info">#{{ replyNo }}</span>
       </div>

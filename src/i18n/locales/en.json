@@ -204,6 +204,7 @@
     "viewAll": "View All"
   },
   "enhancedTopic": {
+    "administrator": "Administrator",
     "alreadyBlockTopic": "The topic has already been blocked, please do not repeat the operation",
     "blockTopic": "Block topic",
     "blockTopicSuccessful": "Topic blocked successfully",
