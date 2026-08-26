@@ -45,9 +45,3 @@ Subject 应简洁、无结尾句号，并突出最主要的行为变化。只有
 | ↩️    | `revert`   | 回退                 |
 
 优先选择聚焦的 scope，例如 `views`、`scripts`、`components`、`api`、`stores`、`composables`、`utils`、`styles`、`types`、`constants`、`router`、`background`、`i18n`、`assets`、`deps` 或 `release`。没有单一 scope 能准确描述改动时可以省略。
-
-本仓库 Codex 配置可使用：
-
-```text
-📃 docs: 添加 Codex 项目配置
-```

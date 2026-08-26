@@ -16,6 +16,5 @@ description: '在中英文 locale JSON 及其调用位置中新增、重命名�
 - 在修改的对象层级维持仓库现有的字母顺序。
 - Locale JSON 中的用户可见文案直接写可读字符，不使用 `\uXXXX` Unicode 转义。
 - TypeScript 中使用 `t()`，模板中使用 `$t()`；普通占位符通过参数对象传入，不使用 `I18nT` 或 `<i18n-t>`。路由标题使用 `options.{routeName}`。
-- 不要翻译 API token、存储 key、选择器或其他机器可读值。
 
-编辑后解析两个 JSON 文件，对比修改过的 key 路径，并通过 `$code-quality-check` 运行适用的格式化和 lint 检查。
+编辑后解析两个 JSON 文件，对比修改过的 key 路径。

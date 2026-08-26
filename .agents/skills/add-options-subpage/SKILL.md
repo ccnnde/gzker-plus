@@ -5,7 +5,7 @@ description: '在 gzker-plus 扩展选项 SPA 中新增或修改路由子页面�
 
 # 添加选项子页面
 
-先阅读 `.codebuddy/knowledge/architecture.md`，并检查当前 `src/router/index.ts`、`src/constants/index.ts`、`src/layout/OptionsAside.vue` 及相邻视图。选择 Element Plus 或 UnoCSS 模式时再阅读 `.codebuddy/knowledge/external-integrations.md`。
+先检查当前 `src/router/index.ts`、`src/constants/index.ts`、`src/layout/OptionsAside.vue` 及相邻视图。选择 Element Plus 或 UnoCSS 模式时，以现有组件、依赖和配置中的用法为准。
 
 ## 实现要求
 
@@ -13,7 +13,5 @@ description: '在 gzker-plus 扩展选项 SPA 中新增或修改路由子页面�
 2. 在 `src/router/index.ts` 中添加懒加载路由，包含 `name`、`component` 和 `meta.title`。侧边栏需要图标时添加 `meta.icon`，并保留动态图标类所需的 `// @unocss-include` 标记。
 3. 在 kebab-case 的 `src/views/{feature}/` 目录下创建 PascalCase Vue 视图；静态说明页可以直接路由到 Markdown 文件。
 4. 遵循现有选项页布局和 Storage Store 模式。如果 `OptionsAside.vue` 仍自动遍历路由表，不要重复添加手工侧边栏配置。
-5. 在两个 locale 中添加 `options.{routeName}`。消息较多时使用 `$add-i18n`。
-6. 确认默认重定向和现有路由顺序仍然合理。不要仅因为新增页面就增加存储状态。
-
-数组元素类型无法推导时使用类型化 ref，不要写无类型的 `ref([])`。完成后使用 `$code-quality-check`；路由加载或 Markdown 打包变化时执行构建。
+5. 在两个 locale 中添加 `options.{routeName}`。
+6. 确认默认重定向和现有路由顺序仍然合理。
