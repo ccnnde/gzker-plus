@@ -75,8 +75,8 @@ const isBadgeDot = computed(() => {
   return bellStyle.value === BellStyle.BadgeDot;
 });
 
-const getMsgListCallback = async (page: number): Promise<UserMessage[]> => {
-  const list = await getUserMsgList(page);
+const getMsgListCallback = async (page: number, signal: AbortSignal): Promise<UserMessage[]> => {
+  const list = await getUserMsgList(page, signal);
   return list;
 };
 

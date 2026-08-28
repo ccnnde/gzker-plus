@@ -83,7 +83,7 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
       lastReplyUser: htmlStr.match(/<span class="last-reply-username">(.+?)<\/span>/s)?.[1],
       lastReplyTime: htmlStr.match(/<span class="last-reply-time">(.+)<\/span>/)?.[1],
     },
-    content: htmlStr.match(/<div class="ui-content">(.+)<\/div>\s+?<div class="ui-footer">/s)?.[1],
+    content: htmlStr.match(/<div class="ui-content">(.+?)<\/div>\s+?<div class="ui-footer">/s)?.[1],
     liked: /<a href="" class="J_topicVote" data-type="">感谢已表示<\/a>/.test(htmlStr),
     likeNumber: htmlStr.match(/<span class="up_vote fr mr10">(\d+) 人赞<\/span>/)?.[1],
     favorited: /<a href="[^"]+" class="J_topicFavorite" data-type="unfavorite">取消收藏<\/a>/.test(htmlStr),
@@ -94,9 +94,8 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
 };
 
 const parseTopicStatus = (htmlStr: string): UserTopicStatus => {
-  const createReplyHtmlStr = htmlStr
-    .split('<div class="topic-reply-create')[1]
-    .split('<div class="col-md-3 sidebar-right')[0];
+  const createReplyHtmlStr =
+    htmlStr.split('<div class="topic-reply-create')[1]?.split('<div class="col-md-3 sidebar-right')[0] || '';
 
   return {
     unbindedPhone: /请绑定手机号后，再发言/.test(createReplyHtmlStr),
@@ -237,8 +236,10 @@ export const unblockUser = async (memberNo?: string): Promise<UserInfo> => {
   return parseUserInfo(data);
 };
 
-export const getUserMsgList = async (page: number): Promise<UserMessage[]> => {
-  const data = await request(`${API_MSG}?p=${page}`);
+export const getUserMsgList = async (page: number, signal?: AbortSignal): Promise<UserMessage[]> => {
+  const data = await request(`${API_MSG}?p=${page}`, {
+    signal,
+  });
   await waitTime();
   return parseUserMsgList(data);
 };
