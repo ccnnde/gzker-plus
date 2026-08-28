@@ -103,6 +103,10 @@
       "titleDesc": "启用楼中楼时，设置每批除当前页外预加载的回复页数；浏览到当前批次底部后再加载下一批",
       "twoPages": "预加载 2 页"
     },
+    "reverseReplyOrder": {
+      "title": "倒序浏览回复",
+      "titleDesc": "打开主题时默认从最新回复开始倒序浏览，楼中楼内对话仍保持正序；主题底部可临时切换顺序"
+    },
     "smApiKey": {
       "apiAvailable": "SM.MS 接口可以使用",
       "checkApi": "验证接口",
@@ -244,6 +248,8 @@
     "shareLink": "复制链接",
     "shareWeChat": "微信扫码",
     "shareWeibo": "新浪微博",
+    "switchToAscOrder": "切换为正序浏览",
+    "switchToDescOrder": "切换为倒序浏览",
     "topicContent": "内容",
     "topicContentCannotBeEmpty": "主题内容不能为空",
     "topicContentIsUnderReview": "发布主题成功，请等待管理员审核",

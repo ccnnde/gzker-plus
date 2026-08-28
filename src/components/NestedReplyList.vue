@@ -9,6 +9,7 @@ interface Props {
   batches: UserReplyBatch[];
   display: NestedReplyDisplay;
   multipleInsideOne: boolean;
+  reverse?: boolean;
 }
 
 defineProps<Props>();
@@ -24,6 +25,7 @@ defineProps<Props>();
     :batch="batch"
     :display="display"
     :multiple-inside-one="multipleInsideOne"
+    :reverse="reverse"
   />
 </template>
 

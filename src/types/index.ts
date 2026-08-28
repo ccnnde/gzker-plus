@@ -15,6 +15,7 @@ import type {
   LinkElementType,
   NestedReplyDisplay,
   OptionsKey,
+  ReplyOrder,
   ReplyPreloadMode,
   ReplyType,
 } from '@/constants';
@@ -107,6 +108,7 @@ export interface Options {
     mode: ReplyPreloadMode;
   };
   [OptionsKey.NestedReplyMultipleInsideOne]: CheckedOption;
+  [OptionsKey.ReverseReplyOrder]: CheckedOption;
 }
 
 export interface CheckedOption {
@@ -257,6 +259,19 @@ export interface UserReplyBatch {
   endPage: number;
   list: UserReplyItem[];
 }
+
+export interface PageLoadContext {
+  direction: ReplyOrder;
+  signal: AbortSignal;
+  isCurrent: () => boolean;
+}
+
+export interface PageDataSeed<T> {
+  page: number;
+  data: T;
+}
+
+export type PageLoadRunner = (callback: (context: PageLoadContext) => Promise<void>) => Promise<boolean>;
 
 export interface TreeNode {
   value?: string;

@@ -23,6 +23,7 @@ interface Props {
   likeNumber?: string;
   editable?: boolean;
   height: number;
+  reverseReply?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -32,6 +33,7 @@ defineEmits<{
   likeTopic: [];
   editTopic: [];
   blockTopic: [];
+  toggleReplyOrder: [];
 }>();
 
 const { isDark } = useDarkMode();
@@ -74,6 +76,18 @@ const footerStyle = computed<CSSProperties>(() => {
   };
 });
 
+const showReplyOrderButton = computed<boolean>(() => {
+  return props.replyTotal !== '0';
+});
+
+const replyOrderIconClass = computed<string>(() => {
+  return props.reverseReply ? 'i-mdi-sort-ascending' : 'i-mdi-sort-descending';
+});
+
+const replyOrderTip = computed<string>(() => {
+  return props.reverseReply ? t('enhancedTopic.switchToAscOrder') : t('enhancedTopic.switchToDescOrder');
+});
+
 const copyTopicUrl = async () => {
   await navigator.clipboard.writeText(topicUrl.value);
   ElMessage.success(t('enhancedTopic.copyLinkSuccessfully'));
@@ -101,6 +115,12 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       @click="$emit('favoriteTopic')"
     />
     <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="$emit('likeTopic')" />
+    <OperateButton
+      v-if="showReplyOrderButton"
+      :tip-content="replyOrderTip"
+      :icon-class="replyOrderIconClass"
+      @click="$emit('toggleReplyOrder')"
+    />
     <ElDropdown trigger="click">
       <span>
         <OperateButton :tip-content="$t('enhancedTopic.share')" icon-class="i-mdi-share-variant-outline" />

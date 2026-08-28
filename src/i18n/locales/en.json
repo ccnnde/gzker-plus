@@ -103,6 +103,10 @@
       "titleDesc": "When nested replies are enabled, choose how many reply pages to preload after the current page in each batch. The next batch loads when you reach the bottom",
       "twoPages": "Preload 2 pages"
     },
+    "reverseReplyOrder": {
+      "title": "Browse replies in reverse order",
+      "titleDesc": "Open topics starting from the latest reply by default; conversations inside nested threads remain in chronological order. You can temporarily switch the order at the bottom of the topic"
+    },
     "smApiKey": {
       "apiAvailable": "SM.MS API is available",
       "checkApi": "Check API",
@@ -244,6 +248,8 @@
     "shareLink": "Copy Link",
     "shareWeChat": "Scan with WeChat",
     "shareWeibo": "Share on Weibo",
+    "switchToAscOrder": "Switch to ascending order",
+    "switchToDescOrder": "Switch to descending order",
     "topicContent": "Content",
     "topicContentCannotBeEmpty": "The topic content cannot be empty",
     "topicContentIsUnderReview": "Topic published successfully. Please wait for administrator review",

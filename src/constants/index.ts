@@ -167,6 +167,11 @@ export const REPLY_PRELOAD_PAGE_COUNT: Record<ReplyPreloadMode, number> = {
   [ReplyPreloadMode.TwoPages]: 3,
 };
 
+export const enum ReplyOrder {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DarkMode = 'darkMode',
@@ -185,6 +190,7 @@ export const enum OptionsKey {
   NestedReplyDisplay = 'nestedReplyDisplay',
   ReplyPreload = 'replyPreload',
   NestedReplyMultipleInsideOne = 'nestedReplyMultipleInsideOne',
+  ReverseReplyOrder = 'reverseReplyOrder',
 }
 
 export const defaultExtensionOptions: Options = {
@@ -238,6 +244,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.NestedReplyMultipleInsideOne]: {
     checked: true,
+  },
+  [OptionsKey.ReverseReplyOrder]: {
+    checked: false,
   },
 };
 

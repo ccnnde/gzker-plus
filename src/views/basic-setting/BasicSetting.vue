@@ -87,6 +87,11 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.nestedReplyMultipleInsideOne.titleDesc'),
           key: OptionsKey.NestedReplyMultipleInsideOne,
         },
+        {
+          name: t('basicSetting.reverseReplyOrder.title'),
+          description: t('basicSetting.reverseReplyOrder.titleDesc'),
+          key: OptionsKey.ReverseReplyOrder,
+        },
       ],
     },
     {

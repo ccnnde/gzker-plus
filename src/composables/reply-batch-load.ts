@@ -1,7 +1,11 @@
 import { computed, ref } from 'vue';
 
+import { ReplyOrder } from '@/constants';
+
+import { usePageLoadSession } from './page-load-session';
+
 import type { ComputedRef, Ref } from 'vue';
-import type { UserReplyBatch, UserReplyItem, UserTopic } from '@/types';
+import type { PageDataSeed, PageLoadContext, PageLoadRunner, UserReplyBatch, UserReplyItem, UserTopic } from '@/types';
 
 interface UseReplyBatchLoadOptions {
   pageSize: number;
@@ -10,21 +14,33 @@ interface UseReplyBatchLoadOptions {
   errorCallback: (error: Error) => void;
 }
 
-interface LoadContext {
-  sessionVersion: number;
-  loadVersion: number;
-  signal: AbortSignal;
+interface StartBatchLoadOptions {
+  /**
+   * 倒序加载（从最后一页向第一页递减）
+   */
+  reverse?: boolean;
+
+  /**
+   * 已知的回复总数，倒序加载时用于计算起始页码和修正跨页变化
+   */
+  knownTotal?: number;
+
+  /**
+   * 已解析或已请求的页面数据，仅写入缓存，加载游标到达时再显示
+   */
+  pageSeeds?: PageDataSeed<UserTopic>[];
 }
 
 interface UseReplyBatchLoadResult {
   batches: Ref<UserReplyBatch[]>;
   dataList: ComputedRef<UserReplyItem[]>;
   lastLoadedPage: Ref<number>;
+  isLoading: Ref<boolean>;
   isFirstBatchLoading: ComputedRef<boolean>;
   isNextBatchLoading: ComputedRef<boolean>;
   disableBatchLoad: ComputedRef<boolean>;
   errorOccurred: Ref<boolean>;
-  startBatchLoad: (topicId: string, batchPageCount: number, firstPageData?: UserTopic) => Promise<void>;
+  startBatchLoad: (topicId: string, batchPageCount: number, options?: StartBatchLoadOptions) => Promise<void>;
   getNextBatchData: () => Promise<void>;
   reloadBatchData: () => Promise<void>;
   setBatchPageCount: (batchPageCount: number) => void;
@@ -40,18 +56,17 @@ export const useReplyBatchLoad = ({
 }: UseReplyBatchLoadOptions): UseReplyBatchLoadResult => {
   const batches = ref<UserReplyBatch[]>([]);
   const lastLoadedPage = ref<number>(0);
-  const isLoading = ref<boolean>(false);
-  const errorOccurred = ref<boolean>(false);
   const noMoreData = ref<boolean>(true);
+  const { isLoading, errorOccurred, isReverse, startSession, runLoad, retryLoad, cancelLoad, resetSession } =
+    usePageLoadSession({
+      errorCallback,
+    });
 
   const pageCache = new Map<number, UserReplyItem[]>();
 
   let currentTopicId = '';
   let currentBatchPageCount = 1;
   let totalReplyNumber = 0;
-  let sessionVersion = 0;
-  let loadVersion = 0;
-  let abortController: AbortController | undefined;
 
   const dataList = computed<UserReplyItem[]>(() => {
     return batches.value.flatMap(({ list }) => list);
@@ -73,10 +88,6 @@ export const useReplyBatchLoad = ({
     return Math.ceil(totalReplyNumber / pageSize);
   };
 
-  const isLoadContextCurrent = (context: LoadContext): boolean => {
-    return context.sessionVersion === sessionVersion && context.loadVersion === loadVersion;
-  };
-
   const updatePageData = (page: number, data: UserTopic) => {
     totalReplyNumber = Number(data.reply.total);
     pageCache.set(page, data.reply.list);
@@ -87,7 +98,7 @@ export const useReplyBatchLoad = ({
     return Array.from({ length: lastPage - firstPage + 1 }, (_, index) => firstPage + index);
   };
 
-  const loadPageNumbers = async (pageNumbers: number[], context: LoadContext) => {
+  const loadPageNumbers = async (pageNumbers: number[], context: PageLoadContext) => {
     const missingPageNumbers = pageNumbers.filter((page) => !pageCache.has(page));
 
     if (!missingPageNumbers.length) {
@@ -105,7 +116,7 @@ export const useReplyBatchLoad = ({
       }),
     );
 
-    if (!isLoadContextCurrent(context)) {
+    if (!context.isCurrent()) {
       return;
     }
 
@@ -122,7 +133,7 @@ export const useReplyBatchLoad = ({
     }
   };
 
-  const commitBatch = (firstPage: number, lastPage: number) => {
+  const commitBatch = (firstPage: number, lastPage: number, direction: ReplyOrder) => {
     const pageNumbers = getPageNumbers(firstPage, lastPage);
     const list = pageNumbers.flatMap((page) => pageCache.get(page) || []);
     const batch: UserReplyBatch = {
@@ -132,35 +143,95 @@ export const useReplyBatchLoad = ({
     };
 
     batches.value = [...batches.value, batch];
-    lastLoadedPage.value = lastPage;
-    noMoreData.value = lastPage >= getTotalPageNumber();
+    lastLoadedPage.value = direction === ReplyOrder.Desc ? firstPage : lastPage;
+    noMoreData.value = direction === ReplyOrder.Desc ? firstPage <= 1 : lastPage >= getTotalPageNumber();
   };
 
-  const getNextBatchData = async () => {
+  const commitNextCachedBatch = (direction: ReplyOrder): boolean => {
+    if (direction === ReplyOrder.Desc) {
+      const boundaryPage = lastLoadedPage.value === 0 ? getTotalPageNumber() + 1 : lastLoadedPage.value;
+      const nextPage = boundaryPage - 1;
+
+      if (nextPage < 1) {
+        noMoreData.value = true;
+        return true;
+      }
+
+      const firstPage = Math.max(1, nextPage - currentBatchPageCount + 1);
+      const pageNumbers = getPageNumbers(firstPage, nextPage);
+
+      if (pageNumbers.some((page) => !pageCache.has(page))) {
+        return false;
+      }
+
+      commitBatch(firstPage, nextPage, direction);
+      return true;
+    }
+
+    const firstPage = lastLoadedPage.value + 1;
+
+    if (firstPage === 1 && !pageCache.has(1)) {
+      return false;
+    }
+
+    const totalPageNumber = getTotalPageNumber();
+
+    if (totalPageNumber === 0) {
+      noMoreData.value = true;
+      return true;
+    }
+
+    const lastPage = Math.min(firstPage + currentBatchPageCount - 1, totalPageNumber);
+    const pageNumbers = getPageNumbers(firstPage, lastPage);
+
+    if (pageNumbers.some((page) => !pageCache.has(page))) {
+      return false;
+    }
+
+    commitBatch(firstPage, lastPage, direction);
+    return true;
+  };
+
+  const loadNextBatchData = async (runner: PageLoadRunner = runLoad): Promise<void> => {
     if (!currentTopicId || isLoading.value || noMoreData.value) {
       return;
     }
 
-    const currentSessionVersion = sessionVersion;
-    const currentLoadVersion = ++loadVersion;
-    abortController = new AbortController();
-    const context: LoadContext = {
-      sessionVersion: currentSessionVersion,
-      loadVersion: currentLoadVersion,
-      signal: abortController.signal,
-    };
+    const direction = isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc;
 
-    isLoading.value = true;
-    errorOccurred.value = false;
+    if (commitNextCachedBatch(direction)) {
+      return;
+    }
 
-    try {
+    await runner(async (context) => {
+      if (context.direction === ReplyOrder.Desc) {
+        // 倒序：边界页（首屏为总页数 + 1 的虚拟边界）向下加载更旧的页
+        const boundaryPage = lastLoadedPage.value === 0 ? getTotalPageNumber() + 1 : lastLoadedPage.value;
+        const nextPage = boundaryPage - 1;
+
+        if (nextPage < 1) {
+          noMoreData.value = true;
+          return;
+        }
+
+        const firstPage = Math.max(1, nextPage - currentBatchPageCount + 1);
+        await loadPageNumbers(getPageNumbers(firstPage, nextPage), context);
+
+        if (!context.isCurrent()) {
+          return;
+        }
+
+        commitBatch(firstPage, nextPage, context.direction);
+        return;
+      }
+
       const firstPage = lastLoadedPage.value + 1;
 
       if (firstPage === 1 && !pageCache.has(1)) {
         await loadPageNumbers([1], context);
       }
 
-      if (!isLoadContextCurrent(context)) {
+      if (!context.isCurrent()) {
         return;
       }
 
@@ -175,44 +246,48 @@ export const useReplyBatchLoad = ({
       const pageNumbers = getPageNumbers(firstPage, lastPage);
       await loadPageNumbers(pageNumbers, context);
 
-      if (!isLoadContextCurrent(context)) {
+      if (!context.isCurrent()) {
         return;
       }
 
-      commitBatch(firstPage, lastPage);
-    } catch (err) {
-      if (!isLoadContextCurrent(context) || context.signal.aborted) {
-        return;
-      }
-
-      errorOccurred.value = true;
-      errorCallback(err as Error);
-      console.error(err);
-    } finally {
-      if (isLoadContextCurrent(context)) {
-        isLoading.value = false;
-      }
-    }
+      commitBatch(firstPage, lastPage, context.direction);
+    });
   };
 
-  const startBatchLoad = async (topicId: string, batchPageCount: number, firstPageData?: UserTopic) => {
-    resetBatchLoadState();
+  const getNextBatchData = async (): Promise<void> => {
+    await loadNextBatchData();
+  };
+
+  const startBatchLoad = async (topicId: string, batchPageCount: number, options?: StartBatchLoadOptions) => {
+    const direction = options?.reverse ? ReplyOrder.Desc : ReplyOrder.Asc;
+    startSession(direction);
+
+    currentTopicId = '';
+    totalReplyNumber = 0;
+    pageCache.clear();
+    batches.value = [];
+    lastLoadedPage.value = 0;
 
     currentTopicId = topicId;
     currentBatchPageCount = batchPageCount;
     noMoreData.value = false;
 
-    if (firstPageData) {
-      updatePageData(1, firstPageData);
+    options?.pageSeeds?.forEach(({ page, data }) => {
+      if (page > 0) {
+        updatePageData(page, data);
+      }
+    });
+
+    if (direction === ReplyOrder.Desc) {
+      totalReplyNumber = Math.max(options?.knownTotal ?? totalReplyNumber, 0);
     }
 
     await getNextBatchData();
   };
 
   const reloadBatchData = async () => {
-    errorOccurred.value = false;
     noMoreData.value = false;
-    await getNextBatchData();
+    await loadNextBatchData(retryLoad);
   };
 
   const setBatchPageCount = (batchPageCount: number) => {
@@ -226,10 +301,7 @@ export const useReplyBatchLoad = ({
       return;
     }
 
-    loadVersion++;
-    abortController?.abort();
-    isLoading.value = false;
-    errorOccurred.value = false;
+    cancelLoad();
     noMoreData.value = false;
     getNextBatchData();
   };
@@ -248,7 +320,7 @@ export const useReplyBatchLoad = ({
       }
 
       pageCache.set(lastPage, lastPageData);
-      commitBatch(lastPage, lastPage);
+      commitBatch(lastPage, lastPage, isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc);
       return;
     }
 
@@ -275,10 +347,7 @@ export const useReplyBatchLoad = ({
   };
 
   const resetBatchLoadState = () => {
-    sessionVersion++;
-    loadVersion++;
-    abortController?.abort();
-    abortController = undefined;
+    resetSession();
 
     currentTopicId = '';
     totalReplyNumber = 0;
@@ -286,8 +355,6 @@ export const useReplyBatchLoad = ({
 
     batches.value = [];
     lastLoadedPage.value = 0;
-    isLoading.value = false;
-    errorOccurred.value = false;
     noMoreData.value = true;
   };
 
@@ -295,6 +362,7 @@ export const useReplyBatchLoad = ({
     batches,
     dataList,
     lastLoadedPage,
+    isLoading,
     isFirstBatchLoading,
     isNextBatchLoading,
     disableBatchLoad,

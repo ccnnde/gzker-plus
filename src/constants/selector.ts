@@ -4,6 +4,11 @@
 export const SELECTOR_TOPIC_LINK = 'a[href^="/t/"]:not([href*="?p="])';
 
 /**
+ * Topic reply total element
+ */
+export const SELECTOR_TOPIC_REPLY_TOTAL = '.flat-reply-list-total, .nested-reply-list-total';
+
+/**
  * 用户链接元素
  */
 export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';

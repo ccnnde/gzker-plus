@@ -33,6 +33,7 @@ import {
   NestedReplyDisplay,
   OptionsKey,
   REPLY_PRELOAD_PAGE_COUNT,
+  ReplyOrder,
   ReplyPreloadMode,
   topicLinkRegExp,
 } from '@/constants';
@@ -42,7 +43,7 @@ import {
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
-import { SELECTOR_TOPIC_LINK } from '@/constants/selector';
+import { SELECTOR_TOPIC_LINK, SELECTOR_TOPIC_REPLY_TOTAL } from '@/constants/selector';
 
 import ElementConfig from './ElementConfig.vue';
 import LoadError from './LoadError.vue';
@@ -55,7 +56,7 @@ import TopicUserInfoPopover from './TopicUserInfoPopover.vue';
 
 import type { CSSProperties } from 'vue';
 import type { DialogBeforeCloseFn } from 'element-plus';
-import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type { PageDataSeed, UserReplyBatch, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 import 'viewerjs/dist/viewer.css';
 
@@ -67,12 +68,65 @@ const { options } = storeToRefs(storage);
 const { closeOnClickModal } = useClickModal(DialogType.TopicViewer);
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
+const isTopicPreloadLoading = ref<boolean>(false);
+const topicPreloadError = ref<boolean>(false);
 const topicId = ref<string>();
 const topicDetail = ref<UserTopicDetail>();
 const topicStatus = ref<UserTopicStatus>();
 const replyTotal = ref<string>('0');
 const isTopicPage = ref<boolean>(false);
 const topicContainer = ref<HTMLDivElement | null>(null);
+const replyOrder = ref<ReplyOrder>(ReplyOrder.Asc);
+
+let topicPreloadVersion = 0;
+let topicPreloadAbortController: AbortController | undefined;
+let replyOrderToggleVersion = 0;
+
+const resetTopicPreloadRequestState = () => {
+  topicPreloadVersion++;
+  topicPreloadAbortController?.abort();
+  topicPreloadAbortController = undefined;
+  isTopicPreloadLoading.value = false;
+  topicPreloadError.value = false;
+};
+
+const isReverseReply = computed<boolean>(() => {
+  return replyOrder.value === ReplyOrder.Desc;
+});
+
+const initReplyOrder = () => {
+  replyOrder.value = options.value?.[OptionsKey.ReverseReplyOrder]?.checked ? ReplyOrder.Desc : ReplyOrder.Asc;
+};
+
+const getParsedTopicPage = (search: string, total: string, list: UserReplyItem[]) => {
+  const requestedPage = Number(new URLSearchParams(search).get('p'));
+
+  if (requestedPage > 0) {
+    return requestedPage;
+  }
+
+  const firstReplyNo = Number(list[0]?.replyNo);
+
+  if (firstReplyNo > 0) {
+    return Math.ceil(firstReplyNo / PAGE_SIZE);
+  }
+
+  return total === '0' ? 1 : Math.max(Math.ceil(Number(total) / PAGE_SIZE), 1);
+};
+
+const createTopicPageSeed = (page: number, data: UserTopic): PageDataSeed<UserTopic> | undefined => {
+  const total = Number(data.reply.total);
+  const totalPageNumber = Math.max(Math.ceil(total / PAGE_SIZE), 1);
+
+  if (page < 1 || page > totalPageNumber || (total > 0 && data.reply.list.length === 0)) {
+    return undefined;
+  }
+
+  return {
+    page,
+    data,
+  };
+};
 
 const showReply = computed(() => {
   return replyTotal.value !== '0';
@@ -107,12 +161,22 @@ const isTopicLinkBlank = computed(() => {
   return checkedLinkTypes.includes(LinkElementType.Topic);
 });
 
-const getTopicCallback = async (page: number): Promise<UserReplyItem[]> => {
+const getTopicCallback = async (page: number, signal: AbortSignal): Promise<UserReplyItem[]> => {
+  const currentTopicId = topicId.value;
+
+  if (!currentTopicId) {
+    return [];
+  }
+
   const {
     detail,
     status,
     reply: { total, list },
-  } = await getUserTopic(topicId.value, page);
+  } = await getUserTopic(currentTopicId, page, signal);
+
+  if (signal.aborted || topicId.value !== currentTopicId) {
+    return [];
+  }
 
   topicDetail.value = detail;
   topicStatus.value = status;
@@ -131,6 +195,8 @@ const {
   errorOccurred,
   getFirstPageData,
   getNextPageData,
+  startForwardLoad,
+  startReverseLoad,
   reloadPageData,
   reloadFirstPageData,
   updateCurrentPageData,
@@ -139,6 +205,7 @@ const {
   scrollToTop,
   scrollToBottom,
   scrollBy,
+  scrollToElement,
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
 const handleBatchPageLoaded = (data: UserTopic, page: number) => {
@@ -160,6 +227,7 @@ const {
   batches: replyBatches,
   dataList: nestedReplyList,
   lastLoadedPage: lastNestedReplyPage,
+  isLoading: isBatchLoading,
   isFirstBatchLoading,
   isNextBatchLoading,
   disableBatchLoad,
@@ -194,7 +262,7 @@ const isReplyNextPageLoading = computed<boolean>(() => {
 });
 
 const replyLoadError = computed<boolean>(() => {
-  return isNestedReplyEnabled.value ? batchLoadError.value : errorOccurred.value;
+  return topicPreloadError.value || (isNestedReplyEnabled.value ? batchLoadError.value : errorOccurred.value);
 });
 
 const disableReplyInfiniteScroll = computed<boolean>(() => {
@@ -205,8 +273,8 @@ const isReplyFirstPage = computed<boolean>(() => {
   return isNestedReplyEnabled.value ? replyBatches.value.length === 0 : isFirstPage.value;
 });
 
-watch(isNextBatchLoading, async (nextBatchLoading) => {
-  if (!nextBatchLoading) {
+watch(isBatchLoading, async (loading) => {
+  if (!loading || replyBatches.value.length === 0) {
     return;
   }
 
@@ -224,12 +292,277 @@ const getNextReplyData = () => {
 };
 
 const reloadReplyData = () => {
+  if (topicPreloadError.value) {
+    resetTopicPreloadRequestState();
+    loadTopicReplies();
+    return;
+  }
+
   if (isNestedReplyEnabled.value) {
     reloadBatchData();
     return;
   }
 
   reloadPageData();
+};
+
+/**
+ * 倒序首屏预请求：获取最新回复总数并缓存第一页数据
+ */
+const preloadFirstPageTopic = async (): Promise<UserTopic | undefined> => {
+  const currentTopicId = topicId.value;
+
+  if (!currentTopicId) {
+    return undefined;
+  }
+
+  const preloadVersion = ++topicPreloadVersion;
+  topicPreloadAbortController?.abort();
+
+  const abortController = new AbortController();
+  topicPreloadAbortController = abortController;
+  isTopicPreloadLoading.value = true;
+  topicPreloadError.value = false;
+
+  try {
+    const firstPageData = await getUserTopic(currentTopicId, 1, abortController.signal);
+
+    if (preloadVersion !== topicPreloadVersion || abortController.signal.aborted || topicId.value !== currentTopicId) {
+      return undefined;
+    }
+
+    topicDetail.value = firstPageData.detail;
+    topicStatus.value = firstPageData.status;
+    replyTotal.value = firstPageData.reply.total;
+    return firstPageData;
+  } catch (err) {
+    if (preloadVersion !== topicPreloadVersion || abortController.signal.aborted) {
+      return undefined;
+    }
+
+    topicPreloadError.value = true;
+    ElMessage.error((err as Error).message);
+    console.error(err);
+    return undefined;
+  } finally {
+    if (preloadVersion === topicPreloadVersion) {
+      topicPreloadAbortController = undefined;
+      isTopicPreloadLoading.value = false;
+    }
+  }
+};
+
+/**
+ * 当前主题加载是否已失效（用户已切换主题或关闭对话框）
+ */
+const isTopicLoadStale = (loadedTopicId: string): boolean => {
+  return topicId.value !== loadedTopicId || !dialogVisible.value;
+};
+
+/**
+ * 回复加载统一入口：按当前顺序与楼中楼设置分发到对应的加载链路
+ */
+const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTopic>[] }) => {
+  const loadedTopicId = topicId.value;
+  const loadedReplyOrder = replyOrder.value;
+  const loadedNestedReplyEnabled = isNestedReplyEnabled.value;
+
+  if (!loadedTopicId) {
+    return;
+  }
+
+  let pageSeeds = [...(loadOptions?.pageSeeds || [])];
+
+  if (loadedReplyOrder === ReplyOrder.Desc && pageSeeds.length === 0) {
+    const firstPageData = await preloadFirstPageTopic();
+
+    if (firstPageData) {
+      pageSeeds = [
+        {
+          page: 1,
+          data: firstPageData,
+        },
+      ];
+    }
+  }
+
+  if (
+    isTopicLoadStale(loadedTopicId) ||
+    replyOrder.value !== loadedReplyOrder ||
+    isNestedReplyEnabled.value !== loadedNestedReplyEnabled
+  ) {
+    return;
+  }
+
+  if (loadedReplyOrder === ReplyOrder.Desc) {
+    const initialPageSeed = pageSeeds[0];
+
+    if (!initialPageSeed) {
+      return;
+    }
+
+    const initialTotal = Number(initialPageSeed.data.reply.total);
+    const initialLastPage = Math.ceil(initialTotal / PAGE_SIZE);
+    const loadReverseData = async (
+      lastPage: number,
+      total: number,
+      cachedPageSeeds: PageDataSeed<UserTopic>[],
+    ): Promise<void> => {
+      if (loadedNestedReplyEnabled) {
+        await startBatchLoad(loadedTopicId, replyBatchPageCount.value, {
+          pageSeeds: cachedPageSeeds,
+          reverse: true,
+          knownTotal: total,
+        });
+        return;
+      }
+
+      const replyPageSeeds: PageDataSeed<UserReplyItem[]>[] = cachedPageSeeds.map(({ page, data }) => {
+        return {
+          page,
+          data: data.reply.list,
+        };
+      });
+      await startReverseLoad(lastPage, replyPageSeeds);
+    };
+
+    await loadReverseData(initialLastPage, initialTotal, pageSeeds);
+
+    if (
+      isTopicLoadStale(loadedTopicId) ||
+      replyOrder.value !== loadedReplyOrder ||
+      isNestedReplyEnabled.value !== loadedNestedReplyEnabled
+    ) {
+      return;
+    }
+
+    const correctedLastPage = Math.ceil(Number(replyTotal.value) / PAGE_SIZE);
+
+    if (correctedLastPage !== initialLastPage) {
+      const correctedPageSeeds: PageDataSeed<UserTopic>[] = pageSeeds
+        .filter(({ page }) => page <= Math.max(correctedLastPage, 1))
+        .map(({ page, data }) => {
+          return {
+            page,
+            data: {
+              ...data,
+              reply: {
+                ...data.reply,
+                total: replyTotal.value,
+              },
+            },
+          };
+        });
+      await loadReverseData(correctedLastPage, Number(replyTotal.value), correctedPageSeeds);
+    }
+
+    return;
+  }
+
+  const totalPageNumber = pageSeeds[0] ? Math.ceil(Number(pageSeeds[0].data.reply.total) / PAGE_SIZE) : undefined;
+
+  if (loadedNestedReplyEnabled) {
+    await startBatchLoad(loadedTopicId, replyBatchPageCount.value, {
+      pageSeeds,
+    });
+    return;
+  }
+
+  const replyPageSeeds: PageDataSeed<UserReplyItem[]>[] = pageSeeds.map(({ page, data }) => {
+    return {
+      page,
+      data: data.reply.list,
+    };
+  });
+  await startForwardLoad(replyPageSeeds, totalPageNumber);
+};
+
+const scrollToReplyTotal = async (): Promise<void> => {
+  await nextTick();
+
+  const replyTotalElement = topicContainer.value?.querySelector<HTMLElement>(SELECTOR_TOPIC_REPLY_TOTAL);
+
+  if (replyTotalElement) {
+    scrollToElement(replyTotalElement);
+  }
+};
+
+const handleToggleReplyOrder = async (): Promise<void> => {
+  const toggleVersion = ++replyOrderToggleVersion;
+  const nextReplyOrder = isReverseReply.value ? ReplyOrder.Asc : ReplyOrder.Desc;
+
+  resetTopicPreloadRequestState();
+  replyOrder.value = nextReplyOrder;
+
+  resetScrollLoadState();
+  resetBatchLoadState();
+  await loadTopicReplies();
+
+  if (toggleVersion !== replyOrderToggleVersion || replyOrder.value !== nextReplyOrder) {
+    return;
+  }
+
+  await scrollToReplyTotal();
+};
+
+/**
+ * 倒序楼中楼：发回复后更新顶部 batch（正序最后一页所在批次）
+ */
+const updateReverseTopBatch = (oldTotal: number, newTotal: number, lastPageList: UserReplyItem[]) => {
+  const newLastPage = Math.ceil(newTotal / PAGE_SIZE);
+  const oldLastPage = Math.ceil(oldTotal / PAGE_SIZE);
+
+  if (newLastPage < oldLastPage) {
+    return;
+  }
+
+  if (newLastPage > oldLastPage) {
+    const newBatch: UserReplyBatch = {
+      startPage: newLastPage,
+      endPage: newLastPage,
+      list: lastPageList,
+    };
+
+    replyBatches.value = [newBatch, ...replyBatches.value];
+    return;
+  }
+
+  const topBatch = replyBatches.value[0];
+
+  if (!topBatch || topBatch.endPage !== oldLastPage) {
+    return;
+  }
+
+  const oldTopPageLength = oldTotal - (oldLastPage - 1) * PAGE_SIZE;
+  const reservedList = topBatch.list.slice(0, Math.max(topBatch.list.length - oldTopPageLength, 0));
+  const updatedTopBatch: UserReplyBatch = {
+    ...topBatch,
+    list: reservedList.concat(lastPageList),
+  };
+
+  replyBatches.value = [updatedTopBatch, ...replyBatches.value.slice(1)];
+};
+
+/**
+ * 倒序扁平：发回复后更新顶部页（正序最后一页）
+ */
+const updateReverseTopPage = (oldTotal: number, newTotal: number, lastPageList: UserReplyItem[]) => {
+  const newLastPage = Math.ceil(newTotal / PAGE_SIZE);
+  const oldLastPage = Math.ceil(oldTotal / PAGE_SIZE);
+
+  if (newLastPage < oldLastPage) {
+    return;
+  }
+
+  const reversedList = [...lastPageList].reverse();
+
+  if (newLastPage > oldLastPage) {
+    replyList.value = reversedList.concat(replyList.value);
+    return;
+  }
+
+  const oldTopPageLength = oldTotal - (oldLastPage - 1) * PAGE_SIZE;
+  replyList.value = reversedList.concat(replyList.value.slice(oldTopPageLength));
 };
 
 const getFirstPageTopicData = (list: UserReplyItem[]): UserTopic | undefined => {
@@ -256,10 +589,27 @@ watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => 
     return;
   }
 
+  if (isReverseReply.value) {
+    // 倒序下两种模式的数据形状不兼容（扁平为纯倒序、楼中楼为页组），直接重载首屏
+    resetScrollLoadState();
+    resetBatchLoadState();
+    loadTopicReplies();
+    return;
+  }
+
   if (nestedReplyEnabled) {
     const firstPageData = getFirstPageTopicData(replyList.value);
     resetScrollLoadState();
-    startBatchLoad(topicId.value, replyBatchPageCount.value, firstPageData);
+    startBatchLoad(topicId.value, replyBatchPageCount.value, {
+      pageSeeds: firstPageData
+        ? [
+            {
+              page: 1,
+              data: firstPageData,
+            },
+          ]
+        : [],
+    });
     return;
   }
 
@@ -278,7 +628,7 @@ watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => 
 onBeforeMount(() => {
   insertTopicButton();
 
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
 
   if (!topicLinkRegExp.test(pathname)) {
     return;
@@ -286,6 +636,7 @@ onBeforeMount(() => {
 
   topicId.value = pathname.match(topicLinkRegExp)?.[1];
   isTopicPage.value = true;
+  initReplyOrder();
 
   let parsedTopic: UserTopic;
 
@@ -303,32 +654,24 @@ onBeforeMount(() => {
     status,
     reply: { total, list },
   } = parsedTopic;
+  const parsedTopicPage = getParsedTopicPage(search, total, list);
+
+  topicDetail.value = detail;
+  topicStatus.value = status;
+  replyTotal.value = total;
+
+  openDialog();
 
   /**
-   * 新标签页查看主题时
-   * 1. 若为首页数据，则直接使用解析当前 DOM 得到的主题数据（减少重复请求）
-   * 2. 否则调用接口请求数据
+   * 新标签页查看主题时，将当前 DOM 对应页作为隐藏缓存：
+   * 加载器仍从正序首页或倒序末页开始展示，仅请求尚未缓存的页面。
    */
-  if (total === '0' || list[0].replyNo === '1') {
-    topicDetail.value = detail;
-    topicStatus.value = status;
-    replyTotal.value = total;
-
-    if (isNestedReplyEnabled.value && topicId.value) {
-      startBatchLoad(topicId.value, replyBatchPageCount.value, parsedTopic);
-    } else {
-      updateCurrentPageData(total, list);
-    }
-  } else {
-    if (isNestedReplyEnabled.value && topicId.value) {
-      startBatchLoad(topicId.value, replyBatchPageCount.value);
-    } else {
-      getFirstPageData();
-    }
-  }
+  const parsedTopicPageSeed = createTopicPageSeed(parsedTopicPage, parsedTopic);
+  loadTopicReplies({
+    pageSeeds: parsedTopicPageSeed ? [parsedTopicPageSeed] : [],
+  });
 
   hideGlobalLoading();
-  openDialog();
 });
 
 onMounted(() => {
@@ -392,13 +735,10 @@ const handleTopicClick = (e: Event) => {
   }
 
   topicId.value = href.match(topicLinkRegExp)?.[1];
+  initReplyOrder();
   openDialog();
 
-  if (isNestedReplyEnabled.value && topicId.value) {
-    startBatchLoad(topicId.value, replyBatchPageCount.value);
-  } else {
-    getFirstPageData();
-  }
+  loadTopicReplies();
 };
 
 const handleCreateTopicClick = async (e: Event) => {
@@ -529,10 +869,26 @@ const handleTopicSended = (data: UserTopic) => {
   topicDetail.value = detail;
   replyTotal.value = total;
 
-  if (isNestedReplyEnabled.value && topicId.value) {
-    startBatchLoad(topicId.value, replyBatchPageCount.value, data);
+  if (isReverseReply.value) {
+    loadTopicReplies({
+      pageSeeds: [
+        {
+          page: 1,
+          data,
+        },
+      ],
+    });
+  } else if (isNestedReplyEnabled.value && topicId.value) {
+    startBatchLoad(topicId.value, replyBatchPageCount.value, {
+      pageSeeds: [
+        {
+          page: 1,
+          data,
+        },
+      ],
+    });
   } else {
-    reloadFirstPageData(list);
+    reloadFirstPageData(list, Number(total));
   }
 
   setTimeout(scrollToTop, 0);
@@ -544,14 +900,26 @@ const handleReplySended = (data: UserTopic) => {
     reply: { total, list },
   } = data;
 
+  const oldTotal = Number(replyTotal.value);
+
   topicDetail.value = detail;
   replyTotal.value = total;
 
   if (isNestedReplyEnabled.value) {
-    updateLastPageData(total, list);
-  } else {
-    updateCurrentPageData(total, list);
+    if (isReverseReply.value) {
+      updateReverseTopBatch(oldTotal, Number(total), list);
+    } else {
+      updateLastPageData(total, list);
+    }
+    return;
   }
+
+  if (isReverseReply.value) {
+    updateReverseTopPage(oldTotal, Number(total), list);
+    return;
+  }
+
+  updateCurrentPageData(total, list);
 };
 
 const handleTopicDialogOpened = () => {
@@ -570,11 +938,13 @@ const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
 
 const handleTopicDialogClosed = () => {
   document.removeEventListener('keydown', handleKeydown);
+  replyOrderToggleVersion++;
 
   topicId.value = undefined;
   topicDetail.value = undefined;
   replyTotal.value = '0';
   currentScrollDistance.value = 0;
+  initReplyOrder();
 
   isReplyEditorFullscreen.value = false;
   replyEditor.value?.resetEditHistoryId();
@@ -584,6 +954,7 @@ const handleTopicDialogClosed = () => {
 
   showTopicFooter();
   resetRequestState();
+  resetTopicPreloadRequestState();
   resetScrollLoadState();
   resetBatchLoadState();
 };
@@ -778,7 +1149,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
-      <div v-loading="isLoading || isReplyFirstPageLoading" :style="topicBodyStyle">
+      <div v-loading="isLoading || isTopicPreloadLoading || isReplyFirstPageLoading" :style="topicBodyStyle">
         <ElScrollbar ref="scrollbar" @scroll="handleScroll">
           <div
             ref="topicContainer"
@@ -800,6 +1171,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
               :batches="replyBatches"
               :nested-reply-display="nestedReplyDisplay"
               :multiple-inside-one="multipleInsideOne"
+              :reverse="isReverseReply"
             />
             <ElSkeleton v-if="isReplyNextPageLoading" animated />
             <ElEmpty
@@ -840,10 +1212,12 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           :like-number="topicDetail?.likeNumber"
           :editable="topicDetail?.editable"
           :height="topicFooterHeight"
+          :reverse-reply="isReverseReply"
           @favorite-topic="handleTopicFavorite"
           @like-topic="handleTopicLike"
           @edit-topic="handleTopicEdit"
           @block-topic="handleTopicBlock"
+          @toggle-reply-order="handleToggleReplyOrder"
         />
       </div>
       <template #footer>

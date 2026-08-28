@@ -13,6 +13,7 @@ interface Props {
   batch: UserReplyBatch;
   display: NestedReplyDisplay;
   multipleInsideOne: boolean;
+  reverse?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -20,12 +21,20 @@ const props = defineProps<Props>();
 const replyTree = computed<UserReplyTreeNode[]>(() => {
   return buildReplyTree(props.batch.list, props.multipleInsideOne);
 });
+
+const displayTree = computed<UserReplyTreeNode[]>(() => {
+  if (!props.reverse) {
+    return replyTree.value;
+  }
+
+  return [...replyTree.value].reverse();
+});
 </script>
 
 <template>
   <div class="nested-reply-batch-container">
     <NestedReplyItem
-      v-for="(node, index) in replyTree"
+      v-for="(node, index) in displayTree"
       :key="getReplyKey(node.reply, index)"
       :node="node"
       :display="display"

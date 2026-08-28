@@ -20,6 +20,7 @@ interface Props extends UserTopicReply {
   batches: UserReplyBatch[];
   nestedReplyDisplay: NestedReplyDisplay;
   multipleInsideOne: boolean;
+  reverse?: boolean;
 }
 
 interface MentionRepliesResult {
@@ -34,28 +35,12 @@ const nestedReplyEnabled = computed<boolean>(() => {
   return props.nestedReplyDisplay !== NestedReplyDisplay.Off;
 });
 
-const getCurrentReplyIndex = (target: MentionRepliesTarget): number => {
-  if (target.replyId) {
-    return props.list.findIndex(({ replyId }) => replyId === target.replyId);
-  }
-
-  if (target.replyNo) {
-    return props.list.findIndex(({ replyNo }) => replyNo === target.replyNo);
-  }
-
-  return -1;
-};
-
 const getMentionedUserReplies = (target: MentionRepliesTarget): MentionRepliesResult => {
-  const currentReplyIndex = getCurrentReplyIndex(target);
+  const currentReplyNo = Number(target.replyNo);
+  const replies = props.list
+    .filter((item) => Number(item.replyNo) < currentReplyNo && item.uid === target.mentionUid)
+    .sort((a, b) => Number(a.replyNo) - Number(b.replyNo));
 
-  if (currentReplyIndex <= 0) {
-    return {
-      replies: [],
-    };
-  }
-
-  const replies = props.list.slice(0, currentReplyIndex).filter(({ uid }) => uid === target.mentionUid);
   const explicitReply = target.mentionFloor
     ? replies.find(({ replyNo }) => replyNo === target.mentionFloor)
     : undefined;
@@ -87,6 +72,7 @@ provide(MENTION_REPLIES_INJECTION_KEY, mentionRepliesController);
     :batches="batches"
     :display="nestedReplyDisplay"
     :multiple-inside-one="multipleInsideOne"
+    :reverse="reverse"
   />
   <FlatReplyList v-else :total="total" :list="list" />
   <MentionRepliesPopover ref="mentionRepliesPopover" />

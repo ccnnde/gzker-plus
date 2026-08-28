@@ -30,10 +30,28 @@ export const useScrollbar = () => {
     });
   };
 
+  const scrollToElement = (element: HTMLElement, smooth: boolean = true) => {
+    const scrollbarElement = scrollbar.value?.wrapRef;
+
+    if (!scrollbarElement) {
+      return;
+    }
+
+    const scrollbarRect = scrollbarElement.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    const targetScrollTop = scrollbarElement.scrollTop + elementRect.top - scrollbarRect.top;
+
+    scrollbar.value?.scrollTo({
+      top: targetScrollTop,
+      behavior: getScrollBehavior(smooth),
+    });
+  };
+
   return {
     scrollbar,
     scrollToTop,
     scrollToBottom,
     scrollBy,
+    scrollToElement,
   };
 };
