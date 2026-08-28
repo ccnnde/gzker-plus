@@ -2,7 +2,7 @@
 
 ## 仓库规范
 
-统一使用 pnpm，不要更换包管理器，也不要无故重新生成锁文件。
+包管理器始终使用 pnpm10。
 
 新增字面量、选择器、选项、消息类型、路由或共享类型前，先搜索现有实现。优先复用 `src/constants/index.ts`、`src/constants/selector.ts` 和 `src/types/index.ts`，避免局部重复。
 
@@ -19,15 +19,10 @@
 
 - Vue SFC 按 `<script setup lang="ts">`、`<template>`、`<style lang="scss">` 的顺序组织，组件样式默认使用 scoped。
 - Props 和 Emits 使用类型参数定义；只有需要默认值时才使用 `withDefaults`。
-- 组件存活期间持续需要的 `window` 或 `document` 监听在 `onMounted` 中注册，并在 `onUnmounted` 中移除。按交互状态临时注册的监听应在对应的开始与结束流程中成对清理，并在卸载时兜底移除。
 - Vue、Element Plus 和 Vue 内置组件使用 PascalCase；HTML 元素使用小写；模板属性和事件使用 kebab-case。
 - 多行标签每行一个属性，顺序为：`ref`、Vue 指令、class/style、其他 props、事件。`>` 或 `/>` 单独成行并与开始标签对齐，闭合标签也与开始标签对齐；没有子内容的组件使用自闭合标签。
 - 覆盖未 Teleport 的子组件时使用 `:deep()`。跨组件公共样式放在 `src/styles/`；Teleport 到组件根外的元素可使用必要的全局样式，并用组件专属类名限制作用范围。
 - Scoped CSS 类必须带由组件名转换而来的 kebab-case 前缀。
-
-### 浏览器扩展模式
-
-修改 Content Script、注入式 Vue 应用、跨上下文消息或脚本注册时，必须使用 `add-content-script` skill；具体实现约束以该 skill 为准。
 
 ## 验证与交付
 
