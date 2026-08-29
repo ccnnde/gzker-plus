@@ -40,4 +40,4 @@ pnpm build:ff  # Firefox
 
 ## 3. 交付
 
-运行 `git diff --check` 和 `git diff --stat`，检查最终 diff，并报告已运行、失败或跳过的检查。仓库没有测试运行器，不要把 lint 或类型检查描述为单元测试。
+运行 `git diff --check` 和 `git diff --stat`，检查最终 diff，并报告已运行、失败或跳过的检查。
