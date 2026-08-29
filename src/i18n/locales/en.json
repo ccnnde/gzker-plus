@@ -100,7 +100,7 @@
       "noPreload": "Do not preload",
       "onePage": "Preload 1 page",
       "title": "Reply preloading",
-      "titleDesc": "When nested replies are enabled, choose how many reply pages to preload after the current page in each batch. The next batch loads when you reach the bottom",
+      "titleDesc": "Choose how many reply pages to preload after the current page in each batch. The next batch loads when you reach the bottom",
       "twoPages": "Preload 2 pages"
     },
     "reverseReplyOrder": {

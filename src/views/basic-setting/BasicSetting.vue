@@ -54,6 +54,12 @@ const settings = computed<Setting[]>(() => {
           key: OptionsKey.EnhancedTopic,
         },
         {
+          name: t('basicSetting.replyPreload.title'),
+          description: t('basicSetting.replyPreload.titleDesc'),
+          key: OptionsKey.ReplyPreload,
+          component: ReplyPreload,
+        },
+        {
           name: t('basicSetting.topicKeywordBlock.title'),
           description: t('basicSetting.topicKeywordBlock.titleDesc'),
           key: OptionsKey.TopicKeywordBlock,
@@ -75,12 +81,6 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.nestedReplyDisplay.titleDesc'),
           key: OptionsKey.NestedReplyDisplay,
           component: NestedReplyDisplay,
-        },
-        {
-          name: t('basicSetting.replyPreload.title'),
-          description: t('basicSetting.replyPreload.titleDesc'),
-          key: OptionsKey.ReplyPreload,
-          component: ReplyPreload,
         },
         {
           name: t('basicSetting.nestedReplyMultipleInsideOne.title'),

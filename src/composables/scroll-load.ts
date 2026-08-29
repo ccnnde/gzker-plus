@@ -15,7 +15,7 @@ interface StartScrollLoadOptions<T> {
 
 interface CommitPageDataOptions<T> {
   page: number;
-  data: T[];
+  data: T[][];
   replace: boolean;
   direction: ReplyOrder;
 }
@@ -32,6 +32,7 @@ export const useScrollLoad = <T>(
   const pageCache = new Map<number, T[]>();
 
   let knownTotalPageNumber: number | undefined;
+  let currentPageCount = 1;
 
   const isFirstPage = computed(() => {
     return dataList.value.length === 0;
@@ -57,21 +58,33 @@ export const useScrollLoad = <T>(
     return direction === ReplyOrder.Desc ? [...pageData].reverse() : pageData;
   };
 
+  const getPageNumbers = (startPage: number, direction: ReplyOrder): number[] => {
+    const step = direction === ReplyOrder.Desc ? -1 : 1;
+
+    return Array.from({ length: currentPageCount }, (_, index) => startPage + step * index).filter((page) => {
+      return (
+        page >= 1 &&
+        (direction === ReplyOrder.Desc || knownTotalPageNumber === undefined || page <= knownTotalPageNumber)
+      );
+    });
+  };
+
   const commitPageData = ({ page, data: pageData, replace, direction }: CommitPageDataOptions<T>) => {
-    if (!replace && pageData.length === 0) {
+    if (!replace && pageData.every((data) => data.length === 0)) {
       noMoreData.value = true;
       return;
     }
 
+    const boundaryPageData = pageData[direction === ReplyOrder.Desc ? 0 : pageData.length - 1] || [];
     currentPage.value = page;
     noMoreData.value =
       direction === ReplyOrder.Desc
         ? currentPage.value <= 1
         : knownTotalPageNumber === undefined
-        ? pageData.length < pageSize
+        ? boundaryPageData.length < pageSize
         : currentPage.value >= knownTotalPageNumber;
 
-    const orderedPageData = getOrderedPageData(pageData, direction);
+    const orderedPageData = pageData.flatMap((data) => getOrderedPageData(data, direction));
 
     if (replace) {
       dataList.value = orderedPageData;
@@ -82,14 +95,21 @@ export const useScrollLoad = <T>(
     scrollbar.value?.handleScroll();
   };
 
-  const loadPageData = async (page: number, replace: boolean, runner: PageLoadRunner = runLoad): Promise<void> => {
-    const cachedPageData = pageCache.get(page);
+  const loadPageData = async (pages: number[], replace: boolean, runner: PageLoadRunner = runLoad): Promise<void> => {
+    if (pages.length === 0) {
+      noMoreData.value = true;
+      return;
+    }
 
-    if (cachedPageData) {
+    const lastLoadedPage = pages[pages.length - 1];
+    const cachedPages = pages.filter((page) => pageCache.has(page));
+    const missingPages = pages.filter((page) => !pageCache.has(page));
+
+    if (missingPages.length === 0) {
       const direction = isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc;
       commitPageData({
-        page,
-        data: cachedPageData,
+        page: lastLoadedPage,
+        data: cachedPages.map((page) => pageCache.get(page) || []),
         replace,
         direction,
       });
@@ -97,8 +117,6 @@ export const useScrollLoad = <T>(
     }
 
     await runner(async (context) => {
-      const pageDataPromise = requestCallback(page, context.signal);
-
       if (!replace && dataList.value.length > 0) {
         await nextTick();
 
@@ -107,16 +125,23 @@ export const useScrollLoad = <T>(
         }
       }
 
-      const pageData = await pageDataPromise;
+      const pageData = await Promise.all(
+        missingPages.map((page) => {
+          return requestCallback(page, context.signal);
+        }),
+      );
 
       if (!context.isCurrent()) {
         return;
       }
 
-      pageCache.set(page, pageData);
+      missingPages.forEach((page, index) => {
+        pageCache.set(page, pageData[index]);
+      });
+
       commitPageData({
-        page,
-        data: pageData,
+        page: lastLoadedPage,
+        data: pages.map((page) => pageCache.get(page) || []),
         replace,
         direction: context.direction,
       });
@@ -124,7 +149,8 @@ export const useScrollLoad = <T>(
   };
 
   const getFirstPageData = async (): Promise<void> => {
-    await loadPageData(currentPage.value, true);
+    const direction = isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc;
+    await loadPageData(getPageNumbers(currentPage.value, direction), true);
   };
 
   const getNextPageData = async (): Promise<void> => {
@@ -139,7 +165,7 @@ export const useScrollLoad = <T>(
       return;
     }
 
-    await loadPageData(nextPage, false);
+    await loadPageData(getPageNumbers(nextPage, isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc), false);
   };
 
   const startLoad = async (
@@ -191,7 +217,8 @@ export const useScrollLoad = <T>(
 
   const reloadPageData = async (): Promise<void> => {
     if (isFirstPage.value) {
-      await loadPageData(currentPage.value, true, retryLoad);
+      const direction = isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc;
+      await loadPageData(getPageNumbers(currentPage.value, direction), true, retryLoad);
       return;
     }
 
@@ -202,7 +229,7 @@ export const useScrollLoad = <T>(
       return;
     }
 
-    await loadPageData(nextPage, false, retryLoad);
+    await loadPageData(getPageNumbers(nextPage, isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc), false, retryLoad);
   };
 
   const reloadFirstPageData = (firstPageData: T[], totalDataCount?: number) => {
@@ -240,6 +267,10 @@ export const useScrollLoad = <T>(
     noMoreData.value = isComplete;
   };
 
+  const setPageCount = (pageCount: number): void => {
+    currentPageCount = Math.max(pageCount, 1);
+  };
+
   const resetScrollLoadState = () => {
     resetSession();
     pageCache.clear();
@@ -266,6 +297,7 @@ export const useScrollLoad = <T>(
     reloadFirstPageData,
     updateCurrentPageData,
     replaceLoadedData,
+    setPageCount,
     resetScrollLoadState,
     scrollToTop,
     scrollToBottom,

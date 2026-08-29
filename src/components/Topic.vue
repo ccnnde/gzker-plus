@@ -144,7 +144,7 @@ const replyPreloadMode = computed<ReplyPreloadMode>(() => {
   return options.value?.[OptionsKey.ReplyPreload]?.mode || ReplyPreloadMode.TwoPages;
 });
 
-const replyBatchPageCount = computed<number>(() => {
+const replyPreloadPageCount = computed<number>(() => {
   return REPLY_PRELOAD_PAGE_COUNT[replyPreloadMode.value] || REPLY_PRELOAD_PAGE_COUNT[ReplyPreloadMode.TwoPages];
 });
 
@@ -206,6 +206,7 @@ const {
   scrollToBottom,
   scrollBy,
   scrollToElement,
+  setPageCount: setReplyPageCount,
 } = useScrollLoad<UserReplyItem>(PAGE_SIZE, getTopicCallback);
 
 const handleBatchPageLoaded = (data: UserTopic, page: number) => {
@@ -360,7 +361,7 @@ const isTopicLoadStale = (loadedTopicId: string): boolean => {
 };
 
 /**
- * 回复加载统一入口：按当前顺序与楼中楼设置分发到对应的加载链路
+ * 回复加载统一入口：按当前顺序与展示模式分发到对应的加载链路
  */
 const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTopic>[] }) => {
   const loadedTopicId = topicId.value;
@@ -373,17 +374,19 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
 
   let pageSeeds = [...(loadOptions?.pageSeeds || [])];
 
-  if (loadedReplyOrder === ReplyOrder.Desc && pageSeeds.length === 0) {
+  if (pageSeeds.length === 0) {
     const firstPageData = await preloadFirstPageTopic();
 
-    if (firstPageData) {
-      pageSeeds = [
-        {
-          page: 1,
-          data: firstPageData,
-        },
-      ];
+    if (!firstPageData) {
+      return;
     }
+
+    pageSeeds = [
+      {
+        page: 1,
+        data: firstPageData,
+      },
+    ];
   }
 
   if (
@@ -409,7 +412,7 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
       cachedPageSeeds: PageDataSeed<UserTopic>[],
     ): Promise<void> => {
       if (loadedNestedReplyEnabled) {
-        await startBatchLoad(loadedTopicId, replyBatchPageCount.value, {
+        await startBatchLoad(loadedTopicId, replyPreloadPageCount.value, {
           pageSeeds: cachedPageSeeds,
           reverse: true,
           knownTotal: total,
@@ -462,7 +465,7 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
   const totalPageNumber = pageSeeds[0] ? Math.ceil(Number(pageSeeds[0].data.reply.total) / PAGE_SIZE) : undefined;
 
   if (loadedNestedReplyEnabled) {
-    await startBatchLoad(loadedTopicId, replyBatchPageCount.value, {
+    await startBatchLoad(loadedTopicId, replyPreloadPageCount.value, {
       pageSeeds,
     });
     return;
@@ -580,9 +583,14 @@ const getFirstPageTopicData = (list: UserReplyItem[]): UserTopic | undefined => 
   };
 };
 
-watch(replyBatchPageCount, (pageCount) => {
-  setBatchPageCount(pageCount);
-});
+watch(
+  replyPreloadPageCount,
+  (pageCount) => {
+    setReplyPageCount(pageCount);
+    setBatchPageCount(pageCount);
+  },
+  { immediate: true },
+);
 
 watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => {
   if (nestedReplyEnabled === previousNestedReplyEnabled || !topicId.value || !dialogVisible.value) {
@@ -600,7 +608,7 @@ watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => 
   if (nestedReplyEnabled) {
     const firstPageData = getFirstPageTopicData(replyList.value);
     resetScrollLoadState();
-    startBatchLoad(topicId.value, replyBatchPageCount.value, {
+    startBatchLoad(topicId.value, replyPreloadPageCount.value, {
       pageSeeds: firstPageData
         ? [
             {
@@ -879,7 +887,7 @@ const handleTopicSended = (data: UserTopic) => {
       ],
     });
   } else if (isNestedReplyEnabled.value && topicId.value) {
-    startBatchLoad(topicId.value, replyBatchPageCount.value, {
+    startBatchLoad(topicId.value, replyPreloadPageCount.value, {
       pageSeeds: [
         {
           page: 1,
