@@ -2,7 +2,10 @@
 
 ## 仓库规范
 
-包管理器始终使用 pnpm10。
+包管理器始终使用 pnpm10。在 Windows Codex 环境中，不依赖 PowerShell Profile 的 fnm 自动切换：
+
+- Node 命令使用 `fnm exec --using .nvmrc node ...`。
+- pnpm 命令使用 `fnm exec --using .nvmrc cmd.exe /d /c pnpm ...`，禁止直接执行 `pnpm`。
 
 新增字面量、选择器、选项、消息类型、路由或共享类型前，先搜索现有实现。优先复用 `src/constants/index.ts`、`src/constants/selector.ts` 和 `src/types/index.ts`，避免局部重复。
 
