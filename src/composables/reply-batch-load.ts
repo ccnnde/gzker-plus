@@ -39,6 +39,7 @@ interface UseReplyBatchLoadResult {
   isFirstBatchLoading: ComputedRef<boolean>;
   isNextBatchLoading: ComputedRef<boolean>;
   disableBatchLoad: ComputedRef<boolean>;
+  noMoreData: ComputedRef<boolean>;
   errorOccurred: Ref<boolean>;
   startBatchLoad: (topicId: string, batchPageCount: number, options?: StartBatchLoadOptions) => Promise<void>;
   getNextBatchData: () => Promise<void>;
@@ -82,6 +83,10 @@ export const useReplyBatchLoad = ({
 
   const disableBatchLoad = computed<boolean>(() => {
     return isLoading.value || errorOccurred.value || noMoreData.value;
+  });
+
+  const isNoMoreData = computed<boolean>(() => {
+    return noMoreData.value;
   });
 
   const getTotalPageNumber = (): number => {
@@ -366,6 +371,7 @@ export const useReplyBatchLoad = ({
     isFirstBatchLoading,
     isNextBatchLoading,
     disableBatchLoad,
+    noMoreData: isNoMoreData,
     errorOccurred,
     startBatchLoad,
     getNextBatchData,

@@ -77,10 +77,14 @@ const replyTotal = ref<string>('0');
 const isTopicPage = ref<boolean>(false);
 const topicContainer = ref<HTMLDivElement | null>(null);
 const replyOrder = ref<ReplyOrder>(ReplyOrder.Asc);
+const onlyOriginalPoster = ref<boolean>(false);
 
 let topicPreloadVersion = 0;
 let topicPreloadAbortController: AbortController | undefined;
-let replyOrderToggleVersion = 0;
+let replyReloadVersion = 0;
+let replyNextLoadLockVersion = 0;
+let replyNextLoadLocked = false;
+const replyNextLoadPending = ref<boolean>(false);
 
 const resetTopicPreloadRequestState = () => {
   topicPreloadVersion++;
@@ -88,6 +92,12 @@ const resetTopicPreloadRequestState = () => {
   topicPreloadAbortController = undefined;
   isTopicPreloadLoading.value = false;
   topicPreloadError.value = false;
+};
+
+const resetReplyNextLoadLock = () => {
+  replyNextLoadLockVersion++;
+  replyNextLoadLocked = false;
+  replyNextLoadPending.value = false;
 };
 
 const isReverseReply = computed<boolean>(() => {
@@ -152,6 +162,11 @@ const isNestedReplyEnabled = computed<boolean>(() => {
   return nestedReplyDisplay.value !== NestedReplyDisplay.Off;
 });
 
+const isOriginalPosterReply = (reply: UserReplyItem): boolean => {
+  const authorId = topicDetail.value?.authorId;
+  return reply.isOriginalPoster === true || (authorId !== undefined && reply.uid === authorId);
+};
+
 const isTopicLinkBlank = computed(() => {
   if (!options.value) {
     return false;
@@ -187,6 +202,7 @@ const getTopicCallback = async (page: number, signal: AbortSignal): Promise<User
 
 const {
   dataList: replyList,
+  noMoreData: noMorePageData,
   scrollbar,
   isFirstPage,
   isFirstPageLoading,
@@ -227,6 +243,7 @@ const handleBatchPageLoaded = (data: UserTopic, page: number) => {
 const {
   batches: replyBatches,
   dataList: nestedReplyList,
+  noMoreData: noMoreBatchData,
   lastLoadedPage: lastNestedReplyPage,
   isLoading: isBatchLoading,
   isFirstBatchLoading,
@@ -250,8 +267,27 @@ const {
   },
 });
 
+const resetReplyLoadState = () => {
+  resetReplyNextLoadLock();
+  resetScrollLoadState();
+  resetBatchLoadState();
+};
+
 const effectiveReplyList = computed<UserReplyItem[]>(() => {
   return isNestedReplyEnabled.value ? nestedReplyList.value : replyList.value;
+});
+
+const displayedReplyList = computed<UserReplyItem[]>(() => {
+  if (!onlyOriginalPoster.value) {
+    return effectiveReplyList.value;
+  }
+
+  const forcedFlatReplyList =
+    isNestedReplyEnabled.value && isReverseReply.value
+      ? replyBatches.value.flatMap(({ list }) => [...list].reverse())
+      : effectiveReplyList.value;
+
+  return forcedFlatReplyList.filter(isOriginalPosterReply);
 });
 
 const isReplyFirstPageLoading = computed<boolean>(() => {
@@ -266,6 +302,38 @@ const replyLoadError = computed<boolean>(() => {
   return topicPreloadError.value || (isNestedReplyEnabled.value ? batchLoadError.value : errorOccurred.value);
 });
 
+const replyLoadCompleted = computed<boolean>(() => {
+  return isNestedReplyEnabled.value ? noMoreBatchData.value : noMorePageData.value;
+});
+
+const showNoOriginalPosterReply = computed<boolean>(() => {
+  return (
+    topicDetail.value !== undefined &&
+    Number(replyTotal.value) > 0 &&
+    onlyOriginalPoster.value &&
+    displayedReplyList.value.length === 0 &&
+    replyLoadCompleted.value &&
+    !isTopicPreloadLoading.value &&
+    !isReplyFirstPageLoading.value &&
+    !isReplyNextPageLoading.value &&
+    !replyLoadError.value
+  );
+});
+
+const canLoadNextReply = computed<boolean>(() => {
+  return (
+    !replyLoadCompleted.value &&
+    !isTopicPreloadLoading.value &&
+    !isReplyFirstPageLoading.value &&
+    !isReplyNextPageLoading.value &&
+    !replyLoadError.value
+  );
+});
+
+const showContinueSearchOriginalPosterReply = computed<boolean>(() => {
+  return onlyOriginalPoster.value && canLoadNextReply.value && !replyNextLoadPending.value;
+});
+
 const disableReplyInfiniteScroll = computed<boolean>(() => {
   return isNestedReplyEnabled.value ? disableBatchLoad.value : disableInfiniteScroll.value;
 });
@@ -273,6 +341,35 @@ const disableReplyInfiniteScroll = computed<boolean>(() => {
 const isReplyFirstPage = computed<boolean>(() => {
   return isNestedReplyEnabled.value ? replyBatches.value.length === 0 : isFirstPage.value;
 });
+
+const checkFilteredReplyLoad = async () => {
+  if (!onlyOriginalPoster.value || !dialogVisible.value) {
+    return;
+  }
+
+  await nextTick();
+
+  const wrapRef = scrollbar.value?.wrapRef;
+
+  if (!wrapRef || !onlyOriginalPoster.value || disableReplyInfiniteScroll.value) {
+    return;
+  }
+
+  const remainingScrollDistance = wrapRef.scrollHeight - wrapRef.clientHeight - wrapRef.scrollTop;
+
+  if (remainingScrollDistance <= 100 && canLoadNextReply.value && !replyNextLoadLocked) {
+    replyNextLoadPending.value = true;
+    getNextReplyData();
+  }
+};
+
+watch(
+  [displayedReplyList, isReplyFirstPageLoading, isReplyNextPageLoading, disableReplyInfiniteScroll, onlyOriginalPoster],
+  () => {
+    checkFilteredReplyLoad();
+  },
+  { flush: 'post' },
+);
 
 watch(isBatchLoading, async (loading) => {
   if (!loading || replyBatches.value.length === 0) {
@@ -283,13 +380,28 @@ watch(isBatchLoading, async (loading) => {
   scrollToBottom();
 });
 
-const getNextReplyData = () => {
-  if (isNestedReplyEnabled.value) {
-    getNextBatchData();
+const getNextReplyData = async (): Promise<void> => {
+  if (replyNextLoadLocked || !canLoadNextReply.value) {
     return;
   }
 
-  getNextPageData();
+  const lockVersion = replyNextLoadLockVersion;
+  replyNextLoadLocked = true;
+  replyNextLoadPending.value = true;
+
+  try {
+    if (isNestedReplyEnabled.value) {
+      await getNextBatchData();
+      return;
+    }
+
+    await getNextPageData();
+  } finally {
+    if (lockVersion === replyNextLoadLockVersion) {
+      replyNextLoadLocked = false;
+      replyNextLoadPending.value = false;
+    }
+  }
 };
 
 const reloadReplyData = () => {
@@ -367,6 +479,7 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
   const loadedTopicId = topicId.value;
   const loadedReplyOrder = replyOrder.value;
   const loadedNestedReplyEnabled = isNestedReplyEnabled.value;
+  const loadedOnlyOriginalPoster = onlyOriginalPoster.value;
 
   if (!loadedTopicId) {
     return;
@@ -392,7 +505,8 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
   if (
     isTopicLoadStale(loadedTopicId) ||
     replyOrder.value !== loadedReplyOrder ||
-    isNestedReplyEnabled.value !== loadedNestedReplyEnabled
+    isNestedReplyEnabled.value !== loadedNestedReplyEnabled ||
+    onlyOriginalPoster.value !== loadedOnlyOriginalPoster
   ) {
     return;
   }
@@ -434,7 +548,8 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
     if (
       isTopicLoadStale(loadedTopicId) ||
       replyOrder.value !== loadedReplyOrder ||
-      isNestedReplyEnabled.value !== loadedNestedReplyEnabled
+      isNestedReplyEnabled.value !== loadedNestedReplyEnabled ||
+      onlyOriginalPoster.value !== loadedOnlyOriginalPoster
     ) {
       return;
     }
@@ -483,7 +598,12 @@ const loadTopicReplies = async (loadOptions?: { pageSeeds?: PageDataSeed<UserTop
 const scrollToReplyTotal = async (): Promise<void> => {
   await nextTick();
 
-  const replyTotalElement = topicContainer.value?.querySelector<HTMLElement>(SELECTOR_TOPIC_REPLY_TOTAL);
+  let replyTotalElement = topicContainer.value?.querySelector<HTMLElement>(SELECTOR_TOPIC_REPLY_TOTAL);
+
+  if (!replyTotalElement) {
+    await nextTick();
+    replyTotalElement = topicContainer.value?.querySelector<HTMLElement>(SELECTOR_TOPIC_REPLY_TOTAL);
+  }
 
   if (replyTotalElement) {
     scrollToElement(replyTotalElement);
@@ -491,17 +611,47 @@ const scrollToReplyTotal = async (): Promise<void> => {
 };
 
 const handleToggleReplyOrder = async (): Promise<void> => {
-  const toggleVersion = ++replyOrderToggleVersion;
+  const reloadVersion = ++replyReloadVersion;
+  const loadedTopicId = topicId.value;
   const nextReplyOrder = isReverseReply.value ? ReplyOrder.Asc : ReplyOrder.Desc;
+  const loadedOnlyOriginalPoster = onlyOriginalPoster.value;
 
   resetTopicPreloadRequestState();
   replyOrder.value = nextReplyOrder;
 
-  resetScrollLoadState();
-  resetBatchLoadState();
+  resetReplyLoadState();
   await loadTopicReplies();
 
-  if (toggleVersion !== replyOrderToggleVersion || replyOrder.value !== nextReplyOrder) {
+  if (
+    reloadVersion !== replyReloadVersion ||
+    topicId.value !== loadedTopicId ||
+    replyOrder.value !== nextReplyOrder ||
+    onlyOriginalPoster.value !== loadedOnlyOriginalPoster
+  ) {
+    return;
+  }
+
+  await scrollToReplyTotal();
+};
+
+const handleToggleOriginalPoster = async (): Promise<void> => {
+  const reloadVersion = ++replyReloadVersion;
+  const loadedTopicId = topicId.value;
+  const loadedReplyOrder = replyOrder.value;
+  const nextOnlyOriginalPoster = !onlyOriginalPoster.value;
+
+  resetTopicPreloadRequestState();
+  onlyOriginalPoster.value = nextOnlyOriginalPoster;
+
+  resetReplyLoadState();
+  await loadTopicReplies();
+
+  if (
+    reloadVersion !== replyReloadVersion ||
+    topicId.value !== loadedTopicId ||
+    replyOrder.value !== loadedReplyOrder ||
+    onlyOriginalPoster.value !== nextOnlyOriginalPoster
+  ) {
     return;
   }
 
@@ -597,6 +747,8 @@ watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => 
     return;
   }
 
+  resetReplyNextLoadLock();
+
   if (isReverseReply.value) {
     // 倒序下两种模式的数据形状不兼容（扁平为纯倒序、楼中楼为页组），直接重载首屏
     resetScrollLoadState();
@@ -644,6 +796,7 @@ onBeforeMount(() => {
 
   topicId.value = pathname.match(topicLinkRegExp)?.[1];
   isTopicPage.value = true;
+  onlyOriginalPoster.value = false;
   initReplyOrder();
 
   let parsedTopic: UserTopic;
@@ -742,7 +895,10 @@ const handleTopicClick = (e: Event) => {
     return;
   }
 
+  resetReplyNextLoadLock();
   topicId.value = href.match(topicLinkRegExp)?.[1];
+  onlyOriginalPoster.value = false;
+  replyReloadVersion++;
   initReplyOrder();
   openDialog();
 
@@ -876,6 +1032,7 @@ const handleTopicSended = (data: UserTopic) => {
 
   topicDetail.value = detail;
   replyTotal.value = total;
+  resetReplyNextLoadLock();
 
   if (isReverseReply.value) {
     loadTopicReplies({
@@ -946,11 +1103,12 @@ const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
 
 const handleTopicDialogClosed = () => {
   document.removeEventListener('keydown', handleKeydown);
-  replyOrderToggleVersion++;
+  replyReloadVersion++;
 
   topicId.value = undefined;
   topicDetail.value = undefined;
   replyTotal.value = '0';
+  onlyOriginalPoster.value = false;
   currentScrollDistance.value = 0;
   initReplyOrder();
 
@@ -963,8 +1121,7 @@ const handleTopicDialogClosed = () => {
   showTopicFooter();
   resetRequestState();
   resetTopicPreloadRequestState();
-  resetScrollLoadState();
-  resetBatchLoadState();
+  resetReplyLoadState();
 };
 
 const ARROW_SCROLL_DISTANCE = 50;
@@ -1175,17 +1332,42 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
             <TopicReply
               v-if="showReply && (!isNestedReplyEnabled || replyBatches.length)"
               :total="replyTotal"
-              :list="effectiveReplyList"
+              :list="displayedReplyList"
               :batches="replyBatches"
               :nested-reply-display="nestedReplyDisplay"
               :multiple-inside-one="multipleInsideOne"
               :reverse="isReverseReply"
+              :source-list="effectiveReplyList"
+              :force-flat="onlyOriginalPoster"
             />
+            <ElEmpty v-if="showContinueSearchOriginalPosterReply && displayedReplyList.length === 0">
+              <template #description>
+                <button type="button" class="topic-reply-action-prompt" @click="getNextReplyData">
+                  {{ $t('enhancedTopic.continueSearchOriginalPosterReplyEmpty') }}
+                </button>
+              </template>
+            </ElEmpty>
+            <button
+              v-if="showContinueSearchOriginalPosterReply && displayedReplyList.length > 0"
+              type="button"
+              class="topic-reply-action-prompt"
+              @click="getNextReplyData"
+            >
+              {{ $t('enhancedTopic.continueSearchOriginalPosterReply') }}
+            </button>
             <ElSkeleton v-if="isReplyNextPageLoading" animated />
             <ElEmpty
-              v-if="topicDetail && replyTotal === '0' && !isReplyFirstPageLoading"
+              v-if="
+                topicDetail &&
+                replyTotal === '0' &&
+                !isTopicPreloadLoading &&
+                !isReplyFirstPageLoading &&
+                !isReplyNextPageLoading &&
+                !replyLoadError
+              "
               :description="$t('enhancedTopic.noReply')"
             />
+            <ElEmpty v-if="showNoOriginalPosterReply" :description="$t('enhancedTopic.noOriginalPosterReply')" />
             <LoadError
               v-show="replyLoadError"
               :show-icon="isReplyFirstPage"
@@ -1221,11 +1403,13 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           :editable="topicDetail?.editable"
           :height="topicFooterHeight"
           :reverse-reply="isReverseReply"
+          :only-original-poster="onlyOriginalPoster"
           @favorite-topic="handleTopicFavorite"
           @like-topic="handleTopicLike"
           @edit-topic="handleTopicEdit"
           @block-topic="handleTopicBlock"
           @toggle-reply-order="handleToggleReplyOrder"
+          @toggle-original-poster="handleToggleOriginalPoster"
         />
       </div>
       <template #footer>
@@ -1429,6 +1613,20 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 .topic-container {
   width: 100%;
   padding: var(--gzk-topic-padding);
+}
+
+.topic-reply-action-prompt {
+  display: block;
+  align-self: stretch;
+  width: 100%;
+  padding: 10px 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
 }
 
 .topic-body-absolute {

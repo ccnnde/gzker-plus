@@ -54,6 +54,10 @@ export const useScrollLoad = <T>(
     return isNextPageLoading.value || errorOccurred.value || noMoreData.value;
   });
 
+  const isNoMoreData = computed<boolean>(() => {
+    return noMoreData.value;
+  });
+
   const getOrderedPageData = (pageData: T[], direction: ReplyOrder): T[] => {
     return direction === ReplyOrder.Desc ? [...pageData].reverse() : pageData;
   };
@@ -288,6 +292,7 @@ export const useScrollLoad = <T>(
     isFirstPageEmpty,
     isNextPageLoading,
     disableInfiniteScroll,
+    noMoreData: isNoMoreData,
     errorOccurred,
     getFirstPageData,
     getNextPageData,

@@ -24,6 +24,7 @@ interface Props {
   editable?: boolean;
   height: number;
   reverseReply?: boolean;
+  onlyOriginalPoster?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -34,6 +35,7 @@ defineEmits<{
   editTopic: [];
   blockTopic: [];
   toggleReplyOrder: [];
+  toggleOriginalPoster: [];
 }>();
 
 const { isDark } = useDarkMode();
@@ -78,6 +80,16 @@ const footerStyle = computed<CSSProperties>(() => {
 
 const showReplyOrderButton = computed<boolean>(() => {
   return props.replyTotal !== '0';
+});
+
+const onlyOriginalPosterButtonStyle = computed<CSSProperties | undefined>(() => {
+  if (!props.onlyOriginalPoster) {
+    return undefined;
+  }
+
+  return {
+    color: 'var(--el-color-primary)',
+  };
 });
 
 const replyOrderIconClass = computed<string>(() => {
@@ -150,6 +162,12 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
         </ElDropdownMenu>
       </template>
     </ElDropdown>
+    <OperateButton
+      v-if="showReplyOrderButton"
+      :operate-text="$t('enhancedTopic.onlyOriginalPoster')"
+      :custom-style="onlyOriginalPosterButtonStyle"
+      @click="$emit('toggleOriginalPoster')"
+    />
     <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
     <OperateButton v-else :operate-text="$t('enhancedTopic.blockTopic')" @click="$emit('blockTopic')" />
     <ElInput class="reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />

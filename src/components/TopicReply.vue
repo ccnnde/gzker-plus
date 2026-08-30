@@ -21,6 +21,8 @@ interface Props extends UserTopicReply {
   nestedReplyDisplay: NestedReplyDisplay;
   multipleInsideOne: boolean;
   reverse?: boolean;
+  sourceList: UserReplyItem[];
+  forceFlat: boolean;
 }
 
 interface MentionRepliesResult {
@@ -32,12 +34,12 @@ const props = defineProps<Props>();
 const mentionRepliesPopover = ref<InstanceType<typeof MentionRepliesPopover> | null>(null);
 
 const nestedReplyEnabled = computed<boolean>(() => {
-  return props.nestedReplyDisplay !== NestedReplyDisplay.Off;
+  return !props.forceFlat && props.nestedReplyDisplay !== NestedReplyDisplay.Off;
 });
 
 const getMentionedUserReplies = (target: MentionRepliesTarget): MentionRepliesResult => {
   const currentReplyNo = Number(target.replyNo);
-  const replies = props.list
+  const replies = props.sourceList
     .filter((item) => Number(item.replyNo) < currentReplyNo && item.uid === target.mentionUid)
     .sort((a, b) => Number(a.replyNo) - Number(b.replyNo));
 
