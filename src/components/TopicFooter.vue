@@ -101,12 +101,19 @@ const onlyOriginalPosterIconStyle = computed<CSSProperties | undefined>(() => {
   };
 });
 
-const replyOrderIconClass = computed<string>(() => {
-  return props.reverseReply ? 'i-mdi-sort-ascending' : 'i-mdi-sort-descending';
-});
+const replyOrderIconStyle = computed<CSSProperties>(() => {
+  const fontSize = '18px';
 
-const replyOrderTip = computed<string>(() => {
-  return props.reverseReply ? t('enhancedTopic.switchToAscOrder') : t('enhancedTopic.switchToDescOrder');
+  if (!props.reverseReply) {
+    return {
+      fontSize,
+    };
+  }
+
+  return {
+    color: 'var(--el-color-success)',
+    fontSize,
+  };
 });
 
 const copyTopicUrl = async () => {
@@ -145,8 +152,9 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
     />
     <OperateButton
       v-if="showReplyOrderButton"
-      :tip-content="replyOrderTip"
-      :icon-class="replyOrderIconClass"
+      :tip-content="$t('enhancedTopic.reverseReplyOrder')"
+      icon-class="i-mdi-filter-variant"
+      :custom-style="replyOrderIconStyle"
       @click="$emit('toggleReplyOrder')"
     />
     <ElDropdown trigger="click">
