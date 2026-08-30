@@ -82,13 +82,22 @@ const showReplyOrderButton = computed<boolean>(() => {
   return props.replyTotal !== '0';
 });
 
-const onlyOriginalPosterButtonStyle = computed<CSSProperties | undefined>(() => {
+const onlyOriginalPosterIconClass = computed<string>(() => {
+  return props.onlyOriginalPoster ? 'i-mdi-account-star' : 'i-mdi-account-star-outline';
+});
+
+const onlyOriginalPosterIconStyle = computed<CSSProperties | undefined>(() => {
+  const fontSize = '18px';
+
   if (!props.onlyOriginalPoster) {
-    return undefined;
+    return {
+      fontSize,
+    };
   }
 
   return {
     color: 'var(--el-color-primary)',
+    fontSize,
   };
 });
 
@@ -129,6 +138,13 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
     <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="$emit('likeTopic')" />
     <OperateButton
       v-if="showReplyOrderButton"
+      :tip-content="$t('enhancedTopic.onlyOriginalPoster')"
+      :icon-class="onlyOriginalPosterIconClass"
+      :custom-style="onlyOriginalPosterIconStyle"
+      @click="$emit('toggleOriginalPoster')"
+    />
+    <OperateButton
+      v-if="showReplyOrderButton"
       :tip-content="replyOrderTip"
       :icon-class="replyOrderIconClass"
       @click="$emit('toggleReplyOrder')"
@@ -162,12 +178,6 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
         </ElDropdownMenu>
       </template>
     </ElDropdown>
-    <OperateButton
-      v-if="showReplyOrderButton"
-      :operate-text="$t('enhancedTopic.onlyOriginalPoster')"
-      :custom-style="onlyOriginalPosterButtonStyle"
-      @click="$emit('toggleOriginalPoster')"
-    />
     <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
     <OperateButton v-else :operate-text="$t('enhancedTopic.blockTopic')" @click="$emit('blockTopic')" />
     <ElInput class="reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />

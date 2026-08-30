@@ -334,8 +334,13 @@ const showContinueSearchOriginalPosterReply = computed<boolean>(() => {
   return onlyOriginalPoster.value && canLoadNextReply.value && !replyNextLoadPending.value;
 });
 
+const shouldPauseOriginalPosterAutoLoad = computed<boolean>(() => {
+  return onlyOriginalPoster.value && displayedReplyList.value.length === 0;
+});
+
 const disableReplyInfiniteScroll = computed<boolean>(() => {
-  return isNestedReplyEnabled.value ? disableBatchLoad.value : disableInfiniteScroll.value;
+  const disableReplyLoad = isNestedReplyEnabled.value ? disableBatchLoad.value : disableInfiniteScroll.value;
+  return disableReplyLoad || shouldPauseOriginalPosterAutoLoad.value;
 });
 
 const isReplyFirstPage = computed<boolean>(() => {
