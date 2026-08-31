@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@unocss/reset": "0.65.4",
-    "@vueuse/core": "10.11.1",
+    "@vueuse/core": "14.4.0",
     "cherry-markdown": "0.8.39",
     "element-plus": "2.4.2",
     "emoji-mart-vue-fast": "15.0.0",
