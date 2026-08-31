@@ -26,9 +26,5 @@ dist-ssr
 *.sw?
 *cache
 
-# Config files
-.webextrc
-.webextrc.*
-
 # Codex attachments
 .codex-remote-attachments
