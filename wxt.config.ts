@@ -134,6 +134,9 @@ export default defineConfig({
     chromiumProfile,
     keepProfileChanges: true,
   },
+  suppressWarnings: {
+    firefoxDataCollection: true,
+  },
   zip: {
     dotSources: true,
     includeSources: [
