@@ -3,6 +3,7 @@ import { inject } from 'vue';
 
 import { vImgLoad } from '@/directives';
 import { convertEmojiToNative } from '@/utils/emoji';
+import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_LINK } from '@/constants/selector';
 
@@ -86,7 +87,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
     <section
       v-img-load="updateScrollbar"
       class="main-content markdown-body"
-      v-html="convertEmojiToNative(content)"
+      v-html="linkifyContent(convertEmojiToNative(content) || '')"
     ></section>
   </article>
 </template>

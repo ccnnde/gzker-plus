@@ -2,7 +2,7 @@
 import { computed, inject } from 'vue';
 
 import { vImgLoad } from '@/directives';
-import { renderReplyContent } from '@/utils/reply-content';
+import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const renderedContent = computed<string>(() => {
-  return renderReplyContent(props.content || '');
+  return linkifyContent(props.content || '');
 });
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);

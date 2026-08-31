@@ -8,7 +8,9 @@ const FLOOR_TEXT_REGEXP = /^\s*#(\d+)/;
 const HAS_HTTP_LINK_REGEXP = /https?:\/\//i;
 const HTTP_LINK_PREFIX_REGEXP = /^https?:\/\//i;
 const IMAGE_PATH_REGEXP = /\.(?:avif|bmp|gif|jpe?g|png|svg|webp)$/i;
-const LINKIFY_TOKEN_REGEXP = /https?:\/\/[^\s<>"'\x60]+|@[a-z][a-z0-9_]{2,13}(?![a-z0-9_])/gi;
+const EMAIL_ADDRESS_REGEXP = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+const LINKIFY_TOKEN_REGEXP =
+  /https?:\/\/[^\s<>"'\x60]+|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}|@[a-z][a-z0-9_]{2,13}(?![a-z0-9_])/gi;
 const MENTION_BOUNDARY_CHAR_REGEXP = /[a-z0-9_]/i;
 const MENTION_LINK_TEXT_REGEXP = /^@([a-z][a-z0-9_]{2,13})$/i;
 const PLAIN_TEXT_MENTION_REGEXP = /(?:^|[^a-z0-9_])@([a-z][a-z0-9_]{2,13})(?![a-z0-9_])(?:\s+#(\d+))?/gi;
@@ -32,11 +34,14 @@ const setExternalLinkAttributes = (element: HTMLAnchorElement) => {
   element.relList.add('noopener', 'noreferrer');
 };
 
-const createExternalLink = (href: string, text: string): HTMLAnchorElement => {
+const createExternalLink = (href: string, text: string, openInNewTab = true): HTMLAnchorElement => {
   const element = document.createElement('a');
   element.setAttribute('href', href);
   element.textContent = text;
-  setExternalLinkAttributes(element);
+
+  if (openInNewTab) {
+    setExternalLinkAttributes(element);
+  }
 
   return element;
 };
@@ -121,6 +126,17 @@ const createUrlReplacement = (candidate: string): LinkifyReplacement | undefined
   };
 };
 
+const createEmailReplacement = (candidate: string): LinkifyReplacement | undefined => {
+  if (!EMAIL_ADDRESS_REGEXP.test(candidate)) {
+    return undefined;
+  }
+
+  return {
+    node: createExternalLink(`mailto:${candidate}`, candidate, false),
+    trailingText: '',
+  };
+};
+
 const createMentionReplacement = (candidate: string, previousCharacter: string): LinkifyReplacement | undefined => {
   if (previousCharacter && MENTION_BOUNDARY_CHAR_REGEXP.test(previousCharacter)) {
     return undefined;
@@ -140,7 +156,11 @@ const createLinkifyReplacement = (candidate: string, previousCharacter: string):
     return createMentionReplacement(candidate, previousCharacter);
   }
 
-  return createUrlReplacement(candidate);
+  if (HTTP_LINK_PREFIX_REGEXP.test(candidate)) {
+    return createUrlReplacement(candidate);
+  }
+
+  return createEmailReplacement(candidate);
 };
 
 const replaceTextNodeLinks = (textNode: Text) => {
@@ -292,7 +312,7 @@ const appendReplyMentions = (node: Node, mentions: UserReplyMention[]) => {
   });
 };
 
-export const renderReplyContent = (content: string): string => {
+export const linkifyContent = (content: string): string => {
   const hasCandidate = content.includes('@') || HAS_HTTP_LINK_REGEXP.test(content);
 
   if (!content || !hasCandidate) {

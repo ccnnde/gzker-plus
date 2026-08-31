@@ -6,7 +6,7 @@ import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
 import { getEditedReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
-import { getReplyMentionFloor, getReplyMentionUid, renderReplyContent } from '@/utils/reply-content';
+import { getReplyMentionFloor, getReplyMentionUid, linkifyContent } from '@/utils/reply-content';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -42,7 +42,7 @@ const replyItemEl = ref<HTMLDivElement | null>(null);
 
 const renderedContent = computed<string>(() => {
   const content = convertEmojiToNative(props.content) || '';
-  return renderReplyContent(content);
+  return linkifyContent(content);
 });
 
 const mentionReplies = inject(MENTION_REPLIES_INJECTION_KEY);
