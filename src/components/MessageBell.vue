@@ -150,7 +150,7 @@ const isMsgUnread = (index: number): boolean => {
         <span>{{ $t('gzkHeader.message') }}</span>
         <ElLink class="message-all" type="info" :underline="false" :href="API_MSG" target="_blank">
           {{ $t('enhancedMsg.viewAll') }}
-          <un-i-mdi-arrow-top-right-thick />
+          <div class="i-mdi-arrow-top-right-thick"></div>
         </ElLink>
       </div>
       <ElScrollbar ref="scrollbar">

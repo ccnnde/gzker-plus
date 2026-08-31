@@ -15,5 +15,6 @@ export default defineConfig({
       warn: true,
     }),
   ],
+  blocklist: ['i-mdi-arrow-top-right-thick-1'],
   transformers: [transformerVariantGroup()],
 });
