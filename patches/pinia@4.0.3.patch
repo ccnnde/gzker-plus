@@ -1,0 +1,13 @@
+diff --git a/dist/pinia.d.ts b/dist/pinia.d.ts
+index 9e6846a29374e669716c66c93f56ccb818917c30..931ecc9f46e7b53dd81d26b8b4da962c0d942db1 100644
+--- a/dist/pinia.d.ts
++++ b/dist/pinia.d.ts
+@@ -935,7 +935,7 @@ declare function storeToRefs<SS extends StoreGeneric>(store: SS): StoreToRefs<SS
+ declare function acceptHMRUpdate<Id extends string = string, S extends StateTree = StateTree, G extends _GettersTree<S> = _GettersTree<S>, A = _ActionsTree>(initialUseStore: StoreDefinition<Id, S, G, A>, hot: any): (newModule: any) => any;
+ //#endregion
+ //#region src/globalExtensions.d.ts
+-declare module 'vue' {
++declare module '@vue/runtime-core' {
+   interface GlobalComponents {}
+   interface ComponentCustomProperties {
+     /**

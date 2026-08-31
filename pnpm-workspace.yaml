@@ -11,6 +11,7 @@ patchedDependencies:
   changelogen@0.5.5: patches/changelogen@0.5.5.patch
   cherry-markdown@0.8.39: patches/cherry-markdown@0.8.39.patch
   emoji-mart-vue-fast@15.0.0: patches/emoji-mart-vue-fast@15.0.0.patch
+  pinia@4.0.3: patches/pinia@4.0.3.patch
 
 overrides:
   c12@1.11.2>magicast: 0.3.5
