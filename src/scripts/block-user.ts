@@ -2,7 +2,9 @@ import { getBlockedUserList } from '@/api';
 import { getStorage } from '@/utils';
 import { OptionsKey } from '@/constants';
 
-const applyBlockUser = async () => {
+import type { ContentScriptContext } from 'wxt/utils/content-script-context';
+
+export const applyBlockUser = async (ctx: ContentScriptContext) => {
   const { options } = await getStorage();
 
   if (!options[OptionsKey.EnhancedTopic].checked) {
@@ -26,10 +28,15 @@ const applyBlockUser = async () => {
       }
     `;
 
+    if (ctx.isInvalid) {
+      return;
+    }
+
     document.documentElement.appendChild(style);
+    ctx.onInvalidated(() => {
+      style.remove();
+    });
   } catch (err) {
     console.error(err);
   }
 };
-
-applyBlockUser();

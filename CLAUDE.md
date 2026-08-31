@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概览
 
-过早客 Plus — 一款增强 [guozaoke.com](https://www.guozaoke.com) 论坛体验的浏览器扩展（支持 Chrome/Firefox）。技术栈：Vue 3 + Vite + TypeScript + Element Plus + UnoCSS。
+过早客 Plus — 一款增强 [guozaoke.com](https://www.guozaoke.com) 论坛体验的浏览器扩展（支持 Chrome/Firefox）。技术栈：Vue 3 + WXT + Vite + TypeScript + Element Plus + UnoCSS。
 
 ## 常用命令
 
 ```bash
 # 开发（默认 Chrome）
-pnpm dev              # 构建并监听，Chrome
-pnpm dev:ff           # 构建并监听，Firefox
+pnpm dev              # WXT Fast Dev Mode，Chrome
+pnpm dev:ff           # WXT Fast Dev Mode，Firefox
 
 # 生产构建
-pnpm build            # vue-tsc + vite build，Chrome
-pnpm build:ff         # TARGET=firefox
+pnpm build            # vue-tsc + wxt build，Chrome MV3
+pnpm build:ff         # vue-tsc + wxt build，Firefox MV2
 
 # 质量检查（代码改动后必须执行）
 pnpm format           # Prettier 格式化
@@ -31,7 +31,8 @@ pnpm format && pnpm lint:fix && pnpm styl-lint:fix
 # 更新日志 & 发布
 pnpm log:auto         # 生成 + 格式化 + git stage changelog
 pnpm git:release      # 基于 changelog 创建 GitHub Release
-pnpm zip-ext          # 打包扩展为 zip，用于分发
+pnpm zip              # WXT 官方 Chrome ZIP
+pnpm zip:ff           # WXT 官方 Firefox ZIP + sources ZIP
 ```
 
 项目目前没有配置测试运行器。
@@ -40,11 +41,11 @@ pnpm zip-ext          # 打包扩展为 zip，用于分发
 
 浏览器扩展的三进程模型：
 
-| 进程                            | 入口文件                         | 职责                                           |
-| ------------------------------- | -------------------------------- | ---------------------------------------------- |
-| **Background** (Service Worker) | `src/background/index.ts`        | 右键菜单、图片上传代理、选项页路由、键盘快捷键 |
-| **Content Scripts**             | `src/scripts/index.ts`（主入口） | 向论坛页面注入 Vue 应用，提供 UI 增强          |
-| **Extension Pages**             | `src/options.ts`, `src/popup.ts` | 设置页 SPA（Vue Router hash 模式）、简易弹窗   |
+| 进程                            | 入口文件                        | 职责                                           |
+| ------------------------------- | ------------------------------- | ---------------------------------------------- |
+| **Background** (Service Worker) | `src/entrypoints/background.ts` | 右键菜单、图片上传代理、选项页路由、键盘快捷键 |
+| **Content Scripts**             | `src/entrypoints/*.content.ts`  | 向论坛页面注入 Vue 应用，提供 UI 增强          |
+| **Extension Pages**             | `src/entrypoints/options/`      | 设置页 SPA（Vue Router hash 模式）             |
 
 ### Content Script 注入模式
 
@@ -98,7 +99,7 @@ pnpm zip-ext          # 打包扩展为 zip，用于分发
 
 ### 平台条件编译
 
-Manifest 使用 `{{chrome}}.xxx` / `{{firefox}}.xxx` 模板语法区分平台。通过 `TARGET` 环境变量指定构建目标。使用 `webextension-polyfill` 统一浏览器 API 访问。
+WXT 从 `wxt.config.ts` 和 `src/entrypoints/` 生成 Manifest；Chrome 默认构建 MV3，Firefox 默认构建 MV2。业务代码通过 `wxt/browser` 使用由 `@wxt-dev/webextension-polyfill` 提供的 Promise API。
 
 ## 项目规范
 

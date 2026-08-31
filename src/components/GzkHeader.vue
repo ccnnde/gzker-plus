@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { ElDropdown } from 'element-plus';
-import { runtime } from 'webextension-polyfill';
+import { browser } from 'wxt/browser';
 
 import { ExtensionMessageType } from '@/constants';
 
@@ -17,7 +17,7 @@ const openExtOptions = () => {
     msgType: ExtensionMessageType.OpenOptionsPage,
   };
 
-  runtime.sendMessage(msg);
+  browser.runtime.sendMessage(msg);
 };
 </script>
 

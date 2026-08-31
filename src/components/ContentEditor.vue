@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
-import { runtime } from 'webextension-polyfill';
+import { browser } from 'wxt/browser';
 
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
@@ -335,7 +335,7 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
       apiKey,
     };
 
-    const imgUrl = await runtime.sendMessage(msg);
+    const imgUrl = await browser.runtime.sendMessage(msg);
     const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
     uploadStatus.uploadedCallback = () => callback(imgUrl);
   } catch (err) {
@@ -370,7 +370,7 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
           msgType: ExtensionMessageType.CloseBiliImgTab,
         };
 
-        await runtime.sendMessage(msg);
+        await browser.runtime.sendMessage(msg);
       }
 
       loading.close();
@@ -404,7 +404,7 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
             extPagePath: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
           };
 
-          runtime.sendMessage(msg);
+          browser.runtime.sendMessage(msg);
         } catch {
           ElMessage(t('common.canceled'));
         }
@@ -447,7 +447,7 @@ const getApiKey = async (): Promise<string | undefined> => {
       extPagePath: OptionsRoutePaths[OptionsRouteNames.ImageHosting],
     };
 
-    runtime.sendMessage(msg);
+    browser.runtime.sendMessage(msg);
   } catch {
     ElMessage(t('common.canceled'));
   } finally {

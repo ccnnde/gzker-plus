@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted, provide, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
@@ -84,6 +84,11 @@ let topicPreloadAbortController: AbortController | undefined;
 let replyReloadVersion = 0;
 let replyNextLoadLockVersion = 0;
 let replyNextLoadLocked = false;
+let topicLinkElements: NodeListOf<HTMLAnchorElement>;
+let insertedTopicButton: HTMLAnchorElement | undefined;
+let nodePublishButton: HTMLAnchorElement | null;
+let nodePublishButtonOriginalHtml: string | undefined;
+let nodePublishButtonHadCreateClass = false;
 const replyNextLoadPending = ref<boolean>(false);
 
 const resetTopicPreloadRequestState = () => {
@@ -841,7 +846,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  const topicLinkElements = document.querySelectorAll<HTMLAnchorElement>(SELECTOR_TOPIC_LINK);
+  topicLinkElements = document.querySelectorAll<HTMLAnchorElement>(SELECTOR_TOPIC_LINK);
 
   topicLinkElements.forEach((element) => {
     const { href } = element;
@@ -854,6 +859,25 @@ onMounted(() => {
   });
 
   emitter.on('clickTopic', handleTopicClick);
+});
+
+onUnmounted(() => {
+  topicPreloadAbortController?.abort();
+  document.removeEventListener('keydown', handleKeydown);
+
+  topicLinkElements?.forEach((element) => {
+    element.removeEventListener('click', handleTopicClick);
+    element.removeEventListener('click', handleCreateTopicClick);
+  });
+
+  emitter.off('clickTopic', handleTopicClick);
+  insertedTopicButton?.removeEventListener('click', handleCreateTopicClick);
+  insertedTopicButton?.remove();
+
+  if (nodePublishButton && nodePublishButtonOriginalHtml !== undefined) {
+    nodePublishButton.innerHTML = nodePublishButtonOriginalHtml;
+    nodePublishButton.classList.toggle(CREATE_BTN_CLASS, nodePublishButtonHadCreateClass);
+  }
 });
 
 const CREATE_BTN_CLASS = 'gzk-create-btn';
@@ -877,11 +901,16 @@ const insertTopicButton = () => {
     button.prepend(editIcon);
     button.prepend(loadingIcon);
     button.addEventListener('click', handleCreateTopicClick);
+    insertedTopicButton = button;
   }
 
   const nodePublishBtn = document.querySelector<HTMLAnchorElement>('.node-topics > .ui-header a[href^="/t/create"]');
 
   if (nodePublishBtn?.innerText.includes('创建新主题')) {
+    nodePublishButton = nodePublishBtn;
+    nodePublishButtonOriginalHtml = nodePublishBtn.innerHTML;
+    nodePublishButtonHadCreateClass = nodePublishBtn.classList.contains(CREATE_BTN_CLASS);
+
     const loadingIcon = document.createElement('div');
     loadingIcon.className = 'i-mdi-loading';
     nodePublishBtn.classList.add(CREATE_BTN_CLASS);

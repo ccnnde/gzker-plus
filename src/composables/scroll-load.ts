@@ -105,7 +105,7 @@ export const useScrollLoad = <T>(
       return;
     }
 
-    const lastLoadedPage = pages[pages.length - 1];
+    const lastLoadedPage = pages[pages.length - 1] as number;
     const cachedPages = pages.filter((page) => pageCache.has(page));
     const missingPages = pages.filter((page) => !pageCache.has(page));
 
@@ -140,7 +140,11 @@ export const useScrollLoad = <T>(
       }
 
       missingPages.forEach((page, index) => {
-        pageCache.set(page, pageData[index]);
+        const data = pageData[index];
+
+        if (data) {
+          pageCache.set(page, data);
+        }
       });
 
       commitPageData({

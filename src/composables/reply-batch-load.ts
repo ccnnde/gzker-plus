@@ -340,6 +340,11 @@ export const useReplyBatchLoad = ({
     }
 
     const currentBatch = batches.value[batchIndex];
+
+    if (!currentBatch) {
+      return;
+    }
+
     const pageNumbers = getPageNumbers(currentBatch.startPage, currentBatch.endPage);
     const list = pageNumbers.flatMap((page) => pageCache.get(page) || []);
     const updatedBatch: UserReplyBatch = {

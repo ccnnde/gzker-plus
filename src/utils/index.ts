@@ -2,7 +2,8 @@ import { createApp } from 'vue';
 import { ElLoading, ElMessage } from 'element-plus';
 import Cookies from 'js-cookie';
 import { cloneDeep, debounce, merge } from 'lodash-es';
-import { storage, tabs } from 'webextension-polyfill';
+import { browser } from 'wxt/browser';
+import { createIntegratedUi } from 'wxt/utils/content-script-ui/integrated';
 
 import { useStorageStore } from '@/stores/storage';
 import i18n, { t } from '@/i18n';
@@ -18,6 +19,7 @@ import {
 } from '@/constants/res-msg';
 import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOP_NAVBAR, SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
+import type { App } from 'vue';
 import type { LoadingOptions } from 'element-plus';
 import type { DarkTheme, LightTheme } from '@/constants';
 import type {
@@ -46,18 +48,35 @@ const getResMessage = (msg: string): string => {
   }
 };
 
+const blockedTopicDisplayValues = new Map<HTMLElement, string>();
+
 export const createScriptApp = (options: ScriptAppOptions) => {
-  const { root, pinia, containerId, containerParentNode } = options;
-  const app = createApp(root);
-  const container = document.createElement('div');
+  const { root, pinia, context, containerId, containerParentNode, onRemove } = options;
 
-  container.id = containerId;
-  containerParentNode?.appendChild(container);
+  if (!containerParentNode) {
+    return;
+  }
 
-  app.use(pinia);
-  app.use(i18n);
+  const ui = createIntegratedUi<App>(context, {
+    position: 'inline',
+    anchor: containerParentNode,
+    onMount(container) {
+      const app = createApp(root);
 
-  app.mount(container);
+      container.id = containerId;
+      app.use(pinia);
+      app.use(i18n);
+      app.mount(container);
+
+      return app;
+    },
+    onRemove(app) {
+      app?.unmount();
+      onRemove?.();
+    },
+  });
+
+  ui.mount();
 };
 
 export const translateNavigation = (title?: string) => {
@@ -74,7 +93,7 @@ export const initStorage = async () => {
 
 export const setStorage = async (settings: Partial<StorageSettings>) => {
   try {
-    await storage.sync.set(settings);
+    await browser.storage.sync.set(settings);
   } catch (err) {
     console.error(err);
     throw new Error(t('options.storageFailed'));
@@ -82,8 +101,8 @@ export const setStorage = async (settings: Partial<StorageSettings>) => {
 };
 
 export const getStorage = async (): Promise<StorageSettings> => {
-  const settings = await storage.sync.get();
-  return settings as StorageSettings;
+  const settings = await browser.storage.sync.get();
+  return settings as unknown as StorageSettings;
 };
 
 /**
@@ -184,7 +203,7 @@ export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {
 export const fileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve((reader.result as string).split(',')[1]);
+    reader.onload = () => resolve((reader.result as string).split(',')[1] || '');
     reader.onerror = (error) => reject(error);
     reader.readAsDataURL(file);
   });
@@ -232,6 +251,10 @@ export const blockTopics = (topicIds: string[], keywords?: string[]) => {
         if (isKeywordReg) {
           const [, pattern, flags] = isKeywordReg;
 
+          if (!pattern) {
+            return false;
+          }
+
           try {
             const regExp = new RegExp(pattern, flags);
             return regExp.test(topicTitle);
@@ -247,9 +270,20 @@ export const blockTopics = (topicIds: string[], keywords?: string[]) => {
     });
 
     if (isKeywordHit || topicIds.includes(topicId as string)) {
+      if (!blockedTopicDisplayValues.has(element)) {
+        blockedTopicDisplayValues.set(element, element.style.display);
+      }
+
       element.style.display = 'none';
     }
   });
+};
+
+export const restoreBlockedTopics = () => {
+  blockedTopicDisplayValues.forEach((display, element) => {
+    element.style.display = display;
+  });
+  blockedTopicDisplayValues.clear();
 };
 
 export const showGlobalLoading = (options?: LoadingOptions) => {
@@ -292,7 +326,7 @@ export const sendMessageToTab = async (tabId: number | undefined, message: Exten
     attempts++;
 
     try {
-      const res = await tabs.sendMessage(tabId, message);
+      const res = await browser.tabs.sendMessage(tabId, message);
       console.log(`sendMessageToTab: Message successfully sent to Tab ${tabId}`);
       return res;
     } catch (err) {

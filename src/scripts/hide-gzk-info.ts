@@ -1,10 +1,31 @@
-import { runtime } from 'webextension-polyfill';
+import { browser } from 'wxt/browser';
 
 import { getLoginUserId, getStorage } from '@/utils';
 import { GzkInfoHideClass, GzkInfoType, OptionsKey } from '@/constants';
 
-const applyHideGzkInfo = async () => {
+import type { ContentScriptContext } from 'wxt/utils/content-script-context';
+
+export const applyHideGzkInfo = async (ctx: ContentScriptContext) => {
+  const addedClasses = new Set<string>();
+  const addedElements = new Set<HTMLElement>();
+  const originalTitle = document.title;
+
+  ctx.onInvalidated(() => {
+    addedClasses.forEach((className) => {
+      document.body?.classList.remove(className);
+    });
+    addedElements.forEach((element) => {
+      element.remove();
+    });
+    document.title = originalTitle;
+  });
+
   const { options } = await getStorage();
+
+  if (ctx.isInvalid) {
+    return;
+  }
+
   const { checkedGzkInfoTypes } = options[OptionsKey.HideGzkInfo];
 
   checkedGzkInfoTypes.forEach((type) => {
@@ -12,6 +33,7 @@ const applyHideGzkInfo = async () => {
 
     if (hideClass) {
       document.body.classList.add(hideClass);
+      addedClasses.add(hideClass);
     }
 
     if (type === GzkInfoType.Profile) {
@@ -34,18 +56,18 @@ const applyHideGzkInfo = async () => {
       `;
 
       document.head.appendChild(style);
+      addedElements.add(style);
     } else if (type === GzkInfoType.TabIcon) {
       const iconLink = document.createElement('link');
-      const iconUrl = runtime.getURL('icon/48.png');
+      const iconUrl = browser.runtime.getURL('/icon/48.png');
 
       iconLink.rel = 'icon';
       iconLink.href = iconUrl;
 
       document.head.appendChild(iconLink);
+      addedElements.add(iconLink);
     } else if (type === GzkInfoType.TabTitle) {
       document.title = 'Gzker Plus';
     }
   });
 };
-
-applyHideGzkInfo();

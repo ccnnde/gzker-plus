@@ -35,7 +35,13 @@ const getReplyParent = (
   }
 
   for (let index = mentions.length - 1; index >= 0; index--) {
-    const parentNode = getMentionParent(mentions[index], context);
+    const mention = mentions[index];
+
+    if (!mention) {
+      continue;
+    }
+
+    const parentNode = getMentionParent(mention, context);
 
     if (parentNode) {
       return parentNode;

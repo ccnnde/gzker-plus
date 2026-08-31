@@ -90,8 +90,10 @@ const handleInputEnter = (e: Event) => {
   const ke = e as KeyboardEvent;
   ke.preventDefault();
 
-  if (highLightIndex.value >= 0 && historyList.value[highLightIndex.value]) {
-    const keyword = historyList.value[highLightIndex.value].keyword;
+  const highlightedItem = historyList.value[highLightIndex.value];
+
+  if (highLightIndex.value >= 0 && highlightedItem) {
+    const { keyword } = highlightedItem;
     doSearch(keyword);
     return;
   }
@@ -134,8 +136,12 @@ const saveToHistory = async (keyword: string) => {
   });
 
   if (existingIndex !== -1) {
-    const oldId = historyList.value[existingIndex].id;
-    await deleteSearchHistory(oldId);
+    const existingItem = historyList.value[existingIndex];
+
+    if (existingItem) {
+      await deleteSearchHistory(existingItem.id);
+    }
+
     historyList.value.splice(existingIndex, 1);
   }
 

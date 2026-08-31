@@ -53,7 +53,7 @@ const parseUserTopic = (htmlStr: string): UserTopic => {
     detail = parseTopicDetail(htmlStr);
     total = '0';
   } else {
-    const [detailHtmlStr, replyHtmlStr] = htmlStr.split('class="topic-reply');
+    const [detailHtmlStr = '', replyHtmlStr = ''] = htmlStr.split('class="topic-reply');
     detail = parseTopicDetail(detailHtmlStr);
     list = parseTopicReplyList(replyHtmlStr);
   }
@@ -111,7 +111,7 @@ const parseTopicReplyList = (htmlStr: string): UserReplyItem[] => {
   }
 
   const lastReplyIndex = replyList.length - 1;
-  replyList[lastReplyIndex] = replyList[lastReplyIndex].split('<div class="ui-footer">')[0];
+  replyList[lastReplyIndex] = replyList[lastReplyIndex]?.split('<div class="ui-footer">')[0] || '';
   replyList.shift();
 
   return replyList.map((item): UserReplyItem => {
@@ -151,7 +151,7 @@ const parseUserMsgList = (htmlStr: string): UserMessage[] => {
   }
 
   const lastMsgIndex = msgList.length - 1;
-  msgList[lastMsgIndex] = msgList[lastMsgIndex].split('<div class="ui-footer">')[0];
+  msgList[lastMsgIndex] = msgList[lastMsgIndex]?.split('<div class="ui-footer">')[0] || '';
   msgList.shift();
 
   return msgList.map((item): UserMessage => {

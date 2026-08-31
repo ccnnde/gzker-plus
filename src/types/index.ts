@@ -2,6 +2,7 @@ import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
 import type { LoadingInstance } from 'element-plus/es/components/loading/src/loading';
 import type Viewer from 'viewerjs';
+import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type {
   BellStyle,
   DarkMode,
@@ -130,13 +131,15 @@ export interface StorageSettings {
   };
 }
 
-export type CreateScriptApp = (pinia: Pinia) => void;
+export type CreateScriptApp = (pinia: Pinia, context: ContentScriptContext) => void;
 
 export interface ScriptAppOptions {
   root: Component;
   pinia: Pinia;
+  context: ContentScriptContext;
   containerId: string;
   containerParentNode: Element | null;
+  onRemove?: () => void;
 }
 
 export interface UserInfo {

@@ -37,6 +37,11 @@ export const saveEditHistory = (id: string, data: Partial<TopicForm>) => {
   }
 
   const { uid, tid, rid, time } = match.groups;
+
+  if (!uid || !time) {
+    return;
+  }
+
   const createTimestamp = Number(time);
   const updateTimestamp = Date.now();
 

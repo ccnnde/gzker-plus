@@ -5,12 +5,13 @@ import { APP_ROOT_CLASS_PREFIX } from '@/constants';
 import type { Pinia } from 'pinia';
 import type { CreateScriptApp } from '@/types';
 
-export const createTopicApp: CreateScriptApp = (pinia: Pinia) => {
+export const createTopicApp: CreateScriptApp = (pinia: Pinia, context) => {
   const id = APP_ROOT_CLASS_PREFIX + 'topic';
 
   createScriptApp({
     root: Topic,
     pinia,
+    context,
     containerId: id,
     containerParentNode: document.body,
   });

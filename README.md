@@ -18,7 +18,7 @@
 
 ## 技术栈
 
-Vue3(Composition API) + Vue Router + Vue I18n + Pinia + Vite + Element Plus + TypeScript + Unocss + Scss
+Vue3(Composition API) + Vue Router + Vue I18n + Pinia + WXT + Vite + Element Plus + TypeScript + Unocss + Scss
 
 ESLint + Stylelint + Commitlint + Prettier + Lint Staged + Husky
 
@@ -38,7 +38,7 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
 
 适用于 Chromium 内核浏览器，比如 Chrome/Edge/QQ 浏览器等
 
-- <https://github.com/ccnnde/gzker-plus/releases> 下载 `gzker-plus-x.x.x-chromium.zip`，并解压
+- <https://github.com/ccnnde/gzker-plus/releases> 下载 `gzker-plus-x.x.x-chrome.zip`，并解压
 - 在浏览器的扩展管理页面打开 **开发者模式**
 - 点击 **加载已解压的扩展程序**，选中你解压好的目录即可
 

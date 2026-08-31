@@ -1,0 +1,18 @@
+packages:
+  - .
+
+allowBuilds:
+  core-js: false
+  esbuild: true
+  spawn-sync: false
+  vue-demi: true
+
+patchedDependencies:
+  changelogen@0.5.5: patches/changelogen@0.5.5.patch
+  cherry-markdown@0.8.39: patches/cherry-markdown@0.8.39.patch
+  emoji-mart-vue-fast@15.0.0: patches/emoji-mart-vue-fast@15.0.0.patch
+
+overrides:
+  c12@1.11.2>magicast: 0.3.5
+  stylelint-config-recommended: 13.0.0
+  stylelint-config-standard: 34.0.0

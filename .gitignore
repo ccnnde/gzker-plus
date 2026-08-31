@@ -11,7 +11,10 @@ node_modules
 dist
 dist-ssr
 .output
+.wxt
 *.local
+.env.submit
+.env.submit.*
 
 # Editor directories and files
 .idea
@@ -26,3 +29,6 @@ dist-ssr
 # Config files
 .webextrc
 .webextrc.*
+
+# Codex attachments
+.codex-remote-attachments

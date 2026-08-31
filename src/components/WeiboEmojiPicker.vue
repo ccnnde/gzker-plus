@@ -40,9 +40,9 @@ defineExpose({
     @change="handleSelect"
     @visible-change="handleVisibleChange"
   >
-    <ElOption v-for="item in weiboEmojis" :key="item.name" :value="item.short_names[0]">
+    <ElOption v-for="item in weiboEmojis" :key="item.name" :value="item.short_names[0] || ''">
       <img :src="item.imageUrl" />
-      :{{ item.short_names[0] }}:
+      :{{ item.short_names[0] || '' }}:
     </ElOption>
   </ElSelect>
 </template>

@@ -243,10 +243,20 @@ const getReplyMentionUid = (mentionElement: HTMLAnchorElement): string | undefin
 };
 
 const parsePlainTextMentions = (content: string): UserReplyMention[] => {
-  return [...content.matchAll(PLAIN_TEXT_MENTION_REGEXP)].map((match) => ({
-    uid: match[1],
-    floor: match[2],
-  }));
+  return [...content.matchAll(PLAIN_TEXT_MENTION_REGEXP)].flatMap((match) => {
+    const uid = match[1];
+
+    if (!uid) {
+      return [];
+    }
+
+    return [
+      {
+        uid,
+        floor: match[2],
+      },
+    ];
+  });
 };
 
 const appendReplyMentions = (node: Node, mentions: UserReplyMention[]) => {

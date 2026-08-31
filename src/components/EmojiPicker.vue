@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue';
 import { Picker } from 'emoji-mart-vue-fast/src';
-import { runtime } from 'webextension-polyfill';
+import { browser } from 'wxt/browser';
 
 import { t } from '@/i18n';
 import { EMOJI_CLASS_NAME, emojiIndex, NOTO_EMOJI_FONT } from '@/utils/emoji';
@@ -59,7 +59,7 @@ const loadEmojiFont = () => {
   }
 
   const fontFace = document.createElement('style');
-  const emojiFontUrl = runtime.getURL(`font/${NOTO_EMOJI_FONT}.ttf`);
+  const emojiFontUrl = browser.runtime.getURL(`/font/${NOTO_EMOJI_FONT}.ttf`);
 
   fontFace.textContent = `
     @font-face {

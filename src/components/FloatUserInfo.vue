@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import { API_USER } from '@/api';
 import { addUnit } from '@/utils';
@@ -10,6 +10,7 @@ import ElementConfig from './ElementConfig.vue';
 import UserInfoPopover from './UserInfoPopover.vue';
 
 let avatarHoverTimer: number | undefined;
+let avatarElements: NodeListOf<HTMLImageElement>;
 
 const avatarWrapperStyle = ref(initialElementPositionAndSize);
 const uid = ref('');
@@ -19,7 +20,7 @@ const userLink = computed(() => {
 });
 
 onMounted(() => {
-  const avatarElements = document.querySelectorAll<HTMLImageElement>(SELECTOR_USER_AVATAR);
+  avatarElements = document.querySelectorAll<HTMLImageElement>(SELECTOR_USER_AVATAR);
 
   avatarElements.forEach((element) => {
     element.addEventListener('mouseenter', handleAvatarMouseEnter);
@@ -27,13 +28,22 @@ onMounted(() => {
   });
 });
 
+onUnmounted(() => {
+  window.clearTimeout(avatarHoverTimer);
+
+  avatarElements?.forEach((element) => {
+    element.removeEventListener('mouseenter', handleAvatarMouseEnter);
+    element.removeEventListener('mouseleave', handleAvatarMouseLeave);
+  });
+});
+
 const handleAvatarMouseEnter = (e: Event) => {
-  avatarHoverTimer = setTimeout(() => {
+  avatarHoverTimer = window.setTimeout(() => {
     const avatarEle = e.target as HTMLImageElement;
     const { href } = avatarEle.parentNode as HTMLAnchorElement;
     const { left, top, width, height } = avatarEle.getBoundingClientRect();
 
-    uid.value = href.split(API_USER)[1];
+    uid.value = href.split(API_USER)[1] || '';
 
     avatarWrapperStyle.value = {
       left: addUnit(left),
@@ -45,7 +55,7 @@ const handleAvatarMouseEnter = (e: Event) => {
 };
 
 const handleAvatarMouseLeave = () => {
-  clearTimeout(avatarHoverTimer);
+  window.clearTimeout(avatarHoverTimer);
 };
 
 const handlePopoverHide = () => {
