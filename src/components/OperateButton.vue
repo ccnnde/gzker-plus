@@ -30,7 +30,7 @@ const showOperateText = computed(() => {
 </script>
 
 <template>
-  <ElTooltip v-if="showTip" :content="tipContent" :show-arrow="false">
+  <ElTooltip v-if="showTip" :content="tipContent" :enterable="false" :hide-after="0" :show-arrow="false">
     <div class="operate-button-container" @click="$emit('click')">
       <div v-if="showOperateIcon" :style="customStyle" :class="['operate-icon', iconClass]"></div>
       <span v-if="showOperateText" :style="customStyle" class="operate-text">{{ operateText }}</span>

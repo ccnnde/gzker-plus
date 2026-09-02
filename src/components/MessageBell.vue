@@ -132,7 +132,14 @@ const isMsgUnread = (index: number): boolean => {
   >
     <template #reference>
       <div>
-        <ElTooltip v-if="showBell" :content="bellTip" :show-arrow="false" :disabled="disableTooltip">
+        <ElTooltip
+          v-if="showBell"
+          :content="bellTip"
+          :enterable="false"
+          :hide-after="0"
+          :show-arrow="false"
+          :disabled="disableTooltip"
+        >
           <ElBadge
             class="message-badge"
             :value="unreadMessageNumber"

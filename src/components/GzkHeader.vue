@@ -25,7 +25,7 @@ const openExtOptions = () => {
   <ElementConfig>
     <ElDropdown ref="feedbackDropdown" trigger="click" popper-class="feedback-popper">
       <div>
-        <ElTooltip :content="$t('gzkHeader.feedback')" :show-arrow="false">
+        <ElTooltip :content="$t('gzkHeader.feedback')" :enterable="false" :hide-after="0" :show-arrow="false">
           <un-i-mdi-account-question-outline class="header-icon" />
         </ElTooltip>
       </div>
@@ -48,7 +48,7 @@ const openExtOptions = () => {
       </template>
     </ElDropdown>
     <MessageBell />
-    <ElTooltip :content="$t('gzkHeader.gzkSettings')" :show-arrow="false">
+    <ElTooltip :content="$t('gzkHeader.gzkSettings')" :enterable="false" :hide-after="0" :show-arrow="false">
       <un-i-mdi-cog-outline class="header-icon" @click="openExtOptions" />
     </ElTooltip>
   </ElementConfig>
