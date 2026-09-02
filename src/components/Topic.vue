@@ -4,7 +4,6 @@ import { storeToRefs } from 'pinia';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
 
-import FadeTransition from '@/transitions/FadeTransition.vue';
 import { useClickModal } from '@/composables/click-modal';
 import { useDialog } from '@/composables/dialog';
 import { useReplyBatchLoad } from '@/composables/reply-batch-load';
@@ -56,11 +55,21 @@ import TopicUserInfoPopover from './TopicUserInfoPopover.vue';
 
 import type { CSSProperties } from 'vue';
 import type { DialogBeforeCloseFn } from 'element-plus';
-import type { PageDataSeed, UserReplyBatch, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type {
+  PageDataSeed,
+  TopicAction,
+  UserReplyBatch,
+  UserReplyItem,
+  UserTopic,
+  UserTopicDetail,
+  UserTopicStatus,
+} from '@/types';
 
 import 'viewerjs/dist/viewer.css';
 
 const PAGE_SIZE = 106;
+const ARROW_SCROLL_DISTANCE = 50;
+const TOPIC_FOOTER_HEIGHT = 50;
 const createTopicLinkRegExp = /\/t\/create\/(\w+)/;
 
 const storage = useStorageStore();
@@ -1143,7 +1152,6 @@ const handleTopicDialogClosed = () => {
   topicDetail.value = undefined;
   replyTotal.value = '0';
   onlyOriginalPoster.value = false;
-  currentScrollDistance.value = 0;
   initReplyOrder();
 
   isReplyEditorFullscreen.value = false;
@@ -1157,10 +1165,6 @@ const handleTopicDialogClosed = () => {
   resetTopicPreloadRequestState();
   resetReplyLoadState();
 };
-
-const ARROW_SCROLL_DISTANCE = 50;
-const SCROLL_BUTTON_VISIBLE_HEIGHT = 200;
-const currentScrollDistance = ref(0);
 
 const handleKeydown = (e: KeyboardEvent) => {
   if (isImgViewerVisible() || isGlobalLoadingVisible()) {
@@ -1188,6 +1192,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   if (
     activeElement?.tagName === 'INPUT' ||
     activeElement?.tagName === 'TEXTAREA' ||
+    activeElement?.tagName === 'BUTTON' ||
     activeElement?.closest('.cherry-editor') ||
     activeElement?.closest('.el-select__wrapper') ||
     activeElement?.closest('.el-dropdown') ||
@@ -1231,24 +1236,6 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 };
 
-const showScrollTopButton = computed(() => {
-  return currentScrollDistance.value > SCROLL_BUTTON_VISIBLE_HEIGHT;
-});
-
-const showScrollBottomButton = computed(() => {
-  if (!scrollbar.value?.wrapRef) {
-    return false;
-  }
-
-  const { clientHeight, scrollHeight } = scrollbar.value.wrapRef;
-  const remainScrollDistance = scrollHeight - clientHeight - currentScrollDistance.value;
-  return remainScrollDistance > SCROLL_BUTTON_VISIBLE_HEIGHT;
-});
-
-const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
-  currentScrollDistance.value = scrollTop;
-};
-
 const updateScrollbar = debounce(() => {
   scrollbar.value?.update();
 }, 500);
@@ -1265,14 +1252,36 @@ const addTopic = (node: string) => {
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
 const isReplyEditorFullscreen = ref(false);
 const topicFooterVisible = ref(true);
-const topicFooterHeight = 50;
+
+const handleExportTopic = () => {
+  // TODO: 导出主题
+};
+
+const handleHotReplies = () => {
+  // TODO: 热门回复
+};
+
+const handleRefreshTopic = () => {
+  // TODO: 刷新主题
+};
+
+// @unocss-include
+const topicActions = computed<readonly TopicAction[]>(() => {
+  return [
+    { label: t('enhancedTopic.exportTopic'), iconClass: 'i-mdi-tray-arrow-down', handler: handleExportTopic },
+    { label: t('enhancedTopic.hotReplies'), iconClass: 'i-mdi-heart-outline', handler: handleHotReplies },
+    { label: t('enhancedTopic.refreshTopic'), iconClass: 'i-mdi-refresh', handler: handleRefreshTopic },
+    { label: t('enhancedTopic.scrollToTop'), iconClass: 'i-mdi-arrow-up', handler: scrollToTop, showDivider: true },
+    { label: t('enhancedTopic.scrollToBottom'), iconClass: 'i-mdi-arrow-down', handler: scrollToBottom },
+  ];
+});
 
 const replyEditorHeight = computed<number>(() => {
   return isReplyEditorFullscreen.value ? 400 : 315;
 });
 
 const currentFooterHeight = computed<number>(() => {
-  return topicFooterVisible.value ? topicFooterHeight : replyEditorHeight.value;
+  return topicFooterVisible.value ? TOPIC_FOOTER_HEIGHT : replyEditorHeight.value;
 });
 
 const topicDialogVH = computed<number>(() => {
@@ -1349,7 +1358,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
         </div>
       </template>
       <div v-loading="isLoading || isTopicPreloadLoading || isReplyFirstPageLoading" :style="topicBodyStyle">
-        <ElScrollbar ref="scrollbar" @scroll="handleScroll">
+        <ElScrollbar ref="scrollbar">
           <div
             ref="topicContainer"
             v-infinite-scroll="getNextReplyData"
@@ -1435,7 +1444,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
           :liked="topicDetail?.liked"
           :like-number="topicDetail?.likeNumber"
           :editable="topicDetail?.editable"
-          :height="topicFooterHeight"
+          :height="TOPIC_FOOTER_HEIGHT"
           :reverse-reply="isReverseReply"
           :only-original-poster="onlyOriginalPoster"
           @favorite-topic="handleTopicFavorite"
@@ -1447,21 +1456,18 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
         />
       </div>
       <template #footer>
-        <div class="topic-dialog-absolute topic-dialog-footer">
-          <FadeTransition>
-            <un-i-mdi-arrow-up-bold-box-outline
-              v-show="showScrollTopButton"
-              class="topic-operate-icon"
-              @click="scrollToTop"
-            />
-          </FadeTransition>
-          <FadeTransition>
-            <un-i-mdi-arrow-down-bold-box-outline
-              v-show="showScrollBottomButton"
-              class="topic-operate-icon bottom-0"
-              @click="scrollToBottom"
-            />
-          </FadeTransition>
+        <div class="topic-action-rail">
+          <div
+            v-for="action in topicActions"
+            :key="action.label"
+            :class="['topic-action-item', { 'topic-action-item-divided': action.showDivider }]"
+          >
+            <ElTooltip :content="action.label" :enterable="false" :hide-after="0" placement="left">
+              <button class="topic-action-button" type="button" :aria-label="action.label" @click="action.handler()">
+                <span :class="['topic-action-button-icon', action.iconClass]"></span>
+              </button>
+            </ElTooltip>
+          </div>
         </div>
       </template>
     </ElDialog>
@@ -1631,17 +1637,78 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
   right: -10px;
 }
 
-.topic-dialog-footer {
-  bottom: 0;
-  height: 70px;
-}
-
 .topic-operate-icon {
   position: absolute;
   padding: 10px;
   font-size: 32px;
   color: rgb(255 255 255 / 70%);
   cursor: pointer;
+}
+
+.topic-action-rail {
+  position: absolute;
+  right: -48px;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.topic-action-item {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.topic-action-item-divided {
+  margin-top: 12px;
+
+  &::before {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    width: 24px;
+    height: 2px;
+    pointer-events: none;
+    content: '';
+    background-color: var(--el-border-color-darker);
+    border-radius: 1px;
+    transform: translateX(-50%);
+  }
+}
+
+.topic-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--el-text-color-regular);
+  cursor: pointer;
+  background-color: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color);
+  border-radius: var(--el-border-radius-base);
+  box-shadow: var(--el-box-shadow-light);
+  transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--el-color-primary);
+    border-color: var(--el-color-primary);
+    outline: none;
+    box-shadow: 0 4px 12px rgb(var(--el-color-primary-rgb) 0.18);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+.topic-action-button-icon {
+  font-size: 16px;
 }
 
 .topic-container {

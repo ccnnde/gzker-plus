@@ -10,6 +10,11 @@ img[src^="https://img.whzxc.cn/bd"]
   vertical-align: -0.214em !important;
 }
 
+.el-popper[role='tooltip'].el-fade-in-linear-enter-active,
+.el-popper[role='tooltip'].el-fade-in-linear-leave-active {
+  transition: opacity 0.15s ease;
+}
+
 .markdown-body,
 .cherry-markdown.theme__github {
   --base-size-8: 8px;

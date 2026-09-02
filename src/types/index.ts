@@ -376,6 +376,13 @@ export interface CherryFileUploadStatus {
 
 export type CherryAnchor = [number, number] | false;
 
+export interface TopicAction {
+  label: string;
+  iconClass: string;
+  handler: () => void;
+  showDivider?: boolean;
+}
+
 export interface TopicForm {
   node: string;
   title: string;
