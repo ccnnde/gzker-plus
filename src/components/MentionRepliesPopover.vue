@@ -13,6 +13,14 @@ import MentionReplyItem from './MentionReplyItem.vue';
 import type Viewer from 'viewerjs';
 import type { UserReplyItem } from '@/types';
 
+interface Props {
+  zIndex?: number;
+}
+
+withDefaults(defineProps<Props>(), {
+  zIndex: 2001,
+});
+
 const SHOW_DELAY = 150;
 const HIDE_DELAY = 200;
 const REPLY_NUMBER_SELECTOR = '[data-reply-no]';
@@ -364,7 +372,7 @@ defineExpose({
     width="min(420px, calc(100vw - 32px))"
     popper-class="mention-replies-popover"
     :popper-style="{ padding: 0 }"
-    :z-index="2001"
+    :z-index="zIndex"
     placement="top-start"
     virtual-triggering
     teleported

@@ -13,6 +13,7 @@ import type { UserInfo } from '@/types';
 
 interface Props extends Partial<PopoverProps> {
   uid: string;
+  zIndex?: number;
   virtualRef?: HTMLElement;
   virtualTriggering?: boolean;
 }
@@ -155,6 +156,7 @@ const handleUserBlock = () => {
     :show-after="showAfter"
     :hide-after="hideAfter"
     :visible="visible"
+    :z-index="zIndex"
     :disabled="!uid"
     :virtual-ref="virtualRef"
     :virtual-triggering="virtualTriggering"

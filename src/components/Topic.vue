@@ -33,6 +33,7 @@ import {
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 
 import ElementConfig from './ElementConfig.vue';
+import HotRepliesDialog from './HotRepliesDialog.vue';
 import LoadError from './LoadError.vue';
 import ReplyEditor from './ReplyEditor.vue';
 import TopicActionRail from './TopicActionRail.vue';
@@ -57,6 +58,7 @@ const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
 const isTopicPage = ref<boolean>(false);
 const topicContainer = ref<HTMLDivElement | null>(null);
+const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
 
 const {
   topicId,
@@ -321,7 +323,7 @@ const handleExportTopic = () => {
 };
 
 const handleHotReplies = () => {
-  // TODO: 热门回复
+  hotRepliesDialog.value?.openDialog([...effectiveReplyList.value]);
 };
 
 const handleRefreshTopic = () => {
@@ -522,6 +524,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
         <TopicActionRail :actions="topicActions" />
       </template>
     </ElDialog>
+    <HotRepliesDialog ref="hotRepliesDialog" />
     <TopicEditor ref="topicEditor" @sended="handleTopicSended" />
   </ElementConfig>
 </template>
@@ -539,6 +542,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .topic-dialog,
+.hot-replies-dialog,
 .mention-replies-popover {
   img {
     max-width: 100%;
@@ -647,6 +651,7 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .topic-dialog,
+.hot-replies-dialog,
 .topic-editor-dialog,
 .reply-editor-dialog,
 .editor-help-dialog {
@@ -666,7 +671,8 @@ provide(EDIT_REPLY_INJECTION_KEY, editReply);
 }
 
 .reply-editor-dialog,
-.editor-history-dialog {
+.editor-history-dialog,
+.hot-replies-dialog {
   width: 40%;
 
   @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);

@@ -7,6 +7,7 @@ import UserInfoPopover from './UserInfoPopover.vue';
 
 interface Props {
   container: HTMLDivElement | null;
+  zIndex?: number;
 }
 
 const props = defineProps<Props>();
@@ -271,6 +272,7 @@ onUnmounted(() => {
     virtual-triggering
     :persistent="false"
     teleported
+    :z-index="zIndex"
     @content-mouseenter="handleContentMouseEnter"
     @content-mouseleave="handleContentMouseLeave"
     @content-focusin="handleContentFocusIn"
