@@ -167,6 +167,8 @@ export const REPLY_PRELOAD_PAGE_COUNT: Record<ReplyPreloadMode, number> = {
   [ReplyPreloadMode.TwoPages]: 3,
 };
 
+export const TOPIC_REPLY_PAGE_SIZE = 106;
+
 export const enum ReplyOrder {
   Asc = 'asc',
   Desc = 'desc',
