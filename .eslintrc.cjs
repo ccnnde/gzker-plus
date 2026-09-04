@@ -22,18 +22,15 @@ module.exports = {
   },
   parser: 'vue-eslint-parser',
   parserOptions: {
-    parser: {
-      js: '@babel/eslint-parser',
-      jsx: '@babel/eslint-parser',
-      ts: '@typescript-eslint/parser',
-      tsx: '@typescript-eslint/parser',
-    },
+    parser: '@typescript-eslint/parser',
   },
   overrides: [
     {
       files: ['*.json'],
       parser: 'jsonc-eslint-parser',
       rules: {
+        '@typescript-eslint/consistent-type-assertions': 'off',
+        '@typescript-eslint/consistent-type-imports': 'off',
         'jsonc/key-name-casing': [
           'error',
           {
