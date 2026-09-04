@@ -75,6 +75,7 @@ const {
   topicStatus,
   replyTotal,
   onlyOriginalPoster,
+  isTopicRefreshing,
   isTopicPreloadLoading,
   isReverseReply,
   showReply,
@@ -100,6 +101,7 @@ const {
   resetTopicData,
   handleToggleReplyOrder,
   handleToggleOriginalPoster,
+  refreshTopic,
   handleTopicSended,
   handleReplySended,
   getNextReplyData,
@@ -376,7 +378,7 @@ const handleHotReplies = () => {
 };
 
 const handleRefreshTopic = () => {
-  // TODO: 刷新主题
+  refreshTopic();
 };
 
 // @unocss-include
@@ -389,7 +391,12 @@ const topicActions = computed<readonly TopicAction[]>(() => {
       loading: isExporting.value,
     },
     { label: t('enhancedTopic.hotReplies'), iconClass: 'i-mdi-heart-outline', handler: handleHotReplies },
-    { label: t('enhancedTopic.refreshTopic'), iconClass: 'i-mdi-refresh', handler: handleRefreshTopic },
+    {
+      label: t('enhancedTopic.refreshTopic'),
+      iconClass: 'i-mdi-refresh',
+      handler: handleRefreshTopic,
+      loading: isTopicRefreshing.value,
+    },
     { label: t('enhancedTopic.scrollToTop'), iconClass: 'i-mdi-arrow-up', handler: scrollToTop, showDivider: true },
     { label: t('enhancedTopic.scrollToBottom'), iconClass: 'i-mdi-arrow-down', handler: scrollToBottom },
   ];
