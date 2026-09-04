@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed, inject, onBeforeUnmount, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import QrcodeVue from 'qrcode.vue';
 
@@ -25,6 +25,7 @@ interface Props {
   height: number;
   reverseReply?: boolean;
   onlyOriginalPoster?: boolean;
+  loading?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -37,6 +38,12 @@ defineEmits<{
   toggleReplyOrder: [];
   toggleOriginalPoster: [];
 }>();
+
+const TOOLTIP_ENABLE_DELAY = 500;
+
+const actionTooltipDisabled = ref(false);
+
+let enableTooltipTimer: number | undefined;
 
 const { isDark } = useDarkMode();
 
@@ -129,6 +136,33 @@ const shareToWeibo = () => {
   );
 };
 
+watch(
+  () => props.loading,
+  (loading) => {
+    window.clearTimeout(enableTooltipTimer);
+    enableTooltipTimer = undefined;
+
+    if (loading) {
+      actionTooltipDisabled.value = true;
+      return;
+    }
+
+    if (!actionTooltipDisabled.value) {
+      return;
+    }
+
+    enableTooltipTimer = window.setTimeout(() => {
+      actionTooltipDisabled.value = false;
+      enableTooltipTimer = undefined;
+    }, TOOLTIP_ENABLE_DELAY);
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => {
+  window.clearTimeout(enableTooltipTimer);
+});
+
 const addReply = inject(ADD_REPLY_INJECTION_KEY);
 </script>
 
@@ -140,14 +174,21 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       :icon-class="favoriteIconClass"
       :operate-text="favoriteNumber"
       :custom-style="favoriteButtonStyle"
+      :tip-disabled="actionTooltipDisabled"
       @click="$emit('favoriteTopic')"
     />
-    <LikeButton :liked="liked" :like-number="likeNumber" @handle-like="$emit('likeTopic')" />
+    <LikeButton
+      :liked="liked"
+      :like-number="likeNumber"
+      :tip-disabled="actionTooltipDisabled"
+      @handle-like="$emit('likeTopic')"
+    />
     <OperateButton
       v-if="showReplyOrderButton"
       :tip-content="$t('enhancedTopic.onlyOriginalPoster')"
       :icon-class="onlyOriginalPosterIconClass"
       :custom-style="onlyOriginalPosterIconStyle"
+      :tip-disabled="actionTooltipDisabled"
       @click="$emit('toggleOriginalPoster')"
     />
     <OperateButton
@@ -155,6 +196,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       :tip-content="$t('enhancedTopic.reverseReplyOrder')"
       icon-class="i-mdi-filter-variant"
       :custom-style="replyOrderIconStyle"
+      :tip-disabled="actionTooltipDisabled"
       @click="$emit('toggleReplyOrder')"
     />
     <ElDropdown trigger="click">
