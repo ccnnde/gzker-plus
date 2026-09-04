@@ -16,8 +16,17 @@ defineProps<Props>();
       :class="['topic-action-rail-item', { 'topic-action-rail-item-divided': action.showDivider }]"
     >
       <ElTooltip :content="action.label" :enterable="false" :hide-after="0" placement="left">
-        <button class="topic-action-rail-button" type="button" :aria-label="action.label" @click="action.handler()">
-          <span :class="['topic-action-rail-button-icon', action.iconClass]"></span>
+        <button
+          class="topic-action-rail-button"
+          type="button"
+          :aria-label="action.label"
+          :aria-busy="action.loading ? 'true' : undefined"
+          :disabled="action.loading"
+          @click="action.handler()"
+        >
+          <span
+            :class="['topic-action-rail-button-icon', action.loading ? 'i-mdi-loading animate-spin' : action.iconClass]"
+          ></span>
         </button>
       </ElTooltip>
     </div>
@@ -84,6 +93,10 @@ defineProps<Props>();
 
   &:active {
     transform: scale(0.94);
+  }
+
+  &:disabled {
+    cursor: default;
   }
 }
 

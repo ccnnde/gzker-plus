@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, provide, ref } from 'vue';
+import { computed, onBeforeMount, onUnmounted, provide, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
@@ -12,7 +12,14 @@ import { useTopicKeyboardScroll } from '@/composables/topic-keyboard-scroll';
 import { useTopicReplies } from '@/composables/topic-replies';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
-import { favoriteTopic, getEditedTopic, likeTopic, parseUserTopic, unfavoriteTopic } from '@/api';
+import {
+  favoriteTopic,
+  getEditedTopic,
+  getTopicExportSnapshot,
+  likeTopic,
+  parseUserTopic,
+  unfavoriteTopic,
+} from '@/api';
 import {
   addUnit,
   blockTopics,
@@ -24,6 +31,8 @@ import {
   setStorage,
 } from '@/utils';
 import { isImgViewerVisible, viewerOptions, vViewer } from '@/utils/img-viewer';
+import { downloadMarkdownFile, getTopicMarkdownFilename } from '@/utils/topic-export';
+import { buildTopicMarkdown } from '@/utils/topic-markdown';
 import { DialogType, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
@@ -317,9 +326,49 @@ const addTopic = (node: string) => {
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
 const isReplyEditorFullscreen = ref(false);
 const topicFooterVisible = ref(true);
+const isExporting = ref(false);
+let exportAbortController: AbortController | undefined;
 
-const handleExportTopic = () => {
-  // TODO: 导出主题
+const handleExportTopic = async (): Promise<void> => {
+  if (isExporting.value || !topicId.value) {
+    return;
+  }
+
+  const exportedTopicId = topicId.value;
+  const abortController = new AbortController();
+  exportAbortController = abortController;
+  isExporting.value = true;
+
+  try {
+    const topicSnapshot = await getTopicExportSnapshot(exportedTopicId, abortController.signal);
+    const filename = getTopicMarkdownFilename(topicSnapshot.detail.title);
+
+    if (!filename) {
+      throw new Error(t('enhancedTopic.exportTopicInvalidTitle'));
+    }
+
+    if (abortController.signal.aborted) {
+      return;
+    }
+
+    const markdown = buildTopicMarkdown({
+      topic: topicSnapshot,
+      topicId: exportedTopicId,
+    });
+    downloadMarkdownFile(markdown, filename);
+    ElMessage.success(t('enhancedTopic.exportTopicSuccessful'));
+  } catch (err) {
+    if (!abortController.signal.aborted) {
+      const errorMessage = err instanceof Error && err.message ? err.message : t('enhancedTopic.exportTopicFailed');
+      ElMessage.error(errorMessage);
+      console.error(err);
+    }
+  } finally {
+    if (exportAbortController === abortController) {
+      exportAbortController = undefined;
+      isExporting.value = false;
+    }
+  }
 };
 
 const handleHotReplies = () => {
@@ -333,7 +382,12 @@ const handleRefreshTopic = () => {
 // @unocss-include
 const topicActions = computed<readonly TopicAction[]>(() => {
   return [
-    { label: t('enhancedTopic.exportTopic'), iconClass: 'i-mdi-tray-arrow-down', handler: handleExportTopic },
+    {
+      label: t('enhancedTopic.exportTopic'),
+      iconClass: 'i-mdi-tray-arrow-down',
+      handler: handleExportTopic,
+      loading: isExporting.value,
+    },
     { label: t('enhancedTopic.hotReplies'), iconClass: 'i-mdi-heart-outline', handler: handleHotReplies },
     { label: t('enhancedTopic.refreshTopic'), iconClass: 'i-mdi-refresh', handler: handleRefreshTopic },
     { label: t('enhancedTopic.scrollToTop'), iconClass: 'i-mdi-arrow-up', handler: scrollToTop, showDivider: true },
@@ -400,6 +454,10 @@ const editReply = (reply: UserReplyItem) => {
 };
 
 provide(EDIT_REPLY_INJECTION_KEY, editReply);
+
+onUnmounted(() => {
+  exportAbortController?.abort();
+});
 </script>
 
 <template>
