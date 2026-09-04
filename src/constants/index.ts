@@ -169,6 +169,8 @@ export const REPLY_PRELOAD_PAGE_COUNT: Record<ReplyPreloadMode, number> = {
 
 export const TOPIC_REPLY_PAGE_SIZE = 106;
 
+export const TOPIC_EXPORT_MAX_CONCURRENT = 4;
+
 export const enum ReplyOrder {
   Asc = 'asc',
   Desc = 'desc',

@@ -380,7 +380,26 @@ export interface TopicAction {
   label: string;
   iconClass: string;
   handler: () => void;
+  loading?: boolean;
   showDivider?: boolean;
+}
+
+export interface TopicMarkdownLabels {
+  author: string;
+  node: string;
+  publishedAt: string;
+  statistics: string;
+  exportedAt: string;
+  content: string;
+  replies: string;
+  noReplies: string;
+  views: string;
+  replyCount: string;
+  favorites: string;
+  thanks: string;
+  originalPoster: string;
+  administrator: string;
+  replyThanks: string;
 }
 
 export interface TopicForm {

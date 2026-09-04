@@ -1,7 +1,8 @@
 import { decode } from 'html-entities';
 
 import { getXsrfToken, request, waitTime } from '@/utils';
-import { ReplyType } from '@/constants';
+import { mergeTopicReplies } from '@/utils/topic-export';
+import { ReplyType, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type {
@@ -265,6 +266,59 @@ export const getUserTopic = async (
   });
 
   return parseUserTopic(data);
+};
+
+export const getTopicExportSnapshot = async (topicId: string, signal?: AbortSignal): Promise<UserTopic> => {
+  const firstPageData = await getUserTopic(topicId, 1, signal);
+  const totalReplyNumber = Math.max(Number(firstPageData.reply.total), 0);
+  const totalPageNumber = Math.max(Math.ceil(totalReplyNumber / TOPIC_REPLY_PAGE_SIZE), 1);
+  const pageNumbers = Array.from({ length: Math.max(totalPageNumber - 1, 0) }, (_, index) => index + 2);
+  const replyPages: UserReplyItem[][] = [firstPageData.reply.list];
+
+  let nextPageIndex = 0;
+  let firstError: unknown;
+
+  const loadPageWorker = async (): Promise<void> => {
+    while (firstError === undefined) {
+      const pageIndex = nextPageIndex++;
+      const page = pageNumbers[pageIndex];
+
+      if (page === undefined) {
+        return;
+      }
+
+      try {
+        const pageData = await getUserTopic(topicId, page, signal);
+        replyPages[page - 1] = pageData.reply.list;
+      } catch (err) {
+        firstError = err;
+        return;
+      }
+    }
+  };
+
+  const workerCount = Math.min(TOPIC_EXPORT_MAX_CONCURRENT, pageNumbers.length);
+  await Promise.all(Array.from({ length: workerCount }, () => loadPageWorker()));
+
+  if (firstError !== undefined) {
+    throw firstError;
+  }
+
+  const snapshotReplies = mergeTopicReplies(replyPages)
+    .filter((reply) => {
+      const replyNumber = Number(reply.replyNo);
+      return !Number.isInteger(replyNumber) || replyNumber <= totalReplyNumber;
+    })
+    .slice(0, totalReplyNumber);
+
+  return {
+    ...firstPageData,
+    reply: {
+      ...firstPageData.reply,
+      total: String(snapshotReplies.length),
+      list: snapshotReplies,
+    },
+  };
 };
 
 export const favoriteTopic = async (topicId?: string): Promise<string> => {
