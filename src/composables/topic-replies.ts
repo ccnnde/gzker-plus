@@ -50,6 +50,7 @@ interface UseTopicRepliesResult {
   topicStatus: Ref<UserTopicStatus | undefined>;
   replyTotal: Ref<string>;
   onlyOriginalPoster: Ref<boolean>;
+  isTopicRefreshing: Ref<boolean>;
   isTopicPreloadLoading: Ref<boolean>;
   isReverseReply: ComputedRef<boolean>;
   showReply: ComputedRef<boolean>;
@@ -75,6 +76,7 @@ interface UseTopicRepliesResult {
   resetTopicData: () => void;
   handleToggleReplyOrder: () => Promise<void>;
   handleToggleOriginalPoster: () => Promise<void>;
+  refreshTopic: () => Promise<void>;
   handleTopicSended: (data: UserTopic) => void;
   handleReplySended: (data: UserTopic) => void;
   getNextReplyData: () => Promise<void>;
@@ -97,6 +99,7 @@ export const useTopicReplies = ({
   const replyTotal = ref<string>('0');
   const replyOrder = ref<ReplyOrder>(ReplyOrder.Asc);
   const onlyOriginalPoster = ref<boolean>(false);
+  const isTopicRefreshing = ref<boolean>(false);
   const replyNextLoadPending = ref<boolean>(false);
 
   let topicPreloadVersion = 0;
@@ -613,6 +616,7 @@ export const useTopicReplies = ({
     const nextReplyOrder = isReverseReply.value ? ReplyOrder.Asc : ReplyOrder.Desc;
     const loadedOnlyOriginalPoster = onlyOriginalPoster.value;
 
+    isTopicRefreshing.value = false;
     resetTopicPreloadRequestState();
     replyOrder.value = nextReplyOrder;
 
@@ -637,6 +641,7 @@ export const useTopicReplies = ({
     const loadedReplyOrder = replyOrder.value;
     const nextOnlyOriginalPoster = !onlyOriginalPoster.value;
 
+    isTopicRefreshing.value = false;
     resetTopicPreloadRequestState();
     onlyOriginalPoster.value = nextOnlyOriginalPoster;
 
@@ -653,6 +658,44 @@ export const useTopicReplies = ({
     }
 
     await scrollToReplyTotal();
+  };
+
+  const refreshTopic = async (): Promise<void> => {
+    if (isTopicRefreshing.value || !dialogVisible.value || !topicId.value) {
+      return;
+    }
+
+    const reloadVersion = ++replyReloadVersion;
+    const loadedTopicId = topicId.value;
+    const loadedReplyOrder = replyOrder.value;
+    const loadedOnlyOriginalPoster = onlyOriginalPoster.value;
+    const loadedNestedReplyEnabled = isNestedReplyEnabled.value;
+
+    isTopicRefreshing.value = true;
+    resetTopicPreloadRequestState();
+    resetReplyLoadState();
+
+    try {
+      await loadTopicReplies();
+
+      if (
+        reloadVersion !== replyReloadVersion ||
+        topicId.value !== loadedTopicId ||
+        replyOrder.value !== loadedReplyOrder ||
+        onlyOriginalPoster.value !== loadedOnlyOriginalPoster ||
+        isNestedReplyEnabled.value !== loadedNestedReplyEnabled ||
+        !dialogVisible.value
+      ) {
+        return;
+      }
+
+      await nextTick();
+      scrollToTop(false);
+    } finally {
+      if (reloadVersion === replyReloadVersion) {
+        isTopicRefreshing.value = false;
+      }
+    }
   };
 
   /**
@@ -672,6 +715,8 @@ export const useTopicReplies = ({
       return;
     }
 
+    replyReloadVersion++;
+    isTopicRefreshing.value = false;
     resetReplyNextLoadLock();
 
     if (isReverseReply.value) {
@@ -717,6 +762,7 @@ export const useTopicReplies = ({
 
   const openTopic = (selectedTopicId: string | undefined) => {
     resetReplyNextLoadLock();
+    isTopicRefreshing.value = false;
     topicId.value = selectedTopicId;
     onlyOriginalPoster.value = false;
     replyReloadVersion++;
@@ -727,6 +773,7 @@ export const useTopicReplies = ({
 
   const resetTopicData = () => {
     replyReloadVersion++;
+    isTopicRefreshing.value = false;
     topicId.value = undefined;
     topicDetail.value = undefined;
     replyTotal.value = '0';
@@ -819,6 +866,7 @@ export const useTopicReplies = ({
     topicStatus,
     replyTotal,
     onlyOriginalPoster,
+    isTopicRefreshing,
     isTopicPreloadLoading,
     isReverseReply,
     showReply,
@@ -844,6 +892,7 @@ export const useTopicReplies = ({
     resetTopicData,
     handleToggleReplyOrder,
     handleToggleOriginalPoster,
+    refreshTopic,
     handleTopicSended,
     handleReplySended,
     getNextReplyData,
