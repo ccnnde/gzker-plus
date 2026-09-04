@@ -9,6 +9,7 @@ interface Props {
   liked?: boolean;
   likeNumber?: string;
   hideTip?: boolean;
+  tipDisabled?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -38,6 +39,7 @@ const likeButtonStyle = computed<CSSProperties | undefined>(() => {
     :icon-class="likeIconClass"
     :operate-text="likeNumber"
     :custom-style="likeButtonStyle"
+    :tip-disabled="tipDisabled"
     @click="$emit('handleLike')"
   />
 </template>
