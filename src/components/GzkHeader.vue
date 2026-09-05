@@ -32,12 +32,12 @@ const openExtOptions = () => {
       <template #dropdown>
         <ElDropdownMenu>
           <ElDropdownItem>
-            <a href="/t/108340" target="_blank" @click="feedbackDropdown?.popperRef?.onClose">
+            <a class="feedback-link" href="/t/108340" target="_blank" @click="feedbackDropdown?.popperRef?.onClose">
               {{ $t('gzkHeader.gzkTopic') }}
             </a>
           </ElDropdownItem>
           <ElDropdownItem>
-            <a href="https://github.com/ccnnde/gzker-plus/issues" target="_blank">
+            <a class="feedback-link" href="https://github.com/ccnnde/gzker-plus/issues" target="_blank">
               {{ $t('gzkHeader.gzkIssue') }}
             </a>
           </ElDropdownItem>
@@ -88,7 +88,15 @@ const openExtOptions = () => {
 
 .feedback-popper {
   .el-dropdown-menu__item {
-    a {
+    &:has(.feedback-link) {
+      padding: 0;
+    }
+
+    .feedback-link {
+      box-sizing: border-box;
+      display: block;
+      width: 100%;
+      padding: 5px 16px;
       color: var(--el-text-color-regular);
 
       &:hover {
