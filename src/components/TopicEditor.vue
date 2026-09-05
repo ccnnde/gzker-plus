@@ -245,6 +245,7 @@ defineExpose({
     v-model="dialogVisible"
     :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
     :style="dialogFullscreenStyle"
+    :modal-class="isAddContent ? 'gzk-dialog-overlay' : ''"
     :align-center="dialogFullscreen"
     :lock-scroll="false"
     :z-index="2001"
