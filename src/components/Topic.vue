@@ -141,6 +141,10 @@ onBeforeMount(() => {
 
   try {
     parsedTopic = parseUserTopic(document.body.innerHTML);
+
+    if (!parsedTopic.detail.title) {
+      throw new Error('Topic does not exist');
+    }
   } catch (err) {
     console.error(err);
     hideGlobalLoading();
