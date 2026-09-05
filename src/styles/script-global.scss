@@ -153,6 +153,10 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
+.gzk-dialog-overlay {
+  backdrop-filter: blur(2px);
+}
+
 @keyframes gzk-loading-ring-rotate {
   from {
     transform: translate3d(0, 0, 0) rotate(0deg);

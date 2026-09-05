@@ -477,7 +477,7 @@ onUnmounted(() => {
     <ElDialog
       v-model="dialogVisible"
       :class="['topic-dialog', { 'topic-page-dialog': isTopicPage }]"
-      :modal-class="isTopicPage ? 'topic-overlay' : ''"
+      :modal-class="isTopicPage ? 'topic-overlay' : 'gzk-dialog-overlay'"
       :z-index="isTopicPage ? 1000 : 2000"
       :show-close="false"
       :before-close="handleTopicDialogBeforeClose"
