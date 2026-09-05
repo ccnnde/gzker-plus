@@ -37,6 +37,7 @@ const showOperateText = computed(() => {
     :disabled="tipDisabled"
     :enterable="false"
     :hide-after="0"
+    placement="bottom"
     :show-arrow="false"
   >
     <div class="operate-button-container" @click="$emit('click')">
