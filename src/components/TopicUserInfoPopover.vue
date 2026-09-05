@@ -15,9 +15,9 @@ const props = defineProps<Props>();
 const SHOW_DELAY = 300;
 const HIDE_DELAY = 200;
 
-const visible = ref<boolean>(false);
+const visible = ref(false);
 const referenceElement = ref<HTMLElement>();
-const uid = ref<string>('');
+const uid = ref('');
 
 let showTimer: number | undefined;
 let hideTimer: number | undefined;

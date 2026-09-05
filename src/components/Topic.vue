@@ -65,7 +65,7 @@ const { options } = storeToRefs(storage);
 const { closeOnClickModal } = useClickModal(DialogType.TopicViewer);
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
-const isTopicPage = ref<boolean>(false);
+const isTopicPage = ref(false);
 const topicContainer = ref<HTMLDivElement | null>(null);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
 
@@ -332,7 +332,7 @@ const topicFooterVisible = ref(true);
 const isExporting = ref(false);
 let exportAbortController: AbortController | undefined;
 
-const handleExportTopic = async (): Promise<void> => {
+const handleExportTopic = async () => {
   if (isExporting.value || !topicId.value) {
     return;
   }
@@ -403,15 +403,15 @@ const topicActions = computed<readonly TopicAction[]>(() => {
   ];
 });
 
-const replyEditorHeight = computed<number>(() => {
+const replyEditorHeight = computed(() => {
   return isReplyEditorFullscreen.value ? 400 : 315;
 });
 
-const currentFooterHeight = computed<number>(() => {
+const currentFooterHeight = computed(() => {
   return topicFooterVisible.value ? TOPIC_FOOTER_HEIGHT : replyEditorHeight.value;
 });
 
-const topicDialogVH = computed<number>(() => {
+const topicDialogVH = computed(() => {
   return isTopicPage.value ? calcTopicPageDialogVH() : 92;
 });
 
@@ -427,7 +427,7 @@ const topicBodyStyle = computed<CSSProperties>(() => {
   };
 });
 
-const isTopicBodyLoading = computed<boolean>(() => {
+const isTopicBodyLoading = computed(() => {
   return isLoading.value || isReplyInitialLoading.value || isReplyFirstPageLoading.value;
 });
 

@@ -30,7 +30,7 @@ const containerClass = computed<Record<string, boolean>>(() => {
   };
 });
 
-const isIncomingRailShared = computed<boolean>(() => {
+const isIncomingRailShared = computed(() => {
   if (props.node.depth === 0) {
     return false;
   }
@@ -42,7 +42,7 @@ const isIncomingRailShared = computed<boolean>(() => {
   return props.node.depth >= MAX_VISUAL_INDENT_DEPTH;
 });
 
-const shouldContinueIncomingRail = computed<boolean>(() => {
+const shouldContinueIncomingRail = computed(() => {
   if (props.node.depth === 0) {
     return false;
   }
@@ -54,7 +54,7 @@ const shouldContinueIncomingRail = computed<boolean>(() => {
   return props.hasNextSibling;
 });
 
-const shouldShowReplyRail = computed<boolean>(() => {
+const shouldShowReplyRail = computed(() => {
   const isRoot = props.node.depth === 0;
   const isWithinIndentLimit = props.display === NestedReplyDisplay.Indent && props.node.depth < MAX_VISUAL_INDENT_DEPTH;
 

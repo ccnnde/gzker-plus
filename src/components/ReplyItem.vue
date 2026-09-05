@@ -40,7 +40,7 @@ const emit = defineEmits<{
 const { isLoading, handleRequest } = useRequest();
 const replyItemEl = ref<HTMLDivElement | null>(null);
 
-const renderedContent = computed<string>(() => {
+const renderedContent = computed(() => {
   const content = convertEmojiToNative(props.content) || '';
   return linkifyContent(content);
 });

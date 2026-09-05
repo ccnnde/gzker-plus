@@ -26,10 +26,10 @@ const HIDE_DELAY = 200;
 const REPLY_NUMBER_SELECTOR = '[data-reply-no]';
 const REPLY_FLASH_CLASS = 'mention-reply-item-flash';
 
-const visible = ref<boolean>(false);
-const positionReady = ref<boolean>(false);
+const visible = ref(false);
+const positionReady = ref(false);
 const referenceElement = ref<HTMLAnchorElement>();
-const mentionUid = computed<string>(() => {
+const mentionUid = computed(() => {
   const mentionText = referenceElement.value?.textContent?.trim() || '';
 
   return mentionText.replace(/^@/, '');
@@ -244,7 +244,7 @@ const handleWindowResize = () => {
   close();
 };
 
-const hide = (targetElement?: HTMLAnchorElement): void => {
+const hide = (targetElement?: HTMLAnchorElement) => {
   if (targetElement && referenceElement.value !== targetElement) {
     return;
   }
@@ -310,7 +310,7 @@ const popoverViewerOptions: Viewer.Options = {
   hidden: handleImageViewerHidden,
 };
 
-const show = (targetElement: HTMLAnchorElement, nextReplies: UserReplyItem[], nextFocusReplyNo?: string): void => {
+const show = (targetElement: HTMLAnchorElement, nextReplies: UserReplyItem[], nextFocusReplyNo?: string) => {
   clearShowTimer();
   clearHideTimer();
 

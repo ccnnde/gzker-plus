@@ -63,10 +63,10 @@ const getMentionedUserReplies = (target: MentionRepliesTarget): MentionRepliesRe
 };
 
 const mentionRepliesController: MentionRepliesController = {
-  hide: (referenceElement: HTMLAnchorElement): void => {
+  hide: (referenceElement: HTMLAnchorElement) => {
     mentionRepliesPopover.value?.hide(referenceElement);
   },
-  show: (target: MentionRepliesTarget): void => {
+  show: (target: MentionRepliesTarget) => {
     const { replies, focusReplyNo } = getMentionedUserReplies(target);
     mentionRepliesPopover.value?.show(target.referenceElement, replies, focusReplyNo);
   },
@@ -80,17 +80,17 @@ const updateScrollbar = debounce(() => {
 
 provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 
-const handleOpenDialog = (replies: UserReplyItem[]): void => {
+const handleOpenDialog = (replies: UserReplyItem[]) => {
   replySnapshot.value = [...replies];
   hotReplies.value = getSortedHotReplies(replies);
   openDialog();
 };
 
-const handleCloseDialog = (): void => {
+const handleCloseDialog = () => {
   closeDialog();
 };
 
-const handleDialogClosed = (): void => {
+const handleDialogClosed = () => {
   replySnapshot.value = [];
   hotReplies.value = [];
 };

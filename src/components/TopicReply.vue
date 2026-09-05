@@ -33,7 +33,7 @@ interface MentionRepliesResult {
 const props = defineProps<Props>();
 const mentionRepliesPopover = ref<InstanceType<typeof MentionRepliesPopover> | null>(null);
 
-const nestedReplyEnabled = computed<boolean>(() => {
+const nestedReplyEnabled = computed(() => {
   return !props.forceFlat && props.nestedReplyDisplay !== NestedReplyDisplay.Off;
 });
 

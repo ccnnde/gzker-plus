@@ -13,7 +13,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const renderedContent = computed<string>(() => {
+const renderedContent = computed(() => {
   return linkifyContent(props.content || '');
 });
 

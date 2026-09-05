@@ -56,8 +56,8 @@ export const useReplyBatchLoad = ({
   errorCallback,
 }: UseReplyBatchLoadOptions): UseReplyBatchLoadResult => {
   const batches = ref<UserReplyBatch[]>([]);
-  const lastLoadedPage = ref<number>(0);
-  const noMoreData = ref<boolean>(true);
+  const lastLoadedPage = ref(0);
+  const noMoreData = ref(true);
   const { isLoading, errorOccurred, isReverse, startSession, runLoad, retryLoad, cancelLoad, resetSession } =
     usePageLoadSession({
       errorCallback,
@@ -73,19 +73,19 @@ export const useReplyBatchLoad = ({
     return batches.value.flatMap(({ list }) => list);
   });
 
-  const isFirstBatchLoading = computed<boolean>(() => {
+  const isFirstBatchLoading = computed(() => {
     return isLoading.value && batches.value.length === 0;
   });
 
-  const isNextBatchLoading = computed<boolean>(() => {
+  const isNextBatchLoading = computed(() => {
     return isLoading.value && batches.value.length > 0;
   });
 
-  const disableBatchLoad = computed<boolean>(() => {
+  const disableBatchLoad = computed(() => {
     return isLoading.value || errorOccurred.value || noMoreData.value;
   });
 
-  const isNoMoreData = computed<boolean>(() => {
+  const isNoMoreData = computed(() => {
     return noMoreData.value;
   });
 
@@ -197,7 +197,7 @@ export const useReplyBatchLoad = ({
     return true;
   };
 
-  const loadNextBatchData = async (runner: PageLoadRunner = runLoad): Promise<void> => {
+  const loadNextBatchData = async (runner: PageLoadRunner = runLoad) => {
     if (!currentTopicId || isLoading.value || noMoreData.value) {
       return;
     }
@@ -259,7 +259,7 @@ export const useReplyBatchLoad = ({
     });
   };
 
-  const getNextBatchData = async (): Promise<void> => {
+  const getNextBatchData = async () => {
     await loadNextBatchData();
   };
 

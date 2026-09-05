@@ -22,15 +22,15 @@ interface UsePageLoadSessionResult {
 }
 
 export const usePageLoadSession = (options?: UsePageLoadSessionOptions): UsePageLoadSessionResult => {
-  const isLoading = ref<boolean>(false);
-  const errorOccurred = ref<boolean>(false);
+  const isLoading = ref(false);
+  const errorOccurred = ref(false);
   const direction = ref<ReplyOrder>(ReplyOrder.Asc);
 
   let sessionVersion = 0;
   let loadVersion = 0;
   let abortController: AbortController | undefined;
 
-  const isReverse = computed<boolean>(() => {
+  const isReverse = computed(() => {
     return direction.value === ReplyOrder.Desc;
   });
 

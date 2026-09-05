@@ -278,7 +278,7 @@ export const getTopicExportSnapshot = async (topicId: string, signal?: AbortSign
   let nextPageIndex = 0;
   let firstError: unknown;
 
-  const loadPageWorker = async (): Promise<void> => {
+  const loadPageWorker = async () => {
     while (firstError === undefined) {
       const pageIndex = nextPageIndex++;
       const page = pageNumbers[pageIndex];
