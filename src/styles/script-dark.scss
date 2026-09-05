@@ -360,6 +360,10 @@ html[data-theme] {
 
     .ui-content {
       background: var(--el-bg-color);
+
+      .edit-info {
+        color: var(--el-text-color-secondary) !important;
+      }
     }
 
     .ui-footer {
