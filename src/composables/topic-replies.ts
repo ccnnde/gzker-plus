@@ -52,6 +52,7 @@ interface UseTopicRepliesResult {
   onlyOriginalPoster: Ref<boolean>;
   isTopicRefreshing: Ref<boolean>;
   isTopicPreloadLoading: Ref<boolean>;
+  isReplyInitialLoading: Ref<boolean>;
   isReverseReply: ComputedRef<boolean>;
   showReply: ComputedRef<boolean>;
   nestedReplyDisplay: ComputedRef<NestedReplyDisplay>;
@@ -100,11 +101,13 @@ export const useTopicReplies = ({
   const replyOrder = ref<ReplyOrder>(ReplyOrder.Asc);
   const onlyOriginalPoster = ref<boolean>(false);
   const isTopicRefreshing = ref<boolean>(false);
+  const isReplyInitialLoading = ref(false);
   const replyNextLoadPending = ref<boolean>(false);
 
   let topicPreloadVersion = 0;
   let topicPreloadAbortController: AbortController | undefined;
   let replyReloadVersion = 0;
+  let replyInitialLoadingVersion = 0;
   let replyNextLoadLockVersion = 0;
   let replyNextLoadLocked = false;
 
@@ -473,7 +476,7 @@ export const useTopicReplies = ({
   /**
    * 回复加载统一入口：按当前顺序与展示模式分发到对应的加载链路
    */
-  const loadTopicReplies = async (loadOptions?: LoadTopicRepliesOptions): Promise<void> => {
+  const loadTopicReplyData = async (loadOptions?: LoadTopicRepliesOptions): Promise<void> => {
     const loadedTopicId = topicId.value;
     const loadedReplyOrder = replyOrder.value;
     const loadedNestedReplyEnabled = isNestedReplyEnabled.value;
@@ -593,6 +596,23 @@ export const useTopicReplies = ({
       };
     });
     await startForwardLoad(replyPageSeeds, totalPageNumber);
+  };
+
+  const loadTopicReplies = async (loadOptions?: LoadTopicRepliesOptions): Promise<void> => {
+    if (!topicId.value) {
+      return;
+    }
+
+    const loadingVersion = ++replyInitialLoadingVersion;
+    isReplyInitialLoading.value = true;
+
+    try {
+      await loadTopicReplyData(loadOptions);
+    } finally {
+      if (loadingVersion === replyInitialLoadingVersion) {
+        isReplyInitialLoading.value = false;
+      }
+    }
   };
 
   const scrollToReplyTotal = async (): Promise<void> => {
@@ -773,7 +793,9 @@ export const useTopicReplies = ({
 
   const resetTopicData = () => {
     replyReloadVersion++;
+    replyInitialLoadingVersion++;
     isTopicRefreshing.value = false;
+    isReplyInitialLoading.value = false;
     topicId.value = undefined;
     topicDetail.value = undefined;
     replyTotal.value = '0';
@@ -868,6 +890,7 @@ export const useTopicReplies = ({
     onlyOriginalPoster,
     isTopicRefreshing,
     isTopicPreloadLoading,
+    isReplyInitialLoading,
     isReverseReply,
     showReply,
     nestedReplyDisplay,

@@ -132,6 +132,37 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
+.gzk-loading-ring {
+  --el-loading-spinner-size: 32px;
+
+  .circular {
+    display: none;
+  }
+
+  .el-loading-spinner::before {
+    box-sizing: border-box;
+    display: inline-block;
+    width: var(--el-loading-spinner-size);
+    height: var(--el-loading-spinner-size);
+    content: '';
+    border: 2px solid var(--el-color-primary-light-8);
+    border-top-color: var(--el-color-primary);
+    border-radius: 50%;
+    animation: gzk-loading-ring-rotate 0.8s linear infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes gzk-loading-ring-rotate {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0) rotate(360deg);
+  }
+}
+
 html {
   a:focus,
   a:focus-visible {
