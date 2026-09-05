@@ -54,7 +54,7 @@ export const useScrollLoad = <T>(
     return isNextPageLoading.value || errorOccurred.value || noMoreData.value;
   });
 
-  const isNoMoreData = computed<boolean>(() => {
+  const isNoMoreData = computed(() => {
     return noMoreData.value;
   });
 
@@ -99,7 +99,7 @@ export const useScrollLoad = <T>(
     scrollbar.value?.handleScroll();
   };
 
-  const loadPageData = async (pages: number[], replace: boolean, runner: PageLoadRunner = runLoad): Promise<void> => {
+  const loadPageData = async (pages: number[], replace: boolean, runner: PageLoadRunner = runLoad) => {
     if (pages.length === 0) {
       noMoreData.value = true;
       return;
@@ -156,12 +156,12 @@ export const useScrollLoad = <T>(
     });
   };
 
-  const getFirstPageData = async (): Promise<void> => {
+  const getFirstPageData = async () => {
     const direction = isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc;
     await loadPageData(getPageNumbers(currentPage.value, direction), true);
   };
 
-  const getNextPageData = async (): Promise<void> => {
+  const getNextPageData = async () => {
     if (isLoading.value || errorOccurred.value || noMoreData.value) {
       return;
     }
@@ -176,11 +176,7 @@ export const useScrollLoad = <T>(
     await loadPageData(getPageNumbers(nextPage, isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc), false);
   };
 
-  const startLoad = async (
-    direction: ReplyOrder,
-    startPage: number,
-    options?: StartScrollLoadOptions<T>,
-  ): Promise<void> => {
+  const startLoad = async (direction: ReplyOrder, startPage: number, options?: StartScrollLoadOptions<T>) => {
     startSession(direction);
     pageCache.clear();
     knownTotalPageNumber = options?.totalPageNumber;
@@ -206,7 +202,7 @@ export const useScrollLoad = <T>(
     await getFirstPageData();
   };
 
-  const startForwardLoad = async (pageSeeds: PageDataSeed<T[]>[] = [], totalPageNumber?: number): Promise<void> => {
+  const startForwardLoad = async (pageSeeds: PageDataSeed<T[]>[] = [], totalPageNumber?: number) => {
     await startLoad(ReplyOrder.Asc, 1, {
       pageSeeds,
       totalPageNumber,
@@ -216,14 +212,14 @@ export const useScrollLoad = <T>(
   /**
    * 倒序加载入口：从指定页（通常为最后一页）开始请求
    */
-  const startReverseLoad = async (startPage: number, pageSeeds: PageDataSeed<T[]>[] = []): Promise<void> => {
+  const startReverseLoad = async (startPage: number, pageSeeds: PageDataSeed<T[]>[] = []) => {
     await startLoad(ReplyOrder.Desc, startPage, {
       pageSeeds,
       totalPageNumber: startPage,
     });
   };
 
-  const reloadPageData = async (): Promise<void> => {
+  const reloadPageData = async () => {
     if (isFirstPage.value) {
       const direction = isReverse.value ? ReplyOrder.Desc : ReplyOrder.Asc;
       await loadPageData(getPageNumbers(currentPage.value, direction), true, retryLoad);
@@ -275,7 +271,7 @@ export const useScrollLoad = <T>(
     noMoreData.value = isComplete;
   };
 
-  const setPageCount = (pageCount: number): void => {
+  const setPageCount = (pageCount: number) => {
     currentPageCount = Math.max(pageCount, 1);
   };
 

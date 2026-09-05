@@ -85,11 +85,11 @@ const footerStyle = computed<CSSProperties>(() => {
   };
 });
 
-const showReplyOrderButton = computed<boolean>(() => {
+const showReplyOrderButton = computed(() => {
   return props.replyTotal !== '0';
 });
 
-const onlyOriginalPosterIconClass = computed<string>(() => {
+const onlyOriginalPosterIconClass = computed(() => {
   return props.onlyOriginalPoster ? 'i-mdi-account-star' : 'i-mdi-account-star-outline';
 });
 

@@ -92,17 +92,17 @@ export const useTopicReplies = ({
   options,
   topicContainer,
 }: UseTopicRepliesOptions): UseTopicRepliesResult => {
-  const isTopicPreloadLoading = ref<boolean>(false);
-  const topicPreloadError = ref<boolean>(false);
+  const isTopicPreloadLoading = ref(false);
+  const topicPreloadError = ref(false);
   const topicId = ref<string>();
   const topicDetail = ref<UserTopicDetail>();
   const topicStatus = ref<UserTopicStatus>();
-  const replyTotal = ref<string>('0');
+  const replyTotal = ref('0');
   const replyOrder = ref<ReplyOrder>(ReplyOrder.Asc);
-  const onlyOriginalPoster = ref<boolean>(false);
-  const isTopicRefreshing = ref<boolean>(false);
+  const onlyOriginalPoster = ref(false);
+  const isTopicRefreshing = ref(false);
   const isReplyInitialLoading = ref(false);
-  const replyNextLoadPending = ref<boolean>(false);
+  const replyNextLoadPending = ref(false);
 
   let topicPreloadVersion = 0;
   let topicPreloadAbortController: AbortController | undefined;
@@ -125,7 +125,7 @@ export const useTopicReplies = ({
     replyNextLoadPending.value = false;
   };
 
-  const isReverseReply = computed<boolean>(() => {
+  const isReverseReply = computed(() => {
     return replyOrder.value === ReplyOrder.Desc;
   });
 
@@ -133,7 +133,7 @@ export const useTopicReplies = ({
     replyOrder.value = options.value?.[OptionsKey.ReverseReplyOrder]?.checked ? ReplyOrder.Desc : ReplyOrder.Asc;
   };
 
-  const showReply = computed<boolean>(() => {
+  const showReply = computed(() => {
     return replyTotal.value !== '0';
   });
 
@@ -141,7 +141,7 @@ export const useTopicReplies = ({
     return options.value?.[OptionsKey.NestedReplyDisplay]?.display || NestedReplyDisplay.Indent;
   });
 
-  const multipleInsideOne = computed<boolean>(() => {
+  const multipleInsideOne = computed(() => {
     return options.value?.[OptionsKey.NestedReplyMultipleInsideOne]?.checked ?? true;
   });
 
@@ -149,11 +149,11 @@ export const useTopicReplies = ({
     return options.value?.[OptionsKey.ReplyPreload]?.mode || ReplyPreloadMode.TwoPages;
   });
 
-  const replyPreloadPageCount = computed<number>(() => {
+  const replyPreloadPageCount = computed(() => {
     return REPLY_PRELOAD_PAGE_COUNT[replyPreloadMode.value] || REPLY_PRELOAD_PAGE_COUNT[ReplyPreloadMode.TwoPages];
   });
 
-  const isNestedReplyEnabled = computed<boolean>(() => {
+  const isNestedReplyEnabled = computed(() => {
     return nestedReplyDisplay.value !== NestedReplyDisplay.Off;
   });
 
@@ -276,23 +276,23 @@ export const useTopicReplies = ({
     return forcedFlatReplyList.filter(isOriginalPosterReply);
   });
 
-  const isReplyFirstPageLoading = computed<boolean>(() => {
+  const isReplyFirstPageLoading = computed(() => {
     return isNestedReplyEnabled.value ? isFirstBatchLoading.value : isFirstPageLoading.value;
   });
 
-  const isReplyNextPageLoading = computed<boolean>(() => {
+  const isReplyNextPageLoading = computed(() => {
     return isNestedReplyEnabled.value ? isNextBatchLoading.value : isNextPageLoading.value;
   });
 
-  const replyLoadError = computed<boolean>(() => {
+  const replyLoadError = computed(() => {
     return topicPreloadError.value || (isNestedReplyEnabled.value ? batchLoadError.value : errorOccurred.value);
   });
 
-  const replyLoadCompleted = computed<boolean>(() => {
+  const replyLoadCompleted = computed(() => {
     return isNestedReplyEnabled.value ? noMoreBatchData.value : noMorePageData.value;
   });
 
-  const showNoOriginalPosterReply = computed<boolean>(() => {
+  const showNoOriginalPosterReply = computed(() => {
     return (
       topicDetail.value !== undefined &&
       Number(replyTotal.value) > 0 &&
@@ -306,7 +306,7 @@ export const useTopicReplies = ({
     );
   });
 
-  const canLoadNextReply = computed<boolean>(() => {
+  const canLoadNextReply = computed(() => {
     return (
       !replyLoadCompleted.value &&
       !isTopicPreloadLoading.value &&
@@ -316,24 +316,24 @@ export const useTopicReplies = ({
     );
   });
 
-  const showContinueSearchOriginalPosterReply = computed<boolean>(() => {
+  const showContinueSearchOriginalPosterReply = computed(() => {
     return onlyOriginalPoster.value && canLoadNextReply.value && !replyNextLoadPending.value;
   });
 
-  const shouldPauseOriginalPosterAutoLoad = computed<boolean>(() => {
+  const shouldPauseOriginalPosterAutoLoad = computed(() => {
     return onlyOriginalPoster.value && displayedReplyList.value.length === 0;
   });
 
-  const disableReplyInfiniteScroll = computed<boolean>(() => {
+  const disableReplyInfiniteScroll = computed(() => {
     const disableReplyLoad = isNestedReplyEnabled.value ? disableBatchLoad.value : disableInfiniteScroll.value;
     return disableReplyLoad || shouldPauseOriginalPosterAutoLoad.value;
   });
 
-  const isReplyFirstPage = computed<boolean>(() => {
+  const isReplyFirstPage = computed(() => {
     return isNestedReplyEnabled.value ? replyBatches.value.length === 0 : isFirstPage.value;
   });
 
-  const getNextReplyData = async (): Promise<void> => {
+  const getNextReplyData = async () => {
     if (replyNextLoadLocked || !canLoadNextReply.value) {
       return;
     }
@@ -476,7 +476,7 @@ export const useTopicReplies = ({
   /**
    * 回复加载统一入口：按当前顺序与展示模式分发到对应的加载链路
    */
-  const loadTopicReplyData = async (loadOptions?: LoadTopicRepliesOptions): Promise<void> => {
+  const loadTopicReplyData = async (loadOptions?: LoadTopicRepliesOptions) => {
     const loadedTopicId = topicId.value;
     const loadedReplyOrder = replyOrder.value;
     const loadedNestedReplyEnabled = isNestedReplyEnabled.value;
@@ -521,11 +521,7 @@ export const useTopicReplies = ({
 
       const initialTotal = Number(initialPageSeed.data.reply.total);
       const initialLastPage = Math.ceil(initialTotal / TOPIC_REPLY_PAGE_SIZE);
-      const loadReverseData = async (
-        lastPage: number,
-        total: number,
-        cachedPageSeeds: PageDataSeed<UserTopic>[],
-      ): Promise<void> => {
+      const loadReverseData = async (lastPage: number, total: number, cachedPageSeeds: PageDataSeed<UserTopic>[]) => {
         if (loadedNestedReplyEnabled) {
           await startBatchLoad(loadedTopicId, replyPreloadPageCount.value, {
             pageSeeds: cachedPageSeeds,
@@ -598,7 +594,7 @@ export const useTopicReplies = ({
     await startForwardLoad(replyPageSeeds, totalPageNumber);
   };
 
-  const loadTopicReplies = async (loadOptions?: LoadTopicRepliesOptions): Promise<void> => {
+  const loadTopicReplies = async (loadOptions?: LoadTopicRepliesOptions) => {
     if (!topicId.value) {
       return;
     }
@@ -615,7 +611,7 @@ export const useTopicReplies = ({
     }
   };
 
-  const scrollToReplyTotal = async (): Promise<void> => {
+  const scrollToReplyTotal = async () => {
     await nextTick();
 
     let replyTotalElement = topicContainer.value?.querySelector<HTMLElement>(SELECTOR_TOPIC_REPLY_TOTAL);
@@ -630,7 +626,7 @@ export const useTopicReplies = ({
     }
   };
 
-  const handleToggleReplyOrder = async (): Promise<void> => {
+  const handleToggleReplyOrder = async () => {
     const reloadVersion = ++replyReloadVersion;
     const loadedTopicId = topicId.value;
     const nextReplyOrder = isReverseReply.value ? ReplyOrder.Asc : ReplyOrder.Desc;
@@ -655,7 +651,7 @@ export const useTopicReplies = ({
     await scrollToReplyTotal();
   };
 
-  const handleToggleOriginalPoster = async (): Promise<void> => {
+  const handleToggleOriginalPoster = async () => {
     const reloadVersion = ++replyReloadVersion;
     const loadedTopicId = topicId.value;
     const loadedReplyOrder = replyOrder.value;
@@ -680,7 +676,7 @@ export const useTopicReplies = ({
     await scrollToReplyTotal();
   };
 
-  const refreshTopic = async (): Promise<void> => {
+  const refreshTopic = async () => {
     if (isTopicRefreshing.value || !dialogVisible.value || !topicId.value) {
       return;
     }

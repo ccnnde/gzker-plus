@@ -36,8 +36,8 @@ const emit = defineEmits<{
 const storage = useStorageStore();
 const { settings } = storeToRefs(storage);
 
-const isLoading = ref<boolean>(false);
-const errorOccurred = ref<boolean>(false);
+const isLoading = ref(false);
+const errorOccurred = ref(false);
 const userInfo = ref<UserInfo>();
 
 let requestVersion = 0;

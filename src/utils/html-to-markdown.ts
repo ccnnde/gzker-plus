@@ -34,7 +34,7 @@ const parseHtml = (html: string): HTMLElement => {
   return parsedDocument.body;
 };
 
-const absolutizeResourceLinks = (container: HTMLElement): void => {
+const absolutizeResourceLinks = (container: HTMLElement) => {
   container.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((anchor) => {
     const href = getAbsoluteUrl(anchor.getAttribute('href'));
 
