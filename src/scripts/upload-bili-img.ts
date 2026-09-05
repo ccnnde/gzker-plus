@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { browser } from 'wxt/browser';
 
-import { uploadImg } from '@/api/bili-img ';
+import { uploadImg } from '@/api/bili-img';
 import { base64ToFile } from '@/utils';
 import { ExtensionMessageType } from '@/constants';
 
