@@ -615,6 +615,10 @@ onUnmounted(() => {
   & > .el-overlay-dialog {
     top: var(--gzk-top-navbar-height);
   }
+
+  &.dialog-fade-enter-active > .el-overlay-dialog {
+    animation: none;
+  }
 }
 
 .topic-dialog,

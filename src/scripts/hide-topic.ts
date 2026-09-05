@@ -21,6 +21,7 @@ export const applyHideTopic = async (ctx: ContentScriptContext) => {
   showGlobalLoading({
     target: document.documentElement,
     background: 'transparent',
+    customClass: 'gzk-loading-global gzk-loading-ring',
   });
 
   document.documentElement.classList.add('hide-topic');

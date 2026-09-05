@@ -132,6 +132,12 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
+.gzk-loading-global {
+  &.el-loading-mask {
+    top: var(--gzk-top-navbar-height);
+  }
+}
+
 .gzk-loading-ring {
   --el-loading-spinner-size: 32px;
 
