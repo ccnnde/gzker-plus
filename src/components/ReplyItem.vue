@@ -144,6 +144,8 @@ const handleReplyEdit = () => {
     ref="replyItemEl"
     v-loading="isLoading"
     :class="['reply-container', { 'reply-container-compact': compact }]"
+    element-loading-background="transparent"
+    element-loading-custom-class="gzk-loading-ring"
     :data-reply-no="replyNo"
   >
     <div class="reply-avatar">
