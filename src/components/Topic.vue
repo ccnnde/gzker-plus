@@ -77,6 +77,7 @@ const {
   onlyOriginalPoster,
   isTopicRefreshing,
   isTopicPreloadLoading,
+  isReplyInitialLoading,
   isReverseReply,
   showReply,
   nestedReplyDisplay,
@@ -427,7 +428,7 @@ const topicBodyStyle = computed<CSSProperties>(() => {
 });
 
 const isTopicBodyLoading = computed<boolean>(() => {
-  return isLoading.value || isTopicPreloadLoading.value || isReplyFirstPageLoading.value;
+  return isLoading.value || isReplyInitialLoading.value || isReplyFirstPageLoading.value;
 });
 
 const showTopicFooter = () => {
@@ -491,7 +492,12 @@ onUnmounted(() => {
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
-      <div v-loading="isTopicBodyLoading" :style="topicBodyStyle">
+      <div
+        v-loading="isTopicBodyLoading"
+        :style="topicBodyStyle"
+        element-loading-background="transparent"
+        element-loading-custom-class="gzk-loading-ring"
+      >
         <ElScrollbar ref="scrollbar">
           <div
             ref="topicContainer"
