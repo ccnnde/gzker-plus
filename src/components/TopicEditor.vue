@@ -244,13 +244,12 @@ defineExpose({
     v-model="dialogVisible"
     :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
     :style="dialogFullscreenStyle"
-    :modal-class="isAddContent ? 'gzk-dialog-overlay' : ''"
     :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="closeOnClickModal"
-    append-to-body
-    align-center
+    
+     align-center append-to-body 
     @open="handleDialogOpen"
     @opened="titleInput?.focus"
     @close="handleDialogClose"
