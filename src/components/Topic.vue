@@ -72,6 +72,9 @@ const {
 } = useRequest();
 const isTopicPage = ref(false);
 const topicContainer = ref<HTMLDivElement | null>(null);
+const topicEditorContainer = ref<HTMLDivElement | null>(null);
+const isTopicEditing = ref(false);
+const isTopicEditorFullscreen = ref(false);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
 
 const {
@@ -239,8 +242,7 @@ const handleTopicLike = () => {
 const handleTopicEdit = () => {
   handleTopicActionRequest(async () => {
     const data = await getEditedTopic(topicId.value);
-    topicEditor.value?.openDialog();
-    topicEditor.value?.editTopic(topicId.value as string, data);
+    topicEditor.value?.openEditEditor(topicId.value as string, data);
   });
 };
 
@@ -294,7 +296,17 @@ const handleTopicDialogOpened = () => {
 };
 
 const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
-  if (isImgViewerVisible() || isGlobalLoadingVisible() || replyEditor.value?.isEmojiPickerVisible()) {
+  if (
+    isImgViewerVisible() ||
+    isGlobalLoadingVisible() ||
+    replyEditor.value?.isEmojiPickerVisible() ||
+    topicEditor.value?.isEmojiPickerVisible()
+  ) {
+    return;
+  }
+
+  if (isTopicEditing.value) {
+    topicEditor.value?.closeEditor();
     return;
   }
 
@@ -310,6 +322,7 @@ const handleTopicDialogClosed = () => {
   replyEditor.value?.closeEditor();
   replyEditor.value?.clearContent();
   replyEditor.value?.resetEditorLayout();
+  topicEditor.value?.closeEditor();
 
   showTopicFooter();
   resetRequestState();
@@ -332,8 +345,7 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 const topicEditor = ref<InstanceType<typeof TopicEditor> | null>(null);
 
 const addTopic = (node: string) => {
-  topicEditor.value?.openDialog();
-  topicEditor.value?.addTopic(node);
+  topicEditor.value?.openCreateEditor(node);
 };
 
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
@@ -425,6 +437,23 @@ const topicDialogVH = computed(() => {
   return isTopicPage.value ? calcTopicPageDialogVH() : 92;
 });
 
+const topicDialogStyle = computed<CSSProperties | undefined>(() => {
+  if (!isTopicEditing.value) {
+    return;
+  }
+
+  if (isTopicEditorFullscreen.value) {
+    return {
+      width: '95%',
+      height: '95%',
+    };
+  }
+
+  return {
+    height: `${topicDialogVH.value}vh`,
+  };
+});
+
 const topicContainerStyle = computed<CSSProperties>(() => {
   return {
     height: `calc(${topicDialogVH.value}vh - ${addUnit(currentFooterHeight.value)})`,
@@ -447,6 +476,26 @@ const showTopicFooter = () => {
 
 const hideTopicFooter = () => {
   topicFooterVisible.value = false;
+};
+
+const handleTopicEditModeChange = (editing: boolean) => {
+  isTopicEditing.value = editing;
+
+  if (editing) {
+    stopKeyboardScroll();
+    return;
+  }
+
+  isTopicEditorFullscreen.value = false;
+  showTopicFooter();
+
+  if (dialogVisible.value) {
+    startKeyboardScroll();
+  }
+};
+
+const handleTopicEditFullscreenChange = (fullscreen: boolean) => {
+  isTopicEditorFullscreen.value = fullscreen;
 };
 
 const addReply = (content?: string) => {
@@ -486,23 +535,25 @@ onUnmounted(() => {
   <ElementConfig>
     <ElDialog
       v-model="dialogVisible"
-      :class="['topic-dialog', { 'topic-page-dialog': isTopicPage }]"
+      :class="['topic-dialog', { 'topic-page-dialog': isTopicPage, 'topic-dialog-editing': isTopicEditing }]"
+      :style="topicDialogStyle"
       :modal-class="isTopicPage ? 'topic-overlay' : ''"
       :z-index="isTopicPage ? 1000 : 2000"
       :show-close="false"
       :before-close="handleTopicDialogBeforeClose"
       :close-on-click-modal="!isTopicPage && closeOnClickModal"
-      :close-on-press-escape="!isTopicPage"
+      :close-on-press-escape="isTopicEditing || !isTopicPage"
       align-center
       @opened="handleTopicDialogOpened"
       @closed="handleTopicDialogClosed"
     >
       <template #header="{ close }">
-        <div v-if="!isTopicPage" class="topic-dialog-absolute">
+        <div v-if="!isTopicPage && !isTopicEditing" class="topic-dialog-absolute">
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
       <div
+        v-show="!isTopicEditing"
         v-loading="isTopicBodyLoading"
         :style="topicBodyStyle"
         :element-loading-background="isTopicActionLoading ? 'transparent' : undefined"
@@ -606,12 +657,19 @@ onUnmounted(() => {
           @toggle-original-poster="handleToggleOriginalPoster"
         />
       </div>
-      <template #footer>
+      <div v-if="isTopicEditing" ref="topicEditorContainer" class="topic-editor-host"></div>
+      <template v-if="!isTopicEditing" #footer>
         <TopicActionRail :actions="topicActions" />
       </template>
     </ElDialog>
     <HotRepliesDialog ref="hotRepliesDialog" />
-    <TopicEditor ref="topicEditor" @sended="handleTopicSended" />
+    <TopicEditor
+      ref="topicEditor"
+      :inline-target="topicEditorContainer"
+      @sended="handleTopicSended"
+      @edit-mode-change="handleTopicEditModeChange"
+      @edit-fullscreen-change="handleTopicEditFullscreenChange"
+    />
   </ElementConfig>
 </template>
 
@@ -696,11 +754,24 @@ onUnmounted(() => {
   }
 
   .el-dialog__body {
+    position: relative;
     padding: 0;
   }
 
   .el-dialog__footer {
     padding: 0;
+  }
+}
+
+.topic-dialog-editing {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .el-dialog__body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 }
 
@@ -816,6 +887,13 @@ onUnmounted(() => {
   right: 0;
   bottom: 0;
   left: 0;
+}
+
+.topic-editor-host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--el-bg-color);
 }
 
 .comment-icon {
