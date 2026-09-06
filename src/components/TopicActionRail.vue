@@ -15,7 +15,13 @@ defineProps<Props>();
       :key="action.label"
       :class="['topic-action-rail-item', { 'topic-action-rail-item-divided': action.showDivider }]"
     >
-      <ElTooltip :content="action.label" :enterable="false" :hide-after="0" placement="left">
+      <ElTooltip
+        :content="action.label"
+        :enterable="false"
+        :hide-after="0"
+        placement="left"
+        popper-class="gzk-tooltip-popper"
+      >
         <button
           class="topic-action-rail-button"
           type="button"

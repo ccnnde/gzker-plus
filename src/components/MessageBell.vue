@@ -139,6 +139,7 @@ const isMsgUnread = (index: number): boolean => {
           :hide-after="0"
           :show-arrow="false"
           :disabled="disableTooltip"
+          popper-class="gzk-tooltip-popper"
         >
           <ElBadge
             class="message-badge"
