@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
-import { ElInput, ElMessage } from 'element-plus';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { ElMessage } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import { useClickModal } from '@/composables/click-modal';
-import { useContentEditor } from '@/composables/content-editor';
-import { useDialog } from '@/composables/dialog';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
 import { useLockscreen } from '@/composables/lockscreen';
 import { useRequest } from '@/composables/request';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { createTopic, getNodeList, modifyTopic } from '@/api';
+import { isGlobalLoadingVisible } from '@/utils';
 import {
   EditHistoryType,
   getTopicCreateHistoryId,
@@ -21,72 +20,46 @@ import {
 import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
 import { DialogType } from '@/constants';
 
-import ContentEditor from './ContentEditor.vue';
-import EmojiPicker from './EmojiPicker.vue';
-import WeiboEmojiPicker from './WeiboEmojiPicker.vue';
+import TopicEditorPanel from './TopicEditorPanel.vue';
 
-import type { CascaderProps, FormInstance, FormRules } from 'element-plus';
+import type { CascaderProps, DialogBeforeCloseFn } from 'element-plus';
 import type { EditHistoryItem, TopicForm, TreeNode, UserTopic, UserTopicDetail } from '@/types';
+
+interface Props {
+  inlineTarget?: HTMLElement | null;
+}
+
+defineProps<Props>();
 
 const emit = defineEmits<{
   sended: [data: UserTopic];
+  editModeChange: [editing: boolean];
+  editFullscreenChange: [fullscreen: boolean];
 }>();
 
 let editedTopicId: string;
 
-const topicFormRef = ref<FormInstance>();
 const topicForm = reactive<TopicForm>({
   node: '',
   title: '',
   content: '',
 });
-
-const topicRules = computed<FormRules<TopicForm>>(() => {
-  return {
-    title: [
-      {
-        required: true,
-        message: t('enhancedTopic.topicTitleCannotBeEmpty'),
-      },
-      {
-        min: 3,
-        max: 56,
-        message: t('enhancedTopic.topicTitleLengthLimit'),
-      },
-    ],
-    content: [
-      {
-        required: true,
-        message: t('enhancedTopic.topicContentCannotBeEmpty'),
-      },
-    ],
-  };
-});
-
-const {
-  isAddContent,
-  contentEditor,
-  emojiPicker,
-  weiboEmojiPicker,
-  weiboEmojiPickerStyle,
-  insertEmoji,
-  insertWeiboEmoji,
-  clearContent,
-  refreshEditor,
-  resetEditorLayout,
-  showWeiboEmojiPicker,
-  handleEditorBeforeClose,
-} = useContentEditor();
+const isAddContent = ref(true);
+const editorVisible = ref(false);
 const { lockScroll, unlockScroll } = useLockscreen();
 const { closeOnClickModal } = useClickModal(DialogType.TopicEditor);
-const { dialogVisible, openDialog, closeDialog } = useDialog();
+const editorPanel = ref<InstanceType<typeof TopicEditorPanel> | null>(null);
 const {
+  dialogFullscreen,
   dialogFullscreenClass,
   dialogFullscreenStyle,
   toggleDialogFullscreen,
-  resetDialogFullscreen, //
-} = useDialogFullscreen(refreshEditor);
-const titleInput = ref<InstanceType<typeof ElInput> | null>(null);
+  resetDialogFullscreen,
+} = useDialogFullscreen(() => {
+  nextTick(() => {
+    editorPanel.value?.refreshEditor();
+  });
+});
 const nodeList = ref<TreeNode[]>([]);
 
 const cascaderProps: CascaderProps = {
@@ -98,92 +71,129 @@ const editorTitle = computed(() => {
   return isAddContent.value ? t('enhancedTopic.createTopic') : t('enhancedTopic.editTopic');
 });
 
-const addTopic = (node: string) => {
-  isAddContent.value = true;
-  topicForm.node = node;
+const showEmbeddedEditor = computed(() => {
+  return editorVisible.value && !isAddContent.value;
+});
+
+const showEditorDialog = computed(() => {
+  return editorVisible.value && isAddContent.value;
+});
+
+const prepareEditorPanel = () => {
+  nextTick(() => {
+    editorPanel.value?.prepareEditor();
+    editorPanel.value?.focusTitle();
+  });
 };
 
-const editTopic = (topicId: string, topicDetail: UserTopicDetail) => {
+const openCreateEditor = async (node: string) => {
+  if (editorVisible.value) {
+    closeEditor();
+  }
+
+  isAddContent.value = true;
+  topicForm.node = node;
+  topicForm.title = '';
+  topicForm.content = '';
+  resetDialogFullscreen();
+  editorVisible.value = true;
+
+  lockScroll();
+  generateEditHistoryId();
+  prepareEditorPanel();
+
+  if (!nodeList.value.length) {
+    nodeList.value = await getNodeList();
+  }
+};
+
+const openEditEditor = (topicId: string, topicDetail: UserTopicDetail) => {
+  if (editorVisible.value) {
+    closeEditor();
+  }
+
   isAddContent.value = false;
   editedTopicId = topicId;
+  editHistoryId = '';
+  resetDialogFullscreen();
   topicForm.title = topicDetail.title as string;
+  topicForm.content = convertWeiboImgToEmoji(topicDetail.content as string);
+  editorVisible.value = true;
+  emit('editModeChange', true);
 
   setTimeout(() => {
-    const content = convertWeiboImgToEmoji(topicDetail.content as string);
-    contentEditor.value?.setValue(content);
-  }, 0);
-
-  setTimeout(() => {
-    generateEditHisotryId();
+    generateEditHistoryId();
   }, 300);
+
+  prepareEditorPanel();
 };
 
 const { isLoading, handleRequest } = useRequest();
 
-const sendTopic = () => {
-  topicFormRef.value?.validate((valid) => {
-    if (!valid) {
-      return;
+const sendTopic = async () => {
+  const valid = await editorPanel.value?.validate();
+
+  if (!valid) {
+    return;
+  }
+
+  handleRequest(async () => {
+    const content = convertWeiboEmojiToImg(topicForm.content);
+
+    if (isAddContent.value) {
+      await createTopic(topicForm.node, topicForm.title, content);
+
+      ElMessage.success({
+        message: t('enhancedTopic.topicContentIsUnderReview'),
+        onClose: () => window.location.reload(),
+      });
+    } else {
+      const data = await modifyTopic(editedTopicId, topicForm.title, content);
+      emit('sended', data);
+      ElMessage.success(t('enhancedTopic.editTopicSuccessful'));
     }
 
-    handleRequest(async () => {
-      const content = convertWeiboEmojiToImg(topicForm.content);
-
-      if (isAddContent.value) {
-        await createTopic(topicForm.node, topicForm.title, content);
-
-        ElMessage.success({
-          message: t('enhancedTopic.topicContentIsUnderReview'),
-          onClose: () => window.location.reload(),
-        });
-      } else {
-        const data = await modifyTopic(editedTopicId, topicForm.title, content);
-        emit('sended', data);
-        ElMessage.success(t('enhancedTopic.editTopicSuccessful'));
-      }
-
-      closeDialog();
-    });
+    closeEditor();
   });
 };
 
-const validateContentField = async () => {
-  try {
-    await topicFormRef.value?.validateField('content');
-  } catch (err) {
-    console.warn(err);
+const closeEditor = () => {
+  if (!editorVisible.value) {
+    return;
   }
-};
 
-const handleDialogOpen = async () => {
-  resetEditorLayout();
-  topicFormRef.value?.clearValidate();
-
-  if (isAddContent.value) {
-    lockScroll();
-    generateEditHisotryId();
-
-    if (!nodeList.value.length) {
-      nodeList.value = await getNodeList();
-    }
-  }
-};
-
-const handleDialogClose = () => {
+  const wasAddContent = isAddContent.value;
+  editorPanel.value?.hideAllSubMenu();
+  editorVisible.value = false;
   editHistoryId = '';
-  clearContent();
 
-  if (isAddContent.value) {
+  if (wasAddContent) {
     unlockScroll();
+  } else {
+    emit('editModeChange', false);
+    emit('editFullscreenChange', false);
   }
 
-  contentEditor.value?.hideAllSubMenu();
-};
-
-const handleDialogClosed = () => {
   topicForm.node = '';
   topicForm.title = '';
+  topicForm.content = '';
   resetDialogFullscreen();
+};
+
+const handleEditorBeforeClose: DialogBeforeCloseFn = (done) => {
+  if (isGlobalLoadingVisible() || editorPanel.value?.isEmojiPickerVisible()) {
+    return;
+  }
+
+  done();
+};
+
+const handleToggleFullscreen = () => {
+  toggleDialogFullscreen();
+
+  if (!isAddContent.value) {
+    emit('editFullscreenChange', dialogFullscreen.value);
+  }
 };
 
 const storage = useStorageStore();
@@ -201,7 +211,7 @@ watch(topicForm, () => {
   updateEditHistory();
 });
 
-const generateEditHisotryId = () => {
+const generateEditHistoryId = () => {
   const loginUserId = storage.settings?.loginUserId as string;
 
   if (isAddContent.value) {
@@ -224,7 +234,8 @@ const importEditHistory = (data: EditHistoryItem) => {
   }
 
   if (content !== undefined) {
-    contentEditor.value?.setValue(content);
+    topicForm.content = content;
+    editorPanel.value?.setContent(content);
   }
 
   setTimeout(() => {
@@ -233,76 +244,70 @@ const importEditHistory = (data: EditHistoryItem) => {
 };
 
 defineExpose({
-  openDialog,
-  addTopic,
-  editTopic,
+  openCreateEditor,
+  openEditEditor,
+  closeEditor,
+  isEmojiPickerVisible: () => editorPanel.value?.isEmojiPickerVisible(),
 });
 </script>
 
 <template>
+  <Teleport v-if="showEmbeddedEditor && inlineTarget" :to="inlineTarget">
+    <div :class="['topic-editor-container', dialogFullscreenClass]">
+      <TopicEditorPanel
+        ref="editorPanel"
+        v-model:title="topicForm.title"
+        v-model:content="topicForm.content"
+        :editor-title="editorTitle"
+        :editor-history-type="editorHistoryType"
+        :loading="isLoading"
+        show-header
+        @close="closeEditor"
+        @submit="sendTopic"
+        @import-history="importEditHistory"
+        @toggle-fullscreen="handleToggleFullscreen"
+      />
+    </div>
+  </Teleport>
   <ElDialog
-    v-model="dialogVisible"
+    v-if="showEditorDialog"
+    :model-value="showEditorDialog"
     :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
     :style="dialogFullscreenStyle"
+    :modal-class="isAddContent ? 'gzk-dialog-overlay' : ''"
     :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="closeOnClickModal"
     
      align-center append-to-body 
-    @open="handleDialogOpen"
-    @opened="titleInput?.focus"
-    @close="handleDialogClose"
-    @closed="handleDialogClosed"
+    @update:model-value="!$event && closeEditor()"
+    @opened="editorPanel?.focusTitle"
   >
     <template #header="{ titleId, titleClass }">
       <div class="topic-editor-header">
         <span :id="titleId" :class="titleClass">{{ editorTitle }}</span>
-        <template v-if="isAddContent">
-          <ElCascader v-model="topicForm.node" :options="nodeList" :props="cascaderProps" size="large" />
-        </template>
+        <ElCascader
+          v-if="isAddContent"
+          v-model="topicForm.node"
+          :options="nodeList"
+          :props="cascaderProps"
+          size="large"
+        />
       </div>
     </template>
-    <ElForm
-      ref="topicFormRef"
-      class="topic-editor-form"
-      :model="topicForm"
-      :rules="topicRules"
-      size="large"
-      hide-required-asterisk
-    >
-      <ElFormItem prop="title">
-        <ElInput ref="titleInput" v-model="topicForm.title" :placeholder="$t('enhancedTopic.topicTitle')" />
-      </ElFormItem>
-      <ElFormItem class="topic-form-content" prop="content">
-        <ContentEditor
-          ref="contentEditor"
-          v-model="topicForm.content"
-          :mentionable="false"
-          :editor-history-type="editorHistoryType"
-          @blur="validateContentField"
-          @change="validateContentField"
-          @import-history="importEditHistory"
-          @submit-content="sendTopic"
-          @show-emoji-picker="emojiPicker?.showPicker"
-          @show-weibo-emoji-picker="showWeiboEmojiPicker"
-          @toggle-fullscreen="toggleDialogFullscreen"
-        />
-      </ElFormItem>
-    </ElForm>
-    <WeiboEmojiPicker
-      ref="weiboEmojiPicker"
-      :style="weiboEmojiPickerStyle"
-      @picked="insertWeiboEmoji"
-      @hide="contentEditor?.focusEditor"
+    <TopicEditorPanel
+      ref="editorPanel"
+      v-model:title="topicForm.title"
+      v-model:content="topicForm.content"
+      :editor-title="editorTitle"
+      :editor-history-type="editorHistoryType"
+      :loading="isLoading"
+      @close="closeEditor"
+      @submit="sendTopic"
+      @import-history="importEditHistory"
+      @toggle-fullscreen="handleToggleFullscreen"
     />
-    <template #footer>
-      <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
-      <span>
-        <ElButton @click="closeDialog">{{ $t('common.cancel') }}</ElButton>
-        <ElButton type="primary" :loading="isLoading" @click="sendTopic">{{ $t('common.post') }}</ElButton>
-      </span>
-    </template>
   </ElDialog>
 </template>
 
@@ -310,9 +315,14 @@ defineExpose({
 .topic-editor-dialog {
   height: 540px;
 
-  .el-dialog__footer {
-    padding-top: 0;
+  .el-dialog__body {
+    padding-bottom: var(--gzk-topic-padding);
   }
+}
+
+.topic-editor-container {
+  height: 100%;
+  padding: var(--gzk-topic-padding);
 }
 </style>
 
@@ -329,24 +339,6 @@ defineExpose({
     .el-input__icon::before {
       display: none;
     }
-  }
-}
-
-.topic-editor-form {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.topic-form-content {
-  flex: 1;
-  padding-bottom: 22px;
-  margin-bottom: 0;
-  overflow: hidden;
-
-  &.is-error :deep(.cherry) {
-    background-color: var(--el-color-danger);
-    border-color: var(--el-color-danger);
   }
 }
 </style>
