@@ -102,6 +102,7 @@ defineExpose({
     :show-close="false"
     :z-index="2001"
     append-to-body
+    align-center
     @open="handleDialogOpen"
     @opened="scrollbar?.handleScroll"
     @closed="handleDialogClosed"

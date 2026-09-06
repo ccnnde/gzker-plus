@@ -81,11 +81,10 @@ const { lockScroll, unlockScroll } = useLockscreen();
 const { closeOnClickModal } = useClickModal(DialogType.TopicEditor);
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const {
-  dialogFullscreen,
   dialogFullscreenClass,
   dialogFullscreenStyle,
   toggleDialogFullscreen,
-  resetDialogFullscreen,
+  resetDialogFullscreen, //
 } = useDialogFullscreen(refreshEditor);
 const titleInput = ref<InstanceType<typeof ElInput> | null>(null);
 const nodeList = ref<TreeNode[]>([]);
@@ -246,12 +245,12 @@ defineExpose({
     :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
     :style="dialogFullscreenStyle"
     :modal-class="isAddContent ? 'gzk-dialog-overlay' : ''"
-    :align-center="dialogFullscreen"
     :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="closeOnClickModal"
     append-to-body
+    align-center
     @open="handleDialogOpen"
     @opened="titleInput?.focus"
     @close="handleDialogClose"
