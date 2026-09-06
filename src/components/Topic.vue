@@ -65,6 +65,11 @@ const { options } = storeToRefs(storage);
 const { closeOnClickModal } = useClickModal(DialogType.TopicViewer);
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { isLoading, handleRequest, resetRequestState } = useRequest();
+const {
+  isLoading: isTopicActionLoading,
+  handleRequest: handleTopicActionRequest,
+  resetRequestState: resetTopicActionRequestState,
+} = useRequest();
 const isTopicPage = ref(false);
 const topicContainer = ref<HTMLDivElement | null>(null);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
@@ -190,7 +195,7 @@ useTopicHostNavigation({
 });
 
 const handleTopicFavorite = () => {
-  handleRequest(async () => {
+  handleTopicActionRequest(async () => {
     if (!topicDetail.value) {
       return;
     }
@@ -216,7 +221,7 @@ const handleTopicFavorite = () => {
 };
 
 const handleTopicLike = () => {
-  handleRequest(async () => {
+  handleTopicActionRequest(async () => {
     if (!topicDetail.value) {
       return;
     }
@@ -232,7 +237,7 @@ const handleTopicLike = () => {
 };
 
 const handleTopicEdit = () => {
-  handleRequest(async () => {
+  handleTopicActionRequest(async () => {
     const data = await getEditedTopic(topicId.value);
     topicEditor.value?.openDialog();
     topicEditor.value?.editTopic(topicId.value as string, data);
@@ -308,6 +313,7 @@ const handleTopicDialogClosed = () => {
 
   showTopicFooter();
   resetRequestState();
+  resetTopicActionRequestState();
 };
 
 const { startKeyboardScroll, stopKeyboardScroll } = useTopicKeyboardScroll({
@@ -432,7 +438,7 @@ const topicBodyStyle = computed<CSSProperties>(() => {
 });
 
 const isTopicBodyLoading = computed(() => {
-  return isLoading.value || isReplyInitialLoading.value || isReplyFirstPageLoading.value;
+  return isLoading.value || isTopicActionLoading.value || isReplyInitialLoading.value || isReplyFirstPageLoading.value;
 });
 
 const showTopicFooter = () => {
@@ -499,7 +505,7 @@ onUnmounted(() => {
       <div
         v-loading="isTopicBodyLoading"
         :style="topicBodyStyle"
-        element-loading-background="transparent"
+        :element-loading-background="isTopicActionLoading ? 'transparent' : undefined"
         element-loading-custom-class="gzk-loading-ring"
       >
         <ElScrollbar ref="scrollbar">
