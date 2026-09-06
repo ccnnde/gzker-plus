@@ -637,8 +637,6 @@ onUnmounted(() => {
         <TopicFooter
           v-show="topicDetail && topicFooterVisible"
           class="topic-body-absolute"
-          :topic-id="topicId"
-          :topic-title="topicDetail?.title"
           :reply-total="replyTotal"
           :favorited="topicDetail?.favorited"
           :favorite-number="topicDetail?.favoriteNumber"
@@ -659,7 +657,7 @@ onUnmounted(() => {
       </div>
       <div v-if="isTopicEditing" ref="topicEditorContainer" class="topic-editor-host"></div>
       <template v-if="!isTopicEditing" #footer>
-        <TopicActionRail :actions="topicActions" />
+        <TopicActionRail :actions="topicActions" :topic-id="topicId" :topic-title="topicDetail?.title" />
       </template>
     </ElDialog>
     <HotRepliesDialog ref="hotRepliesDialog" />
