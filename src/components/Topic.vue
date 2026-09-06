@@ -747,14 +747,14 @@ onUnmounted(() => {
 }
 
 .topic-dialog,
-.topic-editor-dialog,
-.editor-help-dialog {
+.topic-editor-dialog {
   width: 45%;
 
   @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
 }
 
 .reply-editor-dialog,
+.editor-help-dialog,
 .editor-history-dialog,
 .hot-replies-dialog {
   width: 40%;

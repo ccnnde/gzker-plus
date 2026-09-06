@@ -40,7 +40,7 @@ defineExpose({
 .editor-help-dialog {
   display: flex;
   flex-direction: column;
-  height: 90%;
+  height: 500px;
 
   .el-dialog__body {
     flex: 1;
