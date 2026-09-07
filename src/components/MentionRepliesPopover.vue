@@ -420,8 +420,9 @@ defineExpose({
 }
 
 .mention-replies-popover-list {
-  padding: 4px 12px 8px 28px;
+  padding: 4px 0 8px;
   margin: 0;
+  list-style: none;
 }
 
 .mention-replies-popover-header {
