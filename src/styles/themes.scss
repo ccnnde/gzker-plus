@@ -231,6 +231,11 @@ html[data-theme='light-solarized'] {
     color: var(--el-text-color-primary);
     background: var(--el-bg-color-overlay);
     border: 1px solid var(--el-border-color-light);
+
+    .el-popper__arrow::before {
+      background: var(--el-bg-color-overlay);
+      border-color: var(--el-border-color-light);
+    }
   }
 
   // Markdown 相关
@@ -359,6 +364,11 @@ html[data-theme='light-tokyo-night'] {
     color: var(--el-text-color-primary);
     background: var(--el-bg-color-overlay);
     border: 1px solid var(--el-border-color-light);
+
+    .el-popper__arrow::before {
+      background: var(--el-bg-color-overlay);
+      border-color: var(--el-border-color-light);
+    }
   }
 
   // Markdown 相关
