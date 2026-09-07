@@ -155,7 +155,7 @@ const shareToWeibo = () => {
 <style lang="scss" scoped>
 .topic-action-rail {
   position: absolute;
-  right: -48px;
+  right: -52px;
   bottom: 0;
   z-index: 10;
   display: flex;
