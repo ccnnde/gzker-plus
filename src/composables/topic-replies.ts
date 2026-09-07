@@ -75,6 +75,7 @@ interface UseTopicRepliesResult {
   loadTopicReplies: (loadOptions?: LoadTopicRepliesOptions) => Promise<void>;
   openTopic: (selectedTopicId: string | undefined) => void;
   resetTopicData: () => void;
+  scrollToReplyTotal: () => Promise<void>;
   handleToggleReplyOrder: () => Promise<void>;
   handleToggleOriginalPoster: () => Promise<void>;
   refreshTopic: () => Promise<void>;
@@ -909,6 +910,7 @@ export const useTopicReplies = ({
     loadTopicReplies,
     openTopic,
     resetTopicData,
+    scrollToReplyTotal,
     handleToggleReplyOrder,
     handleToggleOriginalPoster,
     refreshTopic,
