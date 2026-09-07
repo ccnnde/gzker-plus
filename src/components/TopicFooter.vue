@@ -25,6 +25,7 @@ interface Props {
 const props = defineProps<Props>();
 
 defineEmits<{
+  scrollToReplyTotal: [];
   favoriteTopic: [];
   likeTopic: [];
   editTopic: [];
@@ -129,7 +130,12 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 
 <template>
   <div class="footer-container" :style="footerStyle">
-    <OperateButton :tip-content="$t('common.reply')" icon-class="i-mdi-chat-outline" :operate-text="replyTotal" />
+    <OperateButton
+      :tip-content="$t('common.reply')"
+      icon-class="i-mdi-chat-outline"
+      :operate-text="replyTotal"
+      @click="$emit('scrollToReplyTotal')"
+    />
     <OperateButton
       :tip-content="$t('common.favorite')"
       :icon-class="favoriteIconClass"

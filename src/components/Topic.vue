@@ -108,6 +108,7 @@ const {
   loadTopicReplies,
   openTopic,
   resetTopicData,
+  scrollToReplyTotal,
   handleToggleReplyOrder,
   handleToggleOriginalPoster,
   refreshTopic,
@@ -651,6 +652,7 @@ onUnmounted(() => {
           @like-topic="handleTopicLike"
           @edit-topic="handleTopicEdit"
           @block-topic="handleTopicBlock"
+          @scroll-to-reply-total="scrollToReplyTotal"
           @toggle-reply-order="handleToggleReplyOrder"
           @toggle-original-poster="handleToggleOriginalPoster"
         />
