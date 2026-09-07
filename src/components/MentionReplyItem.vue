@@ -43,11 +43,17 @@ const handleAnimationEnd = (event: AnimationEvent) => {
 
 <style lang="scss" scoped>
 .mention-reply-item-container {
-  padding: 2px 0 2px 2px;
+  position: relative;
+  padding: 2px 12px 2px 30px;
 
-  &::marker {
+  &::before {
+    position: absolute;
+    top: 2px;
+    left: 18px;
     font-size: 9px;
+    line-height: 21px;
     color: var(--el-text-color-primary);
+    content: '•';
   }
 
   &.mention-reply-item-flash {
