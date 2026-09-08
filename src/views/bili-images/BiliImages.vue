@@ -151,7 +151,12 @@ const deleteSelectedImg = async () => {
         <ElButton type="primary" plain @click="copyImgMarkdown(scope.row)">
           {{ $t('biliImages.copyMarkdown') }}
         </ElButton>
-        <ElPopconfirm :title="$t('biliImages.confirmDeleteImgHistory')" :width="215" @confirm="deleteImg(scope.row)">
+        <ElPopconfirm
+          :title="$t('biliImages.confirmDeleteImgHistory')"
+          :width="215"
+          :show-arrow="false"
+          @confirm="deleteImg(scope.row)"
+        >
           <template #reference>
             <ElButton type="danger">{{ $t('common.delete') }}</ElButton>
           </template>
