@@ -24,6 +24,14 @@ import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type { ExtensionMessage } from '@/types';
 
 import 'virtual:uno.css';
+import 'element-plus/theme-chalk/dark/css-vars.css';
+import '@/styles/github-markdown.scss';
+import '@/styles/cherry-markdown.scss';
+import '@/styles/highlight.scss';
+import '@/styles/script-vars.scss';
+import '@/styles/script-global.scss';
+import '@/styles/script-dark.scss';
+import '@/styles/themes.scss';
 
 import 'element-plus/es/components/message/style/css';
 import 'element-plus/es/components/message-box/style/css';

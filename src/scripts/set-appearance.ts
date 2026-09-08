@@ -10,15 +10,6 @@ import { DARK_MODE_CLASS, OptionsKey, THEME_ATTR } from '@/constants';
 
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 
-import 'element-plus/theme-chalk/dark/css-vars.css';
-import '@/styles/github-markdown.scss';
-import '@/styles/cherry-markdown.scss';
-import '@/styles/highlight.scss';
-import '@/styles/script-vars.scss';
-import '@/styles/script-global.scss';
-import '@/styles/script-dark.scss';
-import '@/styles/themes.scss';
-
 export const applyAppearance = async (ctx: ContentScriptContext) => {
   const hadDarkModeClass = document.documentElement.classList.contains(DARK_MODE_CLASS);
   const originalTheme = document.documentElement.getAttribute(THEME_ATTR);
