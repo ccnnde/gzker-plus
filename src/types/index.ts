@@ -1,6 +1,6 @@
 import type { Component } from 'vue';
 import type { Pinia } from 'pinia';
-import type { LoadingInstance } from 'element-plus/es/components/loading/src/loading';
+import type { LoadingInstance } from 'element-plus';
 import type Viewer from 'viewerjs';
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type {

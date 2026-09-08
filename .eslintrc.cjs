@@ -128,7 +128,7 @@ module.exports = {
     'import/no-unresolved': [
       'error',
       {
-        ignore: ['^virtual:', 'element-plus/es/utils'],
+        ignore: ['^virtual:', 'element-plus/es/utils', 'element-plus/es/components/.+/style/css$'],
       },
     ],
     'import/no-useless-path-segments': [

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { dayjs, ElMessage, ElMessageBox, ElTable } from 'element-plus';
+import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
 
 import { t } from '@/i18n';
 import { clearImgHistory, deleteImgHistory, getAllImgHistory } from '@/utils/bili-img-store';
 
+import type { TableInstance } from 'element-plus';
 import type { BiliImgHistoryItem } from '@/types';
 
 const imgHistoryList = ref<BiliImgHistoryItem[]>([]);
@@ -48,6 +49,10 @@ const formatDate = (timestamp: number) => {
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss');
 };
 
+const getImgHistoryItem = (row: unknown): BiliImgHistoryItem => {
+  return row as BiliImgHistoryItem;
+};
+
 const copyImgUrl = async ({ url }: BiliImgHistoryItem) => {
   await navigator.clipboard.writeText(url);
   ElMessage.success(t('common.copySuccessfully'));
@@ -82,14 +87,14 @@ const deleteAllImg = async () => {
   }
 };
 
-const imgTable = ref<InstanceType<typeof ElTable> | null>(null);
+const imgTable = ref<TableInstance | null>(null);
 
 const clearImgSelection = () => {
   imgTable.value?.clearSelection();
 };
 
 const deleteSelectedImg = async () => {
-  const selectedImgHistory: BiliImgHistoryItem[] = imgTable.value?.getSelectionRows();
+  const selectedImgHistory = imgTable.value?.getSelectionRows() as BiliImgHistoryItem[];
 
   if (!selectedImgHistory.length) {
     ElMessage.warning(t('biliImages.plzSelectAtLeastOneImgHistory'));
@@ -145,17 +150,17 @@ const deleteSelectedImg = async () => {
     </ElTableColumn>
     <ElTableColumn :label="$t('biliImages.operations')" width="450">
       <template #default="scope">
-        <ElButton type="primary" plain @click="copyImgUrl(scope.row)">
+        <ElButton type="primary" plain @click="copyImgUrl(getImgHistoryItem(scope.row))">
           {{ $t('biliImages.copyImage') }}
         </ElButton>
-        <ElButton type="primary" plain @click="copyImgMarkdown(scope.row)">
+        <ElButton type="primary" plain @click="copyImgMarkdown(getImgHistoryItem(scope.row))">
           {{ $t('biliImages.copyMarkdown') }}
         </ElButton>
         <ElPopconfirm
           :title="$t('biliImages.confirmDeleteImgHistory')"
           :width="215"
           :show-arrow="false"
-          @confirm="deleteImg(scope.row)"
+          @confirm="deleteImg(getImgHistoryItem(scope.row))"
         >
           <template #reference>
             <ElButton type="danger">{{ $t('common.delete') }}</ElButton>

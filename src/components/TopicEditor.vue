@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, watch } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, useLockscreen } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import { useClickModal } from '@/composables/click-modal';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
-import { useLockscreen } from '@/composables/lockscreen';
 import { useRequest } from '@/composables/request';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
@@ -46,7 +45,6 @@ const topicForm = reactive<TopicForm>({
 });
 const isAddContent = ref(true);
 const editorVisible = ref(false);
-const { lockScroll, unlockScroll } = useLockscreen();
 const { closeOnClickModal } = useClickModal(DialogType.TopicEditor);
 const editorPanel = ref<InstanceType<typeof TopicEditorPanel> | null>(null);
 const {
@@ -79,6 +77,8 @@ const showEditorDialog = computed(() => {
   return editorVisible.value && isAddContent.value;
 });
 
+useLockscreen(showEditorDialog);
+
 const prepareEditorPanel = () => {
   nextTick(() => {
     editorPanel.value?.prepareEditor();
@@ -98,7 +98,6 @@ const openCreateEditor = async (node: string) => {
   resetDialogFullscreen();
   editorVisible.value = true;
 
-  lockScroll();
   generateEditHistoryId();
   prepareEditorPanel();
 
@@ -167,9 +166,7 @@ const closeEditor = () => {
   editorVisible.value = false;
   editHistoryId = '';
 
-  if (wasAddContent) {
-    unlockScroll();
-  } else {
+  if (!wasAddContent) {
     emit('editModeChange', false);
     emit('editFullscreenChange', false);
   }
@@ -279,8 +276,8 @@ defineExpose({
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="closeOnClickModal"
-    
-     align-center append-to-body 
+    align-center
+    append-to-body
     @update:model-value="!$event && closeEditor()"
     @opened="editorPanel?.focusTitle"
   >

@@ -196,9 +196,11 @@ defineExpose({
 
 <style lang="scss">
 .editor-history-dialog {
+  padding: 0;
   border-radius: var(--el-border-radius-base);
 
   .el-dialog__header {
+    padding: var(--el-dialog-padding-primary);
     margin-right: 0;
   }
 
@@ -228,8 +230,6 @@ defineExpose({
 }
 
 .history-card-body {
-  padding-bottom: 4px;
-
   .cherry-markdown {
     ul {
       list-style: disc;
@@ -303,6 +303,10 @@ defineExpose({
   margin-bottom: 16px;
   font-size: 14px;
   line-height: 25px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   &.theme__light {
     color: var(--el-text-color-primary);

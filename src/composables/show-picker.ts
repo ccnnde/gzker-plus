@@ -13,6 +13,7 @@ export const useShowPicker = (handleShow: () => void) => {
     return {
       zIndex: 2100,
       position: 'fixed',
+      width: addUnit(216),
       left: addUnit(pickerLeft.value + 1),
       top: addUnit(pickerTop.value - 2),
     };

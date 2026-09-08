@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import en from 'element-plus/dist/locale/en.mjs';
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
+import en from 'element-plus/es/locale/lang/en';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 import { useDarkMode } from '@/composables/dark-mode';
 import { useLanguage } from '@/composables/language';

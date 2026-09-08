@@ -1,9 +1,9 @@
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 
-import type { ElScrollbar, ElSelect } from 'element-plus';
+import type { SelectInstance } from 'element-plus';
 
 export const useEditorPicker = (handleSelect: ((val: string) => void) | undefined, handleHide: () => void) => {
-  const select = ref<InstanceType<typeof ElSelect> | null>(null);
+  const select = ref<SelectInstance | null>(null);
   const isPickerVisible = ref(false);
 
   onMounted(() => {
@@ -11,9 +11,9 @@ export const useEditorPicker = (handleSelect: ((val: string) => void) | undefine
   });
 
   const initPicker = () => {
-    const input = select.value?.reference?.input;
+    const input = select.value?.inputRef;
 
-    input?.addEventListener('keydown', (e) => {
+    input?.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === ' ') {
         if (handleSelect) {
           e.preventDefault();
@@ -27,13 +27,15 @@ export const useEditorPicker = (handleSelect: ((val: string) => void) | undefine
 
   const showPicker = () => {
     isPickerVisible.value = true;
-    select.value?.focus();
+
+    nextTick(() => {
+      select.value?.focus();
+    });
   };
 
   const handleFocus = () => {
     setTimeout(() => {
-      const scrollbar = select.value?.scrollbar as InstanceType<typeof ElScrollbar> | null | undefined;
-      scrollbar?.setScrollTop(0);
+      select.value?.scrollbarRef?.setScrollTop(0);
     });
   };
 

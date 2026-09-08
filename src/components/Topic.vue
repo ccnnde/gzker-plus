@@ -53,7 +53,7 @@ import TopicReply from './TopicReply.vue';
 import TopicUserInfoPopover from './TopicUserInfoPopover.vue';
 
 import type { CSSProperties } from 'vue';
-import type { DialogBeforeCloseFn } from 'element-plus';
+import type { DialogBeforeCloseFn, ScrollbarDirection } from 'element-plus';
 import type { TopicAction, UserReplyItem, UserTopic } from '@/types';
 
 import 'viewerjs/dist/viewer.css';
@@ -124,6 +124,14 @@ const {
   options,
   topicContainer,
 });
+
+const handleReplyScrollEnd = (direction: ScrollbarDirection) => {
+  if (direction !== 'bottom' || disableReplyInfiniteScroll.value) {
+    return;
+  }
+
+  getNextReplyData();
+};
 
 const isTopicLinkBlank = computed(() => {
   if (!options.value) {
@@ -560,16 +568,8 @@ onUnmounted(() => {
         :element-loading-background="isTopicActionLoading ? 'transparent' : undefined"
         element-loading-custom-class="gzk-loading-ring"
       >
-        <ElScrollbar ref="scrollbar">
-          <div
-            ref="topicContainer"
-            v-infinite-scroll="getNextReplyData"
-            v-viewer="viewerOptions"
-            class="topic-container"
-            :style="topicContainerStyle"
-            :infinite-scroll-disabled="disableReplyInfiniteScroll"
-            :infinite-scroll-distance="100"
-          >
+        <ElScrollbar ref="scrollbar" :distance="100" @end-reached="handleReplyScrollEnd">
+          <div ref="topicContainer" v-viewer="viewerOptions" class="topic-container" :style="topicContainerStyle">
             <TopicDetail v-if="topicDetail" v-bind="topicDetail" />
             <ElDivider v-if="topicDetail" border-style="dashed">
               <un-i-mdi-comment-processing-outline class="comment-icon" />
@@ -748,6 +748,8 @@ onUnmounted(() => {
 }
 
 .topic-dialog {
+  padding: 0;
+
   .el-dialog__header {
     padding: 0;
     margin: 0;

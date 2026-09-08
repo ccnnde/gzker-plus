@@ -141,7 +141,11 @@ defineExpose({
 
 <style lang="scss">
 .hot-replies-dialog {
+  padding: 0;
+
   .el-dialog__header {
+    padding-top: var(--el-dialog-padding-primary);
+    padding-bottom: 0;
     padding-left: var(--gzk-topic-padding);
     margin-right: var(--gzk-topic-padding);
   }

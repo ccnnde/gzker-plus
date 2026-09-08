@@ -48,7 +48,7 @@ const handleTopicUnblock = async ({ id, title }: BlockedTopic) => {
       <ElButton type="info" text @click="handleTopicUnblock(item)">
         <un-i-mdi-close />
       </ElButton>
-      <ElLink type="primary" :href="getTopicUrl(item.id)" :underline="false" target="_blank">{{ item.title }} </ElLink>
+      <ElLink type="primary" :href="getTopicUrl(item.id)" underline="never" target="_blank">{{ item.title }} </ElLink>
     </li>
   </ol>
   <ElEmpty v-if="!storage.blockedTopicList.length" />

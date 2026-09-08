@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElLoading } from 'element-plus/es/components/loading/index.mjs';
+import { ElMessage } from 'element-plus/es/components/message/index.mjs';
 import Cookies from 'js-cookie';
 import { cloneDeep, debounce, merge } from 'lodash-es';
 import { browser } from 'wxt/browser';

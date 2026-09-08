@@ -41,6 +41,13 @@ defineExpose({
   display: flex;
   flex-direction: column;
   height: 500px;
+  padding: 0;
+
+  .el-dialog__header {
+    padding-top: var(--el-dialog-padding-primary);
+    padding-bottom: 0;
+    padding-left: var(--el-dialog-padding-primary);
+  }
 
   .el-dialog__body {
     flex: 1;
