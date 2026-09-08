@@ -132,7 +132,7 @@ export const useStorageStore = defineStore('storage', () => {
 | `Topic` | `topic-` | `topic-dialog`、`topic-container`、`topic-body-absolute` |
 | `TopicDetail` | `detail-` | `detail-header-top`、`detail-title`、`detail-meta` |
 | `TopicEditor` | `topic-editor-` | `topic-editor-header`、`topic-editor-form` |
-| `TopicFooter` | `footer-` | `footer-container`、`share-icon` |
+| `TopicFooter` | `topic-footer-` | `topic-footer-container`、`topic-footer-share-icon` |
 
 层级结构为 `{组件前缀}-{区块}-{子元素}`，如 `detail-header-top`（组件块 block 子元素）。
 
