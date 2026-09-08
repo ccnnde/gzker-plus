@@ -60,42 +60,26 @@ const footerStyle = computed<CSSProperties>(() => {
   };
 });
 
-const showReplyOrderButton = computed(() => {
-  return props.replyTotal !== '0';
+const onlyOriginalPosterIconStyle = computed<CSSProperties>(() => {
+  const style: CSSProperties = {
+    fontSize: '18px',
+  };
+
+  if (props.onlyOriginalPoster) {
+    style.color = 'var(--el-color-primary)';
+  }
+
+  return style;
 });
 
-const onlyOriginalPosterIconClass = computed(() => {
-  return props.onlyOriginalPoster ? 'i-mdi-account-star' : 'i-mdi-account-star-outline';
-});
-
-const onlyOriginalPosterIconStyle = computed<CSSProperties | undefined>(() => {
-  const fontSize = '18px';
-
-  if (!props.onlyOriginalPoster) {
+const replyOrderIconStyle = computed<CSSProperties | undefined>(() => {
+  if (props.reverseReply) {
     return {
-      fontSize,
+      color: 'var(--el-color-primary)',
     };
   }
 
-  return {
-    color: 'var(--el-color-primary)',
-    fontSize,
-  };
-});
-
-const replyOrderIconStyle = computed<CSSProperties>(() => {
-  const fontSize = '18px';
-
-  if (!props.reverseReply) {
-    return {
-      fontSize,
-    };
-  }
-
-  return {
-    color: 'var(--el-color-success)',
-    fontSize,
-  };
+  return undefined;
 });
 
 watch(
@@ -150,24 +134,35 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       :tip-disabled="actionTooltipDisabled"
       @handle-like="$emit('likeTopic')"
     />
+    <span class="footer-divider" aria-hidden="true"></span>
     <OperateButton
-      v-if="showReplyOrderButton"
       :tip-content="$t('enhancedTopic.onlyOriginalPoster')"
-      :icon-class="onlyOriginalPosterIconClass"
+      icon-class="i-mdi-account-outline"
       :custom-style="onlyOriginalPosterIconStyle"
       :tip-disabled="actionTooltipDisabled"
       @click="$emit('toggleOriginalPoster')"
     />
     <OperateButton
-      v-if="showReplyOrderButton"
       :tip-content="$t('enhancedTopic.reverseReplyOrder')"
-      icon-class="i-mdi-filter-variant"
+      icon-class="i-mdi-sort-descending"
       :custom-style="replyOrderIconStyle"
       :tip-disabled="actionTooltipDisabled"
       @click="$emit('toggleReplyOrder')"
     />
-    <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
-    <OperateButton v-else :operate-text="$t('enhancedTopic.blockTopic')" @click="$emit('blockTopic')" />
+    <OperateButton
+      v-if="editable"
+      :tip-content="$t('enhancedTopic.editTopic')"
+      icon-class="i-mdi-pencil-outline"
+      :tip-disabled="actionTooltipDisabled"
+      @click="$emit('editTopic')"
+    />
+    <OperateButton
+      v-else
+      :tip-content="$t('enhancedTopic.blockTopic')"
+      icon-class="i-mdi-eye-off-outline"
+      :tip-disabled="actionTooltipDisabled"
+      @click="$emit('blockTopic')"
+    />
     <ElInput class="reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />
   </div>
 </template>
@@ -175,14 +170,32 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 <style lang="scss" scoped>
 .footer-container {
   display: flex;
+  gap: 6px;
   align-items: center;
   padding: 0 var(--gzk-topic-padding);
   border-top: 1px solid var(--el-border-color-lighter);
   border-bottom-right-radius: var(--el-border-radius-base);
   border-bottom-left-radius: var(--el-border-radius-base);
+
+  :deep(.operate-button-container) {
+    padding: 0 8px;
+    margin-right: 0;
+
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+}
+
+.footer-divider {
+  flex: 0 0 1px;
+  height: 20px;
+  margin: 0 4px 0 8px;
+  background-color: var(--el-border-color);
 }
 
 .reply-input {
   flex: 1;
+  margin-left: 8px;
 }
 </style>
