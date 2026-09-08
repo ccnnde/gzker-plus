@@ -64,6 +64,7 @@ const showOperateText = computed(() => {
 .operate-icon,
 .operate-text {
   color: var(--el-text-color-secondary);
+  transition: color 0.15s ease;
 }
 
 .operate-icon + .operate-text {
