@@ -43,8 +43,10 @@ const copyTopicUrl = async () => {
 };
 
 const shareToWeibo = () => {
+  const title = props.topicTitle ? `过早客 - ${props.topicTitle}` : '';
+
   window.open(
-    `http://service.weibo.com/share/share.php?url=${topicUrl.value}&title=过早客 - ${props.topicTitle}`,
+    `http://service.weibo.com/share/share.php?url=${topicUrl.value}&title=${title}`,
     '_blank',
     'width=550, height=370',
   );
@@ -53,7 +55,7 @@ const shareToWeibo = () => {
 
 <template>
   <div class="topic-action-rail">
-    <div v-if="topicId && topicTitle" class="topic-action-rail-item">
+    <div v-if="topicId" class="topic-action-rail-item">
       <ElDropdown placement="left-start" trigger="click">
         <span class="topic-action-rail-dropdown-trigger">
           <ElTooltip
