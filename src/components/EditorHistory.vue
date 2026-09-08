@@ -118,7 +118,6 @@ defineExpose({
         <ElPopconfirm
           :title="$t('enhancedTopic.confirmDeleteAllEditHistory')"
           :width="215"
-          :show-arrow="false"
           @confirm="deleteAllEditHistory"
         >
           <template #reference>
@@ -151,7 +150,6 @@ defineExpose({
                       <ElPopconfirm
                         :title="$t('enhancedTopic.confirmImportEditHistory')"
                         :width="215"
-                        :show-arrow="false"
                         @confirm="importEditHistory(item)"
                       >
                         <template #reference>
@@ -163,7 +161,6 @@ defineExpose({
                       <ElPopconfirm
                         :title="$t('enhancedTopic.confirmDeleteEditHistory')"
                         :width="215"
-                        :show-arrow="false"
                         @confirm="deleteEditHistory(item.id, index)"
                       >
                         <template #reference>

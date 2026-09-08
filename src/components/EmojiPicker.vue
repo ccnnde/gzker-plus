@@ -136,7 +136,6 @@ defineExpose({
     :width="353"
     popper-class="el-dark-popper"
     :popper-style="{ padding: 0 }"
-    :show-arrow="false"
     :hide-after="0"
     trigger="click"
     @after-enter="handlePickerShow"

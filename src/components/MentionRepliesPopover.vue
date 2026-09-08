@@ -372,7 +372,6 @@ defineExpose({
     width="min(420px, calc(100vw - 32px))"
     popper-class="mention-replies-popover"
     :popper-style="{ padding: 0 }"
-    :show-arrow="false"
     :z-index="zIndex"
     placement="top-start"
     virtual-triggering
