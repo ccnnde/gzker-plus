@@ -14,6 +14,7 @@ import { SELECTOR_NOT_EMOJI_IMG } from '@/constants/selector';
 import LoadError from './LoadError.vue';
 
 import type { ObjectDirective } from 'vue';
+import type { ScrollbarDirection } from 'element-plus';
 import type { UserMessage } from '@/types';
 
 const PAGE_SIZE = 36;
@@ -115,6 +116,14 @@ const handleTopicClick = (e: Event) => {
   emitter.emit('clickTopic', e);
 };
 
+const handleMessageScrollEnd = (direction: ScrollbarDirection) => {
+  if (direction !== 'bottom' || disableInfiniteScroll.value) {
+    return;
+  }
+
+  getNextPageData();
+};
+
 const isMsgUnread = (index: number): boolean => {
   const messageIndex = index + 1;
   return messageIndex <= unreadMessageNumber.value;
@@ -157,19 +166,13 @@ const isMsgUnread = (index: number): boolean => {
     <template #default>
       <div class="message-list-header">
         <span>{{ $t('gzkHeader.message') }}</span>
-        <ElLink class="message-all" type="info" :underline="false" :href="API_MSG" target="_blank">
+        <ElLink class="message-all" type="info" underline="never" :href="API_MSG" target="_blank">
           {{ $t('enhancedMsg.viewAll') }}
           <div class="i-mdi-arrow-top-right-thick"></div>
         </ElLink>
       </div>
-      <ElScrollbar ref="scrollbar">
-        <div
-          v-loading="isFirstPageLoading"
-          v-infinite-scroll="getNextPageData"
-          class="message-list-content"
-          :infinite-scroll-disabled="disableInfiniteScroll"
-          :infinite-scroll-distance="100"
-        >
+      <ElScrollbar ref="scrollbar" :distance="100" @end-reached="handleMessageScrollEnd">
+        <div v-loading="isFirstPageLoading" class="message-list-content">
           <div
             v-for="(item, index) in userMessageList"
             :key="index"

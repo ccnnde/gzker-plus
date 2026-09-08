@@ -9,13 +9,13 @@ defineProps<SettingProps<OptionsKey.NestedReplyDisplay>>();
 
 <template>
   <ElRadioGroup v-model="settings.display" class="radio-group-solid">
-    <ElRadio :label="NestedReplyDisplay.Off">
+    <ElRadio :value="NestedReplyDisplay.Off">
       {{ $t('basicSetting.nestedReplyDisplay.off') }}
     </ElRadio>
-    <ElRadio :label="NestedReplyDisplay.Indent">
+    <ElRadio :value="NestedReplyDisplay.Indent">
       {{ $t('basicSetting.nestedReplyDisplay.indent') }}
     </ElRadio>
-    <ElRadio :label="NestedReplyDisplay.Align">
+    <ElRadio :value="NestedReplyDisplay.Align">
       {{ $t('basicSetting.nestedReplyDisplay.align') }}
     </ElRadio>
   </ElRadioGroup>

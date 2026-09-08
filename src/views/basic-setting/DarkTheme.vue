@@ -9,10 +9,10 @@ defineProps<SettingProps<OptionsKey.DarkTheme>>();
 
 <template>
   <ElRadioGroup v-model="settings.theme" class="radio-group-solid">
-    <ElRadio :label="DarkTheme.Default">
+    <ElRadio :value="DarkTheme.Default">
       {{ $t('basicSetting.darkTheme.default') }}
     </ElRadio>
-    <ElRadio :label="DarkTheme.Soft">
+    <ElRadio :value="DarkTheme.Soft">
       {{ $t('basicSetting.darkTheme.soft') }}
     </ElRadio>
   </ElRadioGroup>

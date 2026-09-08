@@ -40,6 +40,7 @@ defineExpose({
     popper-class="editor-picker-popper"
     filterable
     allow-create
+    automatic-dropdown
     default-first-option
     @focus="handleFocus"
     @change="handleSelect"

@@ -9,19 +9,19 @@ defineProps<SettingProps<OptionsKey.EnhancedMsg>>();
 
 <template>
   <ElRadioGroup v-model="settings.bellStyle" class="radio-group-transparent">
-    <ElRadioButton :label="BellStyle.None">
+    <ElRadioButton :value="BellStyle.None">
       <div class="radio-content-with-icon">
         <un-i-mdi-bell-off-outline class="radio-icon" />
         <span>{{ $t('basicSetting.enhancedMsg.bellNone') }}</span>
       </div>
     </ElRadioButton>
-    <ElRadioButton :label="BellStyle.Normal">
+    <ElRadioButton :value="BellStyle.Normal">
       <div class="radio-content-with-icon">
         <un-i-mdi-bell-outline class="radio-icon" />
         <span>{{ $t('basicSetting.enhancedMsg.bellNormal') }}</span>
       </div>
     </ElRadioButton>
-    <ElRadioButton :label="BellStyle.BadgeDot">
+    <ElRadioButton :value="BellStyle.BadgeDot">
       <div class="radio-content-with-icon">
         <ElBadge is-dot>
           <un-i-mdi-bell-outline class="radio-icon" />
@@ -29,7 +29,7 @@ defineProps<SettingProps<OptionsKey.EnhancedMsg>>();
         <span>{{ $t('basicSetting.enhancedMsg.bellDot') }}</span>
       </div>
     </ElRadioButton>
-    <ElRadioButton :label="BellStyle.BadgeNum">
+    <ElRadioButton :value="BellStyle.BadgeNum">
       <div class="radio-content-with-icon">
         <ElBadge :value="1">
           <un-i-mdi-bell-outline class="radio-icon" />

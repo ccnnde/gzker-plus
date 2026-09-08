@@ -35,6 +35,7 @@ defineExpose({
     :placeholder="$t('enhancedTopic.selectWeiboEmoji')"
     popper-class="editor-picker-popper"
     filterable
+    automatic-dropdown
     default-first-option
     @focus="handleFocus"
     @change="handleSelect"

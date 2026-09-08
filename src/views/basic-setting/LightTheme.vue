@@ -9,13 +9,13 @@ defineProps<SettingProps<OptionsKey.LightTheme>>();
 
 <template>
   <ElRadioGroup v-model="settings.theme" class="radio-group-solid">
-    <ElRadio :label="LightTheme.Default">
+    <ElRadio :value="LightTheme.Default">
       {{ $t('basicSetting.lightTheme.default') }}
     </ElRadio>
-    <ElRadio :label="LightTheme.Solarized">
+    <ElRadio :value="LightTheme.Solarized">
       {{ $t('basicSetting.lightTheme.solarized') }}
     </ElRadio>
-    <ElRadio :label="LightTheme.TokyoNight">
+    <ElRadio :value="LightTheme.TokyoNight">
       {{ $t('basicSetting.lightTheme.tokyoNight') }}
     </ElRadio>
   </ElRadioGroup>

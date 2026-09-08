@@ -59,7 +59,7 @@ const updateCheckAllState = (checkedCount: number) => {
     </ElCheckbox>
     <ElDivider direction="vertical" />
     <ElCheckboxGroup :model-value="modelValue" @change="handleCheckedItemsChange">
-      <ElCheckbox v-for="(item, index) in checkItemList" :key="index" :label="item.value">
+      <ElCheckbox v-for="(item, index) in checkItemList" :key="index" :value="item.value">
         {{ item.label }}
       </ElCheckbox>
     </ElCheckboxGroup>

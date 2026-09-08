@@ -9,13 +9,13 @@ defineProps<SettingProps<OptionsKey.ReplyPreload>>();
 
 <template>
   <ElRadioGroup v-model="settings.mode" class="radio-group-solid">
-    <ElRadio :label="ReplyPreloadMode.NoPreload">
+    <ElRadio :value="ReplyPreloadMode.NoPreload">
       {{ $t('basicSetting.replyPreload.noPreload') }}
     </ElRadio>
-    <ElRadio :label="ReplyPreloadMode.OnePage">
+    <ElRadio :value="ReplyPreloadMode.OnePage">
       {{ $t('basicSetting.replyPreload.onePage') }}
     </ElRadio>
-    <ElRadio :label="ReplyPreloadMode.TwoPages">
+    <ElRadio :value="ReplyPreloadMode.TwoPages">
       {{ $t('basicSetting.replyPreload.twoPages') }}
     </ElRadio>
   </ElRadioGroup>
