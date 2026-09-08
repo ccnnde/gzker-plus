@@ -225,6 +225,7 @@ const handleReplyEdit = () => {
 
 .reply-main {
   flex: 1;
+  min-width: 0;
   margin-left: 10px;
 }
 
