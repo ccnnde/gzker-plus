@@ -159,7 +159,6 @@ const deleteSelectedImg = async () => {
         <ElPopconfirm
           :title="$t('biliImages.confirmDeleteImgHistory')"
           :width="215"
-          :show-arrow="false"
           @confirm="deleteImg(getImgHistoryItem(scope.row))"
         >
           <template #reference>

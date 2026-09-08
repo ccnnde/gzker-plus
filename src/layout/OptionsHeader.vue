@@ -21,7 +21,7 @@ const switchLanguage = (lang: LanguageType) => {
       <span> {{ translateNavigation($route.meta.title) }}</span>
     </div>
     <div class="header-operate">
-      <ElDropdown :show-arrow="false" @command="switchLanguage">
+      <ElDropdown @command="switchLanguage">
         <un-i-mdi-translate class="operate-icon mr-3" />
         <template #dropdown>
           <ElDropdownMenu>
