@@ -23,7 +23,7 @@ const openExtOptions = () => {
 
 <template>
   <ElementConfig>
-    <ElDropdown ref="feedbackDropdown" trigger="click" popper-class="feedback-popper">
+    <ElDropdown ref="feedbackDropdown" trigger="click" :show-arrow="false" popper-class="feedback-popper">
       <div>
         <ElTooltip
           :content="$t('gzkHeader.feedback')"

@@ -153,6 +153,7 @@ const handleUserBlock = () => {
     :width="300"
     popper-class="el-dark-popper"
     :popper-style="{ padding: 0 }"
+    :show-arrow="false"
     :show-after="showAfter"
     :hide-after="hideAfter"
     :visible="visible"
