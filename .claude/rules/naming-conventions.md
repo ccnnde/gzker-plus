@@ -92,6 +92,6 @@ Content Script 注入的 Vue 应用容器 ID 使用 `gzk-{name}-app` 格式。
 | `Topic`         | `topic-`          | `topic-dialog`           |
 | `TopicDetail`   | `detail-`         | `detail-header-top`      |
 | `TopicEditor`   | `topic-editor-`   | `topic-editor-header`    |
-| `TopicFooter`   | `footer-`         | `footer-container`       |
+| `TopicFooter`   | `topic-footer-`   | `topic-footer-container` |
 
 **例外：** 跨组件复用的公共类不加前缀，定义在非 scoped 的 `<style lang="scss">` 中：`.user-id`、`.user-meta`、`.main-content`、`.markdown-body`、`.number-info`。

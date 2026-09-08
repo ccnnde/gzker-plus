@@ -113,7 +113,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 </script>
 
 <template>
-  <div class="footer-container" :style="footerStyle">
+  <div class="topic-footer-container" :style="footerStyle">
     <OperateButton
       :tip-content="$t('common.reply')"
       icon-class="i-mdi-chat-outline"
@@ -134,7 +134,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       :tip-disabled="actionTooltipDisabled"
       @handle-like="$emit('likeTopic')"
     />
-    <span class="footer-divider" aria-hidden="true"></span>
+    <span class="topic-footer-divider" aria-hidden="true"></span>
     <OperateButton
       :tip-content="$t('enhancedTopic.onlyOriginalPoster')"
       icon-class="i-mdi-account-outline"
@@ -163,12 +163,12 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       :tip-disabled="actionTooltipDisabled"
       @click="$emit('blockTopic')"
     />
-    <ElInput class="reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />
+    <ElInput class="topic-footer-reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.footer-container {
+.topic-footer-container {
   display: flex;
   gap: 6px;
   align-items: center;
@@ -187,14 +187,14 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
   }
 }
 
-.footer-divider {
+.topic-footer-divider {
   flex: 0 0 1px;
   height: 20px;
   margin: 0 4px 0 8px;
   background-color: var(--el-border-color);
 }
 
-.reply-input {
+.topic-footer-reply-input {
   flex: 1;
   margin-left: 8px;
 }
