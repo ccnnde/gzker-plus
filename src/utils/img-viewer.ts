@@ -16,6 +16,9 @@ export const viewerOptions: Viewer.Options = {
   navbar: false,
   navigation: true,
   transition: {
+    hide: false,
+    move: false,
+    show: false,
     view: false,
   },
   title(this: Viewer) {
