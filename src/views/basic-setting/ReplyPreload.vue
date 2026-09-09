@@ -18,5 +18,11 @@ defineProps<SettingProps<OptionsKey.ReplyPreload>>();
     <ElRadio :value="ReplyPreloadMode.TwoPages">
       {{ $t('basicSetting.replyPreload.twoPages') }}
     </ElRadio>
+    <ElRadio :value="ReplyPreloadMode.ThreePages">
+      {{ $t('basicSetting.replyPreload.threePages') }}
+    </ElRadio>
+    <ElRadio :value="ReplyPreloadMode.FourPages">
+      {{ $t('basicSetting.replyPreload.fourPages') }}
+    </ElRadio>
   </ElRadioGroup>
 </template>

@@ -159,12 +159,16 @@ export const enum ReplyPreloadMode {
   NoPreload = 'noPreload',
   OnePage = 'onePage',
   TwoPages = 'twoPages',
+  ThreePages = 'threePages',
+  FourPages = 'fourPages',
 }
 
 export const REPLY_PRELOAD_PAGE_COUNT: Record<ReplyPreloadMode, number> = {
   [ReplyPreloadMode.NoPreload]: 1,
   [ReplyPreloadMode.OnePage]: 2,
   [ReplyPreloadMode.TwoPages]: 3,
+  [ReplyPreloadMode.ThreePages]: 4,
+  [ReplyPreloadMode.FourPages]: 5,
 };
 
 export const TOPIC_REPLY_PAGE_SIZE = 106;
