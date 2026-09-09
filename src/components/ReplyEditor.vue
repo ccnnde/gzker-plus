@@ -36,6 +36,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   sended: [data: UserTopic];
+  modified: [data: UserTopic, replyId: string];
   closed: [];
   toggleFullscreen: [];
 }>();
@@ -163,13 +164,16 @@ const sendReply = () => {
       setTimeout(() => {
         generateCreateHistoryId();
       }, 300);
+
+      closeEditor();
+      emit('sended', data);
     } else {
       data = await modifyReply(editedReplyId, content);
       ElMessage.success(t('enhancedTopic.editReplySuccessful'));
-    }
 
-    closeEditor();
-    emit('sended', data);
+      closeEditor();
+      emit('modified', data, editedReplyId);
+    }
   });
 };
 

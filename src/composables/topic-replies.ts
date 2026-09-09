@@ -2,6 +2,7 @@ import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 
 import { getUserTopic } from '@/api';
+import { mergeReplyInteractionState, updateReplyInLists } from '@/utils/reply-list';
 import {
   createFirstPageTopicData,
   createTopicPageSeed,
@@ -79,8 +80,9 @@ interface UseTopicRepliesResult {
   handleToggleReplyOrder: () => Promise<void>;
   handleToggleOriginalPoster: () => Promise<void>;
   refreshTopic: () => Promise<void>;
-  handleTopicSended: (data: UserTopic) => void;
+  handleTopicSended: () => void;
   handleReplySended: (data: UserTopic) => void;
+  handleReplyModified: (data: UserTopic, replyId: string) => void;
   getNextReplyData: () => Promise<void>;
   reloadReplyData: () => void;
   scrollToTop: (smooth?: boolean) => void;
@@ -201,7 +203,6 @@ export const useTopicReplies = ({
     startForwardLoad,
     startReverseLoad,
     reloadPageData,
-    reloadFirstPageData,
     updateCurrentPageData,
     replaceLoadedData,
     resetScrollLoadState,
@@ -802,50 +803,22 @@ export const useTopicReplies = ({
     resetReplyLoadState();
   };
 
-  const handleTopicSended = (data: UserTopic) => {
-    const {
-      detail,
-      reply: { total, list },
-    } = data;
-
-    topicDetail.value = detail;
-    replyTotal.value = total;
-    resetReplyNextLoadLock();
-
-    if (isReverseReply.value) {
-      loadTopicReplies({
-        pageSeeds: [
-          {
-            page: 1,
-            data,
-          },
-        ],
-      });
-    } else if (isNestedReplyEnabled.value && topicId.value) {
-      startBatchLoad(topicId.value, replyPreloadPageCount.value, {
-        pageSeeds: [
-          {
-            page: 1,
-            data,
-          },
-        ],
-      });
-    } else {
-      reloadFirstPageData(list, Number(total));
-    }
-
-    setTimeout(scrollToTop, 0);
+  const handleTopicSended = () => {
+    refreshTopic();
   };
 
   const handleReplySended = (data: UserTopic) => {
     const {
       detail,
+      status,
       reply: { total, list },
     } = data;
 
     const oldTotal = Number(replyTotal.value);
+    const lastPageList = mergeReplyInteractionState(list, effectiveReplyList.value);
 
     topicDetail.value = detail;
+    topicStatus.value = status;
     replyTotal.value = total;
 
     if (isNestedReplyEnabled.value) {
@@ -854,10 +827,10 @@ export const useTopicReplies = ({
           batches: replyBatches.value,
           oldTotal,
           newTotal: Number(total),
-          lastPageList: list,
+          lastPageList,
         });
       } else {
-        updateLastPageData(total, list);
+        updateLastPageData(total, lastPageList);
       }
       return;
     }
@@ -867,12 +840,34 @@ export const useTopicReplies = ({
         replyList: replyList.value,
         oldTotal,
         newTotal: Number(total),
-        lastPageList: list,
+        lastPageList,
       });
       return;
     }
 
-    updateCurrentPageData(total, list);
+    updateCurrentPageData(total, lastPageList);
+  };
+
+  const handleReplyModified = (data: UserTopic, replyId: string) => {
+    const {
+      detail,
+      status,
+      reply: { total, list },
+    } = data;
+    const updatedReply = list.find((reply) => reply.replyId === replyId);
+
+    topicDetail.value = detail;
+    topicStatus.value = status;
+    replyTotal.value = total;
+
+    if (
+      updatedReply &&
+      updateReplyInLists([replyList.value, ...replyBatches.value.map(({ list: batchList }) => batchList)], updatedReply)
+    ) {
+      return;
+    }
+
+    refreshTopic();
   };
 
   onUnmounted(() => {
@@ -916,6 +911,7 @@ export const useTopicReplies = ({
     refreshTopic,
     handleTopicSended,
     handleReplySended,
+    handleReplyModified,
     getNextReplyData,
     reloadReplyData,
     scrollToTop,
