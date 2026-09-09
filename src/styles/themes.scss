@@ -2,6 +2,8 @@
 html {
   --gzk-cm-selected-bg-color: var(--el-fill-color);
   --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.png');
+  --gzk-topic-tag-bg-color: var(--el-fill-color-light);
+  --gzk-topic-tag-text-color: var(--el-text-color-primary);
 }
 
 html[data-theme] {
@@ -24,6 +26,7 @@ html[data-theme^='dark'] {
   --gzk-topic-hover-bg-color: rgb(255 255 255 / 5%);
   --gzk-cm-selected-bg-color: rgb(255 255 255 / 20%);
   --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.png');
+  --gzk-topic-tag-bg-color: var(--el-fill-color-dark);
 }
 
 html[data-theme^='light'] {
@@ -88,6 +91,7 @@ html.dark[data-theme='dark-soft'] {
   --el-mask-color-extra-light: rgb(1 4 9 / 30%);
 
   // 其他
+  --gzk-topic-tag-bg-color: var(--el-fill-color-darker);
   --gzk-reply-count-bg-color: #4c5359;
   --gzk-reply-count-visited-bg-color: #757b83;
 

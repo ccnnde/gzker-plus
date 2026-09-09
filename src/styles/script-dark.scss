@@ -384,6 +384,15 @@ html[data-theme] {
         }
       }
     }
+
+    .topic-tags {
+      border-color: var(--el-border-color-light) !important;
+
+      .tag-badge {
+        color: var(--el-text-color-secondary) !important;
+        background: var(--gzk-node-bg-color) !important;
+      }
+    }
   }
 
   .topic-reply {

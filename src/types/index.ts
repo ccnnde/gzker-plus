@@ -186,6 +186,8 @@ export interface UserTopic {
 }
 
 export interface UserTopicDetail {
+  editInfo?: string;
+  tags?: { name: string; href: string }[];
   title?: string;
   authorId?: string;
   authorLink?: string;
