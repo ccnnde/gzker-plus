@@ -43,6 +43,7 @@ let showTimer: number | undefined;
 let hideTimer: number | undefined;
 let positionFrame: number | undefined;
 let pointerCheckFrame: number | undefined;
+let pendingReferenceElement: HTMLAnchorElement | undefined;
 let pointerClientX: number | undefined;
 let pointerClientY: number | undefined;
 let pointerInsidePopover = false;
@@ -51,6 +52,7 @@ let imageViewerActive = false;
 const clearShowTimer = () => {
   window.clearTimeout(showTimer);
   showTimer = undefined;
+  pendingReferenceElement = undefined;
 };
 
 const clearHideTimer = () => {
@@ -245,14 +247,21 @@ const handleWindowResize = () => {
 };
 
 const hide = (targetElement?: HTMLAnchorElement) => {
+  if (targetElement && pendingReferenceElement === targetElement) {
+    clearShowTimer();
+  }
+
   if (targetElement && referenceElement.value !== targetElement) {
     return;
   }
 
-  clearShowTimer();
+  if (!targetElement) {
+    clearShowTimer();
+  }
+
   clearHideTimer();
 
-  if (imageViewerActive) {
+  if (!visible.value || imageViewerActive) {
     return;
   }
 
@@ -272,6 +281,7 @@ const hide = (targetElement?: HTMLAnchorElement) => {
 const handlePopoverMouseEnter = (event: MouseEvent) => {
   updatePointerPosition(event);
   pointerInsidePopover = true;
+  clearShowTimer();
   clearPointerCheckFrame();
   cancelHide();
 };
@@ -283,6 +293,11 @@ const handlePopoverMouseLeave = (event: MouseEvent) => {
   if (!imageViewerActive) {
     hide();
   }
+};
+
+const handlePopoverFocusIn = () => {
+  clearShowTimer();
+  cancelHide();
 };
 
 const handleViewerPointerMove = (event: PointerEvent) => {
@@ -312,30 +327,63 @@ const popoverViewerOptions: Viewer.Options = {
 
 const show = (targetElement: HTMLAnchorElement, nextReplies: UserReplyItem[], nextFocusReplyNo?: string) => {
   clearShowTimer();
-  clearHideTimer();
 
-  if (!targetElement.isConnected || !nextReplies.length) {
-    close();
+  if (!targetElement.isConnected) {
+    if (referenceElement.value === targetElement) {
+      close();
+    }
+
     return;
   }
 
-  if (referenceElement.value !== targetElement) {
-    visible.value = false;
-  }
+  if (visible.value && referenceElement.value === targetElement) {
+    clearHideTimer();
 
-  referenceElement.value = targetElement;
-  mentionReplies.value = nextReplies;
-  focusReplyNo.value = nextFocusReplyNo;
-
-  const pendingShowTimer = window.setTimeout(async () => {
-    await nextTick();
-
-    if (showTimer !== pendingShowTimer || referenceElement.value !== targetElement || !targetElement.isConnected) {
+    if (!nextReplies.length) {
+      close();
       return;
     }
 
-    visible.value = true;
+    mentionReplies.value = nextReplies;
+    focusReplyNo.value = nextFocusReplyNo;
+    return;
+  }
+
+  pendingReferenceElement = targetElement;
+
+  const pendingShowTimer = window.setTimeout(async () => {
+    if (showTimer !== pendingShowTimer || pendingReferenceElement !== targetElement || !targetElement.isConnected) {
+      return;
+    }
+
     showTimer = undefined;
+    pendingReferenceElement = undefined;
+
+    if (!nextReplies.length) {
+      close();
+      return;
+    }
+
+    const popoverAlreadyVisible = visible.value;
+
+    clearHideTimer();
+    referenceElement.value = targetElement;
+    mentionReplies.value = nextReplies;
+    focusReplyNo.value = nextFocusReplyNo;
+
+    if (!popoverAlreadyVisible) {
+      visible.value = true;
+      return;
+    }
+
+    await nextTick();
+
+    if (referenceElement.value !== targetElement || !targetElement.isConnected) {
+      return;
+    }
+
+    positionFocusedReply();
+    flashFocusedReply();
   }, SHOW_DELAY);
 
   showTimer = pendingShowTimer;
@@ -385,7 +433,7 @@ defineExpose({
       :class="['mention-replies-popover-container', { 'mention-replies-popover-container-ready': positionReady }]"
       @mouseenter="handlePopoverMouseEnter"
       @mouseleave="handlePopoverMouseLeave"
-      @focusin="cancelHide"
+      @focusin="handlePopoverFocusIn"
       @focusout="hide()"
     >
       <div class="mention-replies-popover-header">
