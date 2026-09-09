@@ -77,11 +77,11 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       v-viewer:
-        specifier: 3.0.11
-        version: 3.0.11(vue@3.5.42(typescript@5.7.3))
+        specifier: 3.0.23
+        version: 3.0.23(viewerjs@1.13.0)(vue@3.5.42(typescript@5.7.3))
       viewerjs:
-        specifier: 1.11.6
-        version: 1.11.6
+        specifier: 1.13.0
+        version: 1.13.0
       vue:
         specifier: 3.5.42
         version: 3.5.42(typescript@5.7.3)
@@ -5812,9 +5812,10 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  v-viewer@3.0.11:
-    resolution: {integrity: sha512-E8LOdAxhzuktt4HB3PswVCccQ1Q1sYHYnLsS6zaJISpb5EvmAFs5sYNfXnDLFxVb5DQ82v4ZlGxkYlseXwWRJw==}
+  v-viewer@3.0.23:
+    resolution: {integrity: sha512-u/Zd/FXTdtdE2k2YeYMf6mU4oL0ILEZ9STHnZT7myyfRwQot68GO3O+6DwxNnHTaATiiAJTrz2MXjaqYKoB7iA==}
     peerDependencies:
+      viewerjs: ^1.11.0
       vue: ^3.0.0
 
   v8-compile-cache-lib@3.0.1:
@@ -5823,8 +5824,8 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
-  viewerjs@1.11.6:
-    resolution: {integrity: sha512-TlhdSp2oEOLFXvEp4psKaeTjR5zBjTRcM/sHUN8PkV1UWuY8HKC8n7GaVdW5Xqnwdr/F1OmzLik1QwDjI4w/nw==}
+  viewerjs@1.13.0:
+    resolution: {integrity: sha512-yFcA5oYLdcPWJ5BCnVOm016apAH8Ajn/OM6h0qu8KyekiQz86ip1PIj2DGC0VHruAIUq4Er3rycxKAAxG21miA==}
 
   vite@7.3.6:
     resolution: {integrity: sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==}
@@ -10584,7 +10585,7 @@ snapshots:
       dompurify: 2.4.3
       elkjs: 0.8.2
       khroma: 2.1.0
-      lodash-es: 4.17.21
+      lodash-es: 4.18.1
       non-layered-tidy-tree-layout: 2.0.2
       stylis: 4.3.6
       ts-dedent: 2.2.0
@@ -12188,10 +12189,10 @@ snapshots:
   uuid@9.0.1:
     optional: true
 
-  v-viewer@3.0.11(vue@3.5.42(typescript@5.7.3)):
+  v-viewer@3.0.23(viewerjs@1.13.0)(vue@3.5.42(typescript@5.7.3)):
     dependencies:
-      lodash: 4.17.23
-      viewerjs: 1.11.6
+      lodash-es: 4.18.1
+      viewerjs: 1.13.0
       vue: 3.5.42(typescript@5.7.3)
 
   v8-compile-cache-lib@3.0.1: {}
@@ -12201,7 +12202,7 @@ snapshots:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
 
-  viewerjs@1.11.6: {}
+  viewerjs@1.13.0: {}
 
   vite@7.3.6(@types/node@20.19.0)(jiti@2.7.0)(sass@1.70.0)(terser@5.46.0)(tsx@4.23.12)(yaml@2.9.0):
     dependencies:

@@ -61,8 +61,8 @@
     "scroll-into-view-if-needed": "3.1.0",
     "turndown": "7.2.4",
     "turndown-plugin-gfm": "1.0.2",
-    "v-viewer": "3.0.11",
-    "viewerjs": "1.11.6",
+    "v-viewer": "3.0.23",
+    "viewerjs": "1.13.0",
     "vue": "3.5.42",
     "vue-i18n": "11.4.10",
     "vue-router": "5.3.0"

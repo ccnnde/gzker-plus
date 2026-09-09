@@ -13,8 +13,14 @@ export const vViewer = viewer();
 
 export const viewerOptions: Viewer.Options = {
   className: VIEWER_CLASS_NAME,
-  title(this: ImageViewer, image: HTMLImageElement) {
-    return `${image.alt} (${this.index + 1}/${this.length})`;
+  navbar: false,
+  navigation: true,
+  transition: {
+    view: false,
+  },
+  title(this: Viewer) {
+    const imageViewer = this as ImageViewer;
+    return `${imageViewer.index + 1} / ${imageViewer.length}`;
   },
   filter(image: HTMLImageElement) {
     const { src } = image;
