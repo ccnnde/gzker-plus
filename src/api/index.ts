@@ -368,7 +368,7 @@ export const createTopic = async (node: string, title: string, content: string) 
   });
 };
 
-export const modifyTopic = async (topicId: string, title: string, content: string): Promise<UserTopic> => {
+export const modifyTopic = async (topicId: string, title: string, content: string): Promise<void> => {
   const data = await request(`/t/edit/${topicId}`, {
     method: 'POST',
     body: new URLSearchParams({
@@ -379,8 +379,6 @@ export const modifyTopic = async (topicId: string, title: string, content: strin
   });
 
   checkAlertInfo(data);
-
-  return parseUserTopic(data);
 };
 
 export const likeReply = async (replyId?: string): Promise<string> => {

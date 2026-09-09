@@ -22,7 +22,7 @@ import { DialogType } from '@/constants';
 import TopicEditorPanel from './TopicEditorPanel.vue';
 
 import type { CascaderProps, DialogBeforeCloseFn } from 'element-plus';
-import type { EditHistoryItem, TopicForm, TreeNode, UserTopic, UserTopicDetail } from '@/types';
+import type { EditHistoryItem, TopicForm, TreeNode, UserTopicDetail } from '@/types';
 
 interface Props {
   inlineTarget?: HTMLElement | null;
@@ -31,7 +31,7 @@ interface Props {
 defineProps<Props>();
 
 const emit = defineEmits<{
-  sended: [data: UserTopic];
+  sended: [];
   editModeChange: [editing: boolean];
   editFullscreenChange: [fullscreen: boolean];
 }>();
@@ -147,8 +147,8 @@ const sendTopic = async () => {
         onClose: () => window.location.reload(),
       });
     } else {
-      const data = await modifyTopic(editedTopicId, topicForm.title, content);
-      emit('sended', data);
+      await modifyTopic(editedTopicId, topicForm.title, content);
+      emit('sended');
       ElMessage.success(t('enhancedTopic.editTopicSuccessful'));
     }
 

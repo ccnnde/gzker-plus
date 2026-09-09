@@ -114,6 +114,7 @@ const {
   refreshTopic,
   handleTopicSended,
   handleReplySended,
+  handleReplyModified,
   getNextReplyData,
   reloadReplyData,
   scrollToTop,
@@ -631,6 +632,7 @@ onUnmounted(() => {
             :height="replyEditorHeight"
             :fullscreen="isReplyEditorFullscreen"
             @sended="handleReplySended"
+            @modified="handleReplyModified"
             @closed="showTopicFooter"
             @toggle-fullscreen="isReplyEditorFullscreen = !isReplyEditorFullscreen"
           />
