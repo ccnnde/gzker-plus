@@ -1,6 +1,9 @@
 /* stylelint-disable no-descending-specificity */
 html {
   --gzk-cm-selected-bg-color: var(--el-fill-color);
+  --gzk-img-viewer-bg-color: rgb(0 0 0 / 90%);
+  --gzk-img-viewer-ctrl-bg-color: #444;
+  --gzk-img-viewer-ctrl-hover-bg-color: #5c5c5c;
   --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.png');
   --gzk-topic-tag-bg-color: var(--el-fill-color-light);
   --gzk-topic-tag-text-color: var(--el-text-color-primary);
