@@ -89,10 +89,64 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
       class="main-content markdown-body"
       v-html="linkifyContent(convertEmojiToNative(content) || '')"
     ></section>
+    <div v-if="editInfo || tags?.length" class="topic-detail-extra">
+      <div v-if="editInfo" class="topic-detail-edit-info">{{ editInfo }}</div>
+      <div v-if="tags?.length" class="topic-detail-tags">
+        <a
+          v-for="tag in tags"
+          :key="tag.href"
+          class="topic-detail-tag"
+          :href="tag.href"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <un-i-mdi-tag-outline aria-hidden="true" />
+          <span>{{ tag.name }}</span>
+        </a>
+      </div>
+    </div>
   </article>
 </template>
 
 <style lang="scss" scoped>
+.topic-detail-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.topic-detail-edit-info {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.topic-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.topic-detail-tag {
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  max-width: 100%;
+  padding: 2px 12px;
+  line-height: 20px;
+  color: var(--gzk-topic-tag-text-color);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  user-select: none;
+  background-color: var(--gzk-topic-tag-bg-color);
+  border-radius: 12px;
+}
+
 .detail-header-top {
   position: relative;
   margin-bottom: 10px;

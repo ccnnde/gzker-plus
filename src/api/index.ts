@@ -70,6 +70,20 @@ const parseUserTopic = (htmlStr: string): UserTopic => {
 };
 
 const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
+  const topicDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
+  const topicElement = topicDocument.querySelector('.topic-detail');
+  const contentElement = topicElement?.querySelector(':scope > .ui-content');
+  const editInfoElement = contentElement?.querySelector(':scope > .edit-info');
+  const editInfo = editInfoElement?.textContent?.trim();
+  const tags = Array.from(
+    topicElement?.querySelectorAll<HTMLAnchorElement>(':scope > .topic-tags > a.tag-badge') || [],
+  ).map((element) => ({
+    name: element.textContent?.trim() || '',
+    href: element.getAttribute('href') || '',
+  }));
+
+  editInfoElement?.remove();
+
   return {
     title: decode(htmlStr.match(/<h3 class="title">([^<]+)<\/h3>/)?.[1]),
     authorId: htmlStr.match(/<a href="\/u\/([^"]+)"( target="_blank")?>/)?.[1],
@@ -84,7 +98,9 @@ const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
       lastReplyUser: htmlStr.match(/<span class="last-reply-username">(.+?)<\/span>/s)?.[1],
       lastReplyTime: htmlStr.match(/<span class="last-reply-time">(.+)<\/span>/)?.[1],
     },
-    content: htmlStr.match(/<div class="ui-content">(.+?)<\/div>\s+?<div class="ui-footer">/s)?.[1],
+    content: contentElement?.innerHTML,
+    editInfo,
+    tags,
     liked: /<a href="" class="J_topicVote" data-type="">感谢已表示<\/a>/.test(htmlStr),
     likeNumber: htmlStr.match(/<span class="up_vote fr mr10">(\d+) 人赞<\/span>/)?.[1],
     favorited: /<a href="[^"]+" class="J_topicFavorite" data-type="unfavorite">取消收藏<\/a>/.test(htmlStr),
