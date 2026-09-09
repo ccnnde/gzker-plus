@@ -117,7 +117,15 @@ const openUserPage = (path: string = '') => {
   window.open(`${API_USER}${userInfo.value?.uid}${path}`);
 };
 
-const handleUserFollow = () => {
+const blurPointerTarget = (event: MouseEvent) => {
+  if (event.detail > 0 && event.currentTarget instanceof HTMLElement) {
+    event.currentTarget.blur();
+  }
+};
+
+const handleUserFollow = (event: MouseEvent) => {
+  blurPointerTarget(event);
+
   const currentUserInfo = userInfo.value;
 
   if (!currentUserInfo) {
@@ -129,7 +137,9 @@ const handleUserFollow = () => {
   });
 };
 
-const handleUserBlock = () => {
+const handleUserBlock = (event: MouseEvent) => {
+  blurPointerTarget(event);
+
   const currentUserInfo = userInfo.value;
 
   if (!currentUserInfo) {
