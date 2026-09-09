@@ -97,8 +97,10 @@
       "titleDesc": "When a reply mentions multiple users, include it in the nested thread; only applies when nested replies are enabled"
     },
     "replyPreload": {
+      "fourPages": "Preload 4 pages",
       "noPreload": "Do not preload",
       "onePage": "Preload 1 page",
+      "threePages": "Preload 3 pages",
       "title": "Reply preloading",
       "titleDesc": "Choose how many reply pages to preload after the current page in each batch. The next batch loads when you reach the bottom",
       "twoPages": "Preload 2 pages"
