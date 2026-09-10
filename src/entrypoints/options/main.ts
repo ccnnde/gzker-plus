@@ -6,6 +6,9 @@ import Options from '@/pages/Options.vue';
 import router from '@/router';
 import i18n from '@/i18n';
 import { createDebouncedStorageSync } from '@/utils';
+import { OPTIONS_PAGE_TAB_STATE_KEY } from '@/constants';
+
+import type { OptionsPageTabState } from '@/types';
 
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
@@ -29,10 +32,26 @@ const handleStorageChange = () => {
   debouncedSyncStorage();
 };
 
+const registerOptionsPageTab = async () => {
+  const tab = await browser.tabs.getCurrent();
+
+  if (tab?.id === undefined) {
+    return;
+  }
+
+  await browser.storage.session.set({
+    [OPTIONS_PAGE_TAB_STATE_KEY]: {
+      tabId: tab.id,
+    } satisfies OptionsPageTabState,
+  });
+};
+
 /**
  * 监听 storage 变化，确保多个选项标签页之间的数据同步
  */
 browser.storage.sync.onChanged.addListener(handleStorageChange);
+
+registerOptionsPageTab();
 
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {

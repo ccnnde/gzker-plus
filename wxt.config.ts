@@ -14,7 +14,7 @@ import packageJson from './package.json';
 
 import type { Wxt } from 'wxt';
 
-const extensionPermissions = ['storage', 'tabs', 'contextMenus'] as const;
+const extensionPermissions = ['storage', 'contextMenus'] as const;
 const optionalPermissions = ['downloads'] as const;
 const gzkMatches = ['*://www.guozaoke.com/*'];
 const chromiumProfile = resolve('.wxt/chrome-data');
