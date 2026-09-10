@@ -5,6 +5,7 @@ import { uploadImg } from '@/api/sm-img';
 import { base64ToFile, initStorage, sendMessageToTab, waitTime } from '@/utils';
 import { addImgHistory } from '@/utils/bili-img-store';
 import {
+  DOWNLOAD_PERMISSION_WINDOW_STATE_KEY,
   ExtensionMessageType,
   GZK_URL,
   GZK_URL_PATTERN,
@@ -14,11 +15,130 @@ import {
 } from '@/constants';
 
 import type { Browser } from 'wxt/browser';
-import type { Base64File, BiliUploadedImg, ExtensionMessage } from '@/types';
+import type { Base64File, BiliUploadedImg, DownloadPermissionWindowState, ExtensionMessage } from '@/types';
 
 const BILI_IMG_TAB_URL = 'https://www.bilibili.com/gzk-img-upload';
+const DOWNLOAD_PERMISSION_WINDOW_HEIGHT = 400;
+const DOWNLOAD_PERMISSION_WINDOW_WIDTH = 520;
+const DOWNLOAD_PERMISSION: Browser.permissions.Permissions = {
+  permissions: ['downloads'],
+};
 let biliImgTab: Browser.tabs.Tab | undefined;
 let isBiliImgTabOpened = false;
+let downloadPermissionWindowTask = Promise.resolve();
+
+const isDownloadableUrl = (value?: string): value is string => {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const { protocol } = new URL(value);
+    return ['blob:', 'data:', 'http:', 'https:'].includes(protocol);
+  } catch {
+    return false;
+  }
+};
+
+const getDownloadPermissionWindowState = async (): Promise<DownloadPermissionWindowState | undefined> => {
+  const storage = await browser.storage.local.get(DOWNLOAD_PERMISSION_WINDOW_STATE_KEY);
+  return storage[DOWNLOAD_PERMISSION_WINDOW_STATE_KEY] as DownloadPermissionWindowState | undefined;
+};
+
+const setDownloadPermissionWindowState = async (state: DownloadPermissionWindowState) => {
+  await browser.storage.local.set({
+    [DOWNLOAD_PERMISSION_WINDOW_STATE_KEY]: state,
+  });
+};
+
+const focusDownloadPermissionWindow = async (windowId?: number): Promise<boolean> => {
+  if (windowId === undefined) {
+    return false;
+  }
+
+  try {
+    await browser.windows.get(windowId);
+    await browser.windows.update(windowId, {
+      focused: true,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const openDownloadPermissionPage = (imgUrl: string, downloadImmediately: boolean): Promise<void> => {
+  const permissionPageBaseUrl = browser.runtime.getURL('/download-permission.html');
+  const permissionPageUrl = new URL(permissionPageBaseUrl);
+  permissionPageUrl.searchParams.set('imgUrl', imgUrl);
+
+  if (downloadImmediately) {
+    permissionPageUrl.searchParams.set('download', 'true');
+  }
+
+  const task = downloadPermissionWindowTask.then(async () => {
+    const currentState = await getDownloadPermissionWindowState();
+    const nextState: DownloadPermissionWindowState = {
+      windowId: currentState?.windowId,
+      imgUrl,
+      downloadImmediately,
+    };
+
+    await setDownloadPermissionWindowState(nextState);
+
+    if (await focusDownloadPermissionWindow(currentState?.windowId)) {
+      return;
+    }
+
+    const currentWindow = await browser.windows.getLastFocused();
+    const left =
+      currentWindow.left !== undefined && currentWindow.width !== undefined
+        ? Math.round(currentWindow.left + (currentWindow.width - DOWNLOAD_PERMISSION_WINDOW_WIDTH) / 2)
+        : undefined;
+    const top =
+      currentWindow.top !== undefined && currentWindow.height !== undefined
+        ? Math.round(currentWindow.top + (currentWindow.height - DOWNLOAD_PERMISSION_WINDOW_HEIGHT) / 2)
+        : undefined;
+
+    const permissionWindow = await browser.windows.create({
+      url: permissionPageUrl.href,
+      type: 'popup',
+      left,
+      top,
+      width: DOWNLOAD_PERMISSION_WINDOW_WIDTH,
+      height: DOWNLOAD_PERMISSION_WINDOW_HEIGHT,
+    });
+
+    if (permissionWindow?.id !== undefined) {
+      await setDownloadPermissionWindowState({
+        ...nextState,
+        windowId: permissionWindow.id,
+      });
+    }
+  });
+
+  downloadPermissionWindowTask = task.catch(() => {
+    return;
+  });
+
+  return task;
+};
+
+const downloadImg = async (imgUrl?: string) => {
+  if (!isDownloadableUrl(imgUrl)) {
+    return;
+  }
+
+  const hasPermission = await browser.permissions.contains(DOWNLOAD_PERMISSION);
+
+  if (hasPermission && browser.downloads) {
+    return await browser.downloads.download({
+      url: imgUrl,
+    });
+  }
+
+  await openDownloadPermissionPage(imgUrl, hasPermission);
+};
 
 const openOptionsPage = async (path?: string) => {
   let optionsPageUrl = browser.runtime.getURL('/options.html');
@@ -42,6 +162,14 @@ const openOptionsPage = async (path?: string) => {
 };
 
 export const setupBackground = () => {
+  browser.windows.onRemoved.addListener(async (windowId) => {
+    const state = await getDownloadPermissionWindowState();
+
+    if (state?.windowId === windowId) {
+      await browser.storage.local.remove(DOWNLOAD_PERMISSION_WINDOW_STATE_KEY);
+    }
+  });
+
   browser.runtime.onInstalled.addListener(async (details) => {
     const { reason } = details;
 
@@ -89,6 +217,8 @@ export const setupBackground = () => {
 
         return imgData.location;
       }
+      case ExtensionMessageType.DownloadImg:
+        return await downloadImg(message.imgUrl);
       case ExtensionMessageType.CloseBiliImgTab:
         if (biliImgTab) {
           await browser.tabs.remove(biliImgTab.id as number);

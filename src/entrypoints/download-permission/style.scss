@@ -1,0 +1,134 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #202124;
+  color-scheme: light dark;
+  background: #fff;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  min-width: 360px;
+  margin: 0;
+}
+
+.download-permission {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 48px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.download-permission__icon {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+}
+
+.download-permission__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.download-permission__description,
+.download-permission__status {
+  max-width: 480px;
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.download-permission__description {
+  color: #5f6368;
+}
+
+.download-permission__status {
+  color: #d93025;
+}
+
+.download-permission__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.download-permission__button {
+  min-width: 128px;
+  height: 40px;
+  padding: 0 20px;
+  color: #3c4043;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+}
+
+.download-permission__button:hover {
+  background: #f1f3f4;
+}
+
+.download-permission__button:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+.download-permission__button--primary {
+  color: #fff;
+  background: #1a73e8;
+  border-color: #1a73e8;
+}
+
+.download-permission__button--primary:hover {
+  background: #1765cc;
+}
+
+.download-permission__button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #e8eaed;
+    background: #202124;
+  }
+
+  .download-permission__description {
+    color: #bdc1c6;
+  }
+
+  .download-permission__button {
+    color: #e8eaed;
+    background: #303134;
+    border-color: #5f6368;
+  }
+
+  .download-permission__button:hover {
+    background: #3c4043;
+  }
+
+  .download-permission__button--primary {
+    color: #202124;
+    background: #8ab4f8;
+    border-color: #8ab4f8;
+  }
+
+  .download-permission__button--primary:hover {
+    background: #aecbfa;
+  }
+}

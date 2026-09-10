@@ -15,6 +15,7 @@ import packageJson from './package.json';
 import type { Wxt } from 'wxt';
 
 const extensionPermissions = ['storage', 'tabs', 'contextMenus'] as const;
+const optionalPermissions = ['downloads'] as const;
 const gzkMatches = ['*://www.guozaoke.com/*'];
 const chromiumProfile = resolve('.wxt/chrome-data');
 
@@ -94,6 +95,7 @@ export default defineConfig({
       browser === 'firefox'
         ? [...extensionPermissions, 'https://s.ee/', 'https://api.bilibili.com/']
         : [...extensionPermissions],
+    optional_permissions: [...optionalPermissions],
     host_permissions: browser === 'firefox' ? undefined : ['https://s.ee/'],
     browser_specific_settings:
       browser === 'firefox'
