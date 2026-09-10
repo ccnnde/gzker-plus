@@ -199,6 +199,41 @@ const openOptionsPage = async (path?: string) => {
   }
 };
 
+const setupContextMenus = async () => {
+  await browser.contextMenus.removeAll();
+
+  browser.contextMenus.create({
+    id: GzkCtxMenuIds.Root,
+    title: '过早客 Plus',
+    contexts: ['all'],
+    documentUrlPatterns: [GZK_URL_PATTERN],
+  });
+
+  browser.contextMenus.create({
+    id: GzkCtxMenuIds.OpenExtOptions,
+    parentId: GzkCtxMenuIds.Root,
+    title: '过早客 Plus 设置',
+    contexts: ['all'],
+    documentUrlPatterns: [GZK_URL_PATTERN],
+  });
+
+  browser.contextMenus.create({
+    id: GzkCtxMenuIds.BlockKeyword,
+    parentId: GzkCtxMenuIds.Root,
+    title: '屏蔽包含"%s"的主题',
+    contexts: ['selection'],
+    documentUrlPatterns: [GZK_URL_PATTERN],
+  });
+
+  browser.contextMenus.create({
+    id: GzkCtxMenuIds.Base64Decode,
+    parentId: GzkCtxMenuIds.Root,
+    title: 'Base64 解码 "%s"',
+    contexts: ['selection'],
+    documentUrlPatterns: [GZK_URL_PATTERN],
+  });
+};
+
 export const setupBackground = () => {
   browser.tabs.onRemoved.addListener(async (tabId) => {
     const state = await getOptionsPageTabState();
@@ -219,6 +254,7 @@ export const setupBackground = () => {
   browser.runtime.onInstalled.addListener(async (details) => {
     const { reason } = details;
 
+    await setupContextMenus();
     await initStorage();
 
     if (reason === 'install') {
@@ -275,37 +311,6 @@ export const setupBackground = () => {
 
         return;
     }
-  });
-
-  browser.contextMenus.create({
-    id: GzkCtxMenuIds.Root,
-    title: '过早客 Plus',
-    contexts: ['all'],
-    documentUrlPatterns: [GZK_URL_PATTERN],
-  });
-
-  browser.contextMenus.create({
-    id: GzkCtxMenuIds.OpenExtOptions,
-    parentId: GzkCtxMenuIds.Root,
-    title: '过早客 Plus 设置',
-    contexts: ['all'],
-    documentUrlPatterns: [GZK_URL_PATTERN],
-  });
-
-  browser.contextMenus.create({
-    id: GzkCtxMenuIds.BlockKeyword,
-    parentId: GzkCtxMenuIds.Root,
-    title: '屏蔽包含"%s"的主题',
-    contexts: ['selection'],
-    documentUrlPatterns: [GZK_URL_PATTERN],
-  });
-
-  browser.contextMenus.create({
-    id: GzkCtxMenuIds.Base64Decode,
-    parentId: GzkCtxMenuIds.Root,
-    title: 'Base64 解码 "%s"',
-    contexts: ['selection'],
-    documentUrlPatterns: [GZK_URL_PATTERN],
   });
 
   browser.contextMenus.onClicked.addListener((info, tab) => {
