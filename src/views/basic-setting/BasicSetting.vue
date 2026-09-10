@@ -10,6 +10,7 @@ import { OptionsKey } from '@/constants';
 
 import BlankLink from './BlankLink.vue';
 import CloseDialog from './CloseDialog.vue';
+import ConfigActions from './ConfigActions.vue';
 import DarkMode from './DarkMode.vue';
 import DarkTheme from './DarkTheme.vue';
 import EnhancedMsg from './EnhancedMsg.vue';
@@ -153,6 +154,11 @@ const settings = computed<Setting[]>(() => {
           key: OptionsKey.HideGzkInfo,
           component: HideGzkInfo,
         },
+        {
+          name: t('basicSetting.configActions.title'),
+          description: t('basicSetting.configActions.titleDesc'),
+          component: ConfigActions,
+        },
       ],
     },
   ];
@@ -193,13 +199,13 @@ onMounted(() => {
         <li v-for="(item, index) in list" :key="index" class="setting-item-list">
           <span class="setting-item-title">{{ item.name }}</span>
           <ElCheckbox
-            v-if="!item.component"
+            v-if="item.key && !item.component"
             v-model="(options[item.key] as CheckedOption).checked"
             class="setting-item-description-check"
             :label="item.description"
           />
           <span v-else class="setting-item-description">{{ item.description }}</span>
-          <Component :is="item.component" :settings="options[item.key]" />
+          <Component :is="item.component" v-bind="item.key ? { settings: options[item.key] } : {}" />
         </li>
       </ul>
     </section>

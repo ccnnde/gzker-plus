@@ -37,6 +37,10 @@ export const GzkCtxMenuIds = {
  */
 export const BLOCK_KEYWORD_MAX = 40;
 
+export const EXT_CONFIG_FILENAME_PREFIX = 'gzker-plus-config';
+
+export const EXT_CONFIG_VERSION = 1;
+
 /**
  * Options 页面路由名称
  */

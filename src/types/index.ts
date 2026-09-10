@@ -33,7 +33,7 @@ declare global {
 interface SettingItem {
   name: string;
   description: string;
-  key: OptionsKey;
+  key?: OptionsKey;
   component?: Component;
 }
 
@@ -437,6 +437,18 @@ export interface BiliImgHistoryItem {
   height: number;
   size: number;
   date: number;
+}
+
+export type ExtConfigOptions = {
+  [Key in keyof Options]?: Partial<Options[Key]>;
+};
+
+export interface ExtConfig {
+  version: number;
+  exportedAt: string;
+  options: ExtConfigOptions;
+  blockedTopicList: BlockedTopic[];
+  biliImgHistory: BiliImgHistoryItem[];
 }
 
 export interface SearchHistoryItem {

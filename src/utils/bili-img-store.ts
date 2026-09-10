@@ -30,3 +30,11 @@ export const getAllImgHistory = async () => {
 
   return imgHistoryItems.sort((prev, next) => next.date - prev.date);
 };
+
+export const replaceAllImgHistory = async (items: BiliImgHistoryItem[]): Promise<void> => {
+  await biliImgStore.clear();
+
+  for (const item of items) {
+    await biliImgStore.setItem(item.id, item);
+  }
+};

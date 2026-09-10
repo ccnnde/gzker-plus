@@ -25,6 +25,22 @@
       "topicEditor": "主题编辑框",
       "topicViewer": "主题浏览框"
     },
+    "configActions": {
+      "confirmImport": "导入配置将覆盖当前的基本设置、屏蔽主题记录和哔哩图床记录，确定继续吗？",
+      "confirmReset": "确定将基本设置恢复为默认值吗？屏蔽主题记录和哔哩图床记录不会受到影响。",
+      "export": "导出配置",
+      "exportFailed": "配置导出失败",
+      "exportSuccess": "配置导出成功",
+      "import": "导入配置",
+      "importFailed": "配置导入失败",
+      "importSuccess": "配置导入成功，刷新论坛后生效",
+      "invalidFile": "配置文件格式无效或版本不受支持",
+      "reset": "重置配置",
+      "resetFailed": "配置重置失败",
+      "resetSuccess": "配置已重置，刷新论坛后生效",
+      "title": "配置管理",
+      "titleDesc": "导入或导出基本设置、屏蔽主题记录和哔哩图床记录，或将基本设置恢复为默认值"
+    },
     "darkMode": {
       "off": "关闭",
       "on": "开启",
