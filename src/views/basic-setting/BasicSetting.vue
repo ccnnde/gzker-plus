@@ -243,7 +243,7 @@ onMounted(() => {
   flex-direction: column;
   padding: 8px 12px;
   border-radius: var(--el-border-radius-base);
-  transition: background-color 0.3s ease-in;
+  transition: background-color 0.1s ease-in;
 
   &:hover {
     background-color: var(--el-color-primary-light-9);
