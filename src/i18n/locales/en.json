@@ -25,6 +25,22 @@
       "topicEditor": "Topic Editor",
       "topicViewer": "Topic Viewer"
     },
+    "configActions": {
+      "confirmImport": "Importing will overwrite the current basic settings, blocked topic records, and BiliBili image hosting records. Continue?",
+      "confirmReset": "Restore the basic settings to their defaults? Blocked topic and BiliBili image hosting records will not be affected.",
+      "export": "Export Configuration",
+      "exportFailed": "Failed to export configuration",
+      "exportSuccess": "Configuration exported successfully",
+      "import": "Import Configuration",
+      "importFailed": "Failed to import configuration",
+      "importSuccess": "Configuration imported successfully. Refresh the forum to apply it",
+      "invalidFile": "The configuration file is invalid or its version is not supported",
+      "reset": "Reset Configuration",
+      "resetFailed": "Failed to reset configuration",
+      "resetSuccess": "Configuration reset successfully. Refresh the forum to apply it",
+      "title": "Configuration Management",
+      "titleDesc": "Import or export basic settings, blocked topic records, and BiliBili image hosting records, or restore the basic settings to their defaults"
+    },
     "darkMode": {
       "off": "Off",
       "on": "On",
