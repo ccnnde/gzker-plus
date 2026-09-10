@@ -812,6 +812,10 @@ onUnmounted(() => {
         background-size: 20px;
       }
 
+      &.viewer-download-success::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m4 10 4 4 8-9' fill='none' stroke='%2367c23a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.4'/%3E%3C/svg%3E");
+      }
+
       /* stylelint-disable-next-line no-descending-specificity */
       & + li {
         margin-left: 1px;

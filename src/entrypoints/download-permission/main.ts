@@ -2,7 +2,7 @@ import { browser } from 'wxt/browser';
 
 import i18n, { t } from '@/i18n';
 import { getStorage } from '@/utils';
-import { DOWNLOAD_PERMISSION_WINDOW_STATE_KEY } from '@/constants';
+import { DOWNLOAD_PERMISSION_WINDOW_STATE_KEY, ExtensionMessageType } from '@/constants';
 
 import type { Browser } from 'wxt/browser';
 import type { DownloadPermissionWindowState } from '@/types';
@@ -41,7 +41,16 @@ const getValidImgUrl = (value?: string | null) => {
   }
 };
 
-const downloadImg = async (imgUrl: string, status: HTMLParagraphElement, allowButton: HTMLButtonElement) => {
+const downloadImg = async (
+  imgUrl: string,
+  options: {
+    sourceTabId?: number;
+    status: HTMLParagraphElement;
+    allowButton: HTMLButtonElement;
+  },
+) => {
+  const { sourceTabId, status, allowButton } = options;
+
   try {
     if (!browser.downloads) {
       throw new Error('Downloads API is unavailable');
@@ -50,6 +59,17 @@ const downloadImg = async (imgUrl: string, status: HTMLParagraphElement, allowBu
     await browser.downloads.download({
       url: imgUrl,
     });
+
+    if (sourceTabId !== undefined) {
+      try {
+        await browser.tabs.sendMessage(sourceTabId, {
+          msgType: ExtensionMessageType.DownloadImgSuccess,
+        });
+      } catch {
+        // 下载过程中来源标签页可能已关闭
+      }
+    }
+
     window.close();
   } catch (error) {
     console.error(error);
@@ -91,7 +111,11 @@ const init = async () => {
     allowButton.disabled = true;
   } else if (downloadImmediately) {
     allowButton.hidden = true;
-    await downloadImg(imgUrl, status, allowButton);
+    await downloadImg(imgUrl, {
+      sourceTabId: permissionWindowState?.sourceTabId,
+      status,
+      allowButton,
+    });
     return;
   }
 
@@ -100,10 +124,7 @@ const init = async () => {
   });
 
   allowButton.addEventListener('click', async () => {
-    const latestState = await getDownloadPermissionWindowState();
-    const latestImgUrl = getValidImgUrl(latestState?.imgUrl ?? imgUrl);
-
-    if (!latestImgUrl) {
+    if (!imgUrl) {
       status.textContent = t('downloadPermission.invalidImage');
       status.hidden = false;
       return;
@@ -117,6 +138,16 @@ const init = async () => {
 
       if (!granted) {
         status.textContent = t('downloadPermission.denied');
+        status.hidden = false;
+        allowButton.disabled = false;
+        return;
+      }
+
+      const latestState = await getDownloadPermissionWindowState();
+      const latestImgUrl = getValidImgUrl(latestState?.imgUrl ?? imgUrl);
+
+      if (!latestImgUrl) {
+        status.textContent = t('downloadPermission.invalidImage');
         status.hidden = false;
         allowButton.disabled = false;
         return;
