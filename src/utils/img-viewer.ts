@@ -1,10 +1,39 @@
 import { directive as viewer } from 'v-viewer';
+import { browser } from 'wxt/browser';
+
+import { ExtensionMessageType } from '@/constants';
 
 import type { DialogBeforeCloseFn } from 'element-plus';
 import type Viewer from 'viewerjs';
 import type { ImageViewer } from '@/types';
 
 const VIEWER_CLASS_NAME = 'gzk-app-img-viewer';
+const VIEWER_IMAGE_SELECTOR = '.viewer-canvas > img';
+
+const downloadViewerImage = (event: Event) => {
+  const button = event.currentTarget;
+
+  if (!(button instanceof HTMLElement)) {
+    return;
+  }
+
+  const viewerElement = button.closest<HTMLElement>(`.${VIEWER_CLASS_NAME}`);
+  const image = viewerElement?.querySelector<HTMLImageElement>(VIEWER_IMAGE_SELECTOR);
+  const imgUrl = image?.currentSrc || image?.src;
+
+  if (!imgUrl) {
+    return;
+  }
+
+  browser.runtime
+    .sendMessage({
+      msgType: ExtensionMessageType.DownloadImg,
+      imgUrl,
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
 
 /**
  * 查看图片
@@ -15,6 +44,22 @@ export const viewerOptions: Viewer.Options = {
   className: VIEWER_CLASS_NAME,
   navbar: false,
   navigation: true,
+  tooltip: false,
+  toolbar: {
+    zoomIn: true,
+    zoomOut: true,
+    oneToOne: true,
+    reset: true,
+    prev: true,
+    download: {
+      click: downloadViewerImage,
+    },
+    next: true,
+    rotateLeft: true,
+    rotateRight: true,
+    flipHorizontal: true,
+    flipVertical: true,
+  },
   transition: {
     hide: false,
     move: false,

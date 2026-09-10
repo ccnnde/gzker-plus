@@ -801,6 +801,17 @@ onUnmounted(() => {
         margin: 7px;
       }
 
+      &.viewer-download::before {
+        display: block;
+        width: 20px;
+        height: 20px;
+        content: '';
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 3v9m-4-3 4 4 4-4M4 16h12' fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20px;
+      }
+
       /* stylelint-disable-next-line no-descending-specificity */
       & + li {
         margin-left: 1px;

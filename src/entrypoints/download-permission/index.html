@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <main class="download-permission">
+      <img class="download-permission__icon" src="/icon/48.png" alt="" />
+      <h1 id="title" class="download-permission__title"></h1>
+      <p id="description" class="download-permission__description"></p>
+      <p id="status" class="download-permission__status" role="status" hidden></p>
+      <div class="download-permission__actions">
+        <button id="cancel" class="download-permission__button" type="button"></button>
+        <button
+          id="allow"
+          class="download-permission__button download-permission__button--primary"
+          type="button"
+        ></button>
+      </div>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

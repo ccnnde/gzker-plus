@@ -52,10 +52,17 @@ export interface ExtensionMessage {
   msgType: ExtensionMessageType;
   extPagePath?: string;
   imgFile?: Base64File;
+  imgUrl?: string;
   apiKey?: string;
   keyword?: string;
   decodedText?: string;
   decodedError?: boolean;
+}
+
+export interface DownloadPermissionWindowState {
+  windowId?: number;
+  imgUrl: string;
+  downloadImmediately: boolean;
 }
 
 export interface Setting {

@@ -198,6 +198,14 @@
     "reply": "Reply",
     "warning": "Warning"
   },
+  "downloadPermission": {
+    "allow": "Allow and download",
+    "denied": "Download permission was not granted. The image was not downloaded.",
+    "description": "Your browser needs download permission the first time. This permission is only used to save images you choose to download.",
+    "invalidImage": "The image address is invalid. Close this window and try again.",
+    "requestFailed": "Could not request permission. Please try again.",
+    "title": "Allow image downloads"
+  },
   "emojiPicker": {
     "categories": {
       "activity": "Activity",

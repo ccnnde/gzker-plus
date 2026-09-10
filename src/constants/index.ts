@@ -23,6 +23,11 @@ export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
 export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
 
 /**
+ * 下载授权窗口状态存储键
+ */
+export const DOWNLOAD_PERMISSION_WINDOW_STATE_KEY = 'downloadPermissionWindowState';
+
+/**
  * 右键菜单 ID
  */
 export const GzkCtxMenuIds = {
@@ -72,6 +77,7 @@ export const enum ExtensionMessageType {
   OpenOptionsPage,
   UploadImg,
   UploadBiliImg,
+  DownloadImg,
   CloseBiliImgTab,
   BlockKeyword,
   Base64Decode,

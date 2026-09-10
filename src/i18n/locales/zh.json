@@ -198,6 +198,14 @@
     "reply": "回复",
     "warning": "警告"
   },
+  "downloadPermission": {
+    "allow": "允许并下载",
+    "denied": "未授予下载权限，图片未下载。",
+    "description": "首次下载图片需要浏览器授予下载权限。此权限仅用于保存你点击下载的图片。",
+    "invalidImage": "图片地址无效，请关闭窗口后重试。",
+    "requestFailed": "权限申请失败，请重试。",
+    "title": "允许下载图片"
+  },
   "emojiPicker": {
     "categories": {
       "activity": "活动",
