@@ -83,6 +83,7 @@ export const enum ExtensionMessageType {
   UploadImg,
   UploadBiliImg,
   DownloadImg,
+  DownloadImgSuccess,
   CloseBiliImgTab,
   BlockKeyword,
   Base64Decode,

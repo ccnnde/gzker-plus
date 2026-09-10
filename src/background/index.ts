@@ -73,7 +73,25 @@ const focusDownloadPermissionWindow = async (windowId?: number): Promise<boolean
   }
 };
 
-const openDownloadPermissionPage = (imgUrl: string, downloadImmediately: boolean): Promise<void> => {
+const notifyImgDownloadSuccess = async (tabId?: number) => {
+  if (tabId === undefined) {
+    return;
+  }
+
+  try {
+    await browser.tabs.sendMessage(tabId, {
+      msgType: ExtensionMessageType.DownloadImgSuccess,
+    });
+  } catch {
+    return;
+  }
+};
+
+const openDownloadPermissionPage = (
+  imgUrl: string,
+  downloadImmediately: boolean,
+  sourceTabId?: number,
+): Promise<void> => {
   const permissionPageBaseUrl = browser.runtime.getURL('/download-permission.html');
   const permissionPageUrl = new URL(permissionPageBaseUrl);
   permissionPageUrl.searchParams.set('imgUrl', imgUrl);
@@ -86,6 +104,7 @@ const openDownloadPermissionPage = (imgUrl: string, downloadImmediately: boolean
     const currentState = await getDownloadPermissionWindowState();
     const nextState: DownloadPermissionWindowState = {
       windowId: currentState?.windowId,
+      sourceTabId: sourceTabId ?? currentState?.sourceTabId,
       imgUrl,
       downloadImmediately,
     };
@@ -130,7 +149,7 @@ const openDownloadPermissionPage = (imgUrl: string, downloadImmediately: boolean
   return task;
 };
 
-const downloadImg = async (imgUrl?: string) => {
+const downloadImg = async (imgUrl?: string, sourceTabId?: number) => {
   if (!isDownloadableUrl(imgUrl)) {
     return;
   }
@@ -138,12 +157,14 @@ const downloadImg = async (imgUrl?: string) => {
   const hasPermission = await browser.permissions.contains(DOWNLOAD_PERMISSION);
 
   if (hasPermission && browser.downloads) {
-    return await browser.downloads.download({
+    await browser.downloads.download({
       url: imgUrl,
     });
+    await notifyImgDownloadSuccess(sourceTabId);
+    return;
   }
 
-  await openDownloadPermissionPage(imgUrl, hasPermission);
+  await openDownloadPermissionPage(imgUrl, hasPermission, sourceTabId);
 };
 
 const getOptionsPageTabState = async (): Promise<OptionsPageTabState | undefined> => {
@@ -264,7 +285,7 @@ export const setupBackground = () => {
     }
   });
 
-  browser.runtime.onMessage.addListener(async (message: ExtensionMessage) => {
+  browser.runtime.onMessage.addListener(async (message: ExtensionMessage, sender) => {
     switch (message.msgType) {
       case ExtensionMessageType.OpenOptionsPage:
         openOptionsPage(message.extPagePath);
@@ -300,7 +321,7 @@ export const setupBackground = () => {
         return imgData.location;
       }
       case ExtensionMessageType.DownloadImg:
-        return await downloadImg(message.imgUrl);
+        return await downloadImg(message.imgUrl, sender.tab?.id);
       case ExtensionMessageType.CloseBiliImgTab:
         if (biliImgTab) {
           await browser.tabs.remove(biliImgTab.id as number);

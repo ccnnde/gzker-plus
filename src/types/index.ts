@@ -61,6 +61,7 @@ export interface ExtensionMessage {
 
 export interface DownloadPermissionWindowState {
   windowId?: number;
+  sourceTabId?: number;
   imgUrl: string;
   downloadImmediately: boolean;
 }

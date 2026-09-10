@@ -12,6 +12,7 @@ import {
   restoreBlockedTopics,
   setStorage,
 } from '@/utils';
+import { showImgViewerDownloadSuccess } from '@/utils/img-viewer';
 import { ExtensionMessageType, OptionsKey } from '@/constants';
 
 import { getKeywordList, handleBlockKeyword } from './block-keyword';
@@ -52,6 +53,10 @@ export const setupGzker = async (ctx: ContentScriptContext) => {
         }
 
         break;
+      case ExtensionMessageType.DownloadImgSuccess: {
+        showImgViewerDownloadSuccess();
+        break;
+      }
     }
   };
 

@@ -9,6 +9,10 @@ import type { ImageViewer } from '@/types';
 
 const VIEWER_CLASS_NAME = 'gzk-app-img-viewer';
 const VIEWER_IMAGE_SELECTOR = '.viewer-canvas > img';
+const VIEWER_DOWNLOAD_SUCCESS_CLASS_NAME = 'viewer-download-success';
+const VIEWER_DOWNLOAD_SUCCESS_DURATION = 1000;
+let lastDownloadButton: HTMLElement | undefined;
+let downloadSuccessTimer: ReturnType<typeof setTimeout> | undefined;
 
 const downloadViewerImage = (event: Event) => {
   const button = event.currentTarget;
@@ -25,6 +29,8 @@ const downloadViewerImage = (event: Event) => {
     return;
   }
 
+  lastDownloadButton = button;
+
   browser.runtime
     .sendMessage({
       msgType: ExtensionMessageType.DownloadImg,
@@ -39,6 +45,24 @@ const downloadViewerImage = (event: Event) => {
  * 查看图片
  */
 export const vViewer = viewer();
+
+export const showImgViewerDownloadSuccess = () => {
+  if (!lastDownloadButton?.isConnected) {
+    return;
+  }
+
+  const downloadButton = lastDownloadButton;
+  downloadButton.classList.add(VIEWER_DOWNLOAD_SUCCESS_CLASS_NAME);
+
+  if (downloadSuccessTimer !== undefined) {
+    clearTimeout(downloadSuccessTimer);
+  }
+
+  downloadSuccessTimer = setTimeout(() => {
+    downloadButton.classList.remove(VIEWER_DOWNLOAD_SUCCESS_CLASS_NAME);
+    downloadSuccessTimer = undefined;
+  }, VIEWER_DOWNLOAD_SUCCESS_DURATION);
+};
 
 export const viewerOptions: Viewer.Options = {
   className: VIEWER_CLASS_NAME,
