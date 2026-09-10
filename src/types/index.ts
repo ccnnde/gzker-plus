@@ -65,6 +65,10 @@ export interface DownloadPermissionWindowState {
   downloadImmediately: boolean;
 }
 
+export interface OptionsPageTabState {
+  tabId: number;
+}
+
 export interface Setting {
   category: string;
   list: SettingItem[];

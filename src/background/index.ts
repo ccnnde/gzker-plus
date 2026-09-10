@@ -7,15 +7,21 @@ import { addImgHistory } from '@/utils/bili-img-store';
 import {
   DOWNLOAD_PERMISSION_WINDOW_STATE_KEY,
   ExtensionMessageType,
-  GZK_URL,
   GZK_URL_PATTERN,
   GzkCtxMenuIds,
+  OPTIONS_PAGE_TAB_STATE_KEY,
   OptionsRouteNames,
   OptionsRoutePaths,
 } from '@/constants';
 
 import type { Browser } from 'wxt/browser';
-import type { Base64File, BiliUploadedImg, DownloadPermissionWindowState, ExtensionMessage } from '@/types';
+import type {
+  Base64File,
+  BiliUploadedImg,
+  DownloadPermissionWindowState,
+  ExtensionMessage,
+  OptionsPageTabState,
+} from '@/types';
 
 const BILI_IMG_TAB_URL = 'https://www.bilibili.com/gzk-img-upload';
 const DOWNLOAD_PERMISSION_WINDOW_HEIGHT = 400;
@@ -140,28 +146,68 @@ const downloadImg = async (imgUrl?: string) => {
   await openDownloadPermissionPage(imgUrl, hasPermission);
 };
 
-const openOptionsPage = async (path?: string) => {
-  let optionsPageUrl = browser.runtime.getURL('/options.html');
+const getOptionsPageTabState = async (): Promise<OptionsPageTabState | undefined> => {
+  const storage = await browser.storage.session.get(OPTIONS_PAGE_TAB_STATE_KEY);
+  return storage[OPTIONS_PAGE_TAB_STATE_KEY] as OptionsPageTabState | undefined;
+};
 
-  const [tab] = await browser.tabs.query({
+const setOptionsPageTabState = async (tabId: number) => {
+  await browser.storage.session.set({
+    [OPTIONS_PAGE_TAB_STATE_KEY]: {
+      tabId,
+    } satisfies OptionsPageTabState,
+  });
+};
+
+const focusOptionsPage = async (tabId: number, url: string): Promise<boolean> => {
+  try {
+    const tab = await browser.tabs.update(tabId, {
+      url,
+      active: true,
+    });
+
+    if (!tab) {
+      throw new Error('Failed to update options page tab');
+    }
+
+    await browser.windows.update(tab.windowId, {
+      focused: true,
+    });
+    return true;
+  } catch {
+    await browser.storage.session.remove(OPTIONS_PAGE_TAB_STATE_KEY);
+    return false;
+  }
+};
+
+const openOptionsPage = async (path?: string) => {
+  const optionsPageUrl = `${browser.runtime.getURL('/options.html')}#${
+    path || OptionsRoutePaths[OptionsRouteNames.BasicSetting]
+  }`;
+  const state = await getOptionsPageTabState();
+
+  if (state && (await focusOptionsPage(state.tabId, optionsPageUrl))) {
+    return;
+  }
+
+  const tab = await browser.tabs.create({
     url: optionsPageUrl,
   });
 
-  optionsPageUrl += `#${path || OptionsRoutePaths[OptionsRouteNames.BasicSetting]}`;
-
-  if (tab) {
-    browser.tabs.update(tab.id, {
-      url: optionsPageUrl,
-      active: true,
-    });
-  } else {
-    browser.tabs.create({
-      url: optionsPageUrl,
-    });
+  if (tab.id !== undefined) {
+    await setOptionsPageTabState(tab.id);
   }
 };
 
 export const setupBackground = () => {
+  browser.tabs.onRemoved.addListener(async (tabId) => {
+    const state = await getOptionsPageTabState();
+
+    if (state?.tabId === tabId) {
+      await browser.storage.session.remove(OPTIONS_PAGE_TAB_STATE_KEY);
+    }
+  });
+
   browser.windows.onRemoved.addListener(async (windowId) => {
     const state = await getDownloadPermissionWindowState();
 
@@ -314,11 +360,15 @@ export const setupBackground = () => {
       case GzkCtxMenuIds.BlockKeyword: {
         const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
 
-        if (tab?.id && tab?.url?.includes(GZK_URL)) {
-          browser.tabs.sendMessage(tab.id, {
-            msgType: ExtensionMessageType.BlockKeyword,
-            keyword: '',
-          });
+        if (tab?.id !== undefined) {
+          try {
+            await browser.tabs.sendMessage(tab.id, {
+              msgType: ExtensionMessageType.BlockKeyword,
+              keyword: '',
+            });
+          } catch {
+            return;
+          }
         }
 
         break;
