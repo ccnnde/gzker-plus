@@ -187,6 +187,7 @@ export const REPLY_PRELOAD_PAGE_COUNT: Record<ReplyPreloadMode, number> = {
   [ReplyPreloadMode.FourPages]: 5,
 };
 
+export const INFINITE_SCROLL_LOAD_DISTANCE = 240;
 export const TOPIC_REPLY_PAGE_SIZE = 106;
 
 export const TOPIC_EXPORT_MAX_CONCURRENT = 4;

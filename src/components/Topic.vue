@@ -33,7 +33,7 @@ import {
 import { isImgViewerVisible, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { downloadMarkdownFile, getTopicMarkdownFilename } from '@/utils/topic-export';
 import { buildTopicMarkdown } from '@/utils/topic-markdown';
-import { DialogType, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
+import { DialogType, INFINITE_SCROLL_LOAD_DISTANCE, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -569,7 +569,7 @@ onUnmounted(() => {
         :element-loading-background="isTopicActionLoading ? 'transparent' : undefined"
         element-loading-custom-class="gzk-loading-ring"
       >
-        <ElScrollbar ref="scrollbar" :distance="100" @end-reached="handleReplyScrollEnd">
+        <ElScrollbar ref="scrollbar" :distance="INFINITE_SCROLL_LOAD_DISTANCE" @end-reached="handleReplyScrollEnd">
           <div ref="topicContainer" v-viewer="viewerOptions" class="topic-container" :style="topicContainerStyle">
             <TopicDetail v-if="topicDetail" v-bind="topicDetail" />
             <ElDivider v-if="topicDetail" border-style="dashed">
@@ -601,7 +601,15 @@ onUnmounted(() => {
             >
               {{ $t('enhancedTopic.continueSearchOriginalPosterReply') }}
             </button>
-            <ElSkeleton v-if="isReplyNextPageLoading" animated />
+            <ElSkeleton v-if="isReplyNextPageLoading" class="topic-reply-loading" aria-hidden="true" animated>
+              <template #template>
+                <div class="topic-reply-loading-content">
+                  <ElSkeletonItem class="topic-reply-loading-line" variant="text" />
+                  <ElSkeletonItem class="topic-reply-loading-line" variant="text" />
+                  <ElSkeletonItem class="topic-reply-loading-line topic-reply-loading-line-short" variant="text" />
+                </div>
+              </template>
+            </ElSkeleton>
             <ElEmpty
               v-if="
                 topicDetail &&
@@ -1047,6 +1055,33 @@ onUnmounted(() => {
   cursor: pointer;
   background: transparent;
   border: 0;
+}
+
+.topic-reply-loading {
+  box-sizing: border-box;
+  padding: 0 10px 20px;
+  overflow: hidden;
+  overflow-anchor: none;
+}
+
+.topic-reply-loading-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.topic-reply-loading-line {
+  height: 12px;
+}
+
+.topic-reply-loading-line-short {
+  width: 23%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topic-reply-loading.is-animated :deep(.el-skeleton__item) {
+    animation: none;
+  }
 }
 
 .topic-body-absolute {

@@ -11,6 +11,7 @@ import {
   updateReverseTopPage,
 } from '@/utils/topic-reply-pagination';
 import {
+  INFINITE_SCROLL_LOAD_DISTANCE,
   NestedReplyDisplay,
   OptionsKey,
   REPLY_PRELOAD_PAGE_COUNT,
@@ -233,7 +234,6 @@ export const useTopicReplies = ({
     dataList: nestedReplyList,
     noMoreData: noMoreBatchData,
     lastLoadedPage: lastNestedReplyPage,
-    isLoading: isBatchLoading,
     isFirstBatchLoading,
     isNextBatchLoading,
     disableBatchLoad,
@@ -374,7 +374,7 @@ export const useTopicReplies = ({
 
     const remainingScrollDistance = wrapRef.scrollHeight - wrapRef.clientHeight - wrapRef.scrollTop;
 
-    if (remainingScrollDistance <= 100 && canLoadNextReply.value && !replyNextLoadLocked) {
+    if (remainingScrollDistance <= INFINITE_SCROLL_LOAD_DISTANCE && canLoadNextReply.value && !replyNextLoadLocked) {
       replyNextLoadPending.value = true;
       getNextReplyData();
     }
@@ -393,15 +393,6 @@ export const useTopicReplies = ({
     },
     { flush: 'post' },
   );
-
-  watch(isBatchLoading, async (loading) => {
-    if (!loading || replyBatches.value.length === 0) {
-      return;
-    }
-
-    await nextTick();
-    scrollToBottom();
-  });
 
   const reloadReplyData = () => {
     if (topicPreloadError.value) {

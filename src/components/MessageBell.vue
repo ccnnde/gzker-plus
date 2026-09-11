@@ -8,7 +8,7 @@ import { t } from '@/i18n';
 import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { emitter } from '@/utils/event-bus';
-import { BellStyle, OptionsKey, ReplyType } from '@/constants';
+import { BellStyle, INFINITE_SCROLL_LOAD_DISTANCE, OptionsKey, ReplyType } from '@/constants';
 import { SELECTOR_NOT_EMOJI_IMG } from '@/constants/selector';
 
 import LoadError from './LoadError.vue';
@@ -170,7 +170,7 @@ const isMsgUnread = (index: number): boolean => {
           <div class="i-mdi-arrow-top-right-thick"></div>
         </ElLink>
       </div>
-      <ElScrollbar ref="scrollbar" :distance="100" @end-reached="handleMessageScrollEnd">
+      <ElScrollbar ref="scrollbar" :distance="INFINITE_SCROLL_LOAD_DISTANCE" @end-reached="handleMessageScrollEnd">
         <div v-loading="isFirstPageLoading" class="message-list-content">
           <div
             v-for="(item, index) in userMessageList"
@@ -209,17 +209,18 @@ const isMsgUnread = (index: number): boolean => {
               ></div>
             </div>
           </div>
-          <ElSkeleton v-show="isNextPageLoading" class="message-item message-item-skeleton" animated>
+          <ElSkeleton
+            v-if="isNextPageLoading"
+            class="message-item message-item-skeleton message-list-loading"
+            aria-hidden="true"
+            animated
+          >
             <template #template>
-              <ElSkeletonItem class="message-avatar" variant="image" />
-              <div class="message-main">
-                <div class="message-title">
-                  <ElSkeletonItem variant="text" />
-                </div>
-                <div class="message-content">
-                  <ElSkeletonItem variant="text" />
-                  <ElSkeletonItem variant="text" style="width: 50%" />
-                </div>
+              <ElSkeletonItem class="message-avatar" variant="rect" />
+              <div class="message-main message-list-loading-main">
+                <ElSkeletonItem class="message-list-loading-line" variant="text" />
+                <ElSkeletonItem class="message-list-loading-line" variant="text" />
+                <ElSkeletonItem class="message-list-loading-line message-list-loading-line-short" variant="text" />
               </div>
             </template>
           </ElSkeleton>
@@ -365,9 +366,34 @@ $msg-padding: 15px;
   .message-avatar {
     margin-top: 0;
   }
+}
 
-  .message-title {
-    margin-bottom: 0;
+.message-list-loading {
+  box-sizing: border-box;
+  padding-top: 0;
+  margin-top: -15px;
+  overflow: hidden;
+  overflow-anchor: none;
+}
+
+.message-list-loading-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.message-list-loading-line {
+  height: 12px;
+}
+
+.message-list-loading-line-short {
+  width: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .message-list-loading :deep(.el-skeleton__item) {
+    animation: none;
   }
 }
 </style>
