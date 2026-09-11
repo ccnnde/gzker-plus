@@ -66,7 +66,10 @@ export const showImgViewerDownloadSuccess = () => {
 
 export const viewerOptions: Viewer.Options = {
   className: VIEWER_CLASS_NAME,
-  navbar: false,
+  navbar: {
+    show: false,
+    visibleItemCount: 0,
+  },
   navigation: true,
   tooltip: false,
   toolbar: {
