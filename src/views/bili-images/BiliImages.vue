@@ -123,8 +123,8 @@ const deleteSelectedImg = async () => {
   <ElAlert class="delete-alert" :title="$t('biliImages.deleteImgTip')" type="warning" :closable="false" show-icon />
   <ElButton type="primary" @click="clearImgSelection">{{ $t('common.clearSelections') }}</ElButton>
   <ElButton type="danger" @click="deleteSelectedImg">{{ $t('common.deleteInBatches') }}</ElButton>
-  <ElButton class="float-right" type="danger" @click="deleteAllImg">{{ $t('common.deleteAll') }}</ElButton>
-  <ElTable ref="imgTable" class="img-table mb mt" :data="currentPageData" row-key="id" max-height="630">
+  <ElButton class="uno-float-right" type="danger" @click="deleteAllImg">{{ $t('common.deleteAll') }}</ElButton>
+  <ElTable ref="imgTable" class="img-table uno-mb uno-mt" :data="currentPageData" row-key="id" max-height="630">
     <ElTableColumn type="selection" width="50" reserve-selection />
     <ElTableColumn prop="name" :label="$t('biliImages.fileName')" />
     <ElTableColumn :label="$t('biliImages.preview')">

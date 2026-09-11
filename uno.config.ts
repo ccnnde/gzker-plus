@@ -1,9 +1,10 @@
-import { defineConfig, presetAttributify, presetIcons, presetTagify, presetUno, transformerVariantGroup } from 'unocss';
+import { defineConfig, presetIcons, presetTagify, presetUno, transformerVariantGroup } from 'unocss';
 
 export default defineConfig({
   presets: [
-    presetUno(),
-    presetAttributify(),
+    presetUno({
+      prefix: 'uno-',
+    }),
     presetTagify({
       prefix: 'un-',
     }),

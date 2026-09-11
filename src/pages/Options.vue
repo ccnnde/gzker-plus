@@ -22,7 +22,7 @@ watch(
 
 <template>
   <ElementConfig>
-    <ElContainer class="options-container" h-screen>
+    <ElContainer class="options-container uno-h-screen">
       <OptionsHeader />
       <ElContainer class="options-container">
         <OptionsAside />
@@ -33,7 +33,7 @@ watch(
         </ElMain>
       </ElContainer>
       <ElFooter class="footer-content">
-        <span class="mr-1"> {{ $t('common.extName') }} © 2024 - {{ currentYear }} by </span>
+        <span class="uno-mr-1"> {{ $t('common.extName') }} © 2024 - {{ currentYear }} by </span>
         <ElLink type="primary" href="https://github.com/ccnnde" target="_blank">ccnnde</ElLink>
       </ElFooter>
     </ElContainer>
