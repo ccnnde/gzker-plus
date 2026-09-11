@@ -1,4 +1,4 @@
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { ReplyOrder } from '@/constants';
 
@@ -121,14 +121,6 @@ export const useScrollLoad = <T>(
     }
 
     await runner(async (context) => {
-      if (!replace && dataList.value.length > 0) {
-        await nextTick();
-
-        if (context.isCurrent()) {
-          scrollToBottom();
-        }
-      }
-
       const pageData = await Promise.all(
         missingPages.map((page) => {
           return requestCallback(page, context.signal);
