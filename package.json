@@ -15,7 +15,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm type-check && wxt build",
-    "build:all": "pnpm run \"/^build(:ff)?$/\"",
+    "build:all": "pnpm type-check && wxt build && wxt build -b firefox",
     "build:ff": "pnpm type-check && wxt build -b firefox",
     "clean:dist": "rimraf dist",
     "clean:node": "rimraf node_modules",
