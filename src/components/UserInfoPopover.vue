@@ -194,7 +194,7 @@ const handleUserBlock = (event: MouseEvent) => {
             <div class="user-basic-info-detail">
               <div class="user-basic-info-item">
                 <un-i-mdi-account class="user-basic-info-icon" />
-                <span class="user-basic-info-text cursor-pointer" @click="openUserPage()">{{ userInfo.uid }}</span>
+                <span class="user-basic-info-text uno-cursor-pointer" @click="openUserPage()">{{ userInfo.uid }}</span>
               </div>
               <div class="user-basic-info-item">
                 <un-i-mdi-alpha-n-circle-outline class="user-basic-info-icon" />

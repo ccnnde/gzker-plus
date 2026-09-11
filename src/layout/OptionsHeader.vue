@@ -15,14 +15,14 @@ const switchLanguage = (lang: LanguageType) => {
 <template>
   <ElHeader class="header-content">
     <div class="header-title">
-      <img class="mr-3 h-8 w-8" src="@/assets/img/logo.svg" />
+      <img class="uno-mr-3 uno-h-8 uno-w-8" src="@/assets/img/logo.svg" />
       <span>{{ $t('options.title') }} </span>
       <ElDivider direction="vertical" />
       <span> {{ translateNavigation($route.meta.title) }}</span>
     </div>
     <div class="header-operate">
       <ElDropdown @command="switchLanguage">
-        <un-i-mdi-translate class="operate-icon mr-3" />
+        <un-i-mdi-translate class="operate-icon uno-mr-3" />
         <template #dropdown>
           <ElDropdownMenu>
             <ElDropdownItem :command="LanguageType.ZH">简体中文</ElDropdownItem>

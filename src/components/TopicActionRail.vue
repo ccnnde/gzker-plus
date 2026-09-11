@@ -117,7 +117,10 @@ const shareToWeibo = () => {
           @click="action.handler()"
         >
           <span
-            :class="['topic-action-rail-button-icon', action.loading ? 'i-mdi-loading animate-spin' : action.iconClass]"
+            :class="[
+              'topic-action-rail-button-icon',
+              action.loading ? 'i-mdi-loading uno-animate-spin' : action.iconClass,
+            ]"
           ></span>
         </button>
       </ElTooltip>
