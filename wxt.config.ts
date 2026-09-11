@@ -18,13 +18,16 @@ const extensionPermissions = ['storage', 'contextMenus'] as const;
 const optionalPermissions = ['downloads'] as const;
 const gzkMatches = ['*://www.guozaoke.com/*'];
 const chromiumProfile = resolve('.wxt/chrome-data');
+const firefoxProfile = resolve('.wxt/firefox-data');
 
-const ensureChromiumProfile = (wxt: Wxt) => {
-  if (wxt.config.command !== 'serve' || wxt.config.browser === 'firefox') {
+const ensureBrowserProfile = (wxt: Wxt) => {
+  if (wxt.config.command !== 'serve') {
     return;
   }
 
-  mkdirSync(chromiumProfile, {
+  const browserProfile = wxt.config.browser === 'firefox' ? firefoxProfile : chromiumProfile;
+
+  mkdirSync(browserProfile, {
     recursive: true,
   });
 };
@@ -53,7 +56,7 @@ export default defineConfig({
     excludeEntrypoints: ['background', 'set-appearance', 'block-user', 'hide-topic', 'upload-bili-img'],
   },
   hooks: {
-    ready: ensureChromiumProfile,
+    ready: ensureBrowserProfile,
   },
   vite: () => ({
     plugins: [
@@ -134,6 +137,7 @@ export default defineConfig({
   webExt: {
     startUrls: ['https://www.guozaoke.com/'],
     chromiumProfile,
+    firefoxProfile,
     keepProfileChanges: true,
   },
   suppressWarnings: {
