@@ -170,12 +170,12 @@ const handleReplyEdit = () => {
             {{ uid }}
           </a>
           <span v-if="isOriginalPoster" class="uno-relative">
-            <ElTag class="uno-absolute" size="small">
+            <ElTag class="uno-absolute" size="small" disable-transitions>
               {{ $t('enhancedTopic.originalPoster') }}
             </ElTag>
           </span>
           <span v-else-if="isAdministrator" class="uno-relative">
-            <ElTag class="uno-absolute" type="danger" size="small">
+            <ElTag class="uno-absolute" type="danger" size="small" disable-transitions>
               {{ $t('enhancedTopic.administrator') }}
             </ElTag>
           </span>
