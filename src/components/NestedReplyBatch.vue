@@ -12,6 +12,7 @@ import type { UserReplyBatch, UserReplyTreeNode } from '@/types';
 interface Props {
   batch: UserReplyBatch;
   display: NestedReplyDisplay;
+  defaultExpanded: boolean;
   multipleInsideOne: boolean;
   reverse?: boolean;
 }
@@ -38,6 +39,7 @@ const displayTree = computed<UserReplyTreeNode[]>(() => {
       :key="getReplyKey(node.reply, index)"
       :node="node"
       :display="display"
+      :default-expanded="defaultExpanded"
     />
   </div>
 </template>

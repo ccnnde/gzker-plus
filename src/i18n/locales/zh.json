@@ -108,6 +108,12 @@
       "title": "楼中楼展示",
       "titleDesc": "设置主题回复的展示结构，可按层级嵌套或保持平铺"
     },
+    "nestedReplyExpansion": {
+      "collapsed": "默认收起",
+      "expanded": "默认展开",
+      "title": "楼中楼初始状态",
+      "titleDesc": "设置楼中楼回复初始展开或收起，浏览时可随时切换；仅在启用楼中楼时生效"
+    },
     "nestedReplyMultipleInsideOne": {
       "title": "多人提及嵌套",
       "titleDesc": "一条回复提及多人时，也将其归入楼中楼；仅在启用楼中楼时生效"
@@ -244,6 +250,7 @@
     "cannotUploadByEmptyApiKey": "未配置图床的 API Key，无法上传图片。请点击确定按钮查看配置说明",
     "cannotUploadBySmmsUnauthorized": "SM.MS 图床 API Key 已过期或无效，无法上传图片。请点击确定按钮查看配置说明并重新配置",
     "clickNumber": "阅读",
+    "collapseReplies": "收起回复",
     "confirmBlockTopic": "确定屏蔽主题【{title}】？屏蔽后可前往扩展选项页面管理屏蔽主题列表",
     "confirmDeleteAllEditHistory": "确定要删除当前展示的所有历史记录吗？",
     "confirmDeleteEditHistory": "确定要删除该历史记录吗？",
@@ -262,6 +269,7 @@
     "editTopicSuccessful": "编辑主题成功",
     "editorHelp": "编辑器帮助",
     "editorHistory": "历史记录",
+    "expandReplies": "{count} 条回复",
     "exportTopic": "导出主题",
     "exportTopicFailed": "主题导出失败",
     "exportTopicInvalidTitle": "主题标题无效，无法导出",

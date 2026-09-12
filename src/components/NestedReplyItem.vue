@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, inject, nextTick, ref, useId, watch } from 'vue';
+import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { getReplyKey, handleReplyLike } from '@/utils';
 import { NestedReplyDisplay } from '@/constants';
+import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import ReplyItem from './ReplyItem.vue';
 
@@ -11,47 +13,26 @@ import type { UserReplyTreeNode } from '@/types';
 interface Props {
   node: UserReplyTreeNode;
   display: NestedReplyDisplay;
-  hasNextSibling?: boolean;
-  isSharedRailTerminalPath?: boolean;
+  defaultExpanded: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  hasNextSibling: false,
-  isSharedRailTerminalPath: true,
-});
+const props = defineProps<Props>();
 
 const MAX_VISUAL_INDENT_DEPTH = 4;
+const repliesId = useId();
+const isExpanded = ref(false);
+const hasRenderedReplies = ref(false);
+const toggleButton = ref<HTMLButtonElement | null>(null);
+const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 
-const containerClass = computed<Record<string, boolean>>(() => {
-  const isRoot = props.node.depth === 0;
+const countDescendantReplies = (nodes: UserReplyTreeNode[]): number => {
+  return nodes.reduce((count, node) => {
+    return count + 1 + countDescendantReplies(node.children);
+  }, 0);
+};
 
-  return {
-    'nested-reply-item-container-root': isRoot,
-  };
-});
-
-const isIncomingRailShared = computed(() => {
-  if (props.node.depth === 0) {
-    return false;
-  }
-
-  if (props.display === NestedReplyDisplay.Align) {
-    return true;
-  }
-
-  return props.node.depth >= MAX_VISUAL_INDENT_DEPTH;
-});
-
-const shouldContinueIncomingRail = computed(() => {
-  if (props.node.depth === 0) {
-    return false;
-  }
-
-  if (isIncomingRailShared.value) {
-    return !props.isSharedRailTerminalPath || Boolean(props.node.children.length);
-  }
-
-  return props.hasNextSibling;
+const descendantReplyCount = computed(() => {
+  return countDescendantReplies(props.node.children);
 });
 
 const shouldShowReplyRail = computed(() => {
@@ -61,48 +42,53 @@ const shouldShowReplyRail = computed(() => {
   return Boolean(props.node.children.length) && (isRoot || isWithinIndentLimit);
 });
 
+const shouldContinueSharedRail = computed(() => {
+  const isSharedRail = props.display === NestedReplyDisplay.Align || props.node.depth >= MAX_VISUAL_INDENT_DEPTH;
+
+  return props.node.depth > 0 && isSharedRail && Boolean(props.node.children.length);
+});
+
 const childrenClass = computed<Record<string, boolean>>(() => {
   const shouldIndent = props.display === NestedReplyDisplay.Indent && props.node.depth < MAX_VISUAL_INDENT_DEPTH;
   const shouldAlignWithRootBody = props.display === NestedReplyDisplay.Align && props.node.depth === 0;
   const shouldAlignWithoutIndent = props.display === NestedReplyDisplay.Align && props.node.depth > 0;
-  const shouldContinueParentRail =
-    props.display === NestedReplyDisplay.Indent &&
-    props.node.depth > 0 &&
-    props.node.depth < MAX_VISUAL_INDENT_DEPTH &&
-    props.hasNextSibling;
 
   return {
     'nested-reply-item-children-indent': shouldIndent,
     'nested-reply-item-children-align-root': shouldAlignWithRootBody,
     'nested-reply-item-children-align-nested': shouldAlignWithoutIndent,
-    'nested-reply-item-children-continue-parent': shouldContinueParentRail,
-    'nested-reply-item-children-continue-parent-root': shouldContinueParentRail && props.node.depth === 1,
-    'nested-reply-item-children-continue-parent-nested': shouldContinueParentRail && props.node.depth > 1,
   };
 });
 
-const trackClass = computed<Record<string, boolean>>(() => {
-  return {
-    'nested-reply-item-track-continued': shouldContinueIncomingRail.value,
-  };
-});
+const toggleReplies = async () => {
+  hasRenderedReplies.value = true;
+  isExpanded.value = !isExpanded.value;
+  await nextTick();
+  updateScrollbar?.();
 
-const isChildSharedRailTerminalPath = (index: number): boolean => {
-  const isLastChild = index === props.node.children.length - 1;
-  const childDepth = props.node.depth + 1;
-  const startsAlignedRail = props.display === NestedReplyDisplay.Align && childDepth === 1;
-  const startsCappedRail = props.display === NestedReplyDisplay.Indent && childDepth === MAX_VISUAL_INDENT_DEPTH;
-
-  if (startsAlignedRail || startsCappedRail) {
-    return isLastChild;
+  if (!isExpanded.value && toggleButton.value) {
+    scrollIntoView(toggleButton.value, {
+      scrollMode: 'if-needed',
+      block: 'nearest',
+    });
   }
-
-  return props.isSharedRailTerminalPath && isLastChild;
 };
+
+watch(
+  () => props.defaultExpanded,
+  (expanded) => {
+    isExpanded.value = expanded;
+
+    if (expanded) {
+      hasRenderedReplies.value = true;
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
-  <div :class="['nested-reply-item-container', containerClass]">
+  <div :class="['nested-reply-item-container', { 'nested-reply-item-container-root': node.depth === 0 }]">
     <div
       :class="[
         'nested-reply-item-reply',
@@ -112,7 +98,11 @@ const isChildSharedRailTerminalPath = (index: number): boolean => {
         },
       ]"
     >
-      <div v-if="node.depth > 0" :class="['nested-reply-item-track', trackClass]" aria-hidden="true"></div>
+      <div
+        v-if="node.depth > 0"
+        :class="['nested-reply-item-track', { 'nested-reply-item-track-continued': shouldContinueSharedRail }]"
+        aria-hidden="true"
+      ></div>
       <ReplyItem
         v-bind="node.reply"
         :avatar-size="node.depth === 0 ? 40 : 32"
@@ -121,14 +111,44 @@ const isChildSharedRailTerminalPath = (index: number): boolean => {
       />
     </div>
     <div v-if="node.children.length" :class="['nested-reply-item-children', childrenClass]">
-      <NestedReplyItem
-        v-for="(childNode, index) in node.children"
-        :key="getReplyKey(childNode.reply, index)"
-        :node="childNode"
-        :display="display"
-        :has-next-sibling="index < node.children.length - 1"
-        :is-shared-rail-terminal-path="isChildSharedRailTerminalPath(index)"
-      />
+      <div
+        v-show="node.depth > 0 || isExpanded"
+        :id="repliesId"
+        :class="['nested-reply-item-branch', { 'nested-reply-item-branch-root': node.depth === 0 }]"
+      >
+        <template v-if="node.depth > 0 || hasRenderedReplies">
+          <NestedReplyItem
+            v-for="(childNode, index) in node.children"
+            :key="getReplyKey(childNode.reply, index)"
+            :node="childNode"
+            :display="display"
+            :default-expanded="defaultExpanded"
+          />
+        </template>
+      </div>
+      <div v-if="node.depth === 0" class="nested-reply-item-toggle">
+        <div class="nested-reply-item-track" aria-hidden="true"></div>
+        <button
+          ref="toggleButton"
+          class="nested-reply-item-toggle-button"
+          type="button"
+          :aria-expanded="isExpanded"
+          :aria-controls="repliesId"
+          @click="toggleReplies"
+        >
+          <span>
+            {{
+              isExpanded
+                ? $t('enhancedTopic.collapseReplies')
+                : $t('enhancedTopic.expandReplies', { count: descendantReplyCount }, descendantReplyCount)
+            }}
+          </span>
+          <span
+            :class="['nested-reply-item-toggle-icon', isExpanded ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down']"
+            aria-hidden="true"
+          ></span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -221,28 +241,62 @@ const isChildSharedRailTerminalPath = (index: number): boolean => {
   &-align-nested {
     margin-left: 0;
   }
-
-  &-continue-parent::after {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    z-index: 0;
-    width: 0;
-    content: '';
-    border-left: 1px solid var(--el-border-color);
-  }
-
-  &-continue-parent-root::after {
-    left: -80px;
-  }
-
-  &-continue-parent-nested::after {
-    left: -84px;
-  }
 }
 
 .nested-reply-item-container-root > .nested-reply-item-children {
   --nested-reply-item-rail-left: -30px;
   --nested-reply-item-elbow-width: 22px;
+}
+
+.nested-reply-item-branch {
+  position: relative;
+}
+
+.nested-reply-item-branch-root::before,
+.nested-reply-item-branch > .nested-reply-item-container:not(:last-child)::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--nested-reply-item-rail-left);
+  width: 0;
+  pointer-events: none;
+  content: '';
+  border-left: 1px solid var(--el-border-color);
+}
+
+.nested-reply-item-toggle {
+  position: relative;
+  padding: 6px 0 12px;
+}
+
+.nested-reply-item-toggle-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  margin-left: -10px;
+  font: inherit;
+  line-height: 24px;
+  color: var(--el-text-color-primary);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--el-border-radius-base);
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--el-color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.nested-reply-item-toggle-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
 }
 </style>

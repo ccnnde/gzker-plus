@@ -213,6 +213,7 @@ export const enum OptionsKey {
   ImageHosting = 'imageHosting',
   TopicKeywordBlock = 'topicKeywordBlock',
   NestedReplyDisplay = 'nestedReplyDisplay',
+  NestedReplyExpansion = 'nestedReplyExpansion',
   ReplyPreload = 'replyPreload',
   NestedReplyMultipleInsideOne = 'nestedReplyMultipleInsideOne',
   ReverseReplyOrder = 'reverseReplyOrder',
@@ -263,6 +264,9 @@ export const defaultExtensionOptions: Options = {
   },
   [OptionsKey.NestedReplyDisplay]: {
     display: NestedReplyDisplay.Indent,
+  },
+  [OptionsKey.NestedReplyExpansion]: {
+    expanded: true,
   },
   [OptionsKey.ReplyPreload]: {
     mode: ReplyPreloadMode.TwoPages,
