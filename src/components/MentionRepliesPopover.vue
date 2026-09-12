@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, provide, ref } from 'vue';
+import { computed, inject, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { ElScrollbar } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import { useScrollbar } from '@/composables/scrollbar';
 import { getReplyKey } from '@/utils';
 import { viewerOptions, vViewer } from '@/utils/img-viewer';
-import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import { REPLY_HOVER_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import MentionReplyItem from './MentionReplyItem.vue';
 
@@ -25,6 +25,7 @@ const SHOW_DELAY = 150;
 const HIDE_DELAY = 200;
 const REPLY_NUMBER_SELECTOR = '[data-reply-no]';
 const REPLY_FLASH_CLASS = 'mention-reply-item-flash';
+const replyHover = inject(REPLY_HOVER_INJECTION_KEY);
 
 const visible = ref(false);
 const positionReady = ref(false);
@@ -91,6 +92,15 @@ const close = () => {
   positionReady.value = false;
   visible.value = false;
 };
+
+watch(
+  () => replyHover?.disabled.value,
+  (disabled) => {
+    if (disabled) {
+      close();
+    }
+  },
+);
 
 const cancelHide = () => {
   clearHideTimer();

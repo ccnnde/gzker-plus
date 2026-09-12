@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
+import { REPLY_HOVER_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_INFO_TRIGGER } from '@/constants/selector';
 
 import UserInfoPopover from './UserInfoPopover.vue';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const replyHover = inject(REPLY_HOVER_INJECTION_KEY);
 
 const SHOW_DELAY = 300;
 const HIDE_DELAY = 200;
@@ -150,6 +152,10 @@ const hide = (triggerElement?: HTMLElement) => {
 };
 
 const handleTriggerEnter = (event: MouseEvent | FocusEvent) => {
+  if (event instanceof MouseEvent && replyHover?.disabled.value) {
+    return;
+  }
+
   const triggerElement = getTriggerElement(event.target);
 
   if (!triggerElement || isSameTriggerTarget(triggerElement, event.relatedTarget)) {
@@ -166,6 +172,10 @@ const handleTriggerEnter = (event: MouseEvent | FocusEvent) => {
 };
 
 const handleTriggerLeave = (event: MouseEvent | FocusEvent) => {
+  if (event instanceof MouseEvent && replyHover?.disabled.value) {
+    return;
+  }
+
   const triggerElement = getTriggerElement(event.target);
 
   if (!triggerElement || isSameTriggerTarget(triggerElement, event.relatedTarget)) {
@@ -231,6 +241,15 @@ const removeContainerListeners = (container: HTMLDivElement) => {
   container.removeEventListener('focusin', handleTriggerEnter);
   container.removeEventListener('focusout', handleTriggerLeave);
 };
+
+watch(
+  () => replyHover?.disabled.value,
+  (disabled) => {
+    if (disabled) {
+      close();
+    }
+  },
+);
 
 watch(
   () => props.container,

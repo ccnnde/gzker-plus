@@ -11,6 +11,7 @@ import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
   MENTION_REPLIES_INJECTION_KEY,
+  REPLY_HOVER_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
 import { SELECTOR_USER_MENTION_LINK } from '@/constants/selector';
@@ -46,6 +47,7 @@ const renderedContent = computed(() => {
 });
 
 const mentionReplies = inject(MENTION_REPLIES_INJECTION_KEY);
+const replyHover = inject(REPLY_HOVER_INJECTION_KEY);
 
 const getMentionAnchor = (event: Event): HTMLAnchorElement | null => {
   if (!mentionReplies) {
@@ -73,6 +75,10 @@ const isSameMentionTarget = (mentionAnchor: HTMLAnchorElement, relatedTarget: Ev
 };
 
 const handleMentionEnter = (event: MouseEvent | FocusEvent) => {
+  if (event instanceof MouseEvent && replyHover?.disabled.value) {
+    return;
+  }
+
   const mentionAnchor = getMentionAnchor(event);
 
   if (!mentionAnchor || isSameMentionTarget(mentionAnchor, event.relatedTarget)) {

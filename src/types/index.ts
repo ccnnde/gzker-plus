@@ -1,4 +1,4 @@
-import type { Component } from 'vue';
+import type { Component, Ref } from 'vue';
 import type { Pinia } from 'pinia';
 import type { LoadingInstance } from 'element-plus';
 import type Viewer from 'viewerjs';
@@ -260,6 +260,11 @@ export interface MentionRepliesTarget {
 export interface MentionRepliesController {
   hide: (referenceElement: HTMLAnchorElement) => void;
   show: (target: MentionRepliesTarget) => void;
+}
+
+export interface ReplyHoverController {
+  disabled: Readonly<Ref<boolean>>;
+  suppress: () => void;
 }
 
 export interface UserReplyMention {

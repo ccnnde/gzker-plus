@@ -37,6 +37,7 @@ import { DialogType, INFINITE_SCROLL_LOAD_DISTANCE, LinkElementType, OptionsKey,
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
+  REPLY_HOVER_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
 import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
@@ -59,6 +60,7 @@ import type { TopicAction, UserReplyItem, UserTopic } from '@/types';
 import 'viewerjs/dist/viewer.css';
 
 const TOPIC_FOOTER_HEIGHT = 50;
+const REPLY_HOVER_ENABLE_DELAY = 500;
 
 const storage = useStorageStore();
 const { options } = storeToRefs(storage);
@@ -76,6 +78,24 @@ const topicEditorContainer = ref<HTMLDivElement | null>(null);
 const isTopicEditing = ref(false);
 const isTopicEditorFullscreen = ref(false);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
+const replyHoverDisabled = ref(false);
+
+let enableReplyHoverTimer: number | undefined;
+
+const suppressReplyHover = () => {
+  window.clearTimeout(enableReplyHoverTimer);
+  replyHoverDisabled.value = true;
+
+  enableReplyHoverTimer = window.setTimeout(() => {
+    replyHoverDisabled.value = false;
+    enableReplyHoverTimer = undefined;
+  }, REPLY_HOVER_ENABLE_DELAY);
+};
+
+provide(REPLY_HOVER_INJECTION_KEY, {
+  disabled: replyHoverDisabled,
+  suppress: suppressReplyHover,
+});
 
 const {
   topicId,
@@ -537,6 +557,7 @@ const editReply = (reply: UserReplyItem) => {
 provide(EDIT_REPLY_INJECTION_KEY, editReply);
 
 onUnmounted(() => {
+  window.clearTimeout(enableReplyHoverTimer);
   exportAbortController?.abort();
 });
 </script>
