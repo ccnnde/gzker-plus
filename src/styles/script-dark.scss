@@ -456,8 +456,12 @@ html[data-theme] {
       border-left-color: var(--el-border-color-light);
     }
 
-    .highlight {
+    .codehilite {
       background: transparent;
+
+      pre code {
+        background-color: transparent;
+      }
     }
   }
 
