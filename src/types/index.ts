@@ -117,6 +117,9 @@ export interface Options {
   [OptionsKey.NestedReplyDisplay]: {
     display: NestedReplyDisplay;
   };
+  [OptionsKey.NestedReplyExpansion]: {
+    expanded: boolean;
+  };
   [OptionsKey.ReplyPreload]: {
     mode: ReplyPreloadMode;
   };

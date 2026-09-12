@@ -108,6 +108,12 @@
       "title": "Nested reply display",
       "titleDesc": "Set the display structure of topic replies, using either hierarchical nesting or a flat layout"
     },
+    "nestedReplyExpansion": {
+      "collapsed": "Collapsed by default",
+      "expanded": "Expanded by default",
+      "title": "Default nested reply state",
+      "titleDesc": "Choose whether nested replies start expanded or collapsed. You can toggle them while browsing; only applies when nested replies are enabled"
+    },
     "nestedReplyMultipleInsideOne": {
       "title": "Multi-mention nesting",
       "titleDesc": "When a reply mentions multiple users, include it in the nested thread; only applies when nested replies are enabled"
@@ -244,6 +250,7 @@
     "cannotUploadByEmptyApiKey": "API Key for the image hosting is not configured, unable to upload pictures. Please click the OK button to view the configuration instructions",
     "cannotUploadBySmmsUnauthorized": "SM.MS image hosting API Key has expired or is invalid, unable to upload pictures. Please click the OK button to view the configuration instructions and reconfigure",
     "clickNumber": "Read",
+    "collapseReplies": "Hide replies",
     "confirmBlockTopic": "Confirm blocking the topic [{title}] ? After blocking, you can go to the extension options page to manage the blocked topic list",
     "confirmDeleteAllEditHistory": "Are you sure you want to delete all displayed edit history?",
     "confirmDeleteEditHistory": "Are you sure you want to delete this edit history?",
@@ -262,6 +269,7 @@
     "editTopicSuccessful": "Edit topic successful",
     "editorHelp": "Editor help",
     "editorHistory": "History record",
+    "expandReplies": "{count} reply | {count} replies",
     "exportTopic": "Export topic",
     "exportTopicFailed": "Topic export failed",
     "exportTopicInvalidTitle": "The topic title is invalid and cannot be exported",

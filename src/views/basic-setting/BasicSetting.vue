@@ -18,6 +18,7 @@ import HideGzkInfo from './HideGzkInfo.vue';
 import ImageHosting from './ImageHosting.vue';
 import LightTheme from './LightTheme.vue';
 import NestedReplyDisplay from './NestedReplyDisplay.vue';
+import NestedReplyExpansion from './NestedReplyExpansion.vue';
 import ReplyPreload from './ReplyPreload.vue';
 import SmApiKey from './SmApiKey.vue';
 import TopicKeywordBlock from './TopicKeywordBlock.vue';
@@ -82,6 +83,12 @@ const settings = computed<Setting[]>(() => {
           description: t('basicSetting.nestedReplyDisplay.titleDesc'),
           key: OptionsKey.NestedReplyDisplay,
           component: NestedReplyDisplay,
+        },
+        {
+          name: t('basicSetting.nestedReplyExpansion.title'),
+          description: t('basicSetting.nestedReplyExpansion.titleDesc'),
+          key: OptionsKey.NestedReplyExpansion,
+          component: NestedReplyExpansion,
         },
         {
           name: t('basicSetting.nestedReplyMultipleInsideOne.title'),

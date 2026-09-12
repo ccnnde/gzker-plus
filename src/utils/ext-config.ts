@@ -150,6 +150,9 @@ const CONFIG_OPTION_VALIDATORS: Record<OptionsKey, ConfigOptionValidator> = {
       ReplyPreloadMode.FourPages,
     ]);
   },
+  [OptionsKey.NestedReplyExpansion]: (value) => {
+    return hasOptionalBooleanValue(value, 'expanded');
+  },
   [OptionsKey.NestedReplyMultipleInsideOne]: (value) => {
     return hasOptionalBooleanValue(value, 'checked');
   },
