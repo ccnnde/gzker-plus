@@ -4,7 +4,7 @@ import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { getReplyKey, handleReplyLike } from '@/utils';
 import { NestedReplyDisplay } from '@/constants';
-import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import { REPLY_HOVER_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import ReplyItem from './ReplyItem.vue';
 
@@ -24,6 +24,7 @@ const isExpanded = ref(false);
 const hasRenderedReplies = ref(false);
 const toggleButton = ref<HTMLButtonElement | null>(null);
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
+const replyHover = inject(REPLY_HOVER_INJECTION_KEY);
 
 const countDescendantReplies = (nodes: UserReplyTreeNode[]): number => {
   return nodes.reduce((count, node) => {
@@ -61,6 +62,7 @@ const childrenClass = computed<Record<string, boolean>>(() => {
 });
 
 const toggleReplies = async () => {
+  replyHover?.suppress();
   hasRenderedReplies.value = true;
   isExpanded.value = !isExpanded.value;
   await nextTick();
