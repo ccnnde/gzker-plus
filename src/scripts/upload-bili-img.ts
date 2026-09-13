@@ -28,7 +28,11 @@ export const setupBiliImgUpload = (ctx: ContentScriptContext) => {
     }
   };
 
-  ctx.addEventListener(window, 'DOMContentLoaded', handleDomContentLoaded);
+  if (document.readyState === 'loading') {
+    ctx.addEventListener(window, 'DOMContentLoaded', handleDomContentLoaded);
+  } else {
+    handleDomContentLoaded();
+  }
   browser.runtime.onMessage.addListener(handleMessage);
 
   ctx.onInvalidated(() => {

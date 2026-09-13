@@ -2,9 +2,18 @@ import { nanoid } from 'nanoid';
 import { browser } from 'wxt/browser';
 
 import { uploadImg } from '@/api/sm-img';
-import { base64ToFile, initStorage, sendMessageToTab, waitTime } from '@/utils';
+import { base64ToFile, initStorage, sendMessageToTab } from '@/utils';
 import { addImgHistory } from '@/utils/bili-img-store';
+import { hasPermission } from '@/utils/optional-permission';
 import {
+  focusPermissionWindow,
+  getPermissionWindowPosition,
+  PERMISSION_WINDOW_HEIGHT,
+  PERMISSION_WINDOW_WIDTH,
+} from '@/utils/permission-window';
+import {
+  BILI_IMAGE_PAGE_ORIGIN,
+  BILI_IMAGE_UPLOAD_PATH,
   DOWNLOAD_PERMISSION_WINDOW_STATE_KEY,
   ExtensionMessageType,
   GZK_URL_PATTERN,
@@ -13,6 +22,12 @@ import {
   OptionsRouteNames,
   OptionsRoutePaths,
 } from '@/constants';
+
+import {
+  focusOptionalPermissionPage,
+  handleOptionalPermissionWindowRemoved,
+  openOptionalPermissionPage,
+} from './optional-permission';
 
 import type { Browser } from 'wxt/browser';
 import type {
@@ -23,15 +38,110 @@ import type {
   OptionsPageTabState,
 } from '@/types';
 
-const BILI_IMG_TAB_URL = 'https://www.bilibili.com/gzk-img-upload';
-const DOWNLOAD_PERMISSION_WINDOW_HEIGHT = 400;
-const DOWNLOAD_PERMISSION_WINDOW_WIDTH = 520;
+const BILI_IMG_TAB_URL = `${BILI_IMAGE_PAGE_ORIGIN}${BILI_IMAGE_UPLOAD_PATH}`;
+const BILI_IMG_SCRIPT_PATH = '/content-scripts/upload-bili-img.js';
 const DOWNLOAD_PERMISSION: Browser.permissions.Permissions = {
   permissions: ['downloads'],
 };
 let biliImgTab: Browser.tabs.Tab | undefined;
-let isBiliImgTabOpened = false;
+let biliImgTabTask: Promise<Browser.tabs.Tab> | undefined;
 let downloadPermissionWindowTask = Promise.resolve();
+
+const isBiliImgUploadPage = (url?: string): boolean => {
+  if (!url) {
+    return false;
+  }
+
+  try {
+    const pageUrl = new URL(url);
+    return pageUrl.origin === BILI_IMAGE_PAGE_ORIGIN && pageUrl.pathname === BILI_IMAGE_UPLOAD_PATH;
+  } catch {
+    return false;
+  }
+};
+
+const waitForBiliImgTab = (tabId: number): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('BiliBili image upload page timed out'));
+    }, 15000);
+
+    const cleanup = () => {
+      clearTimeout(timeout);
+      browser.tabs.onUpdated.removeListener(handleUpdated);
+      browser.tabs.onRemoved.removeListener(handleRemoved);
+    };
+
+    const handleUpdated = (updatedTabId: number, changeInfo: Browser.tabs.OnUpdatedInfo, tab: Browser.tabs.Tab) => {
+      if (updatedTabId !== tabId) {
+        return;
+      }
+
+      if (isBiliImgUploadPage(tab.url)) {
+        cleanup();
+        resolve();
+        return;
+      }
+
+      if (changeInfo.status === 'complete' && tab.url !== 'about:blank') {
+        cleanup();
+        reject(new Error('BiliBili image upload page did not open'));
+      }
+    };
+
+    const handleRemoved = (removedTabId: number) => {
+      if (removedTabId === tabId) {
+        cleanup();
+        reject(new Error('BiliBili image upload page was closed'));
+      }
+    };
+
+    browser.tabs.onUpdated.addListener(handleUpdated);
+    browser.tabs.onRemoved.addListener(handleRemoved);
+
+    browser.tabs.get(tabId).then(
+      (tab) => {
+        if (isBiliImgUploadPage(tab.url)) {
+          cleanup();
+          resolve();
+        } else if (tab.status === 'complete' && tab.url !== 'about:blank') {
+          cleanup();
+          reject(new Error('BiliBili image upload page did not open'));
+        }
+      },
+      (error) => {
+        cleanup();
+        reject(error);
+      },
+    );
+  });
+};
+
+const createBiliImgTab = async (): Promise<Browser.tabs.Tab> => {
+  const tab = await browser.tabs.create({
+    url: BILI_IMG_TAB_URL,
+    active: false,
+  });
+
+  if (tab.id === undefined) {
+    throw new Error('BiliBili image upload tab has no ID');
+  }
+
+  biliImgTab = tab;
+  await waitForBiliImgTab(tab.id);
+
+  if (import.meta.env.FIREFOX) {
+    await browser.tabs.executeScript(tab.id, { file: BILI_IMG_SCRIPT_PATH });
+  } else {
+    await browser.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: [BILI_IMG_SCRIPT_PATH],
+    });
+  }
+
+  return tab;
+};
 
 const isDownloadableUrl = (value?: string): value is string => {
   if (!value) {
@@ -55,22 +165,6 @@ const setDownloadPermissionWindowState = async (state: DownloadPermissionWindowS
   await browser.storage.local.set({
     [DOWNLOAD_PERMISSION_WINDOW_STATE_KEY]: state,
   });
-};
-
-const focusDownloadPermissionWindow = async (windowId?: number): Promise<boolean> => {
-  if (windowId === undefined) {
-    return false;
-  }
-
-  try {
-    await browser.windows.get(windowId);
-    await browser.windows.update(windowId, {
-      focused: true,
-    });
-    return true;
-  } catch {
-    return false;
-  }
 };
 
 const notifyImgDownloadSuccess = async (tabId?: number) => {
@@ -111,27 +205,19 @@ const openDownloadPermissionPage = (
 
     await setDownloadPermissionWindowState(nextState);
 
-    if (await focusDownloadPermissionWindow(currentState?.windowId)) {
+    if (await focusPermissionWindow(currentState?.windowId)) {
       return;
     }
 
-    const currentWindow = await browser.windows.getLastFocused();
-    const left =
-      currentWindow.left !== undefined && currentWindow.width !== undefined
-        ? Math.round(currentWindow.left + (currentWindow.width - DOWNLOAD_PERMISSION_WINDOW_WIDTH) / 2)
-        : undefined;
-    const top =
-      currentWindow.top !== undefined && currentWindow.height !== undefined
-        ? Math.round(currentWindow.top + (currentWindow.height - DOWNLOAD_PERMISSION_WINDOW_HEIGHT) / 2)
-        : undefined;
+    const { left, top } = await getPermissionWindowPosition();
 
     const permissionWindow = await browser.windows.create({
       url: permissionPageUrl.href,
       type: 'popup',
       left,
       top,
-      width: DOWNLOAD_PERMISSION_WINDOW_WIDTH,
-      height: DOWNLOAD_PERMISSION_WINDOW_HEIGHT,
+      width: PERMISSION_WINDOW_WIDTH,
+      height: PERMISSION_WINDOW_HEIGHT,
     });
 
     if (permissionWindow?.id !== undefined) {
@@ -154,9 +240,9 @@ const downloadImg = async (imgUrl?: string, sourceTabId?: number) => {
     return;
   }
 
-  const hasPermission = await browser.permissions.contains(DOWNLOAD_PERMISSION);
+  const hasDownloadPermission = await browser.permissions.contains(DOWNLOAD_PERMISSION);
 
-  if (hasPermission && browser.downloads) {
+  if (hasDownloadPermission && browser.downloads) {
     await browser.downloads.download({
       url: imgUrl,
     });
@@ -164,7 +250,7 @@ const downloadImg = async (imgUrl?: string, sourceTabId?: number) => {
     return;
   }
 
-  await openDownloadPermissionPage(imgUrl, hasPermission, sourceTabId);
+  await openDownloadPermissionPage(imgUrl, hasDownloadPermission, sourceTabId);
 };
 
 const getOptionsPageTabState = async (): Promise<OptionsPageTabState | undefined> => {
@@ -272,6 +358,8 @@ export const setupBackground = () => {
     }
   });
 
+  browser.windows.onRemoved.addListener(handleOptionalPermissionWindowRemoved);
+
   browser.runtime.onInstalled.addListener(async (details) => {
     const { reason } = details;
 
@@ -290,23 +378,38 @@ export const setupBackground = () => {
       case ExtensionMessageType.OpenOptionsPage:
         openOptionsPage(message.extPagePath);
         return;
+      case ExtensionMessageType.CheckOptionalPermission:
+        if (!message.permissionCapability) {
+          throw new Error('Missing optional permission capability');
+        }
+
+        return await hasPermission(message.permissionCapability);
+      case ExtensionMessageType.OpenOptionalPermissionPage:
+        if (
+          sender.tab?.id === undefined ||
+          message.permissionRequestId === undefined ||
+          message.permissionCapability === undefined
+        ) {
+          throw new Error('Missing optional permission request context');
+        }
+
+        await openOptionalPermissionPage(message.permissionCapability, sender.tab.id, message.permissionRequestId);
+        return;
+      case ExtensionMessageType.FocusOptionalPermissionPage:
+        if (sender.tab?.id === undefined || message.permissionRequestId === undefined) {
+          throw new Error('Missing optional permission request context');
+        }
+
+        await focusOptionalPermissionPage(sender.tab.id, message.permissionRequestId);
+        return;
       case ExtensionMessageType.UploadImg: {
         const imgFile = base64ToFile(message.imgFile as Base64File);
         return await uploadImg(message.apiKey as string, imgFile);
       }
       case ExtensionMessageType.UploadBiliImg: {
-        if (isBiliImgTabOpened) {
-          await waitTime(200);
-        } else {
-          isBiliImgTabOpened = true;
-
-          biliImgTab = await browser.tabs.create({
-            url: BILI_IMG_TAB_URL,
-            active: false,
-          });
-        }
-
-        const imgData: BiliUploadedImg = await sendMessageToTab(biliImgTab?.id, message);
+        biliImgTabTask ??= createBiliImgTab();
+        const tab = await biliImgTabTask;
+        const imgData: BiliUploadedImg = await sendMessageToTab(tab.id, message);
 
         await addImgHistory({
           id: nanoid(),
@@ -323,12 +426,16 @@ export const setupBackground = () => {
       case ExtensionMessageType.DownloadImg:
         return await downloadImg(message.imgUrl, sender.tab?.id);
       case ExtensionMessageType.CloseBiliImgTab:
-        if (biliImgTab) {
-          await browser.tabs.remove(biliImgTab.id as number);
+        if (biliImgTab?.id !== undefined) {
+          try {
+            await browser.tabs.remove(biliImgTab.id);
+          } catch {
+            // 上传标签页可能已被用户关闭
+          }
         }
 
         biliImgTab = undefined;
-        isBiliImgTabOpened = false;
+        biliImgTabTask = undefined;
 
         return;
     }

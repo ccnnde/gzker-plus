@@ -2,6 +2,7 @@ import type { Component, Ref } from 'vue';
 import type { Pinia } from 'pinia';
 import type { LoadingInstance } from 'element-plus';
 import type Viewer from 'viewerjs';
+import type { Browser } from 'wxt/browser';
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type {
   BellStyle,
@@ -15,6 +16,7 @@ import type {
   LightTheme,
   LinkElementType,
   NestedReplyDisplay,
+  OptionalPermissionCapability,
   OptionsKey,
   ReplyOrder,
   ReplyPreloadMode,
@@ -50,6 +52,9 @@ export interface Base64File {
 
 export interface ExtensionMessage {
   msgType: ExtensionMessageType;
+  permissionCapability?: OptionalPermissionCapability;
+  permissionRequestId?: string;
+  permissionGranted?: boolean;
   extPagePath?: string;
   imgFile?: Base64File;
   imgUrl?: string;
@@ -64,6 +69,16 @@ export interface DownloadPermissionWindowState {
   sourceTabId?: number;
   imgUrl: string;
   downloadImmediately: boolean;
+}
+
+export interface OptionalPermissionWindowState {
+  sourceTabId: number;
+  requestId: string;
+  capability: OptionalPermissionCapability;
+}
+
+export interface OptionalPermissionDefinition {
+  permissions: Browser.permissions.Permissions;
 }
 
 export interface OptionsPageTabState {

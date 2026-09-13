@@ -6,7 +6,8 @@ import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { getUsage } from '@/api/sm-img';
-import { OptionsRouteNames } from '@/constants';
+import { getUploadCapability, requestPermission } from '@/utils/optional-permission';
+import { ImageHostingPlatform, OptionsRouteNames } from '@/constants';
 
 import type { OptionsKey } from '@/constants';
 import type { SettingProps, SMUsage } from '@/types';
@@ -28,11 +29,25 @@ const storageInfo = computed(() => {
   return `${usedMb} MB / ${limitGb} GB`;
 });
 
-const checkApiKey = () => {
+const checkApiKey = async () => {
   const { apiKey } = props.settings;
 
   if (!apiKey) {
     ElMessage.error(t('basicSetting.smApiKey.plzEnterApiKey'));
+    return;
+  }
+
+  try {
+    const capability = getUploadCapability(ImageHostingPlatform.Smms);
+    const granted = await requestPermission(capability);
+
+    if (!granted) {
+      ElMessage.warning(t('basicSetting.imageHosting.permissionDenied'));
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error(t('basicSetting.imageHosting.permissionRequestFailed'));
     return;
   }
 

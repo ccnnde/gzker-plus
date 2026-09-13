@@ -12,6 +12,14 @@ export const GZK_URL = 'https://www.guozaoke.com';
  */
 export const GZK_URL_PATTERN = '*://www.guozaoke.com/*';
 
+export const BILI_IMAGE_HOST_ORIGIN = 'https://api.bilibili.com';
+
+export const BILI_IMAGE_PAGE_ORIGIN = 'https://www.bilibili.com';
+
+export const BILI_IMAGE_UPLOAD_PATH = '/gzk-img-upload';
+
+export const SM_IMAGE_HOST_ORIGIN = 'https://s.ee';
+
 /**
  * 根组件类名前缀
  */
@@ -87,6 +95,15 @@ export const enum ExtensionMessageType {
   CloseBiliImgTab,
   BlockKeyword,
   Base64Decode,
+  CheckOptionalPermission,
+  OpenOptionalPermissionPage,
+  FocusOptionalPermissionPage,
+  OptionalPermissionResolved,
+}
+
+export const enum OptionalPermissionCapability {
+  UploadBiliImage = 'uploadBiliImage',
+  UploadSmmsImage = 'uploadSmmsImage',
 }
 
 /**

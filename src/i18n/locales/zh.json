@@ -87,6 +87,8 @@
       "titleDesc": "隐藏论坛中以下类型的信息，防止窥屏"
     },
     "imageHosting": {
+      "permissionDenied": "未获得图床网站访问权限",
+      "permissionRequestFailed": "请求图床网站访问权限失败",
       "platform": {
         "bili": "BiliBili 图床",
         "smms": "SM.MS 图床"
@@ -328,6 +330,16 @@
     "message": "消息",
     "unreadMessage": "你有 {num} 条未读消息"
   },
+  "imageHostPermission": {
+    "allow": "允许并继续上传",
+    "alternativeBili": "也可改用 BiliBili 图床（需登录并授权）。切换后请重新上传图片。",
+    "alternativeSmms": "也可改用 SM.MS（S.EE）图床（需配置 API Key 并授权）。切换后请重新上传图片。",
+    "denied": "未授予图床权限，可以重试或取消本次上传。",
+    "description": "上传图片到 {platform} 需要浏览器授予相应权限。授权后会继续本次上传。",
+    "requestFailed": "权限申请失败，请重试。",
+    "title": "允许上传图片",
+    "viewInstructions": "查看图床说明"
+  },
   "keywordBlock": {
     "addFailed": "添加失败，请重试",
     "addSuccess": "添加成功，手动刷新后生效",
@@ -343,6 +355,9 @@
     "blockedTopics": "屏蔽主题",
     "changeLog": "更新日志",
     "imageHosting": "图床说明"
+  },
+  "optionalPermission": {
+    "invalidCapability": "授权类型无效，请关闭窗口后重试。"
   },
   "options": {
     "storageFailed": "无法存储数据，请按 F12 打开控制台查看报错信息",

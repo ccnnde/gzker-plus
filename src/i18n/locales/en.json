@@ -87,6 +87,8 @@
       "titleDesc": "Hide the following types of information in the forum to prevent peeking"
     },
     "imageHosting": {
+      "permissionDenied": "Access to the image host was not granted",
+      "permissionRequestFailed": "Failed to request access to the image host",
       "platform": {
         "bili": "BiliBili",
         "smms": "SM.MS"
@@ -328,6 +330,16 @@
     "message": "Message",
     "unreadMessage": "You have {num} unread messages"
   },
+  "imageHostPermission": {
+    "allow": "Allow and continue upload",
+    "alternativeBili": "BiliBili is another option; sign-in and permission are required. Reupload after switching.",
+    "alternativeSmms": "SM.MS (S.EE) is another option; it needs an API key and permission. Reupload after switching.",
+    "denied": "Image hosting permission was not granted. Try again or cancel this upload.",
+    "description": "Uploading images to {platform} requires browser permission. The upload will continue after you allow it.",
+    "requestFailed": "Permission request failed. Please try again.",
+    "title": "Allow image upload",
+    "viewInstructions": "View guide"
+  },
   "keywordBlock": {
     "addFailed": "Failed to add, please try again",
     "addSuccess": "Added successfully, refresh page to take effect",
@@ -343,6 +355,9 @@
     "blockedTopics": "Blocked Topics",
     "changeLog": "Change Log",
     "imageHosting": "Image Hosting"
+  },
+  "optionalPermission": {
+    "invalidCapability": "Invalid permission request. Close this window and try again."
   },
   "options": {
     "storageFailed": "Unable to store data. Please press F12 to open the console and view the error message",

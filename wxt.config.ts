@@ -10,15 +10,53 @@ import { defineConfig } from 'wxt';
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import { BILI_IMAGE_HOST_ORIGIN, BILI_IMAGE_PAGE_ORIGIN, SM_IMAGE_HOST_ORIGIN } from './src/constants';
 import packageJson from './package.json';
 
 import type { Wxt } from 'wxt';
 
 const extensionPermissions = ['storage', 'contextMenus'] as const;
 const optionalPermissions = ['downloads'] as const;
+const imageHostingOrigins = [`${SM_IMAGE_HOST_ORIGIN}/*`, `${BILI_IMAGE_PAGE_ORIGIN}/*`] as const;
+const biliImageHostPermission = `${BILI_IMAGE_HOST_ORIGIN}/*`;
 const gzkMatches = ['*://www.guozaoke.com/*'];
 const chromiumProfile = resolve('.wxt/chrome-data');
 const firefoxProfile = resolve('.wxt/firefox-data');
+
+const getBrowserManifestFields = (browser: string) => {
+  const permissions = [...extensionPermissions];
+
+  if (browser === 'firefox') {
+    return {
+      permissions,
+      optional_permissions: [...optionalPermissions, ...imageHostingOrigins, biliImageHostPermission],
+      browser_specific_settings: {
+        gecko: {
+          id: 'gzkerplus@gmail.com',
+        },
+      },
+    };
+  }
+
+  return {
+    permissions,
+    optional_permissions: [...optionalPermissions, 'scripting'],
+    optional_host_permissions: [...imageHostingOrigins],
+  };
+};
+
+const getWebAccessibleResources = (manifestVersion: number) => {
+  if (manifestVersion === 3) {
+    return [
+      {
+        matches: gzkMatches,
+        resources: ['icon/*.png', 'font/*.ttf'],
+      },
+    ];
+  }
+
+  return ['icon/*.png', 'font/*.ttf'];
+};
 
 const ensureBrowserProfile = (wxt: Wxt) => {
   if (wxt.config.command !== 'serve') {
@@ -94,20 +132,7 @@ export default defineConfig({
     name: '过早客 Plus',
     description: packageJson.description,
     version: packageJson.version,
-    permissions:
-      browser === 'firefox'
-        ? [...extensionPermissions, 'https://s.ee/', 'https://api.bilibili.com/']
-        : [...extensionPermissions],
-    optional_permissions: [...optionalPermissions],
-    host_permissions: browser === 'firefox' ? undefined : ['https://s.ee/'],
-    browser_specific_settings:
-      browser === 'firefox'
-        ? {
-            gecko: {
-              id: 'gzkerplus@gmail.com',
-            },
-          }
-        : undefined,
+    ...getBrowserManifestFields(browser),
     icons: {
       16: 'icon/16.png',
       32: 'icon/32.png',
@@ -124,15 +149,7 @@ export default defineConfig({
         description: '将选中文本添加到主题屏蔽关键字',
       },
     },
-    web_accessible_resources:
-      manifestVersion === 3
-        ? [
-            {
-              matches: gzkMatches,
-              resources: ['icon/*.png', 'font/*.ttf'],
-            },
-          ]
-        : ['icon/*.png', 'font/*.ttf'],
+    web_accessible_resources: getWebAccessibleResources(manifestVersion),
   }),
   webExt: {
     startUrls: ['https://www.guozaoke.com/'],

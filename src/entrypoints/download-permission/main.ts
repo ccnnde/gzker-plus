@@ -7,7 +7,7 @@ import { DOWNLOAD_PERMISSION_WINDOW_STATE_KEY, ExtensionMessageType } from '@/co
 import type { Browser } from 'wxt/browser';
 import type { DownloadPermissionWindowState } from '@/types';
 
-import './style.scss';
+import '@/styles/permission-window.scss';
 
 const DOWNLOAD_PERMISSION: Browser.permissions.Permissions = {
   permissions: ['downloads'],

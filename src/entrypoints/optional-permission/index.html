@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title></title>
   </head>
-  <body>
+  <body class="permission-window-page--optional">
     <main class="permission-window">
-      <img class="permission-window__icon" src="/icon/48.png" alt="" />
-      <h1 id="title" class="permission-window__title"></h1>
+      <div class="permission-window__heading">
+        <img class="permission-window__icon" src="/icon/48.png" alt="" />
+        <h1 id="title" class="permission-window__title"></h1>
+      </div>
       <p id="description" class="permission-window__description"></p>
       <p id="status" class="permission-window__status" role="status" hidden></p>
+      <div id="alternative" class="permission-window__alternative" hidden>
+        <p id="alternative-text" class="permission-window__alternative-text"></p>
+        <button id="instructions" class="permission-window__link" type="button"></button>
+      </div>
       <div class="permission-window__actions">
         <button id="cancel" class="permission-window__button" type="button"></button>
         <button id="allow" class="permission-window__button permission-window__button--primary" type="button"></button>

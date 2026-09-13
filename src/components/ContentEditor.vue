@@ -10,6 +10,8 @@ import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
+import { getUploadCapability } from '@/utils/optional-permission';
+import { ensurePermission } from '@/utils/optional-permission-request';
 import {
   ExtensionMessageType,
   ImageHostingPlatform,
@@ -300,17 +302,32 @@ const keybindings: Keybindings = {
 const imgFileUploadStatusMap: Map<File, CherryFileUploadStatus> = new Map();
 
 const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
+  const errMsg = validateImgFile(file);
+
+  if (errMsg) {
+    ElMessage.error({
+      message: errMsg,
+      grouping: true,
+    });
+
+    return;
+  }
+
+  if (!(await ensureUploadPermission())) {
+    return;
+  }
+
   const apiKey = await getApiKey();
 
   if (!apiKey) {
     return;
   }
 
-  const errMsg = validateImgFile(file);
+  const capacityError = validateImgUploadCapacity();
 
-  if (errMsg) {
+  if (capacityError) {
     ElMessage.error({
-      message: errMsg,
+      message: capacityError,
       grouping: true,
     });
 
@@ -420,6 +437,16 @@ const uploadImgMsgType = isBiliImgHosting ? ExtensionMessageType.UploadBiliImg :
 let shouldOpenBiliLoginConfirm = false;
 let shouldOpenSmmsAuthConfirm = false;
 let isApiKeyConfirmShown = false;
+const ensureUploadPermission = async (): Promise<boolean> => {
+  try {
+    const capability = getUploadCapability(imgHostingPlatform ?? ImageHostingPlatform.Bili);
+    return await ensurePermission(capability);
+  } catch (error) {
+    console.error(error);
+    ElMessage.error(t('basicSetting.imageHosting.permissionRequestFailed'));
+    return false;
+  }
+};
 
 const getApiKey = async (): Promise<string | undefined> => {
   // BiliBili 图床不需要 api key，此处使用固定值避免校验不通过
@@ -474,7 +501,11 @@ const validateImgFile = (file: File): string => {
     return t('enhancedTopic.uploadImgMaxSize', { size: IMG_MAX_SIZE });
   }
 
-  if (imgFileUploadStatusMap.size >= IMG_MAX_NUM) {
+  return validateImgUploadCapacity();
+};
+
+const validateImgUploadCapacity = (): string => {
+  if (!isBiliImgHosting && imgFileUploadStatusMap.size >= IMG_MAX_NUM) {
     return t('enhancedTopic.uploadImgMaxNum', { num: IMG_MAX_NUM });
   }
 
