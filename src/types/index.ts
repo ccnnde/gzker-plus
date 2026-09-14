@@ -2,7 +2,6 @@ import type { Component, Ref } from 'vue';
 import type { Pinia } from 'pinia';
 import type { LoadingInstance } from 'element-plus';
 import type Viewer from 'viewerjs';
-import type { Browser } from 'wxt/browser';
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type {
   BellStyle,
@@ -64,22 +63,22 @@ export interface ExtensionMessage {
   decodedError?: boolean;
 }
 
-export interface DownloadPermissionWindowState {
+export interface DownloadWindowState {
   windowId?: number;
   sourceTabId?: number;
   imgUrl: string;
   downloadImmediately: boolean;
 }
 
-export interface OptionalPermissionWindowState {
+export interface UploadWindowState {
   sourceTabId: number;
   requestId: string;
-  capability: OptionalPermissionCapability;
+  capability: UploadPermissionCapability;
 }
 
-export interface OptionalPermissionDefinition {
-  permissions: Browser.permissions.Permissions;
-}
+export type UploadPermissionCapability =
+  | OptionalPermissionCapability.UploadBiliImage
+  | OptionalPermissionCapability.UploadSmmsImage;
 
 export interface OptionsPageTabState {
   tabId: number;

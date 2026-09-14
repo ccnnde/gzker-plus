@@ -165,6 +165,16 @@ export const waitTime = async (time: number = 100) => {
   });
 };
 
+export const getRequiredElement = <T extends HTMLElement>(id: string): T => {
+  const element = document.getElementById(id);
+
+  if (!element) {
+    throw new Error(`Missing element: ${id}`);
+  }
+
+  return element as T;
+};
+
 export const getLoginUserId = () => {
   const loginUserLinkEle = document.querySelector(SELECTOR_LOGIN_USER_LINK) as HTMLAnchorElement | null;
   const loginUserId = loginUserLinkEle?.href.split(API_USER)[1];

@@ -33,7 +33,7 @@ export const LOADING_BACKGROUND_DARK = 'rgba(0, 0, 0, 0.7)';
 /**
  * 下载授权窗口状态存储键
  */
-export const DOWNLOAD_PERMISSION_WINDOW_STATE_KEY = 'downloadPermissionWindowState';
+export const DOWNLOAD_WINDOW_STATE_KEY = 'downloadPermissionWindowState';
 
 /**
  * Options 页面标签页状态存储键
@@ -96,12 +96,13 @@ export const enum ExtensionMessageType {
   BlockKeyword,
   Base64Decode,
   CheckOptionalPermission,
-  OpenOptionalPermissionPage,
-  FocusOptionalPermissionPage,
-  OptionalPermissionResolved,
+  OpenUploadWindow,
+  FocusUploadWindow,
+  UploadPermissionResolved,
 }
 
 export const enum OptionalPermissionCapability {
+  DownloadImage = 'downloadImage',
   UploadBiliImage = 'uploadBiliImage',
   UploadSmmsImage = 'uploadSmmsImage',
 }

@@ -10,8 +10,8 @@ import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
-import { getUploadCapability } from '@/utils/optional-permission';
-import { ensurePermission } from '@/utils/optional-permission-request';
+import { getUploadCapability } from '@/utils/permissions';
+import { ensurePermission } from '@/utils/upload-permission';
 import {
   ExtensionMessageType,
   ImageHostingPlatform,

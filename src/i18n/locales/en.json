@@ -210,8 +210,10 @@
     "allow": "Allow and download",
     "denied": "Download permission was not granted. The image was not downloaded.",
     "description": "Your browser needs download permission the first time. This permission is only used to save images you choose to download.",
+    "downloadFailed": "The image could not be downloaded. Retry or cancel.",
     "invalidImage": "The image address is invalid. Close this window and try again.",
     "requestFailed": "Could not request permission. Please try again.",
+    "retry": "Retry download",
     "title": "Allow image downloads"
   },
   "emojiPicker": {

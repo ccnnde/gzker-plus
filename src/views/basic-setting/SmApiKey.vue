@@ -6,7 +6,7 @@ import { useDialog } from '@/composables/dialog';
 import { useRequest } from '@/composables/request';
 import { t } from '@/i18n';
 import { getUsage } from '@/api/sm-img';
-import { getUploadCapability, requestPermission } from '@/utils/optional-permission';
+import { getUploadCapability, requestPermission } from '@/utils/permissions';
 import { ImageHostingPlatform, OptionsRouteNames } from '@/constants';
 
 import type { OptionsKey } from '@/constants';

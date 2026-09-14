@@ -4,17 +4,10 @@ import { browser } from 'wxt/browser';
 import { uploadImg } from '@/api/sm-img';
 import { base64ToFile, initStorage, sendMessageToTab } from '@/utils';
 import { addImgHistory } from '@/utils/bili-img-store';
-import { hasPermission } from '@/utils/optional-permission';
-import {
-  focusPermissionWindow,
-  getPermissionWindowPosition,
-  PERMISSION_WINDOW_HEIGHT,
-  PERMISSION_WINDOW_WIDTH,
-} from '@/utils/permission-window';
+import { hasPermission, isUploadCapability } from '@/utils/permissions';
 import {
   BILI_IMAGE_PAGE_ORIGIN,
   BILI_IMAGE_UPLOAD_PATH,
-  DOWNLOAD_PERMISSION_WINDOW_STATE_KEY,
   ExtensionMessageType,
   GZK_URL_PATTERN,
   GzkCtxMenuIds,
@@ -23,29 +16,16 @@ import {
   OptionsRoutePaths,
 } from '@/constants';
 
-import {
-  focusOptionalPermissionPage,
-  handleOptionalPermissionWindowRemoved,
-  openOptionalPermissionPage,
-} from './optional-permission';
+import { clearDownloadWindowState, downloadImg } from './image-download';
+import { focusUploadWindow, openUploadWindow, resolveUploadPermission } from './upload-window';
 
 import type { Browser } from 'wxt/browser';
-import type {
-  Base64File,
-  BiliUploadedImg,
-  DownloadPermissionWindowState,
-  ExtensionMessage,
-  OptionsPageTabState,
-} from '@/types';
+import type { Base64File, BiliUploadedImg, ExtensionMessage, OptionsPageTabState } from '@/types';
 
 const BILI_IMG_TAB_URL = `${BILI_IMAGE_PAGE_ORIGIN}${BILI_IMAGE_UPLOAD_PATH}`;
 const BILI_IMG_SCRIPT_PATH = '/content-scripts/upload-bili-img.js';
-const DOWNLOAD_PERMISSION: Browser.permissions.Permissions = {
-  permissions: ['downloads'],
-};
 let biliImgTab: Browser.tabs.Tab | undefined;
 let biliImgTabTask: Promise<Browser.tabs.Tab> | undefined;
-let downloadPermissionWindowTask = Promise.resolve();
 
 const isBiliImgUploadPage = (url?: string): boolean => {
   if (!url) {
@@ -141,116 +121,6 @@ const createBiliImgTab = async (): Promise<Browser.tabs.Tab> => {
   }
 
   return tab;
-};
-
-const isDownloadableUrl = (value?: string): value is string => {
-  if (!value) {
-    return false;
-  }
-
-  try {
-    const { protocol } = new URL(value);
-    return ['blob:', 'data:', 'http:', 'https:'].includes(protocol);
-  } catch {
-    return false;
-  }
-};
-
-const getDownloadPermissionWindowState = async (): Promise<DownloadPermissionWindowState | undefined> => {
-  const storage = await browser.storage.local.get(DOWNLOAD_PERMISSION_WINDOW_STATE_KEY);
-  return storage[DOWNLOAD_PERMISSION_WINDOW_STATE_KEY] as DownloadPermissionWindowState | undefined;
-};
-
-const setDownloadPermissionWindowState = async (state: DownloadPermissionWindowState) => {
-  await browser.storage.local.set({
-    [DOWNLOAD_PERMISSION_WINDOW_STATE_KEY]: state,
-  });
-};
-
-const notifyImgDownloadSuccess = async (tabId?: number) => {
-  if (tabId === undefined) {
-    return;
-  }
-
-  try {
-    await browser.tabs.sendMessage(tabId, {
-      msgType: ExtensionMessageType.DownloadImgSuccess,
-    });
-  } catch {
-    return;
-  }
-};
-
-const openDownloadPermissionPage = (
-  imgUrl: string,
-  downloadImmediately: boolean,
-  sourceTabId?: number,
-): Promise<void> => {
-  const permissionPageBaseUrl = browser.runtime.getURL('/download-permission.html');
-  const permissionPageUrl = new URL(permissionPageBaseUrl);
-  permissionPageUrl.searchParams.set('imgUrl', imgUrl);
-
-  if (downloadImmediately) {
-    permissionPageUrl.searchParams.set('download', 'true');
-  }
-
-  const task = downloadPermissionWindowTask.then(async () => {
-    const currentState = await getDownloadPermissionWindowState();
-    const nextState: DownloadPermissionWindowState = {
-      windowId: currentState?.windowId,
-      sourceTabId: sourceTabId ?? currentState?.sourceTabId,
-      imgUrl,
-      downloadImmediately,
-    };
-
-    await setDownloadPermissionWindowState(nextState);
-
-    if (await focusPermissionWindow(currentState?.windowId)) {
-      return;
-    }
-
-    const { left, top } = await getPermissionWindowPosition();
-
-    const permissionWindow = await browser.windows.create({
-      url: permissionPageUrl.href,
-      type: 'popup',
-      left,
-      top,
-      width: PERMISSION_WINDOW_WIDTH,
-      height: PERMISSION_WINDOW_HEIGHT,
-    });
-
-    if (permissionWindow?.id !== undefined) {
-      await setDownloadPermissionWindowState({
-        ...nextState,
-        windowId: permissionWindow.id,
-      });
-    }
-  });
-
-  downloadPermissionWindowTask = task.catch(() => {
-    return;
-  });
-
-  return task;
-};
-
-const downloadImg = async (imgUrl?: string, sourceTabId?: number) => {
-  if (!isDownloadableUrl(imgUrl)) {
-    return;
-  }
-
-  const hasDownloadPermission = await browser.permissions.contains(DOWNLOAD_PERMISSION);
-
-  if (hasDownloadPermission && browser.downloads) {
-    await browser.downloads.download({
-      url: imgUrl,
-    });
-    await notifyImgDownloadSuccess(sourceTabId);
-    return;
-  }
-
-  await openDownloadPermissionPage(imgUrl, hasDownloadPermission, sourceTabId);
 };
 
 const getOptionsPageTabState = async (): Promise<OptionsPageTabState | undefined> => {
@@ -350,15 +220,8 @@ export const setupBackground = () => {
     }
   });
 
-  browser.windows.onRemoved.addListener(async (windowId) => {
-    const state = await getDownloadPermissionWindowState();
-
-    if (state?.windowId === windowId) {
-      await browser.storage.local.remove(DOWNLOAD_PERMISSION_WINDOW_STATE_KEY);
-    }
-  });
-
-  browser.windows.onRemoved.addListener(handleOptionalPermissionWindowRemoved);
+  browser.windows.onRemoved.addListener(clearDownloadWindowState);
+  browser.windows.onRemoved.addListener(resolveUploadPermission);
 
   browser.runtime.onInstalled.addListener(async (details) => {
     const { reason } = details;
@@ -384,23 +247,23 @@ export const setupBackground = () => {
         }
 
         return await hasPermission(message.permissionCapability);
-      case ExtensionMessageType.OpenOptionalPermissionPage:
+      case ExtensionMessageType.OpenUploadWindow:
         if (
           sender.tab?.id === undefined ||
           message.permissionRequestId === undefined ||
-          message.permissionCapability === undefined
+          !isUploadCapability(message.permissionCapability)
         ) {
-          throw new Error('Missing optional permission request context');
+          throw new Error('Invalid upload permission request context');
         }
 
-        await openOptionalPermissionPage(message.permissionCapability, sender.tab.id, message.permissionRequestId);
+        await openUploadWindow(message.permissionCapability, sender.tab.id, message.permissionRequestId);
         return;
-      case ExtensionMessageType.FocusOptionalPermissionPage:
+      case ExtensionMessageType.FocusUploadWindow:
         if (sender.tab?.id === undefined || message.permissionRequestId === undefined) {
-          throw new Error('Missing optional permission request context');
+          throw new Error('Invalid upload permission request context');
         }
 
-        await focusOptionalPermissionPage(sender.tab.id, message.permissionRequestId);
+        await focusUploadWindow(sender.tab.id, message.permissionRequestId);
         return;
       case ExtensionMessageType.UploadImg: {
         const imgFile = base64ToFile(message.imgFile as Base64File);

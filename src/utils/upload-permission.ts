@@ -2,16 +2,15 @@ import { browser } from 'wxt/browser';
 
 import { ExtensionMessageType } from '@/constants';
 
-import type { OptionalPermissionCapability } from '@/constants';
-import type { ExtensionMessage } from '@/types';
+import type { ExtensionMessage, UploadPermissionCapability } from '@/types';
 
-const permissionTasks = new Map<OptionalPermissionCapability, { promise: Promise<boolean>; requestId: string }>();
+const permissionTasks = new Map<UploadPermissionCapability, { promise: Promise<boolean>; requestId: string }>();
 
-const requestViaPage = (capability: OptionalPermissionCapability, requestId: string): Promise<boolean> => {
+const requestViaPage = (capability: UploadPermissionCapability, requestId: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     const handlePermissionResult = (message: ExtensionMessage) => {
       if (
-        message.msgType !== ExtensionMessageType.OptionalPermissionResolved ||
+        message.msgType !== ExtensionMessageType.UploadPermissionResolved ||
         message.permissionRequestId !== requestId
       ) {
         return;
@@ -25,7 +24,7 @@ const requestViaPage = (capability: OptionalPermissionCapability, requestId: str
 
     browser.runtime
       .sendMessage({
-        msgType: ExtensionMessageType.OpenOptionalPermissionPage,
+        msgType: ExtensionMessageType.OpenUploadWindow,
         permissionCapability: capability,
         permissionRequestId: requestId,
       } satisfies ExtensionMessage)
@@ -36,7 +35,7 @@ const requestViaPage = (capability: OptionalPermissionCapability, requestId: str
   });
 };
 
-const checkOrRequest = async (capability: OptionalPermissionCapability, requestId: string): Promise<boolean> => {
+const checkOrRequest = async (capability: UploadPermissionCapability, requestId: string): Promise<boolean> => {
   const hasPermission = await browser.runtime.sendMessage({
     msgType: ExtensionMessageType.CheckOptionalPermission,
     permissionCapability: capability,
@@ -49,13 +48,13 @@ const checkOrRequest = async (capability: OptionalPermissionCapability, requestI
   return await requestViaPage(capability, requestId);
 };
 
-export const ensurePermission = (capability: OptionalPermissionCapability): Promise<boolean> => {
+export const ensurePermission = (capability: UploadPermissionCapability): Promise<boolean> => {
   const existingTask = permissionTasks.get(capability);
 
   if (existingTask) {
     browser.runtime
       .sendMessage({
-        msgType: ExtensionMessageType.FocusOptionalPermissionPage,
+        msgType: ExtensionMessageType.FocusUploadWindow,
         permissionRequestId: existingTask.requestId,
       } satisfies ExtensionMessage)
       .catch((error: unknown) => {
