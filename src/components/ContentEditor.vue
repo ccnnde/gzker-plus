@@ -653,25 +653,68 @@ defineExpose({
 
   :deep(.cherry) {
     display: flex;
+    font-family: inherit;
     background-color: var(--el-border-color);
     border: 1px solid var(--el-border-color);
     border-radius: var(--el-border-radius-base);
     box-shadow: none;
 
     .cherry-toolbar {
-      padding: 0 5px;
+      height: 40px;
+      padding: 0 6px;
       border-bottom: 1px solid var(--el-border-color);
       border-top-left-radius: var(--el-border-radius-base);
       border-top-right-radius: var(--el-border-radius-base);
       box-shadow: none;
+
+      .toolbar-left,
+      .toolbar-right {
+        height: 100%;
+      }
+
+      .cherry-toolbar-button {
+        box-sizing: border-box;
+        display: flex;
+        flex: 0 0 32px;
+        align-items: center;
+        justify-content: center;
+        float: none;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        line-height: 1;
+        color: var(--el-text-color-regular);
+
+        .ch-icon {
+          font-size: var(--el-font-size-extra-small);
+          line-height: 1;
+          color: inherit;
+        }
+
+        &.cherry-toolbar-split {
+          flex: 0 0 1px;
+          width: 1px;
+          height: 16px;
+          margin: 0 4px;
+          border: none;
+          border-left: 1px solid var(--el-border-color);
+        }
+      }
     }
 
     .cherry-editor {
       border-bottom-left-radius: var(--el-border-radius-base);
 
       /* stylelint-disable-next-line selector-class-pattern */
+      .CodeMirror {
+        font-family: inherit;
+        font-size: var(--el-font-size-base);
+        line-height: 1.5;
+      }
+
+      /* stylelint-disable-next-line selector-class-pattern */
       .CodeMirror-lines {
-        padding: 15px;
+        padding: 10px;
       }
 
       /* stylelint-disable-next-line selector-class-pattern */
@@ -681,12 +724,22 @@ defineExpose({
     }
 
     .cherry-previewer {
-      padding: 15px;
+      padding: 11px 14px 10px;
+      font-family: inherit;
+      font-size: var(--el-font-size-base);
       border-bottom-right-radius: var(--el-border-radius-base);
 
       img {
         max-width: 100%;
         pointer-events: none;
+      }
+    }
+
+    &:not(.cherry--no-toolbar) {
+      .cherry-editor,
+      .cherry-previewer {
+        min-height: calc(100% - 40px);
+        max-height: calc(100% - 40px);
       }
     }
 
