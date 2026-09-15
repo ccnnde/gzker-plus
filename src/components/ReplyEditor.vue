@@ -255,6 +255,7 @@ defineExpose({
         ref="contentEditor"
         v-model="replyContent"
         mentionable
+        :placeholder="$t('enhancedTopic.replyContent')"
         :editor-history-type="editorHistoryType"
         @import-history="importEditHistory"
         @submit-content="sendReply"

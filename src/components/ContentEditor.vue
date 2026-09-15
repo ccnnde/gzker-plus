@@ -49,6 +49,7 @@ import 'cherry-markdown/dist/cherry-markdown.css';
 
 interface Props {
   modelValue: string;
+  placeholder?: string;
   mentionable: boolean;
   editorHistoryType: EditHistoryType;
 }
@@ -92,6 +93,11 @@ const initCherryMarkdown = () => {
     el: mdEditorEl.value,
     value: props.modelValue,
     fileUpload: handleImgFileUpload,
+    editor: {
+      codemirror: {
+        placeholder: props.placeholder,
+      },
+    },
     toolbars: {
       toolbar: [
         'bold',
@@ -666,6 +672,11 @@ defineExpose({
       /* stylelint-disable-next-line selector-class-pattern */
       .CodeMirror-lines {
         padding: 15px;
+      }
+
+      /* stylelint-disable-next-line selector-class-pattern */
+      .CodeMirror-placeholder {
+        color: var(--el-text-color-placeholder);
       }
     }
 

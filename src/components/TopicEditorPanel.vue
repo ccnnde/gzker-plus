@@ -146,6 +146,7 @@ defineExpose({
         <ContentEditor
           ref="contentEditor"
           v-model="content"
+          :placeholder="$t('enhancedTopic.topicBody')"
           :mentionable="false"
           :editor-history-type="editorHistoryType"
           @blur="validateContentField"
