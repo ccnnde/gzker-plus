@@ -589,7 +589,7 @@ onUnmounted(() => {
         v-loading="isTopicBodyLoading"
         :style="topicBodyStyle"
         :element-loading-background="isTopicActionLoading ? 'transparent' : undefined"
-        element-loading-custom-class="gzk-loading-ring"
+        element-loading-custom-class="gzk-loading-ring gzk-loading-instant-enter"
       >
         <ElScrollbar ref="scrollbar" :distance="INFINITE_SCROLL_LOAD_DISTANCE" @end-reached="handleReplyScrollEnd">
           <div ref="topicContainer" v-viewer="viewerOptions" class="topic-container" :style="topicContainerStyle">

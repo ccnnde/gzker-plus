@@ -138,6 +138,17 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
+// 让遮罩立即出现，避免预加载内容在淡入期间露出后又被盖住；保留退出淡出动画。
+.gzk-loading-instant-enter {
+  &.el-loading-fade-enter-from {
+    opacity: 1;
+  }
+
+  &.el-loading-fade-enter-active {
+    transition: none;
+  }
+}
+
 .gzk-loading-ring {
   --el-loading-spinner-size: 32px;
 
