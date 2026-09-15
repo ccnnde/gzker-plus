@@ -1,6 +1,6 @@
 {
   "name": "gzker-plus",
-  "version": "1.7.0",
+  "version": "2.0.0",
   "private": true,
   "description": "过早客论坛增强插件～",
   "repository": {
@@ -40,7 +40,7 @@
     "type-check": "vue-tsc --noEmit",
     "up-all": "pnpm up --latest",
     "zip": "wxt zip",
-    "zip:all": "pnpm type-check && wxt zip && wxt zip -b firefox",
+    "zip:all": "pnpm type-check && rimraf .output && wxt zip && wxt zip -b firefox",
     "zip:ff": "wxt zip -b firefox"
   },
   "dependencies": {
