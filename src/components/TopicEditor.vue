@@ -276,6 +276,7 @@ defineExpose({
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="closeOnClickModal"
+    :transition="{ name: 'topic-editor-dialog', css: false }"
     align-center
     append-to-body
     @update:model-value="!$event && closeEditor()"

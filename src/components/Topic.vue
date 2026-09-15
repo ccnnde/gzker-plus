@@ -574,6 +574,7 @@ onUnmounted(() => {
       :before-close="handleTopicDialogBeforeClose"
       :close-on-click-modal="!isTopicPage && closeOnClickModal"
       :close-on-press-escape="isTopicEditing || !isTopicPage"
+      :transition="{ name: 'topic-dialog', css: false }"
       align-center
       @opened="handleTopicDialogOpened"
       @closed="handleTopicDialogClosed"
@@ -713,10 +714,6 @@ onUnmounted(() => {
 
   & > .el-overlay-dialog {
     top: var(--gzk-top-navbar-height);
-  }
-
-  &.dialog-fade-enter-active > .el-overlay-dialog {
-    animation: none;
   }
 }
 
