@@ -82,7 +82,19 @@ useLockscreen(showEditorDialog);
 const prepareEditorPanel = () => {
   nextTick(() => {
     editorPanel.value?.prepareEditor();
-    editorPanel.value?.focusTitle();
+
+    if (showEmbeddedEditor.value) {
+      editorPanel.value?.focusTitle();
+    }
+  });
+};
+
+const focusCreateTitle = () => {
+  // 等弹窗默认聚焦完成后再聚焦标题，避免焦点切换触发校验。
+  requestAnimationFrame(() => {
+    if (showEditorDialog.value) {
+      editorPanel.value?.focusTitle();
+    }
   });
 };
 
@@ -280,7 +292,7 @@ defineExpose({
     align-center
     append-to-body
     @update:model-value="!$event && closeEditor()"
-    @opened="editorPanel?.focusTitle"
+    @open-auto-focus="focusCreateTitle"
   >
     <template #header="{ titleId, titleClass }">
       <div class="topic-editor-header">
