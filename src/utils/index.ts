@@ -128,7 +128,7 @@ export const request = async (url: string, init?: RequestInit): Promise<string> 
   const res = await fetch(GZK_URL + url, init);
 
   if (!res.ok || res.status !== 200) {
-    throw new Error(res.statusText);
+    throw new Error(`HTTP Error: ${res.status}`);
   }
 
   if (res.redirected && res.url.includes('/login')) {

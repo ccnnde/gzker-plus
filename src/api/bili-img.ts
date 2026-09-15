@@ -9,7 +9,7 @@ const request = async <T>(url: string, init?: RequestInit): Promise<T> => {
   });
 
   if (!res.ok || res.status !== 200) {
-    throw new Error(res.statusText);
+    throw new Error(`HTTP Error: ${res.status}`);
   }
 
   const json: BiliApiResponse<T> = await res.json();
