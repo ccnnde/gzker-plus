@@ -138,6 +138,7 @@ defineExpose({
       :rules="topicRules"
       size="large"
       hide-required-asterisk
+      @submit.prevent
     >
       <ElFormItem prop="title">
         <ElInput ref="titleInput" v-model="title" :placeholder="$t('enhancedTopic.topicTitle')" />
