@@ -2,7 +2,7 @@
 
 [![chrome version][chrome-version]][chrome-link]
 [![chrome users][chrome-users]][chrome-link]
-[![chrome stars][chrome-stars]][chrome-link]
+[![chrome rating][chrome-rating]][chrome-link]
 
 [![edge version][edge-version]][edge-link]
 [![edge users][edge-users]][edge-link]
@@ -151,7 +151,7 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
 [github-stars]: https://img.shields.io/github/stars/ccnnde/gzker-plus?label=Star%20Project
 [chrome-version]: https://img.shields.io/chrome-web-store/v/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge&logo=googlechrome&logoColor=white&color=d8a217
 [chrome-users]: https://img.shields.io/chrome-web-store/users/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge&color=deepgreen
-[chrome-stars]: https://img.shields.io/chrome-web-store/stars/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge
+[chrome-rating]: https://img.shields.io/chrome-web-store/rating/lbdkjckninkejnacdmbnakdfalglfmkd?style=for-the-badge
 [edge-version]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&logo=singlestore&logoColor=white&label=EDGE%20WEB%20STORE&color=32a88a&prefix=v&query=$.version&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/eoindkoinilbnhiaajccmhjdlifeodfm
 [edge-users]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=USERS&color=deepgreen&query=$.activeInstallCount&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/eoindkoinilbnhiaajccmhjdlifeodfm
 [edge-stars]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=RATING&color=deepgreen&suffix=/5&query=$.averageRating&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/eoindkoinilbnhiaajccmhjdlifeodfm
