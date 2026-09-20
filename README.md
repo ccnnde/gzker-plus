@@ -102,45 +102,40 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
 
 ## 截图
 
-### 扩展设置
-
-![gzk-setting](.github/images/gzk-setting.png)
-
-### 用户信息悬浮窗
-
-![user-popover](.github/images/user-popover.png)
-
-### 消息列表
-
-![msg-list](.github/images/msg-list.png)
-
-### 浏览主题
-
-![user-topic](.github/images/user-topic.png)
-
-### 查看对话
-
-![conversation-list](.github/images/conversation-list.png)
-
-### 浏览图片
-
-![img-viewer](.github/images/img-viewer.png)
-
-### 编辑内容
-
-![content-editor](.github/images/content-editor.png)
-
-### 上传图片
-
-![upload-img](.github/images/upload-img.gif)
-
-### 插入表情
-
-![insert-emoji](.github/images/insert-emoji.png)
-
-### 历史记录
-
-![editor-history](.github/images/editor-history.png)
+<table>
+  <tr>
+    <td>扩展设置</td>
+    <td>浏览主题</td>
+  </tr>
+  <tr>
+    <td><img src=".github/images/gzk-setting.png" alt="gzk-setting" /></td>
+    <td><img src=".github/images/user-topic.gif" alt="user-topic" /></td>
+  </tr>
+  <tr>
+    <td>浏览图片</td>
+    <td>编辑内容</td>
+  </tr>
+  <tr>
+    <td><img src=".github/images/img-viewer.gif" alt="img-viewer" /></td>
+    <td><img src=".github/images/content-editor.png" alt="content-editor" /></td>
+  </tr>
+  <tr>
+    <td>上传图片</td>
+    <td>插入表情</td>
+  </tr>
+  <tr>
+    <td><img src=".github/images/upload-img.gif" alt="upload-img" /></td>
+    <td><img src=".github/images/insert-emoji.png" alt="insert-emoji" /></td>
+  </tr>
+  <tr>
+    <td>历史记录</td>
+    <td>论坛主题</td>
+  </tr>
+  <tr>
+    <td><img src=".github/images/editor-history.gif" alt="editor-history" /></td>
+    <td><img src=".github/images/forum-theme.gif" alt="forum-theme" /></td>
+  </tr>
+</table>
 
 ## License
 
