@@ -59,12 +59,12 @@ const loadEmojiFont = () => {
   }
 
   const fontFace = document.createElement('style');
-  const emojiFontUrl = browser.runtime.getURL(`/font/${NOTO_EMOJI_FONT}.ttf`);
+  const emojiFontUrl = browser.runtime.getURL(`/font/${NOTO_EMOJI_FONT}.woff2`);
 
   fontFace.textContent = `
     @font-face {
       font-family: ${NOTO_EMOJI_FONT};
-      src: url(${emojiFontUrl});
+      src: url(${emojiFontUrl}) format('woff2');
     }
 
     span.${EMOJI_CLASS_NAME} {

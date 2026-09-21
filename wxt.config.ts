@@ -50,12 +50,12 @@ const getWebAccessibleResources = (manifestVersion: number) => {
     return [
       {
         matches: gzkMatches,
-        resources: ['icon/*.png', 'font/*.ttf'],
+        resources: ['icon/*.png', 'font/*.woff2'],
       },
     ];
   }
 
-  return ['icon/*.png', 'font/*.ttf'];
+  return ['icon/*.png', 'font/*.woff2'];
 };
 
 const ensureBrowserProfile = (wxt: Wxt) => {
