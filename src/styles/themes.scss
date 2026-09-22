@@ -4,7 +4,7 @@ html {
   --gzk-img-viewer-bg-color: rgb(0 0 0 / 90%);
   --gzk-img-viewer-ctrl-bg-color: #444;
   --gzk-img-viewer-ctrl-hover-bg-color: #5c5c5c;
-  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.png');
+  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.webp');
   --gzk-topic-tag-bg-color: var(--el-fill-color-light);
   --gzk-topic-tag-text-color: var(--el-text-color-primary);
 }
@@ -28,14 +28,14 @@ html[data-theme^='dark'] {
   --gzk-node-bg-color: rgb(255 255 255 / 10%);
   --gzk-topic-hover-bg-color: rgb(255 255 255 / 5%);
   --gzk-cm-selected-bg-color: rgb(255 255 255 / 20%);
-  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.png');
+  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.webp');
   --gzk-topic-tag-bg-color: var(--el-fill-color-dark);
 }
 
 html[data-theme^='light'] {
   --gzk-node-bg-color: rgb(0 0 0 / 10%);
   --gzk-topic-hover-bg-color: rgb(0 0 0 / 5%);
-  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.png');
+  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.webp');
 }
 
 html.dark[data-theme='dark-default'] {

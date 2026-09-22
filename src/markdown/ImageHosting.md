@@ -37,27 +37,27 @@
 
 点击链接 <https://s.ee/user/register> 注册图床账号，如已有账号则跳过此步骤
 
-![smms-register](../assets/img/smms-register.png)
+![smms-register](../assets/img/smms-register.webp)
 
 点击链接 <https://s.ee/user/login> 登录图床
 
-![smms-login](../assets/img/smms-login.png)
+![smms-login](../assets/img/smms-login.webp)
 
 点击链接 <https://s.ee/user/developers> 进入 API Token 页面。或者先点击 **Dashboard** 按钮进入仪表盘 <https://s.ee/user/dashboard/>
 
-![smms-dashboard](../assets/img/smms-dashboard.png)
+![smms-dashboard](../assets/img/smms-dashboard.webp)
 
 首次访问时，API Token 是空的，需要点击 **Create Token** 按钮生成
 
-![smms-token](../assets/img/smms-token.png)
+![smms-token](../assets/img/smms-token.webp)
 
 Token 过期时间选择 **No expiration（永不过期）**
 
-![smms-token-create](../assets/img/smms-token-create.png)
+![smms-token-create](../assets/img/smms-token-create.webp)
 
 下图中的 Token 就是图床的 API Key，**复制** 其内容
 
-![smms-token-copy](../assets/img/smms-token-copy.png)
+![smms-token-copy](../assets/img/smms-token-copy.webp)
 
 打开扩展选项页的【基础设置】页面，在【图床】中选择 **SM\.MS 图床**，然后找到 **SM\.MS 图床 API Key** 选项
 
@@ -65,16 +65,16 @@ Token 过期时间选择 **No expiration（永不过期）**
 - 点击 **验证接口** 按钮，如果弹出下图所示的信息，则配置成功
 - 点击 **管理图片** 按钮，进入图片管理页面，可以进行图片的搜索、删除等操作
 
-![smms-enter-key](../assets/img/smms-enter-key.png)
+![smms-enter-key](../assets/img/smms-enter-key.webp)
 
-![smms-pictures](../assets/img/smms-pictures.png)
+![smms-pictures](../assets/img/smms-pictures.webp)
 
 ## 编辑器上传图片
 
 支持以下方式进行图片上传（**批量上传最多 5 张图片，每张图片最大不能超过 5MB**，BiliBili 图床无此限制）
 
-![smms-editor](../assets/img/smms-editor.png)
+![smms-editor](../assets/img/smms-editor.webp)
 
 上传成功后会自动在编辑区里插入图片
 
-![smms-upload](../assets/img/smms-upload.gif)
+![smms-upload](../assets/img/smms-upload.webp)
