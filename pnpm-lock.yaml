@@ -11,7 +11,7 @@ overrides:
 
 patchedDependencies:
   changelogen@0.5.5: 6a329eaee6aa0e2d9c4430fe1fdbbaa6f45d14eefe543d9211fe21d9cbcae7f4
-  cherry-markdown@0.8.39: 2772bf21d1fc46af21162e74b326cc0739abc37208799d367ecfa28c51aaa45f
+  cherry-markdown@0.8.39: 1e4fe5819f3f2c5211869aee95d7e7480a8babf8c49482efa79f4ddfc96d6b63
   emoji-mart-vue-fast@15.0.0: 974c4a0e97d1470553fbd31588d1cbc8d33062bc2d403cc53134a35335c9370b
   pinia@4.0.3: d13964048faa61715b7f572886830dae86ea4d346786829f6b97bd89c2748a24
 
@@ -27,7 +27,7 @@ importers:
         version: 14.4.0(vue@3.5.42(typescript@5.7.3))
       cherry-markdown:
         specifier: 0.8.39
-        version: 0.8.39(patch_hash=2772bf21d1fc46af21162e74b326cc0739abc37208799d367ecfa28c51aaa45f)(supports-color@7.2.0)
+        version: 0.8.39(patch_hash=1e4fe5819f3f2c5211869aee95d7e7480a8babf8c49482efa79f4ddfc96d6b63)(supports-color@7.2.0)
       element-plus:
         specifier: 2.14.5
         version: 2.14.5(vue@3.5.42(typescript@5.7.3))
@@ -8295,7 +8295,7 @@ snapshots:
       undici: 7.29.0
       whatwg-mimetype: 4.0.0
 
-  cherry-markdown@0.8.39(patch_hash=2772bf21d1fc46af21162e74b326cc0739abc37208799d367ecfa28c51aaa45f)(supports-color@7.2.0):
+  cherry-markdown@0.8.39(patch_hash=1e4fe5819f3f2c5211869aee95d7e7480a8babf8c49482efa79f4ddfc96d6b63)(supports-color@7.2.0):
     dependencies:
       '@types/codemirror': 0.0.108
       '@types/dompurify': 2.4.0

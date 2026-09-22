@@ -2,10 +2,19 @@ diff --git a/CHANGELOG.md b/CHANGELOG.md
 deleted file mode 100644
 index d1bd4d07e7c29c580c1f49b2faec807f072ed2e3..0000000000000000000000000000000000000000
 diff --git a/dist/cherry-markdown.css b/dist/cherry-markdown.css
-index 46672f0f9b8927f0830e325c3a8e0fb8b1e8703d..3fec864c58f73407bb24f877045389f75b956bc3 100644
+index 46672f0f9b8927f0830e325c3a8e0fb8b1e8703d..614c7147e39881f1ad970ff5b3e096b8aec31fe0 100644
 --- a/dist/cherry-markdown.css
 +++ b/dist/cherry-markdown.css
-@@ -1183,41 +1183,6 @@ span.CodeMirror-selectedtext {
+@@ -521,7 +521,6 @@ span.CodeMirror-selectedtext {
+ @font-face {
+   font-family: "ch-icon";
+-  src: url("./fonts/ch-icon.eot");
+-  src: url("./fonts/ch-icon.eot?#iefix") format("eot"), url("./fonts/ch-icon.woff2") format("woff2"), url("./fonts/ch-icon.woff") format("woff"), url("./fonts/ch-icon.ttf") format("truetype"), url("./fonts/ch-icon.svg#ch-icon") format("svg");
++  src: url("./fonts/ch-icon.woff2") format("woff2");
+   font-weight: normal;
+   font-style: normal;
+ }
+@@ -1183,41 +1182,6 @@ span.CodeMirror-selectedtext {
      color: #81a2be;
    }
  }
@@ -47,7 +56,7 @@ index 46672f0f9b8927f0830e325c3a8e0fb8b1e8703d..3fec864c58f73407bb24f877045389f7
  .cherry-markdown :not(pre) > code {
    padding: 0.1em;
    border-radius: 0.3em;
-@@ -1356,1082 +1321,6 @@ span.CodeMirror-selectedtext {
+@@ -1356,1082 +1320,6 @@ span.CodeMirror-selectedtext {
    content: counter(level1) "." counter(level2) "." counter(level3) "." counter(level4) "." counter(level5) "." counter(level6) " ";
  }
  
