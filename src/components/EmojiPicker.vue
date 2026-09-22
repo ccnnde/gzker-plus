@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Picker } from 'emoji-mart-vue-fast/src';
-import { browser } from 'wxt/browser';
 
 import { t } from '@/i18n';
-import { EMOJI_CLASS_NAME, emojiIndex, NOTO_EMOJI_FONT } from '@/utils/emoji';
+import { emojiIndex } from '@/utils/emoji';
 
 import type { CSSProperties } from 'vue';
 import type { EmojiObject } from 'emoji-mart-vue-fast/src';
@@ -44,57 +43,6 @@ const emojiI18n = computed(() => {
     },
   };
 });
-
-onBeforeMount(() => {
-  loadEmojiFont();
-});
-
-const loadEmojiFont = () => {
-  const isEmojiFontLoaded = getFontFaceList()
-    .map((item) => item.family)
-    .includes(NOTO_EMOJI_FONT);
-
-  if (isEmojiFontLoaded) {
-    return;
-  }
-
-  const fontFace = document.createElement('style');
-  const emojiFontUrl = browser.runtime.getURL(`/font/${NOTO_EMOJI_FONT}.woff2`);
-
-  fontFace.textContent = `
-    @font-face {
-      font-family: ${NOTO_EMOJI_FONT};
-      src: url(${emojiFontUrl}) format('woff2');
-    }
-
-    span.${EMOJI_CLASS_NAME} {
-      font-family: ${NOTO_EMOJI_FONT};
-    }
-  `;
-
-  document.head.appendChild(fontFace);
-};
-
-/**
- * 获取文档已经加载的字体列表
- * - 在 firefox 浏览器中调用 `[...document.fonts.values()]`  会报错 `Uncaught TypeError: document.fonts.values() is not iterable`
- * - 故使用手动迭代的方式获取 `values`，解决方案参考 https://sidneyliebrand.io/blog/fixing-font-face-set-entries-not-iterable-in-firefox
- * - 此 bug 已经存在于 firefox 的 bugzilla，尚未修复，链接如下
- *    - https://bugzilla.mozilla.org/show_bug.cgi?id=1729089
- *    - https://bugzilla.mozilla.org/show_bug.cgi?id=1780657
- */
-const getFontFaceList = (): FontFace[] => {
-  const fontFaceList: FontFace[] = [];
-  const iterator = (document.fonts as FontFaceSet).values();
-  let result = iterator.next();
-
-  while (!result.done) {
-    fontFaceList.push(result.value);
-    result = iterator.next();
-  }
-
-  return fontFaceList;
-};
 
 const showPicker = () => {
   visible.value = true;

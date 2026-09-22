@@ -1,5 +1,6 @@
 import data from 'emoji-mart-vue-fast/data/google.json';
 import { EmojiIndex } from 'emoji-mart-vue-fast/src';
+import { browser } from 'wxt/browser';
 
 import weiboEmojis from '@/assets/weibo-emojis.json';
 
@@ -34,9 +35,38 @@ const convertEmojiImageToNative = (imageTag: string): string => {
   return emoji || imageTag;
 };
 
+const EMOJI_FONT_STYLE_ID = 'gzk-emoji-font';
+
 export const NOTO_EMOJI_FONT = 'Noto-COLRv1';
 
 export const EMOJI_CLASS_NAME = 'emoji-type-native';
+
+export const loadEmojiFont = (): void => {
+  if (document.getElementById(EMOJI_FONT_STYLE_ID)) {
+    return;
+  }
+
+  const fontUrl = browser.runtime.getURL(`/font/${NOTO_EMOJI_FONT}.woff2`);
+  const style = document.createElement('style');
+  style.id = EMOJI_FONT_STYLE_ID;
+
+  style.textContent = `
+    @font-face {
+      font-family: ${NOTO_EMOJI_FONT};
+      src: url(${fontUrl}) format('woff2');
+    }
+
+    span.${EMOJI_CLASS_NAME} {
+      font-family: ${NOTO_EMOJI_FONT};
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  document.fonts.load(`16px "${NOTO_EMOJI_FONT}"`, '😀').catch((error: unknown) => {
+    console.error('Failed to load Noto Emoji font:', error);
+  });
+};
 
 export const getEmojiById = (emojiId: string): string | null => {
   try {
