@@ -99,6 +99,16 @@ const getImageFilename = (url: URL): string => {
   }
 };
 
+const createImage = (urlText: string, url: URL): HTMLImageElement => {
+  const image = document.createElement('img');
+  image.setAttribute('src', urlText);
+  image.setAttribute('alt', getImageFilename(url));
+  image.setAttribute('loading', 'lazy');
+  image.setAttribute('decoding', 'async');
+
+  return image;
+};
+
 const createUrlReplacement = (candidate: string): LinkifyReplacement | undefined => {
   const { trailingText, url: urlText } = trimUrlCandidate(candidate);
   const url = getHttpUrl(urlText);
@@ -108,14 +118,8 @@ const createUrlReplacement = (candidate: string): LinkifyReplacement | undefined
   }
 
   if (IMAGE_PATH_REGEXP.test(url.pathname)) {
-    const image = document.createElement('img');
-    image.setAttribute('src', urlText);
-    image.setAttribute('alt', getImageFilename(url));
-    image.setAttribute('loading', 'lazy');
-    image.setAttribute('decoding', 'async');
-
     return {
-      node: image,
+      node: createImage(urlText, url),
       trailingText,
     };
   }
@@ -214,6 +218,22 @@ const getMentionCandidateUid = (mentionElement: HTMLAnchorElement): string | und
   return linkedUid;
 };
 
+const renderBareImageLink = (element: HTMLAnchorElement, href: string) => {
+  const hrefUrl = getHttpUrl(href);
+  const linkText = element.textContent?.trim() || '';
+  const linkTextUrl = getHttpUrl(linkText);
+  const isBareImageLink =
+    element.childElementCount === 0 &&
+    IMAGE_PATH_REGEXP.test(hrefUrl?.pathname || '') &&
+    hrefUrl?.href === linkTextUrl?.href;
+
+  if (!hrefUrl || !isBareImageLink) {
+    return;
+  }
+
+  element.replaceChildren(createImage(href, hrefUrl));
+};
+
 const normalizeExistingReplyLinks = (container: DocumentFragment) => {
   const anchorElements = container.querySelectorAll<HTMLAnchorElement>('a[href]');
 
@@ -224,6 +244,10 @@ const normalizeExistingReplyLinks = (container: DocumentFragment) => {
 
     if (isMentionLink || isHttpLink) {
       setExternalLinkAttributes(element);
+    }
+
+    if (isHttpLink) {
+      renderBareImageLink(element, href);
     }
   });
 };

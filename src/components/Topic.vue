@@ -749,6 +749,16 @@ onUnmounted(() => {
     word-break: break-all;
     overflow-wrap: anywhere;
 
+    img:not([src^='/static/emoji'], [src^='https://face.t.sinajs.cn'], [src^='https://img.whzxc.cn/bd'])
+    {
+      margin-bottom: 16px;
+    }
+
+    p > img:last-child,
+    p > :last-child img:last-child {
+      margin-bottom: 0;
+    }
+
     &.markdown-body {
       blockquote {
         font-size: inherit;
