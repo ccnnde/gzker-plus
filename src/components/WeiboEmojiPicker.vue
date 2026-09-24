@@ -33,6 +33,7 @@ defineExpose({
     v-show="isPickerVisible"
     ref="select"
     :placeholder="$t('enhancedTopic.selectWeiboEmoji')"
+    :persistent="false"
     popper-class="editor-picker-popper"
     filterable
     automatic-dropdown
@@ -42,7 +43,7 @@ defineExpose({
     @visible-change="handleVisibleChange"
   >
     <ElOption v-for="item in weiboEmojis" :key="item.name" :value="item.short_names[0] || ''">
-      <img :src="item.imageUrl" />
+      <img :src="item.imageUrl" loading="lazy" />
       :{{ item.short_names[0] || '' }}:
     </ElOption>
   </ElSelect>
