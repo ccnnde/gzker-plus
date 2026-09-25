@@ -104,14 +104,16 @@ const openCreateEditor = async (node: string) => {
   }
 
   isAddContent.value = true;
+  editHistoryId = '';
   topicForm.node = node;
   topicForm.title = '';
   topicForm.content = '';
   resetDialogFullscreen();
   editorVisible.value = true;
 
-  generateEditHistoryId();
   prepareEditorPanel();
+  await nextTick(); // 等待初始化表单触发的监听执行完毕，再开始记录用户编辑。
+  generateEditHistoryId();
 
   if (!nodeList.value.length) {
     nodeList.value = await getNodeList();
@@ -212,13 +214,18 @@ const editorHistoryType = computed<EditHistoryType>(() => {
   return isAddContent.value ? EditHistoryType.TopicCreate : EditHistoryType.TopicModify;
 });
 
-watch(topicForm, () => {
-  if (!editHistoryId) {
-    return;
-  }
+watch(
+  () => {
+    return [topicForm.title, topicForm.content];
+  },
+  () => {
+    if (!editHistoryId) {
+      return;
+    }
 
-  updateEditHistory();
-});
+    updateEditHistory(editHistoryId, { ...topicForm });
+  },
+);
 
 const generateEditHistoryId = () => {
   const loginUserId = storage.settings?.loginUserId as string;
@@ -230,8 +237,8 @@ const generateEditHistoryId = () => {
   }
 };
 
-const updateEditHistory = debounce(() => {
-  saveEditHistory(editHistoryId, topicForm);
+const updateEditHistory = debounce((historyId: string, data: Partial<TopicForm>) => {
+  saveEditHistory(historyId, data);
 }, 200);
 
 const importEditHistory = (data: EditHistoryItem) => {
