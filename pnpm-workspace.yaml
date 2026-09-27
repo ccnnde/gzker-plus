@@ -19,6 +19,7 @@ overrides:
   '@tootallnate/once@': 2.0.1
   'cherry-markdown@0.8.39>mermaid': '-'
   'form-data@': 4.0.6
+  'minimatch@9.0.3': 9.0.9
   'ws@': 8.21.0
   stylelint-config-recommended: 13.0.0
   stylelint-config-standard: 34.0.0
