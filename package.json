@@ -88,7 +88,7 @@
     "@wxt-dev/module-vue": "1.0.3",
     "@wxt-dev/unocss": "1.0.1",
     "@wxt-dev/webextension-polyfill": "1.0.0",
-    "changelogen": "0.5.5",
+    "changelogen": "0.6.2",
     "commitlint-config-git-commit-emoji": "1.0.0",
     "eslint": "8.57.1",
     "eslint-config-alloy": "5.1.2",
