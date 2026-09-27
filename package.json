@@ -117,7 +117,7 @@
     "vite": "^7.3.6",
     "vue-eslint-parser": "9.3.2",
     "vue-tsc": "2.2.12",
-    "web-ext": "9.2.0",
+    "web-ext": "10.7.0",
     "webextension-polyfill": "0.10.0",
     "wxt": "0.21.4"
   },
