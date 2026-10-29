@@ -53,15 +53,61 @@ const updateCheckAllState = (checkedCount: number) => {
 </script>
 
 <template>
-  <ElSpace>
-    <ElCheckbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
-      {{ $t('common.checkAll') }}
-    </ElCheckbox>
-    <ElDivider direction="vertical" />
-    <ElCheckboxGroup :model-value="modelValue" @change="handleCheckedItemsChange">
-      <ElCheckbox v-for="(item, index) in checkItemList" :key="index" :value="item.value">
-        {{ item.label }}
+  <div class="check-all-container">
+    <div class="check-all">
+      <ElCheckbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
+        {{ $t('common.checkAll') }}
       </ElCheckbox>
-    </ElCheckboxGroup>
-  </ElSpace>
+      <ElDivider class="check-all__divider" direction="vertical" />
+      <ElCheckboxGroup class="check-all__items" :model-value="modelValue" @change="handleCheckedItemsChange">
+        <ElCheckbox v-for="(item, index) in checkItemList" :key="index" :value="item.value">
+          {{ item.label }}
+        </ElCheckbox>
+      </ElCheckboxGroup>
+    </div>
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.check-all-container {
+  container-type: inline-size;
+}
+
+.check-all {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 17px;
+  align-items: center;
+
+  :deep(.el-checkbox) {
+    margin-right: 0;
+  }
+}
+
+.check-all__divider {
+  margin: 0;
+}
+
+.check-all__items {
+  display: contents;
+}
+
+@container (width < 360px) {
+  .check-all {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .check-all__divider {
+    display: none;
+  }
+
+  .check-all__items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}
+</style>

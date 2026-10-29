@@ -3,11 +3,21 @@ import { routes } from '@/router';
 import { translateNavigation } from '@/utils';
 
 import AsideItem from './AsideItem.vue';
+
+interface Props {
+  drawer?: boolean;
+}
+
+defineProps<Props>();
+
+const emit = defineEmits<{
+  select: [];
+}>();
 </script>
 
 <template>
-  <ElAside class="aside-content">
-    <ElMenu router :default-active="$route.path">
+  <ElAside :class="['options-aside', { 'options-aside--drawer': drawer }]">
+    <ElMenu router :default-active="$route.path" @select="emit('select')">
       <template v-for="{ path, meta, children } in routes" :key="path">
         <template v-if="meta">
           <ElSubMenu v-if="children" :index="path">
@@ -28,15 +38,35 @@ import AsideItem from './AsideItem.vue';
 </template>
 
 <style lang="scss" scoped>
-.aside-content {
+.options-aside {
+  flex: 0 0 auto;
   width: 250px;
   margin: 20px;
   margin-right: 0;
+  overflow: auto;
   border: 1px solid var(--el-border-color);
   border-radius: 0.5em;
 
   .el-menu {
     border-right: none;
+  }
+}
+
+.options-aside--drawer {
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+
+  .el-menu {
+    padding: 12px;
+  }
+}
+
+@media (width <= 767px) {
+  .options-aside:not(.options-aside--drawer) {
+    display: none;
   }
 }
 </style>

@@ -134,7 +134,7 @@
       "titleDesc": "打开主题时默认从最新回复开始倒序浏览，楼中楼内对话仍保持正序；主题底部可临时切换顺序"
     },
     "smApiKey": {
-      "apiAvailable": "SM.MS 接口可以使用",
+      "apiAvailable": "SM.MS 接口可用",
       "checkApi": "验证接口",
       "explanation": "说明",
       "managePicture": "管理图片",
@@ -142,8 +142,9 @@
       "title": "SM.MS 图床 API Key",
       "titleDesc": "配置 API Key 后可以直接在编辑器中上传图片，点击验证按钮测试接口是否可用",
       "usage": {
-        "fileCount": "文件数量",
-        "storage": "存储空间",
+        "fileCount": "图片",
+        "fileCountValue": "{count} 张",
+        "storage": "已用空间",
         "title": "SM.MS 使用情况"
       },
       "userProfile": {
@@ -187,6 +188,7 @@
     "checkAll": "全选",
     "clear": "清空",
     "clearSelections": "清空选中",
+    "close": "关闭",
     "copySuccessfully": "复制成功",
     "delete": "删除",
     "deleteAll": "删除全部",
@@ -364,7 +366,10 @@
     "invalidCapability": "授权类型无效，请关闭窗口后重试。"
   },
   "options": {
+    "closeNavigation": "关闭导航",
+    "openNavigation": "打开导航",
     "storageFailed": "无法存储数据，请按 F12 打开控制台查看报错信息",
+    "switchLanguage": "切换语言",
     "title": "过早客 Plus 选项"
   },
   "resMessage": {

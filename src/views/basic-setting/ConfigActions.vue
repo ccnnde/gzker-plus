@@ -148,11 +148,24 @@ const resetConfiguration = async () => {
 
 <style lang="scss" scoped>
 .config-actions-content {
+  container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
+  gap: 12px;
+
+  > :deep(.el-button) {
+    max-width: 100%;
+    margin-left: 0;
+  }
 }
 
 .config-actions-file-input {
   display: none;
+}
+
+@container (width < 288px) {
+  .config-actions-content > :deep(.el-button) {
+    width: 100%;
+  }
 }
 </style>

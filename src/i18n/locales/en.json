@@ -142,8 +142,9 @@
       "title": "SM.MS Image Hosting API Key",
       "titleDesc": "After configuring the API Key, you can directly upload images in the editor. Click the verify button to test if the API is available",
       "usage": {
-        "fileCount": "File Count",
-        "storage": "Storage Space",
+        "fileCount": "Images",
+        "fileCountValue": "{count}",
+        "storage": "Used space",
         "title": "SM.MS Usage"
       },
       "userProfile": {
@@ -187,6 +188,7 @@
     "checkAll": "Check All",
     "clear": "Clear",
     "clearSelections": "Clear Selections",
+    "close": "Close",
     "copySuccessfully": "Copy Successful",
     "delete": "Delete",
     "deleteAll": "Delete All",
@@ -364,7 +366,10 @@
     "invalidCapability": "Invalid permission request. Close this window and try again."
   },
   "options": {
+    "closeNavigation": "Close navigation",
+    "openNavigation": "Open navigation",
     "storageFailed": "Unable to store data. Please press F12 to open the console and view the error message",
+    "switchLanguage": "Switch language",
     "title": "Gzker Plus Options"
   },
   "resMessage": {

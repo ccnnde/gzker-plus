@@ -106,3 +106,74 @@ html[data-theme] {
     }
   }
 }
+
+.options-dialog-overlay .el-overlay-dialog {
+  overflow: hidden;
+}
+
+.options-dialog-transition-enter-active,
+.options-dialog-transition-leave-active {
+  transition: opacity var(--el-transition-duration);
+
+  .options-bottom-sheet {
+    transition: opacity var(--el-transition-duration), transform var(--el-transition-duration);
+  }
+}
+
+.options-dialog-transition-enter-from,
+.options-dialog-transition-leave-to {
+  opacity: 0;
+
+  .options-bottom-sheet {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@media (width <= 479px) {
+  .el-dialog.options-bottom-sheet {
+    width: 100% !important;
+    max-width: none;
+    margin: auto 0 0 !important;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .options-dialog-transition-enter-from,
+  .options-dialog-transition-leave-to {
+    .options-bottom-sheet {
+      transform: translateY(100%);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .options-dialog-transition-enter-active,
+  .options-dialog-transition-leave-active,
+  .options-dialog-transition-enter-active .options-bottom-sheet,
+  .options-dialog-transition-leave-active .options-bottom-sheet {
+    transition-duration: 0.01ms;
+  }
+}
+
+@media (width <= 639px) {
+  .radio-group-solid.el-radio-group,
+  .radio-group-transparent.el-radio-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .radio-group-solid.el-radio-group {
+    gap: 8px;
+
+    .el-radio {
+      margin-right: 0;
+    }
+  }
+
+  .radio-group-transparent.el-radio-group {
+    .el-radio-button .el-radio-button__inner {
+      min-height: 40px;
+      padding-right: 0;
+    }
+  }
+}
