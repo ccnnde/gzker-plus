@@ -1,110 +1,20 @@
-import { decode } from 'html-entities';
-
 import { getXsrfToken, request, waitTime } from '@/utils';
 import { mergeTopicReplies } from '@/utils/topic-export';
-import { ReplyType, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
+import { TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
+import {
+  checkAlertInfo,
+  parseBlockedUserList,
+  parseEditedReply,
+  parseEditedTopic,
+  parseNodeList,
+  parseUserInfo,
+  parseUserMessageList,
+} from './page-parser';
 import { parseUserTopic } from './topic-parser';
 
 import type { TreeNode, UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
-
-const parseUserInfo = (htmlStr: string): UserInfo => {
-  return {
-    uid: htmlStr.match(/<div class="username">([^<]+)<\/div>/)?.[1],
-    avatarUrl: htmlStr.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar" \/>/)?.[1],
-    memberNo: htmlStr.match(/过早客第(\d+)号成员/)?.[1],
-    checkInTime: htmlStr.match(/入住于(\d{4}-\d{2}-\d{2})/)?.[1],
-    topicNumber: htmlStr.match(/<a href="\/u\/[^"]+\/topics">(\d+)<\/a>/)?.[1],
-    replyNumber: htmlStr.match(/<a href="\/u\/[^"]+\/replies">(\d+)<\/a>/)?.[1],
-    favoriteNumber: htmlStr.match(/<a href="\/u\/[^"]+\/favorites">(\d+)<\/a>/)?.[1],
-    creditValue: htmlStr.match(/<strong>(\d+)<\/strong> 信用/)?.[1],
-    followed: /<a href="\/f\/user\/[^"]+"[^>]*>取消关注<\/a>/.test(htmlStr),
-    blocked: /<strong>此帐号已屏蔽, <a href="\/u\/\d+\/unblock">解除<\/a>/.test(htmlStr),
-  };
-};
-
-const parseEditedReply = (htmlStr: string): string => {
-  return htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1] || '';
-};
-
-const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
-  const title = htmlStr.match(
-    /<input class="form-control" id="prependedInput" type="text" placeholder="主题" name="title" value="(.+?)">/,
-  )?.[1];
-
-  return {
-    title: decode(title),
-    content: htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1],
-  };
-};
-
-const parseUserMsgList = (htmlStr: string): UserMessage[] => {
-  const msgList = htmlStr.split('<div class="notification-item">');
-
-  if (msgList.length < 2) {
-    return [];
-  }
-
-  const lastMsgIndex = msgList.length - 1;
-  msgList[lastMsgIndex] = msgList[lastMsgIndex]?.split('<div class="ui-footer">')[0] || '';
-  msgList.shift();
-
-  return msgList.map((item): UserMessage => {
-    return {
-      uid: item.match(/<a href="\/u\/([^"]+)">/)?.[1],
-      userLink: item.match(/<a href="(\/u\/[^"]+)">/)?.[1],
-      avatarUrl: item.match(/<a href="\/u\/[^"]+">\n\s+<img src="([^"]+)" alt="" class="avatar" \/>/)?.[1],
-      topicTitle: item.match(/<a href="\/t\/[^"]+">(.+)<\/a>/)?.[1],
-      topicLink: item.match(/<a href="(\/t\/[^"]+)">.+<\/a>/)?.[1],
-      replyType: /回复了你的主题/.test(item) ? ReplyType.Topic : ReplyType.Mention,
-      replyContent: item.match(/<div class="content">(.+)<\/div>/s)?.[1],
-    };
-  });
-};
-
-const parseNodeList = (htmlStr: string): TreeNode[] => {
-  const nodeNavHtmlStr = htmlStr.match(/节点导航.+?<\/h4>.+?<ul>(.+?)<\/ul>/s)?.[1];
-
-  if (!nodeNavHtmlStr) {
-    return [];
-  }
-
-  const nodeTypesHtmlStr = [...nodeNavHtmlStr.matchAll(/<li>.+?<\/li>/gs)];
-
-  return nodeTypesHtmlStr.map(([item]): TreeNode => {
-    const nodeType = item.match(/<label for="">(.+?)<\/label>/)?.[1];
-    const nodeList = [...item.matchAll(/<a href="\/node\/(\w+?)">(.+?)<\/a>/g)].map(
-      (node): TreeNode => ({
-        value: node[1],
-        label: node[2],
-      }),
-    );
-
-    return {
-      value: nodeType,
-      label: nodeType,
-      children: nodeList,
-    };
-  });
-};
-
-const parseBlockedUserList = (htmlStr: string): string[] => {
-  const blockedUsersHtmlStr = [...htmlStr.matchAll(/<span class="username">.+?<\/span>/gs)];
-
-  return blockedUsersHtmlStr.map(([item]) => {
-    return item.match(/<a href="\/u\/([^"]+)">/)?.[1] as string;
-  });
-};
-
-const checkAlertInfo = (htmlStr: string) => {
-  const alertHtmlStr = htmlStr.match(/<form [^>]*>.+?<ul class="alert alert-danger">(.+?)<\/ul>.+?<textarea/s)?.[1];
-
-  if (alertHtmlStr) {
-    const alertInfo = [...alertHtmlStr.matchAll(/<li>(.+?)<\/li>/g)].map((item) => item[1]).join('，');
-    throw new Error(alertInfo);
-  }
-};
 
 export const API_USER = '/u/';
 
@@ -137,7 +47,7 @@ export const getUserMsgList = async (page: number, signal?: AbortSignal): Promis
     signal,
   });
   await waitTime();
-  return parseUserMsgList(data);
+  return parseUserMessageList(data);
 };
 
 export const getUnreadUserMsgNum = (): number => {

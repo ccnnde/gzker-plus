@@ -39,9 +39,6 @@ importers:
       emoji-mart-vue-fast:
         specifier: 15.0.0
         version: 15.0.0(patch_hash=974c4a0e97d1470553fbd31588d1cbc8d33062bc2d403cc53134a35335c9370b)(vue@3.5.42(typescript@5.7.3))
-      html-entities:
-        specifier: 2.5.2
-        version: 2.5.2
       js-cookie:
         specifier: 3.0.8
         version: 3.0.8
@@ -3263,9 +3260,6 @@ packages:
   html-encoding-sniffer@3.0.0:
     resolution: {integrity: sha512-oWv4T4yJ52iKrufjnyZPkrN0CH3QnrUqdB6In1g5Fe1mia8GmF36gnfNySxoZtxD5+NmYw1EElVXiBk93UeskA==}
     engines: {node: '>=12'}
-
-  html-entities@2.5.2:
-    resolution: {integrity: sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==}
 
   html-escaper@3.0.3:
     resolution: {integrity: sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ==}
@@ -8986,8 +8980,6 @@ snapshots:
   html-encoding-sniffer@3.0.0:
     dependencies:
       whatwg-encoding: 2.0.0
-
-  html-entities@2.5.2: {}
 
   html-escaper@3.0.3: {}
 
