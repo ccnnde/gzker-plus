@@ -5,15 +5,9 @@ import { mergeTopicReplies } from '@/utils/topic-export';
 import { ReplyType, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
-import type {
-  TreeNode,
-  UserInfo,
-  UserMessage,
-  UserReplyItem,
-  UserTopic,
-  UserTopicDetail,
-  UserTopicStatus,
-} from '@/types';
+import { parseUserTopic } from './topic-parser';
+
+import type { TreeNode, UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
 
 const parseUserInfo = (htmlStr: string): UserInfo => {
   return {
@@ -43,121 +37,6 @@ const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
     title: decode(title),
     content: htmlStr.match(/<textarea [^>]*>(.+?)<\/textarea>/s)?.[1],
   };
-};
-
-const parseUserTopic = (htmlStr: string): UserTopic => {
-  let detail: UserTopicDetail = {};
-  let list: UserReplyItem[] = [];
-  let total = htmlStr.match(/<div class="ui-header">.+?<span>共收到(\d+)条回复<\/span>/s)?.[1];
-
-  if (total === undefined) {
-    detail = parseTopicDetail(htmlStr);
-    total = '0';
-  } else {
-    const [detailHtmlStr = '', replyHtmlStr = ''] = htmlStr.split('class="topic-reply');
-    detail = parseTopicDetail(detailHtmlStr);
-    list = parseTopicReplyList(replyHtmlStr);
-  }
-
-  return {
-    detail,
-    status: parseTopicStatus(htmlStr),
-    reply: {
-      total,
-      list,
-    },
-  };
-};
-
-const parseTopicDetail = (htmlStr: string): UserTopicDetail => {
-  const topicDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
-  const topicElement = topicDocument.querySelector('.topic-detail');
-  const contentElement = topicElement?.querySelector(':scope > .ui-content');
-  const editInfoElement = contentElement?.querySelector(':scope > .edit-info');
-  const editInfo = editInfoElement?.textContent?.trim();
-  const tags = Array.from(
-    topicElement?.querySelectorAll<HTMLAnchorElement>(':scope > .topic-tags > a.tag-badge') || [],
-  ).map((element) => ({
-    name: element.textContent?.trim() || '',
-    href: element.getAttribute('href') || '',
-  }));
-
-  editInfoElement?.remove();
-
-  return {
-    title: decode(htmlStr.match(/<h3 class="title">([^<]+)<\/h3>/)?.[1]),
-    authorId: htmlStr.match(/<a href="\/u\/([^"]+)"( target="_blank")?>/)?.[1],
-    authorLink: htmlStr.match(/<a href="(\/u\/[^"]+)"( target="_blank")?>/)?.[1],
-    avatarUrl: htmlStr.match(
-      /<a href="\/u\/[^"]+"(?: target="_blank")?>\n\s+<img src="([^"]+)" alt="" class="avatar"( \/)?>/,
-    )?.[1],
-    meta: {
-      nodeInfo: htmlStr.match(/<span class="node">(.+)<\/span>/)?.[1],
-      authorInfo: htmlStr.match(/<span class="username">(.+?)<\/span>/s)?.[1],
-      createdTime: htmlStr.match(/<span class="created-time">(.+)<\/span>/)?.[1],
-      lastReplyUser: htmlStr.match(/<span class="last-reply-username">(.+?)<\/span>/s)?.[1],
-      lastReplyTime: htmlStr.match(/<span class="last-reply-time">(.+)<\/span>/)?.[1],
-    },
-    content: contentElement?.innerHTML,
-    editInfo,
-    tags,
-    liked: /<a href="" class="J_topicVote" data-type="">感谢已表示<\/a>/.test(htmlStr),
-    likeNumber: htmlStr.match(/<span class="up_vote fr mr10">(\d+) 人赞<\/span>/)?.[1],
-    favorited: /<a href="[^"]+" class="J_topicFavorite" data-type="unfavorite">取消收藏<\/a>/.test(htmlStr),
-    favoriteNumber: htmlStr.match(/<span class="favorited fr mr10">(\d+) 人收藏<\/span>/)?.[1],
-    clickNumber: htmlStr.match(/<span class="hits fr mr10">(\d+) 次点击<\/span>/)?.[1],
-    editable: /<a href="\/t\/edit\/\d+" class="fr hidden-mobile">编辑主题<\/a>/.test(htmlStr),
-  };
-};
-
-const parseTopicStatus = (htmlStr: string): UserTopicStatus => {
-  const createReplyHtmlStr =
-    htmlStr.split('<div class="topic-reply-create')[1]?.split('<div class="col-md-3 sidebar-right')[0] || '';
-
-  return {
-    unbindedPhone: /请绑定手机号后，再发言/.test(createReplyHtmlStr),
-    locked: /本帖已锁/.test(createReplyHtmlStr),
-  };
-};
-
-const parseTopicReplyList = (htmlStr: string): UserReplyItem[] => {
-  const replyList = htmlStr.split('<div class="reply-item">');
-
-  if (replyList.length < 2) {
-    return [];
-  }
-
-  const lastReplyIndex = replyList.length - 1;
-  replyList[lastReplyIndex] = replyList[lastReplyIndex]?.split('<div class="ui-footer">')[0] || '';
-  replyList.shift();
-
-  return replyList.map((item): UserReplyItem => {
-    const metaHtmlStr = item.match(/<div class="meta">(.+?)<\/div>/s)?.[1] || '';
-    const uncommentedMetaHtmlStr = metaHtmlStr.replace(/<!--.*?-->/gs, '');
-    const [timeMatch, ipMatch] = [
-      ...uncommentedMetaHtmlStr.matchAll(/<span class="time">(?!(?:楼主|管理员)<\/span>)([^<]+)<\/span>/g),
-    ];
-
-    return {
-      uid: item.match(/<a href="\/u\/([^"]+)"( target="_blank")?>/)?.[1],
-      userLink: item.match(/<a href="(\/u\/[^"]+)"( target="_blank")?>/)?.[1],
-      avatarUrl: item.match(
-        /<a href="\/u\/[^"]+"(?: target="_blank")?>\n\s+<img src="([^"]+)" alt="" class="avatar"( \/)?>/,
-      )?.[1],
-      isOriginalPoster: /<span class="time">楼主<\/span>/.test(uncommentedMetaHtmlStr),
-      isAdministrator: /<i class="icon-group" title="管理员"><\/i>|<span class="time">管理员<\/span>/.test(
-        uncommentedMetaHtmlStr,
-      ),
-      replyId: item.match(/<a class="J_replyVote" data-count="\d+" href="\/replyVote\?reply_id=(\d+)">/)?.[1],
-      replyNo: item.match(/<span class="fr floor">#(\d+)<\/span>/)?.[1],
-      replyTime: timeMatch?.[1],
-      replyIp: ipMatch?.[1],
-      content: item.match(/<span class="content">(.+)<\/span>/s)?.[1],
-      liked: false,
-      likeNumber: item.match(/<a class="J_replyVote" data-count="(\d+)" href="[^"]+">/)?.[1],
-      editable: /<a href="\/reply\/edit\/\d+">编辑回复<\/a>/.test(item),
-    };
-  });
 };
 
 const parseUserMsgList = (htmlStr: string): UserMessage[] => {
