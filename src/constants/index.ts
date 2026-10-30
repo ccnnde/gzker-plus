@@ -12,6 +12,11 @@ export const GZK_URL = 'https://www.guozaoke.com';
  */
 export const GZK_URL_PATTERN = '*://www.guozaoke.com/*';
 
+/**
+ * 过早客官方 AI 智能体用户名
+ */
+export const GZK_AI_AGENT_UID = 'huanxituo';
+
 export const BILI_IMAGE_HOST_ORIGIN = 'https://api.bilibili.com';
 
 export const BILI_IMAGE_PAGE_ORIGIN = 'https://www.bilibili.com';

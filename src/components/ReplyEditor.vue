@@ -16,6 +16,7 @@ import {
   saveEditHistory,
 } from '@/utils/edit-history';
 import { convertWeiboEmojiToImg, convertWeiboImgToEmoji } from '@/utils/emoji';
+import { GZK_AI_AGENT_UID } from '@/constants';
 
 import ContentEditor from './ContentEditor.vue';
 import EmojiPicker from './EmojiPicker.vue';
@@ -79,9 +80,11 @@ const editorFullscreenClass = computed(() => {
 });
 
 const uidList = computed(() => {
-  let replyUids = props.replyList.map((item) => item.uid as string);
-  replyUids = [...new Set(replyUids)];
-  return replyUids;
+  const replyUids = props.replyList.flatMap(({ uid }) => {
+    return uid && uid !== GZK_AI_AGENT_UID ? [uid] : [];
+  });
+
+  return [GZK_AI_AGENT_UID, ...new Set(replyUids)];
 });
 
 watch(
