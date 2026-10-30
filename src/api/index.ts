@@ -1,8 +1,4 @@
 import { getXsrfToken, request, waitTime } from '@/utils';
-import { mergeTopicReplies } from '@/utils/topic-export';
-import { TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
-import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
-
 import {
   checkAlertInfo,
   parseBlockedUserList,
@@ -11,8 +7,11 @@ import {
   parseNodeList,
   parseUserInfo,
   parseUserMessageList,
-} from './page-parser';
-import { parseUserTopic } from './topic-parser';
+} from '@/utils/page-parser';
+import { mergeTopicReplies } from '@/utils/topic-export';
+import { parseUserTopic } from '@/utils/topic-parser';
+import { TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
+import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type { TreeNode, UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
 
