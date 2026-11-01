@@ -118,7 +118,7 @@
     "vue-tsc": "2.2.12",
     "web-ext": "10.7.0",
     "webextension-polyfill": "0.10.0",
-    "wxt": "0.21.4"
+    "wxt": "0.21.5"
   },
   "packageManager": "pnpm@11.20.0",
   "engines": {
