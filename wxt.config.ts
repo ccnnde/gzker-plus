@@ -7,7 +7,7 @@ import Components from 'unplugin-vue-components/vite';
 import Markdown from 'unplugin-vue-markdown/vite';
 import { defineConfig } from 'wxt';
 
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { BILI_IMAGE_HOST_ORIGIN, BILI_IMAGE_PAGE_ORIGIN, SM_IMAGE_HOST_ORIGIN } from './src/constants';
@@ -22,6 +22,32 @@ const biliImageHostPermission = `${BILI_IMAGE_HOST_ORIGIN}/*`;
 const gzkMatches = ['*://www.guozaoke.com/*'];
 const chromiumProfile = resolve('.wxt/chrome-data');
 const firefoxProfile = resolve('.wxt/firefox-data');
+
+const isPreferenceMap = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+};
+
+const getChromiumPreferences = (): Record<string, unknown> => {
+  const preferencesPath = resolve(chromiumProfile, 'Default', 'Preferences');
+
+  if (!existsSync(preferencesPath)) {
+    return {};
+  }
+
+  try {
+    const preferences = JSON.parse(readFileSync(preferencesPath, 'utf8')) as unknown;
+
+    if (!isPreferenceMap(preferences) || !isPreferenceMap(preferences.devtools)) {
+      return {};
+    }
+
+    return {
+      devtools: preferences.devtools,
+    };
+  } catch {
+    return {};
+  }
+};
 
 const getBrowserManifestFields = (browser: string) => {
   const permissions = [...extensionPermissions];
@@ -153,6 +179,7 @@ export default defineConfig({
   }),
   webExt: {
     startUrls: ['https://www.guozaoke.com/'],
+    chromiumPref: getChromiumPreferences(),
     chromiumProfile,
     firefoxProfile,
     keepProfileChanges: true,
