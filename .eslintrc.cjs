@@ -54,6 +54,7 @@ module.exports = {
   },
   globals: {},
   rules: {
+    '@unocss/order-attributify': 'off',
     'object-shorthand': ['error', 'always'],
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
