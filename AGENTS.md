@@ -29,6 +29,7 @@
 - Props 先定义组件内 `interface Props`，再传给 `defineProps<Props>()`；Emits 直接以内联类型参数传给 `defineEmits<{ ... }>()`，不单独定义 interface；只有 Props 需要默认值时才使用 `withDefaults`。
 - Vue、Element Plus 和 Vue 内置组件使用 PascalCase；HTML 元素使用小写；模板属性和事件使用 kebab-case。
 - 多行标签每行一个属性，顺序为：`ref`、Vue 指令、class/style、其他 props、事件。`>` 或 `/>` 单独成行并与开始标签对齐，闭合标签也与开始标签对齐；没有子内容的组件使用自闭合标签。
+- Vue 模板中相邻标签之间不保留无意义空行，不使用空行分隔连续的模板结构。
 - 覆盖未 Teleport 的子组件时使用 `:deep()`。跨组件公共样式放在 `src/styles/`；Teleport 到组件根外的元素可使用必要的全局样式，并用组件专属类名限制作用范围。
 - Scoped CSS 类必须带由组件名转换而来的 kebab-case 前缀。
 
