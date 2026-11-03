@@ -21,13 +21,6 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
-.el-input__inner:focus-visible,
-.el-select__input:focus-visible,
-.el-textarea__inner:focus-visible {
-  outline: none !important;
-  outline-offset: 0 !important;
-}
-
 .gzk-reply-item-flash {
   animation: gzk-reply-highlight-flash 800ms ease-out;
 }
@@ -279,6 +272,7 @@ form.gzk-header-search.gzk-search-enhanced {
   }
 }
 
+// 集中覆盖浏览器、论坛附加的轮廓和阴影等样式
 html {
   a:focus,
   a:focus-visible {
@@ -298,6 +292,25 @@ html {
       outline: none;
       box-shadow: none;
     }
+  }
+
+  /*
+   * 移除论坛 :focus-visible 添加的 2px 实线蓝色轮廓（#5b9bd5）及 2px 偏移。
+   * 保留 Element Plus 外层容器的焦点样式，用 !important 覆盖论坛规则。
+   */
+  .el-input__inner:focus-visible,
+  .el-select__input:focus-visible,
+  .el-textarea__inner:focus-visible {
+    outline: none !important;
+    outline-offset: 0 !important;
+  }
+
+  /*
+   * 覆盖论坛 [tabindex]:focus:not(:focus-visible) 的 box-shadow: none !important。
+   * 防止点击筛选浮层空白或快捷时间项后阴影消失，恢复 Element Plus 默认阴影。
+   */
+  .gzk-search-filter-popover.el-popover:focus:not(:focus-visible) {
+    box-shadow: var(--el-box-shadow-light) !important;
   }
 }
 
