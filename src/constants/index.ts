@@ -220,6 +220,32 @@ export const enum ReplyOrder {
   Desc = 'desc',
 }
 
+export const enum SearchScope {
+  All = 'all',
+  Title = 'title',
+  Topic = 'topic',
+  Reply = 'reply',
+}
+
+export const enum SearchSort {
+  Relevance = 'relevance',
+  Newest = 'newest',
+}
+
+export const enum SearchResultType {
+  Topic = 'topic',
+  Reply = 'reply',
+}
+
+export const enum SearchTimePreset {
+  All = 'all',
+  Day = 'day',
+  Week = 'week',
+  Month = 'month',
+  HalfYear = 'half-year',
+  Custom = 'custom',
+}
+
 export const enum OptionsKey {
   BlankLink = 'blankLink',
   DarkMode = 'darkMode',

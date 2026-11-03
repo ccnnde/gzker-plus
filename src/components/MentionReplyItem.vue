@@ -57,7 +57,7 @@ const handleAnimationEnd = (event: AnimationEvent) => {
   }
 
   &.mention-reply-item-flash {
-    animation: mention-reply-item-flash 800ms ease-out;
+    animation: gzk-reply-highlight-flash 800ms ease-out;
   }
 }
 
@@ -74,16 +74,5 @@ const handleAnimationEnd = (event: AnimationEvent) => {
   line-height: 1.2;
   color: var(--el-text-color-secondary);
   text-align: right;
-}
-
-@keyframes mention-reply-item-flash {
-  0%,
-  100% {
-    background-color: transparent;
-  }
-
-  35% {
-    background-color: var(--el-color-primary-light-9);
-  }
 }
 </style>

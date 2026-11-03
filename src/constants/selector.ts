@@ -59,9 +59,14 @@ export const SELECTOR_USER_INFO_TRIGGER = '[data-gzk-user-info-trigger]';
 export const SELECTOR_MSG_UNREAD_INDICATOR = 'a.notification-indicator.contextually-unread';
 
 /**
- * 搜索表单容器元素
+ * 搜索表单元素
  */
-export const SELECTOR_SEARCH_FORM = '.navbar-form .form-group';
+export const SELECTOR_SEARCH_FORM = 'form.J_search.gzk-header-search';
+
+/**
+ * 移动端搜索入口元素
+ */
+export const SELECTOR_MOBILE_SEARCH_LINK = '.gzk-mobile-search > a[href="/search"]';
 
 /**
  * 非 emoji 图片元素

@@ -1,4 +1,4 @@
-import type { Component, Ref } from 'vue';
+import type { Component, ComputedRef, Ref } from 'vue';
 import type { Pinia } from 'pinia';
 import type { LoadingInstance } from 'element-plus';
 import type Viewer from 'viewerjs';
@@ -20,6 +20,10 @@ import type {
   ReplyOrder,
   ReplyPreloadMode,
   ReplyType,
+  SearchResultType,
+  SearchScope,
+  SearchSort,
+  SearchTimePreset,
 } from '@/constants';
 
 declare global {
@@ -489,4 +493,82 @@ export interface SearchHistoryItem {
   id: string;
   keyword: string;
   timestamp: number;
+}
+
+export interface SearchParams {
+  q: string;
+  scope?: SearchScope;
+  sort?: SearchSort;
+  node?: number;
+  author?: string;
+  since?: string;
+  until?: string;
+  p?: number;
+}
+
+export type SearchDateField = 'since' | 'until';
+
+export interface SearchFilters {
+  scope: SearchScope;
+  sort: SearchSort;
+  node: number;
+  author: string;
+  since: string;
+  until: string;
+}
+
+export interface SearchSortOption {
+  label: string;
+  value: SearchSort;
+}
+
+export interface SearchTimeOption {
+  label: string;
+  value: SearchTimePreset;
+}
+
+export interface SearchFiltersController {
+  filters: SearchFilters;
+  timePreset: Ref<SearchTimePreset>;
+  sortOptions: ComputedRef<SearchSortOption[]>;
+  timeOptions: ComputedRef<SearchTimeOption[]>;
+  activeFilterCount: ComputedRef<number>;
+  getFilterKey: () => string;
+  getSearchParams: (keyword: string, page?: number) => SearchParams;
+  validateDateRange: () => boolean;
+  resetFilterValues: () => void;
+  applyTimePreset: (preset: SearchTimePreset) => void;
+  updateDateRange: (field: SearchDateField, value: unknown) => boolean;
+  disabledStartDate: (date: Date) => boolean;
+  disabledEndDate: (date: Date) => boolean;
+}
+
+export interface SearchTopicItem {
+  title?: string;
+  link?: string;
+  topicId?: string;
+  replyId?: string;
+  nodeName?: string;
+  nodeLink?: string;
+  authorId?: string;
+  authorLink?: string;
+  createdTime?: string;
+  matchType: SearchResultType;
+  excerpt?: string;
+}
+
+export interface SearchNodeOption {
+  value: number;
+  label: string;
+}
+
+export interface SearchTopicResult {
+  query: string;
+  page: number;
+  elapsedMilliseconds?: number;
+  emptyMessage?: string;
+  notice?: string;
+  previousPage?: number;
+  nextPage?: number;
+  list: SearchTopicItem[];
 }

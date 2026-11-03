@@ -5,6 +5,8 @@ import {
   parseEditedReply,
   parseEditedTopic,
   parseNodeList,
+  parseSearchNodeOptions,
+  parseSearchTopicResult,
   parseUserInfo,
   parseUserMessageList,
 } from '@/utils/page-parser';
@@ -13,13 +15,25 @@ import { parseUserTopic } from '@/utils/topic-parser';
 import { TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
-import type { TreeNode, UserInfo, UserMessage, UserReplyItem, UserTopic, UserTopicDetail } from '@/types';
+import type {
+  SearchNodeOption,
+  SearchParams,
+  SearchTopicResult,
+  TreeNode,
+  UserInfo,
+  UserMessage,
+  UserReplyItem,
+  UserTopic,
+  UserTopicDetail,
+} from '@/types';
 
 export const API_USER = '/u/';
 
 export const API_TOPIC = '/t/';
 
 export const API_MSG = '/notifications';
+
+export const API_SEARCH = '/search';
 
 export const getUserInfo = async (uid: string): Promise<UserInfo> => {
   const data = await request(`${API_USER}${uid}`);
@@ -123,6 +137,46 @@ export const getTopicExportSnapshot = async (topicId: string, signal?: AbortSign
       list: snapshotReplies,
     },
   };
+};
+
+export const getSearchPath = (params: SearchParams): string => {
+  const searchParams = new URLSearchParams({
+    q: params.q,
+  });
+
+  const optionalParams = {
+    scope: params.scope,
+    sort: params.sort,
+    node: params.node,
+    author: params.author,
+    since: params.since,
+    until: params.until,
+    p: params.p,
+  };
+
+  Object.entries(optionalParams).forEach(([key, value]) => {
+    if (value !== undefined) {
+      searchParams.set(key, String(value));
+    }
+  });
+
+  return `${API_SEARCH}?${searchParams.toString()}`;
+};
+
+export const getSearchNodeOptions = async (signal?: AbortSignal): Promise<SearchNodeOption[]> => {
+  const data = await request(API_SEARCH, {
+    signal,
+  });
+
+  return parseSearchNodeOptions(data);
+};
+
+export const searchTopic = async (params: SearchParams, signal?: AbortSignal): Promise<SearchTopicResult> => {
+  const data = await request(getSearchPath(params), {
+    signal,
+  });
+
+  return parseSearchTopicResult(data);
 };
 
 export const favoriteTopic = async (topicId?: string): Promise<string> => {
