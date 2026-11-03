@@ -134,7 +134,7 @@ const handleUserFollow = (event: MouseEvent) => {
 
   const currentUserInfo = userInfo.value;
 
-  if (!currentUserInfo) {
+  if (!currentUserInfo || currentUserInfo.blocked) {
     return;
   }
 
@@ -259,7 +259,12 @@ const handleUserBlock = (event: MouseEvent) => {
           </ElRow>
           <ElRow :gutter="10">
             <ElCol :span="12">
-              <ElButton class="user-operate-btn" type="primary" :disabled="isUserMySelf" @click="handleUserFollow">
+              <ElButton
+                class="user-operate-btn"
+                type="primary"
+                :disabled="isUserMySelf || userInfo.blocked"
+                @click="handleUserFollow"
+              >
                 {{ userInfo.followed ? $t('floatUserInfo.followed') : $t('floatUserInfo.follow') }}
               </ElButton>
             </ElCol>

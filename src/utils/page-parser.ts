@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash-es';
 
-import { ReplyType, SearchResultType } from '@/constants';
+import { GZK_URL, ReplyType, SearchResultType } from '@/constants';
 
 import type {
   SearchNodeOption,
@@ -86,11 +86,35 @@ const highlightSearchKeywords = (element: HTMLElement | null, query: string): st
   return element.innerHTML || undefined;
 };
 
+const isUserBlocked = (userDocument: Document, memberNo: string | undefined) => {
+  if (!memberNo) {
+    return false;
+  }
+
+  const unblockLinks = userDocument.querySelectorAll<HTMLAnchorElement>('a[href*="/unblock"]');
+  const unblockPath = `/u/${memberNo}/unblock`;
+
+  for (const link of unblockLinks) {
+    try {
+      const url = new URL(link.getAttribute('href') || '', GZK_URL);
+
+      if (url.origin === GZK_URL && url.pathname === unblockPath) {
+        return true;
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return false;
+};
+
 export const parseUserInfo = (htmlStr: string): UserInfo => {
   const userDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
   const profileElement = userDocument.querySelector('.user-page .profile');
   const statisticsElement = userDocument.querySelector('.user-page .usercard');
   const profileText = profileElement?.textContent || '';
+  const memberNo = profileText.match(/过早客第(\d+)号成员/)?.[1];
   const followed = Array.from(profileElement?.querySelectorAll<HTMLAnchorElement>('a[href^="/f/user/"]') || []).some(
     (element) => element.textContent?.trim() === '取消关注',
   );
@@ -98,7 +122,7 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
   return {
     uid: getElementText(profileElement, '.username'),
     avatarUrl: profileElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
-    memberNo: profileText.match(/过早客第(\d+)号成员/)?.[1],
+    memberNo,
     checkInTime: profileText.match(/入住于(\d{4}-\d{2}-\d{2})/)?.[1],
     topicNumber: getElementText(statisticsElement, '.status-topic strong'),
     replyNumber: getElementText(statisticsElement, '.status-reply strong'),
@@ -114,7 +138,7 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
       statisticsElement?.querySelector('.status-favorite strong [title]')?.getAttribute('title') || undefined,
     creditValue: getElementText(statisticsElement, '.status-reputation strong'),
     followed,
-    blocked: Boolean(profileElement?.querySelector('a[href$="/unblock"]')),
+    blocked: isUserBlocked(userDocument, memberNo),
   };
 };
 
