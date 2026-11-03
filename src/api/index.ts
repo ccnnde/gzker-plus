@@ -1,4 +1,4 @@
-import { getXsrfToken, request, waitTime } from '@/utils';
+import { getXsrfToken, request, requestJson, waitTime } from '@/utils';
 import {
   checkAlertInfo,
   parseBlockedUserList,
@@ -16,6 +16,7 @@ import { TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants'
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type {
+  FavoriteResponse,
   SearchNodeOption,
   SearchParams,
   SearchTopicResult,
@@ -25,7 +26,22 @@ import type {
   UserReplyItem,
   UserTopic,
   UserTopicDetail,
+  VoteResponse,
 } from '@/types';
+
+const vote = async (url: string, voted: boolean): Promise<VoteResponse> => {
+  return requestJson<VoteResponse>(url, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+    },
+    body: new URLSearchParams({
+      voted: voted ? '1' : '0',
+      _xsrf: getXsrfToken(),
+    }),
+  });
+};
 
 export const API_USER = '/u/';
 
@@ -179,19 +195,32 @@ export const searchTopic = async (params: SearchParams, signal?: AbortSignal): P
   return parseSearchTopicResult(data);
 };
 
-export const favoriteTopic = async (topicId?: string): Promise<string> => {
-  const data = await request(`/favorite?topic_id=${topicId}`);
-  return data;
+export const favoriteTopic = async (topicId?: string): Promise<FavoriteResponse> => {
+  return requestJson<FavoriteResponse>(`/favorite?topic_id=${topicId}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRFToken': getXsrfToken(),
+    },
+  });
 };
 
-export const unfavoriteTopic = async (topicId?: string): Promise<string> => {
-  const data = await request(`/unfavorite?topic_id=${topicId}`);
-  return data;
+export const unfavoriteTopic = async (topicId?: string): Promise<FavoriteResponse> => {
+  return requestJson<FavoriteResponse>(`/unfavorite?topic_id=${topicId}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-XSRFToken': getXsrfToken(),
+    },
+  });
 };
 
-export const likeTopic = async (topicId?: string): Promise<string> => {
-  const data = await request(`/vote?topic_id=${topicId}`);
-  return data;
+export const likeTopic = async (topicId: string | undefined, voted: boolean): Promise<VoteResponse> => {
+  return vote(`/vote?topic_id=${topicId}`, voted);
 };
 
 export const getEditedTopic = async (topicId?: string): Promise<UserTopicDetail> => {
@@ -223,9 +252,8 @@ export const modifyTopic = async (topicId: string, title: string, content: strin
   checkAlertInfo(data);
 };
 
-export const likeReply = async (replyId?: string): Promise<string> => {
-  const data = await request(`/replyVote?reply_id=${replyId}`);
-  return data;
+export const likeReply = async (replyId: string | undefined, voted: boolean): Promise<VoteResponse> => {
+  return vote(`/replyVote?reply_id=${replyId}`, voted);
 };
 
 export const getEditedReply = async (replyId?: string): Promise<UserReplyItem> => {

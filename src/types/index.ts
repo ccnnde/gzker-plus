@@ -327,6 +327,17 @@ export interface ApiJsonResponse {
   success: 0 | 1;
 }
 
+export interface VoteResponse extends ApiJsonResponse {
+  voted: boolean;
+  count: number;
+  changed: boolean;
+}
+
+export interface FavoriteResponse extends ApiJsonResponse {
+  favorited: boolean;
+  count: number;
+}
+
 export interface Keybindings {
   [key: string]: ((e: KeyboardEvent) => void) | undefined;
 }

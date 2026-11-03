@@ -40,7 +40,6 @@ import {
   REPLY_HOVER_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
-import { SUCCESS_CANCEL_FAVORITE_TOPIC, SUCCESS_FAVORITE_TOPIC, SUCCESS_LIKE } from '@/constants/res-msg';
 
 import ElementConfig from './ElementConfig.vue';
 import HotRepliesDialog from './HotRepliesDialog.vue';
@@ -233,23 +232,12 @@ const handleTopicFavorite = () => {
       return;
     }
 
-    const { favorited, favoriteNumber } = topicDetail.value;
+    const data = topicDetail.value.favorited
+      ? await unfavoriteTopic(topicId.value)
+      : await favoriteTopic(topicId.value);
 
-    if (favorited) {
-      const data = await unfavoriteTopic(topicId.value);
-
-      if (data === SUCCESS_CANCEL_FAVORITE_TOPIC) {
-        topicDetail.value.favorited = false;
-        topicDetail.value.favoriteNumber = String(Number(favoriteNumber) - 1);
-      }
-    } else {
-      const data = await favoriteTopic(topicId.value);
-
-      if (data === SUCCESS_FAVORITE_TOPIC) {
-        topicDetail.value.favorited = true;
-        topicDetail.value.favoriteNumber = String(Number(favoriteNumber) + 1);
-      }
-    }
+    topicDetail.value.favorited = data.favorited;
+    topicDetail.value.favoriteNumber = String(data.count);
   });
 };
 
@@ -259,13 +247,10 @@ const handleTopicLike = () => {
       return;
     }
 
-    const { likeNumber } = topicDetail.value;
-    const data = await likeTopic(topicId.value);
+    const data = await likeTopic(topicId.value, !topicDetail.value.liked);
 
-    if (data === SUCCESS_LIKE) {
-      topicDetail.value.liked = true;
-      topicDetail.value.likeNumber = String(Number(likeNumber) + 1);
-    }
+    topicDetail.value.liked = data.voted;
+    topicDetail.value.likeNumber = String(data.count);
   });
 };
 

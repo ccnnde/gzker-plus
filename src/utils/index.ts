@@ -15,7 +15,6 @@ import {
   CAN_NOT_FAVORITE_YOUR_TOPIC,
   CAN_NOT_LIKE_YOUR_REPLY,
   CAN_NOT_LIKE_YOUR_TOPIC,
-  SUCCESS_LIKE,
   USER_NOT_LOGIN,
 } from '@/constants/res-msg';
 import { SELECTOR_LOGIN_USER_LINK, SELECTOR_TOP_NAVBAR, SELECTOR_TOPIC_LINK } from '@/constants/selector';
@@ -30,6 +29,7 @@ import type {
   ScriptAppOptions,
   StorageSettings,
   UserReplyItem,
+  VoteResponse,
 } from '@/types';
 
 const getResMessage = (msg: string): string => {
@@ -47,6 +47,26 @@ const getResMessage = (msg: string): string => {
     default:
       return msg;
   }
+};
+
+const requestText = async (url: string, init?: RequestInit): Promise<string> => {
+  const res = await fetch(GZK_URL + url, init);
+
+  if (!res.ok || res.status !== 200) {
+    throw new Error(`HTTP Error: ${res.status}`);
+  }
+
+  if (res.redirected && res.url.includes('/login')) {
+    throw new Error(t('common.plzLogin'));
+  }
+
+  const data = await res.text();
+
+  if (!data) {
+    throw new Error(t('common.emptyData'));
+  }
+
+  return data;
 };
 
 const blockedTopicDisplayValues = new Map<HTMLElement, string>();
@@ -124,22 +144,19 @@ export const createDebouncedStorageSync = () => {
   );
 };
 
+export const requestJson = async <T extends ApiJsonResponse>(url: string, init?: RequestInit): Promise<T> => {
+  const text = await requestText(url, init);
+  const data = JSON.parse(text) as T;
+
+  if (!data.success) {
+    throw new Error(getResMessage(data.message));
+  }
+
+  return data;
+};
+
 export const request = async (url: string, init?: RequestInit): Promise<string> => {
-  const res = await fetch(GZK_URL + url, init);
-
-  if (!res.ok || res.status !== 200) {
-    throw new Error(`HTTP Error: ${res.status}`);
-  }
-
-  if (res.redirected && res.url.includes('/login')) {
-    throw new Error(t('common.plzLogin'));
-  }
-
-  const data = await res.text();
-
-  if (!data) {
-    throw new Error(t('common.emptyData'));
-  }
+  const data = await requestText(url, init);
 
   // 若 JSON.parse(data) 未报错，代表返回的数据是 JSON 格式的字符串，否则为 HTML 字符串
   try {
@@ -201,14 +218,9 @@ export const getReplyKey = (replyItem: UserReplyItem, index: number): string => 
   return `reply-index:${index}`;
 };
 
-export const handleReplyLike = (replyItem: UserReplyItem, msg: string) => {
-  if (msg === SUCCESS_LIKE || msg === ALREADY_LIKE) {
-    replyItem.liked = true;
-  }
-
-  if (msg === SUCCESS_LIKE) {
-    replyItem.likeNumber = String(Number(replyItem.likeNumber) + 1);
-  }
+export const handleReplyLike = (replyItem: UserReplyItem, data: VoteResponse) => {
+  replyItem.liked = data.voted;
+  replyItem.likeNumber = String(data.count);
 };
 
 export const fileToBase64 = (file: File): Promise<string> => {

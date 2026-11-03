@@ -20,7 +20,7 @@ import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
 import UserAvatar from './UserAvatar.vue';
 
-import type { UserReplyItem } from '@/types';
+import type { UserReplyItem, VoteResponse } from '@/types';
 
 interface Props extends UserReplyItem {
   avatarSize?: number;
@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  likeReply: [msg: string];
+  likeReply: [data: VoteResponse];
 }>();
 
 const { isLoading, handleRequest } = useRequest();
@@ -112,7 +112,7 @@ const handleMentionLeave = (event: MouseEvent | FocusEvent) => {
 
 const handleReplyLike = () => {
   handleRequest(async () => {
-    const data = await likeReply(props.replyId);
+    const data = await likeReply(props.replyId, !props.liked);
     emit('likeReply', data);
   });
 };

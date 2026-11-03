@@ -4,18 +4,19 @@ export const mergeReplyInteractionState = (
   nextReplyList: UserReplyItem[],
   currentReplyList: UserReplyItem[],
 ): UserReplyItem[] => {
-  const likedReplyIds = new Set(
-    currentReplyList.filter(({ liked, replyId }) => liked && replyId).map(({ replyId }) => replyId as string),
-  );
+  const currentReplies = new Map(currentReplyList.map((reply) => [reply.replyId, reply]));
 
   return nextReplyList.map((reply) => {
-    if (!reply.replyId || !likedReplyIds.has(reply.replyId)) {
+    const currentReply = reply.replyId ? currentReplies.get(reply.replyId) : undefined;
+
+    if (currentReply?.liked === undefined) {
       return reply;
     }
 
     return {
       ...reply,
-      liked: true,
+      liked: currentReply.liked,
+      likeNumber: currentReply.likeNumber,
     };
   });
 };
@@ -39,12 +40,8 @@ export const updateReplyInLists = (replyLists: UserReplyItem[][], updatedReply: 
     return false;
   }
 
-  const liked = updatedReply.liked || Array.from(matchedReplies).some((reply) => reply.liked);
-
   matchedReplies.forEach((reply) => {
-    Object.assign(reply, updatedReply, {
-      liked,
-    });
+    Object.assign(reply, updatedReply);
   });
 
   return true;
