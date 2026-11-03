@@ -1,18 +1,41 @@
-import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import { SELECTOR_TOPIC_DIRECT_MESSAGE_LINK, SELECTOR_USER_LINK } from '@/constants/selector';
+
+import type { TopicMetadataLink, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 const getUserId = (userLink: string | undefined): string | undefined => {
   return userLink?.match(/^\/u\/(.+)$/)?.[1];
 };
 
+const parseMetadataLink = (element: Element | null | undefined): TopicMetadataLink | undefined => {
+  const text = element?.textContent?.trim();
+
+  if (!text) {
+    return undefined;
+  }
+
+  return {
+    text,
+    href: element?.getAttribute('href') || undefined,
+    title: element?.getAttribute('title') || undefined,
+  };
+};
+
 const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
   const topicElement = topicDocument.querySelector('.topic-detail');
   const headerElement = topicElement?.querySelector(':scope > .ui-header');
-  const authorElement = headerElement?.querySelector<HTMLAnchorElement>(':scope > a[href^="/u/"]');
+  const metaElement = headerElement?.querySelector('.meta');
+  const avatarElement = headerElement?.querySelector<HTMLAnchorElement>(`:scope > ${SELECTOR_USER_LINK}`);
+  const usernameElement = metaElement?.querySelector(':scope > .username');
+  const authorElement = usernameElement?.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK) || avatarElement;
   const authorLink = authorElement?.getAttribute('href') || undefined;
+  const lastReplyElement = metaElement?.querySelector(':scope > .last-reply-username');
+  const lastReplyAnchor = lastReplyElement?.querySelector(SELECTOR_USER_LINK);
+  const lastReplyText = lastReplyElement?.textContent || '';
+  const lastReplyName = lastReplyAnchor?.textContent || '';
+  const lastReplyNameIndex = lastReplyName ? lastReplyText.indexOf(lastReplyName) : -1;
   const contentElement = topicElement?.querySelector(':scope > .ui-content');
   const editInfoElement = contentElement?.querySelector(':scope > .edit-info');
   const editInfo = editInfoElement?.textContent?.trim();
-  const metaElement = headerElement?.querySelector('.meta');
   const statisticsElement = topicDocument.querySelector('.gzk-topic-stats');
   const tags = Array.from(
     topicElement?.querySelectorAll<HTMLAnchorElement>(':scope > .topic-tags > a.tag-badge') || [],
@@ -27,14 +50,22 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
     title: headerElement?.querySelector('.title')?.innerHTML,
     authorId: getUserId(authorLink),
     authorLink,
-    avatarUrl: authorElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
+    avatarUrl: avatarElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
     meta: {
-      nodeInfo: metaElement?.querySelector('.node')?.innerHTML,
-      authorInfo: metaElement?.querySelector('.username')?.innerHTML,
-      createdTime: metaElement?.querySelector('.created-time')?.innerHTML,
+      node: parseMetadataLink(metaElement?.querySelector(':scope > .node > a')),
+      authorName: authorElement?.textContent?.trim() || getUserId(authorLink),
+      authorLevel: parseMetadataLink(usernameElement?.querySelector('.gzk-credit-level')),
+      directMessageLink: parseMetadataLink(
+        metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`),
+      ),
+      createdTime: metaElement?.querySelector(':scope > .created-time')?.textContent?.trim(),
       postedAt: topicDocument.querySelector('time.gzk-topic-created')?.getAttribute('datetime') || undefined,
-      lastReplyUser: metaElement?.querySelector('.last-reply-username')?.innerHTML,
-      lastReplyTime: metaElement?.querySelector('.last-reply-time')?.innerHTML,
+      lastReplyUser: parseMetadataLink(lastReplyAnchor),
+      lastReplyPrefix:
+        lastReplyNameIndex >= 0 ? lastReplyText.slice(0, lastReplyNameIndex).trim() : lastReplyText.trim(),
+      lastReplySuffix:
+        lastReplyNameIndex >= 0 ? lastReplyText.slice(lastReplyNameIndex + lastReplyName.length).trim() : '',
+      lastReplyTime: metaElement?.querySelector(':scope > .last-reply-time')?.textContent?.trim(),
     },
     content: contentElement?.innerHTML,
     editInfo,
@@ -59,7 +90,9 @@ const parseTopicStatus = (topicDocument: Document): UserTopicStatus => {
 
 const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   const metaElement = item.querySelector(':scope > .main > .meta');
-  const authorElement = metaElement?.querySelector<HTMLAnchorElement>(':scope > a.reply-username');
+  const authorElement =
+    metaElement?.querySelector<HTMLAnchorElement>(':scope > a.reply-username') ||
+    item.querySelector<HTMLAnchorElement>(`:scope > ${SELECTOR_USER_LINK}`);
   const authorLink = authorElement?.getAttribute('href') || undefined;
   const voteElement = metaElement?.querySelector<HTMLAnchorElement>('.J_replyVote');
   const timeElements = Array.from(metaElement?.querySelectorAll<HTMLElement>(':scope > span.time') || []);
@@ -68,7 +101,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   };
   const [replyTimeElement, replyIpElement] = timeElements.filter((element) => {
     const text = element.textContent?.trim();
-    return text !== '楼主' && text !== '管理员';
+    return Boolean(text) && text !== '楼主' && text !== '管理员';
   });
   const voteLink = voteElement?.getAttribute('href');
   const replyId = item.id.match(/^r(\d+)$/)?.[1] || voteLink?.match(/[?&]reply_id=(\d+)/)?.[1];
@@ -80,6 +113,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   return {
     uid: getUserId(authorLink),
     userLink: authorLink,
+    directMessageLink: parseMetadataLink(metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`)),
     avatarUrl: item.querySelector<HTMLImageElement>(':scope > a > img.avatar')?.getAttribute('src') || undefined,
     isOriginalPoster,
     isAdministrator,

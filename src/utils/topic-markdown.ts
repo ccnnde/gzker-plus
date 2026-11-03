@@ -1,5 +1,5 @@
 import { getTopicUrl } from '@/utils';
-import { getFirstAnchorInfo, htmlToMarkdown, htmlToPlainText, toAbsoluteUrl } from '@/utils/html-to-markdown';
+import { htmlToMarkdown, toAbsoluteUrl } from '@/utils/html-to-markdown';
 import { mergeTopicReplies } from '@/utils/topic-export';
 
 import type { TopicMarkdownLabels, UserReplyItem, UserTopic } from '@/types';
@@ -57,15 +57,6 @@ const formatMarkdownLink = (text: string, href?: string): string => {
   return `[${escapedText || href}](${href})`;
 };
 
-const getMetadataValue = (html?: string, fallback?: string): string => {
-  return htmlToPlainText(html) || fallback || '';
-};
-
-const getMetadataLink = (html?: string): string | undefined => {
-  const anchorInfo = getFirstAnchorInfo(html);
-  return toAbsoluteUrl(anchorInfo?.href);
-};
-
 const getReplyNumber = (reply: UserReplyItem): number => {
   const replyNumber = Number(reply.replyNo);
   return Number.isInteger(replyNumber) && replyNumber > 0 ? replyNumber : Number.POSITIVE_INFINITY;
@@ -101,23 +92,21 @@ const formatTopicStatistics = (topic: UserTopic, labels: TopicMarkdownLabels): s
 const formatTopicMetadata = ({ topic, topicId, date, labels }: FormatTopicMetadataOptions): string[] => {
   const { detail } = topic;
   const topicUrl = getTopicUrl(topicId);
-  const authorInfo = getFirstAnchorInfo(detail.meta?.authorInfo);
-  const authorName = getMetadataValue(detail.meta?.authorInfo, detail.authorId);
-  const authorUrl = toAbsoluteUrl(detail.authorLink) || toAbsoluteUrl(authorInfo?.href);
-  const nodeInfo = getFirstAnchorInfo(detail.meta?.nodeInfo);
-  const nodeName = getMetadataValue(detail.meta?.nodeInfo);
-  const nodeUrl = getMetadataLink(detail.meta?.nodeInfo);
+  const authorName = detail.meta?.authorName || detail.authorId || '';
+  const authorUrl = toAbsoluteUrl(detail.authorLink);
+  const nodeName = detail.meta?.node?.text;
+  const nodeUrl = toAbsoluteUrl(detail.meta?.node?.href);
   const metadata = [`- 原帖：${formatMarkdownLink(topicUrl, topicUrl)}`];
 
   if (authorName || authorUrl) {
     metadata.push(`- ${labels.author}：${formatMarkdownLink(authorName, authorUrl)}`);
   }
 
-  if (nodeName || nodeUrl || nodeInfo?.text) {
-    metadata.push(`- ${labels.node}：${formatMarkdownLink(nodeName || nodeInfo?.text || '', nodeUrl)}`);
+  if (nodeName || nodeUrl) {
+    metadata.push(`- ${labels.node}：${formatMarkdownLink(nodeName || '', nodeUrl)}`);
   }
 
-  const publishedAt = getMetadataValue(detail.meta?.createdTime);
+  const publishedAt = detail.meta?.createdTime;
 
   if (publishedAt) {
     metadata.push(`- ${labels.publishedAt}：${publishedAt}`);

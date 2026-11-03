@@ -224,6 +224,12 @@ export interface UserTopic {
   reply: UserTopicReply;
 }
 
+export interface TopicMetadataLink {
+  text: string;
+  href?: string;
+  title?: string;
+}
+
 export interface UserTopicDetail {
   editInfo?: string;
   tags?: { name: string; href: string }[];
@@ -232,11 +238,15 @@ export interface UserTopicDetail {
   authorLink?: string;
   avatarUrl?: string;
   meta?: {
-    nodeInfo?: string;
-    authorInfo?: string;
+    node?: TopicMetadataLink;
+    authorName?: string;
+    authorLevel?: TopicMetadataLink;
+    directMessageLink?: TopicMetadataLink;
     createdTime?: string;
     postedAt?: string;
-    lastReplyUser?: string;
+    lastReplyUser?: TopicMetadataLink;
+    lastReplyPrefix?: string;
+    lastReplySuffix?: string;
     lastReplyTime?: string;
   };
   content?: string;
@@ -261,6 +271,7 @@ export interface UserTopicReply {
 export interface UserReplyItem {
   uid?: string;
   userLink?: string;
+  directMessageLink?: TopicMetadataLink;
   avatarUrl?: string;
   isOriginalPoster?: boolean;
   isAdministrator?: boolean;

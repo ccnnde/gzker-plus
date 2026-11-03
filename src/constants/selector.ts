@@ -14,6 +14,11 @@ export const SELECTOR_TOPIC_REPLY_TOTAL = '.flat-reply-list-total, .nested-reply
 export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 
 /**
+ * 主题及回复中的私信链接元素
+ */
+export const SELECTOR_TOPIC_DIRECT_MESSAGE_LINK = 'a.gzk-dm-topic-link';
+
+/**
  * 节点链接元素
  */
 export const SELECTOR_NODE_LINK = 'a[href^="/node/"]:not([href*="?p="])';

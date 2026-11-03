@@ -5,11 +5,9 @@ import { vImgLoad } from '@/directives';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
-import { SELECTOR_USER_LINK } from '@/constants/selector';
 
 import UserAvatar from './UserAvatar.vue';
 
-import type { ObjectDirective } from 'vue';
 import type { UserTopicDetail } from '@/types';
 
 const props = defineProps<UserTopicDetail>();
@@ -23,45 +21,6 @@ const postedAtTitle = computed(() => {
 
   return `${parts[1]} ${parts[2]}`;
 });
-
-/**
- * 将 html 内容中的链接设置为新标签页打开
- */
-const vBlankAnchor: ObjectDirective<HTMLElement> = {
-  mounted: (el) => {
-    const anchorElements = el.querySelectorAll('a');
-
-    anchorElements.forEach((element) => {
-      element.target = '_blank';
-    });
-  },
-};
-
-const updateUserInfoTrigger = (el: HTMLElement, uid: string | undefined) => {
-  const authorAnchor = el.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK);
-
-  if (!authorAnchor) {
-    return;
-  }
-
-  if (!uid) {
-    delete authorAnchor.dataset.gzkUserInfoTrigger;
-    delete authorAnchor.dataset.userUid;
-    return;
-  }
-
-  authorAnchor.dataset.gzkUserInfoTrigger = '';
-  authorAnchor.dataset.userUid = uid;
-};
-
-const vUserInfoTrigger: ObjectDirective<HTMLElement, string | undefined> = {
-  mounted: (el, binding) => {
-    updateUserInfoTrigger(el, binding.value);
-  },
-  updated: (el, binding) => {
-    updateUserInfoTrigger(el, binding.value);
-  },
-};
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 </script>
@@ -78,18 +37,43 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
       </div>
       <div class="detail-header-bottom">
         <UserAvatar :uid="authorId" :user-link="authorLink" :avatar-url="avatarUrl" :avatar-size="50" />
-        <div v-if="meta" class="detail-info">
-          <span
-            v-blank-anchor
-            v-user-info-trigger="authorId"
-            class="user-id detail-author"
-            v-html="meta.authorInfo"
-          ></span>
-          <div class="user-meta detail-meta">
-            <span v-blank-anchor v-html="meta.nodeInfo"></span>
-            <span :title="postedAtTitle" v-html="meta.createdTime"></span>
-            <span v-if="meta.lastReplyUser" v-blank-anchor v-html="meta.lastReplyUser"></span>
-            <span v-if="meta.lastReplyTime" v-html="meta.lastReplyTime"></span>
+        <div v-if="meta" class="topic-detail-info">
+          <div class="user-id topic-detail-author">
+            <a
+              v-if="meta.authorName"
+              class="topic-detail-author-link"
+              :data-gzk-user-info-trigger="authorId ? '' : undefined"
+              :data-user-uid="authorId"
+              :href="authorLink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ meta.authorName }}
+            </a>
+          </div>
+          <div class="user-meta topic-detail-meta">
+            <span v-if="meta.node" class="topic-detail-meta-item">
+              <a :href="meta.node.href" :title="meta.node.title" target="_blank" rel="noopener noreferrer">
+                {{ meta.node.text }}
+              </a>
+            </span>
+            <span v-if="meta.createdTime" class="topic-detail-meta-item" :title="postedAtTitle">
+              {{ meta.createdTime }}
+            </span>
+            <span v-if="meta.lastReplyUser || meta.lastReplyPrefix" class="topic-detail-meta-item">
+              {{ meta.lastReplyPrefix }}
+              <a
+                v-if="meta.lastReplyUser"
+                :href="meta.lastReplyUser.href"
+                :title="meta.lastReplyUser.title"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <strong>{{ meta.lastReplyUser.text }}</strong>
+              </a>
+              {{ meta.lastReplySuffix }}
+            </span>
+            <span v-if="meta.lastReplyTime" class="topic-detail-meta-item">{{ meta.lastReplyTime }}</span>
           </div>
         </div>
       </div>
@@ -185,24 +169,43 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 
 .detail-header-bottom {
   display: flex;
+  align-items: center;
 }
 
-.detail-info {
+.topic-detail-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 4px;
+  justify-content: center;
+  min-width: 0;
   margin-left: 10px;
+  font-family: var(--el-font-family);
+}
 
-  :deep(a) {
+.topic-detail-author {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.topic-detail-author-link {
+  font-weight: var(--el-font-weight-primary);
+  color: var(--el-text-color-regular);
+  overflow-wrap: anywhere;
+}
+
+.topic-detail-meta {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--el-text-color-regular);
+  overflow-wrap: anywhere;
+
+  a {
     color: var(--el-text-color-secondary);
   }
-}
-
-.detail-author {
-  font-size: 18px;
-}
-
-.detail-meta {
-  font-size: 14px;
 }
 </style>
