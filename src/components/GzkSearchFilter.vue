@@ -35,6 +35,7 @@ const nodeGroupRef = ref<HTMLElement>();
 const isPopoverVisible = ref(false);
 const suppressHover = ref(false);
 const nodeDropdownMaxHeight = ref<number>();
+const isNodeDropdownOpen = ref(false);
 let closeTimer: number | undefined;
 
 const nodeGroupStyle = computed(() => {
@@ -87,6 +88,8 @@ const syncNodeDropdownHeight = () => {
 };
 
 const handleNodeDropdownVisible = async (visible: boolean) => {
+  isNodeDropdownOpen.value = visible;
+
   if (!visible) {
     return;
   }
@@ -184,6 +187,10 @@ const handleEscape = (event: KeyboardEvent) => {
     return;
   }
 
+  if (isNodeDropdownOpen.value) {
+    return;
+  }
+
   event.preventDefault();
   event.stopPropagation();
   closeFilterPanel(true);
@@ -258,6 +265,7 @@ onUnmounted(() => {
           <ElSelect
             v-model="filters.node"
             class="gzk-search-filter-control"
+            filterable
             :loading="nodesLoading"
             :teleported="false"
             @change="handleNodeChange"

@@ -22,6 +22,7 @@ img[src^="https://img.whzxc.cn/bd"]
 }
 
 .el-input__inner:focus-visible,
+.el-select__input:focus-visible,
 .el-textarea__inner:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
