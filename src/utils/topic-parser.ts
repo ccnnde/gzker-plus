@@ -13,6 +13,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
   const editInfoElement = contentElement?.querySelector(':scope > .edit-info');
   const editInfo = editInfoElement?.textContent?.trim();
   const metaElement = headerElement?.querySelector('.meta');
+  const statisticsElement = topicDocument.querySelector('.gzk-topic-stats');
   const tags = Array.from(
     topicElement?.querySelectorAll<HTMLAnchorElement>(':scope > .topic-tags > a.tag-badge') || [],
   ).map((element) => ({
@@ -37,10 +38,10 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
     content: contentElement?.innerHTML,
     editInfo,
     tags,
-    liked: topicElement?.querySelector('.J_topicVote')?.getAttribute('data-type') === '',
-    likeNumber: topicElement?.querySelector('.up_vote')?.textContent?.match(/(\d+) 人赞/)?.[1],
+    liked: topicElement?.querySelector('.J_topicVote')?.getAttribute('data-voted') === '1',
+    likeNumber: statisticsElement?.querySelector('.up_vote')?.textContent?.match(/(\d+)\s*人赞/)?.[1],
     favorited: topicElement?.querySelector('.J_topicFavorite')?.getAttribute('data-type') === 'unfavorite',
-    favoriteNumber: topicElement?.querySelector('.favorited')?.textContent?.match(/(\d+) 人收藏/)?.[1],
+    favoriteNumber: statisticsElement?.querySelector('.favorited')?.textContent?.match(/(\d+)\s*人收藏/)?.[1],
     clickNumber: topicElement?.querySelector('.hits')?.textContent?.match(/(\d+) 次点击/)?.[1],
     editable: Boolean(topicElement?.querySelector('a[href^="/t/edit/"]')),
   };
@@ -86,7 +87,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
     replyTime: replyTimeElement?.textContent?.trim(),
     replyIp: replyIpElement?.textContent?.trim(),
     content: item.querySelector(':scope > .main > .content')?.innerHTML,
-    liked: false,
+    liked: voteElement?.dataset.voted === '1',
     likeNumber: voteElement?.dataset.count,
     editable: item.querySelector('a[href^="/reply/edit/"]') !== null,
   };
