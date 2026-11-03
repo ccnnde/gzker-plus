@@ -229,6 +229,7 @@ export interface UserTopicDetail {
     nodeInfo?: string;
     authorInfo?: string;
     createdTime?: string;
+    postedAt?: string;
     lastReplyUser?: string;
     lastReplyTime?: string;
   };

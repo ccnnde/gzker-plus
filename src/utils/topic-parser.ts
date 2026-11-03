@@ -32,6 +32,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
       nodeInfo: metaElement?.querySelector('.node')?.innerHTML,
       authorInfo: metaElement?.querySelector('.username')?.innerHTML,
       createdTime: metaElement?.querySelector('.created-time')?.innerHTML,
+      postedAt: topicDocument.querySelector('time.gzk-topic-created')?.getAttribute('datetime') || undefined,
       lastReplyUser: metaElement?.querySelector('.last-reply-username')?.innerHTML,
       lastReplyTime: metaElement?.querySelector('.last-reply-time')?.innerHTML,
     },

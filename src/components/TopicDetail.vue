@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 
 import { vImgLoad } from '@/directives';
 import { convertEmojiToNative } from '@/utils/emoji';
@@ -12,7 +12,17 @@ import UserAvatar from './UserAvatar.vue';
 import type { ObjectDirective } from 'vue';
 import type { UserTopicDetail } from '@/types';
 
-defineProps<UserTopicDetail>();
+const props = defineProps<UserTopicDetail>();
+
+const postedAtTitle = computed(() => {
+  const parts = props.meta?.postedAt?.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/);
+
+  if (!parts) {
+    return undefined;
+  }
+
+  return `${parts[1]} ${parts[2]}`;
+});
 
 /**
  * 将 html 内容中的链接设置为新标签页打开
@@ -77,7 +87,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
           ></span>
           <div class="user-meta detail-meta">
             <span v-blank-anchor v-html="meta.nodeInfo"></span>
-            <span v-html="meta.createdTime"></span>
+            <span :title="postedAtTitle" v-html="meta.createdTime"></span>
             <span v-if="meta.lastReplyUser" v-blank-anchor v-html="meta.lastReplyUser"></span>
             <span v-if="meta.lastReplyTime" v-html="meta.lastReplyTime"></span>
           </div>
