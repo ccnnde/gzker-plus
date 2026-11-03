@@ -391,12 +391,13 @@ onUnmounted(() => {
 :global(.gzk-search-filter-popover.el-popover) {
   box-sizing: border-box;
   max-width: calc(100vw - 40px);
-  padding: 16px 16px 0;
+  padding: 0;
   border-color: var(--el-border-color-lighter);
   border-radius: 12px;
 }
 
 .gzk-search-filter-panel {
+  padding: 16px 16px 0;
   color: var(--el-text-color-primary);
 }
 
