@@ -2,10 +2,16 @@ import { escapeRegExp } from 'lodash-es';
 
 import { t } from '@/i18n';
 import { parseMetadataLink } from '@/utils';
-import { GZK_URL, ReplyType, SearchResultType } from '@/constants';
-import { SELECTOR_CREDIT_LEVEL, SELECTOR_PROFILE_DIRECT_MESSAGE_LINK } from '@/constants/selector';
+import { GZK_URL, NoticeKind, ReplyType, SearchResultType } from '@/constants';
+import {
+  SELECTOR_CREDIT_LEVEL,
+  SELECTOR_PROFILE_DIRECT_MESSAGE_LINK,
+  SELECTOR_TOPIC_LINK,
+  SELECTOR_USER_LINK,
+} from '@/constants/selector';
 
 import type {
+  MetadataLink,
   SearchNodeOption,
   SearchTopicItem,
   SearchTopicResult,
@@ -174,6 +180,55 @@ const isUserBlocked = (userDocument: Document, memberNo: string | undefined) => 
   return false;
 };
 
+const getMessageTitleParts = (element: Element | null): MetadataLink[] => {
+  return Array.from(element?.childNodes || []).flatMap((node): MetadataLink[] => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return [{ text: node.textContent || '' }];
+    }
+
+    if (!(node instanceof Element) || node.matches('script, style')) {
+      return [];
+    }
+
+    if (node.matches('a')) {
+      const url = getForumUrl(node.getAttribute('href'));
+
+      return [
+        {
+          text: node.textContent || '',
+          href: url ? `${url.pathname}${url.search}${url.hash}` : undefined,
+        },
+      ];
+    }
+
+    return getMessageTitleParts(node);
+  });
+};
+
+const getMessageReplyType = (noticeKind: string | undefined, title: string): ReplyType | undefined => {
+  if (noticeKind === NoticeKind.Reply) {
+    return ReplyType.Topic;
+  }
+
+  if (noticeKind === NoticeKind.Mention) {
+    return ReplyType.Mention;
+  }
+
+  if (noticeKind !== undefined) {
+    return undefined;
+  }
+
+  if (title.includes('回复了你的主题')) {
+    return ReplyType.Topic;
+  }
+
+  if (title.includes('中提到了你')) {
+    return ReplyType.Mention;
+  }
+
+  return undefined;
+};
+
 export const parseUserInfo = (htmlStr: string): UserInfo => {
   const userDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
   const profileElement = userDocument.querySelector('.user-page .profile');
@@ -232,17 +287,23 @@ export const parseUserMessageList = (htmlStr: string): UserMessage[] => {
   const messageElements = messageDocument.querySelectorAll<HTMLElement>('.notification-item');
 
   return Array.from(messageElements).map((messageElement): UserMessage => {
-    const userElement = messageElement.querySelector<HTMLAnchorElement>('a[href^="/u/"]');
+    const titleElement = messageElement.querySelector('.main .title');
+    const avatarElement = messageElement.querySelector<HTMLImageElement>(':scope > a > img.avatar');
+    const userElement = titleElement?.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK);
     const userLink = userElement?.getAttribute('href') || undefined;
-    const topicElement = messageElement.querySelector<HTMLAnchorElement>('a[href^="/t/"]');
+    const topicElement = titleElement?.querySelector<HTMLAnchorElement>(SELECTOR_TOPIC_LINK);
+    const noticeKind = messageElement.getAttribute('data-notice-kind') || undefined;
 
     return {
       uid: userLink?.match(/^\/u\/(.+)$/)?.[1],
       userLink,
-      avatarUrl: userElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
-      topicTitle: topicElement?.innerHTML,
+      avatarUrl: avatarElement?.getAttribute('src') || undefined,
+      noticeKind,
+      titleParts: getMessageTitleParts(titleElement),
+      createdTime: getElementText(messageElement, '.gzk-notice-time'),
+      topicTitle: topicElement?.textContent?.trim() || undefined,
       topicLink: topicElement?.getAttribute('href') || undefined,
-      replyType: messageElement.textContent?.includes('回复了你的主题') ? ReplyType.Topic : ReplyType.Mention,
+      replyType: getMessageReplyType(noticeKind, titleElement?.textContent || ''),
       replyContent: messageElement.querySelector('.content')?.innerHTML,
     };
   });

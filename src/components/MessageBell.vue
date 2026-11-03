@@ -9,7 +9,7 @@ import { API_MSG, getUnreadUserMsgNum, getUserMsgList } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { emitter } from '@/utils/event-bus';
 import { BellStyle, INFINITE_SCROLL_LOAD_DISTANCE, OptionsKey, ReplyType } from '@/constants';
-import { SELECTOR_NOT_EMOJI_IMG } from '@/constants/selector';
+import { SELECTOR_NOT_EMOJI_IMG, SELECTOR_TOPIC_LINK } from '@/constants/selector';
 
 import LoadError from './LoadError.vue';
 
@@ -116,6 +116,12 @@ const handleTopicClick = (e: Event) => {
   emitter.emit('clickTopic', e);
 };
 
+const handleTitleClick = (event: Event) => {
+  if (event.target instanceof HTMLAnchorElement && event.target.matches(SELECTOR_TOPIC_LINK)) {
+    handleTopicClick(event);
+  }
+};
+
 const handleMessageScrollEnd = (direction: ScrollbarDirection) => {
   if (direction !== 'bottom' || disableInfiniteScroll.value) {
     return;
@@ -185,7 +191,7 @@ const isMsgUnread = (index: number): boolean => {
             </a>
             <div class="message-main">
               <div class="message-title">
-                <a class="message-link" :href="item.userLink" target="_blank">
+                <a v-if="item.replyType" class="message-link" :href="item.userLink" target="_blank">
                   {{ item.uid }}
                 </a>
                 <template v-if="item.replyType === ReplyType.Topic">
@@ -201,12 +207,20 @@ const isMsgUnread = (index: number): boolean => {
                   </a>
                   <span class="message-action">{{ $t('enhancedMsg.mentionYou') }}</span>
                 </template>
+                <span v-else @click="handleTitleClick">
+                  <template v-for="(part, partIndex) in item.titleParts" :key="partIndex">
+                    <a v-if="part.href" class="message-link" :href="part.href" target="_blank">{{ part.text }}</a>
+                    <template v-else>{{ part.text }}</template>
+                  </template>
+                </span>
               </div>
               <div
+                v-if="item.replyContent"
                 v-msg-replace:[SELECTOR_NOT_EMOJI_IMG]="$t('enhancedMsg.image')"
                 class="message-content"
                 v-html="convertEmojiToNative(item.replyContent)"
               ></div>
+              <time v-if="item.createdTime" class="message-bell-time">{{ item.createdTime }}</time>
             </div>
           </div>
           <ElSkeleton
@@ -321,6 +335,13 @@ $msg-padding: 15px;
 
 .message-main {
   flex: 1;
+}
+
+.message-bell-time {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
 }
 
 .message-title {

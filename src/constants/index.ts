@@ -183,6 +183,12 @@ export const enum ReplyType {
   Mention = 'mention',
 }
 
+export const enum NoticeKind {
+  Mention = '0',
+  Reply = '1',
+  Follow = '6',
+}
+
 export const enum ImageHostingPlatform {
   Smms = 'smms',
   Bili = 'bili',

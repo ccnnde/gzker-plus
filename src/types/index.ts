@@ -214,6 +214,9 @@ export interface UserMessage {
   uid?: string;
   userLink?: string;
   avatarUrl?: string;
+  noticeKind?: string;
+  titleParts: MetadataLink[];
+  createdTime?: string;
   topicTitle?: string;
   topicLink?: string;
   replyType?: ReplyType;
