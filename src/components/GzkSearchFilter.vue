@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useResizeObserver } from '@vueuse/core';
 
 import { SEARCH_FILTER_INJECTION_KEY } from '@/constants/inject-key';
 
@@ -21,6 +22,7 @@ const emit = defineEmits<{
 }>();
 
 const FILTER_CLOSE_DELAY = 160;
+const DATE_PANEL_OFFSET = 12;
 
 const controller = inject(SEARCH_FILTER_INJECTION_KEY);
 
@@ -31,12 +33,81 @@ if (!controller) {
 const { filters, timePreset, sortOptions, timeOptions, activeFilterCount } = controller;
 const { applyTimePreset, updateDateRange, disabledStartDate, disabledEndDate } = controller;
 const authorInputRef = ref<InputInstance>();
+const panelRef = ref<HTMLElement>();
+const dateRangeRef = ref<HTMLElement>();
+const datePanelHeight = ref<number>();
 const nodeGroupRef = ref<HTMLElement>();
 const isPopoverVisible = ref(false);
 const suppressHover = ref(false);
 const nodeDropdownMaxHeight = ref<number>();
 const isNodeDropdownOpen = ref(false);
 let closeTimer: number | undefined;
+
+const datePanelStyle = computed(() => {
+  if (datePanelHeight.value === undefined) {
+    return undefined;
+  }
+
+  return { '--gzk-search-filter-date-height': `${datePanelHeight.value}px` };
+});
+
+const syncDatePanelHeight = () => {
+  const panelEl = panelRef.value;
+  const rangeEl = dateRangeRef.value;
+  const inputEl = rangeEl?.querySelector<HTMLElement>('.el-date-editor');
+
+  if (!panelEl || !rangeEl || !inputEl || !panelEl.offsetHeight) {
+    return;
+  }
+
+  const panelRect = panelEl.getBoundingClientRect();
+  const rangeRect = rangeEl.getBoundingClientRect();
+  const inputRect = inputEl.getBoundingClientRect();
+  const sideGap = rangeRect.left - panelRect.left;
+
+  datePanelHeight.value = Math.max(inputRect.top - panelRect.top - sideGap - DATE_PANEL_OFFSET, 0);
+};
+
+useResizeObserver(panelRef, syncDatePanelHeight);
+
+const getDateOffset = (field: SearchDateField): [number, number] => {
+  const rangeEl = dateRangeRef.value;
+  const fieldIndex = field === 'since' ? 0 : 1;
+  const inputEl = rangeEl?.querySelectorAll<HTMLElement>('.el-date-editor')[fieldIndex];
+
+  if (!rangeEl || !inputEl) {
+    return [0, DATE_PANEL_OFFSET];
+  }
+
+  const rangeRect = rangeEl.getBoundingClientRect();
+  const inputRect = inputEl.getBoundingClientRect();
+  const horizontalOffset = field === 'since' ? rangeRect.left - inputRect.left : rangeRect.right - inputRect.right;
+
+  return [horizontalOffset, DATE_PANEL_OFFSET];
+};
+
+const getDatePopperOptions = (field: SearchDateField) => ({
+  modifiers: [
+    { name: 'flip', enabled: false },
+    {
+      name: 'offset',
+      options: {
+        offset: () => {
+          return getDateOffset(field);
+        },
+      },
+    },
+    {
+      name: 'preventOverflow',
+      options: {
+        boundary: panelRef.value,
+        padding: 8,
+        tether: false,
+        altAxis: true,
+      },
+    },
+  ],
+});
 
 const nodeGroupStyle = computed(() => {
   if (nodeDropdownMaxHeight.value === undefined) {
@@ -244,7 +315,13 @@ onUnmounted(() => {
         <un-i-mdi-filter-variant class="gzk-search-filter-trigger__icon" />
       </ElButton>
     </template>
-    <div class="gzk-search-filter-panel" @mouseenter="handleFilterEnter" @mouseleave="handleFilterLeave">
+    <div
+      ref="panelRef"
+      class="gzk-search-filter-panel"
+      :style="datePanelStyle"
+      @mouseenter="handleFilterEnter"
+      @mouseleave="handleFilterLeave"
+    >
       <section class="gzk-search-filter-group">
         <h3 class="gzk-search-filter-group__title">{{ $t('search.sortBasis') }}</h3>
         <div class="gzk-search-filter-options">
@@ -309,17 +386,21 @@ onUnmounted(() => {
           </ElCheckTag>
         </div>
         <div class="gzk-search-filter-range">
-          <div class="gzk-search-time-range" @click="handleDateRangeClick">
+          <div ref="dateRangeRef" class="gzk-search-time-range" @click="handleDateRangeClick">
             <span class="gzk-search-time-range__field">
               <ElDatePicker
                 v-model="filters.since"
                 type="date"
                 format="YYYY-MM-DD"
                 value-format="YYYY-MM-DD"
+                placement="top-start"
+                popper-class="gzk-search-filter-date-popper"
+                :popper-options="getDatePopperOptions('since')"
                 :disabled-date="disabledStartDate"
                 :placeholder="$t('search.startDate')"
                 :teleported="false"
                 @change="handleDateChange('since', $event)"
+                @visible-change="syncDatePanelHeight"
               />
             </span>
             <span class="gzk-search-time-range__separator">-</span>
@@ -329,10 +410,14 @@ onUnmounted(() => {
                 type="date"
                 format="YYYY-MM-DD"
                 value-format="YYYY-MM-DD"
+                placement="top-end"
+                popper-class="gzk-search-filter-date-popper"
+                :popper-options="getDatePopperOptions('until')"
                 :disabled-date="disabledEndDate"
                 :placeholder="$t('search.endDate')"
                 :teleported="false"
                 @change="handleDateChange('until', $event)"
+                @visible-change="syncDatePanelHeight"
               />
             </span>
           </div>
@@ -475,6 +560,74 @@ onUnmounted(() => {
 
 .gzk-search-filter-range {
   margin-top: 12px;
+}
+
+.gzk-search-filter-panel :deep(.gzk-search-filter-date-popper) {
+  box-sizing: border-box;
+  width: min(280px, calc(100vw - 88px));
+  height: var(--gzk-search-filter-date-height, 248px);
+
+  .el-date-picker {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .el-picker-panel__body-wrapper,
+  .el-picker-panel__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .el-picker-panel__content {
+    flex: 1;
+    width: auto;
+    min-height: 0;
+    margin: 8px;
+  }
+
+  .el-date-table,
+  .el-month-table,
+  .el-year-table {
+    height: 100%;
+  }
+
+  .el-date-table th {
+    height: 28px;
+    padding: 0;
+    text-align: center;
+  }
+
+  .el-date-picker__header {
+    padding: 8px 8px 0;
+  }
+
+  .el-date-picker__header-label {
+    font-size: 14px;
+  }
+
+  .el-date-picker__header--bordered {
+    padding-bottom: 8px;
+  }
+
+  .el-date-table td {
+    height: auto;
+    padding: 0;
+    vertical-align: middle;
+  }
+
+  .el-date-table .el-date-table-cell {
+    height: 28px;
+    padding: 2px 0;
+  }
+
+  .el-month-table td,
+  .el-year-table td {
+    padding: 4px 0;
+  }
 }
 
 .gzk-search-time-range {
