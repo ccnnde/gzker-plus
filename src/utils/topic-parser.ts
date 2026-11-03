@@ -1,23 +1,10 @@
-import { SELECTOR_TOPIC_DIRECT_MESSAGE_LINK, SELECTOR_USER_LINK } from '@/constants/selector';
+import { parseMetadataLink } from '@/utils';
+import { SELECTOR_CREDIT_LEVEL, SELECTOR_TOPIC_DIRECT_MESSAGE_LINK, SELECTOR_USER_LINK } from '@/constants/selector';
 
-import type { TopicMetadataLink, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 const getUserId = (userLink: string | undefined): string | undefined => {
   return userLink?.match(/^\/u\/(.+)$/)?.[1];
-};
-
-const parseMetadataLink = (element: Element | null | undefined): TopicMetadataLink | undefined => {
-  const text = element?.textContent?.trim();
-
-  if (!text) {
-    return undefined;
-  }
-
-  return {
-    text,
-    href: element?.getAttribute('href') || undefined,
-    title: element?.getAttribute('title') || undefined,
-  };
 };
 
 const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
@@ -54,7 +41,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
     meta: {
       node: parseMetadataLink(metaElement?.querySelector(':scope > .node > a')),
       authorName: authorElement?.textContent?.trim() || getUserId(authorLink),
-      authorLevel: parseMetadataLink(usernameElement?.querySelector('.gzk-credit-level')),
+      authorLevel: parseMetadataLink(usernameElement?.querySelector(SELECTOR_CREDIT_LEVEL)),
       directMessageLink: parseMetadataLink(
         metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`),
       ),

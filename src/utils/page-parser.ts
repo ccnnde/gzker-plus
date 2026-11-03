@@ -1,7 +1,9 @@
 import { escapeRegExp } from 'lodash-es';
 
 import { t } from '@/i18n';
+import { parseMetadataLink } from '@/utils';
 import { GZK_URL, ReplyType, SearchResultType } from '@/constants';
+import { SELECTOR_CREDIT_LEVEL, SELECTOR_PROFILE_DIRECT_MESSAGE_LINK } from '@/constants/selector';
 
 import type {
   SearchNodeOption,
@@ -187,6 +189,8 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
 
   return {
     uid,
+    directMessageLink: parseMetadataLink(profileElement?.querySelector(SELECTOR_PROFILE_DIRECT_MESSAGE_LINK)),
+    creditLevel: parseMetadataLink(profileElement?.querySelector(SELECTOR_CREDIT_LEVEL)),
     avatarUrl: profileElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
     memberNo,
     checkInTime,

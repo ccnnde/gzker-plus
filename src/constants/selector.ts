@@ -19,6 +19,16 @@ export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 export const SELECTOR_TOPIC_DIRECT_MESSAGE_LINK = 'a.gzk-dm-topic-link';
 
 /**
+ * 用户页中的私信链接元素
+ */
+export const SELECTOR_PROFILE_DIRECT_MESSAGE_LINK = 'a.gzk-dm-profile-link';
+
+/**
+ * 用户信用等级元素
+ */
+export const SELECTOR_CREDIT_LEVEL = '.gzk-credit-level';
+
+/**
  * 节点链接元素
  */
 export const SELECTOR_NODE_LINK = 'a[href^="/node/"]:not([href*="?p="])';

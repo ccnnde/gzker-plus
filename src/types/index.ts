@@ -177,6 +177,8 @@ export interface ScriptAppOptions {
 
 export interface UserInfo {
   uid?: string;
+  directMessageLink?: MetadataLink;
+  creditLevel?: MetadataLink;
   avatarUrl?: string;
   memberNo?: string;
   checkInTime?: string;
@@ -224,7 +226,7 @@ export interface UserTopic {
   reply: UserTopicReply;
 }
 
-export interface TopicMetadataLink {
+export interface MetadataLink {
   text: string;
   href?: string;
   title?: string;
@@ -238,13 +240,13 @@ export interface UserTopicDetail {
   authorLink?: string;
   avatarUrl?: string;
   meta?: {
-    node?: TopicMetadataLink;
+    node?: MetadataLink;
     authorName?: string;
-    authorLevel?: TopicMetadataLink;
-    directMessageLink?: TopicMetadataLink;
+    authorLevel?: MetadataLink;
+    directMessageLink?: MetadataLink;
     createdTime?: string;
     postedAt?: string;
-    lastReplyUser?: TopicMetadataLink;
+    lastReplyUser?: MetadataLink;
     lastReplyPrefix?: string;
     lastReplySuffix?: string;
     lastReplyTime?: string;
@@ -271,7 +273,7 @@ export interface UserTopicReply {
 export interface UserReplyItem {
   uid?: string;
   userLink?: string;
-  directMessageLink?: TopicMetadataLink;
+  directMessageLink?: MetadataLink;
   avatarUrl?: string;
   isOriginalPoster?: boolean;
   isAdministrator?: boolean;

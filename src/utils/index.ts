@@ -25,6 +25,7 @@ import type {
   ApiJsonResponse,
   Base64File,
   ExtensionMessage,
+  MetadataLink,
   ScriptAppOptions,
   StorageSettings,
   UserReplyItem,
@@ -449,4 +450,18 @@ export const updateLightTheme = (theme: LightTheme) => {
  */
 export const blurActiveElement = () => {
   (document.activeElement as HTMLElement | null)?.blur();
+};
+
+export const parseMetadataLink = (element: Element | null | undefined): MetadataLink | undefined => {
+  const text = element?.textContent?.trim();
+
+  if (!text) {
+    return undefined;
+  }
+
+  return {
+    text,
+    href: element?.getAttribute('href') || undefined,
+    title: element?.getAttribute('title') || undefined,
+  };
 };
