@@ -326,6 +326,7 @@
     "follow": "关注",
     "followed": "已关注",
     "memberNo": "第 {no} 号成员",
+    "parseFailed": "解析用户资料失败，请刷新页面重试",
     "topic": "主题"
   },
   "gzkHeader": {

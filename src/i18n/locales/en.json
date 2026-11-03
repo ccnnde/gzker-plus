@@ -326,6 +326,7 @@
     "follow": "Follow",
     "followed": "Followed",
     "memberNo": "Member no. {no}",
+    "parseFailed": "Failed to parse user profile. Please refresh the page and try again",
     "topic": "Topic"
   },
   "gzkHeader": {

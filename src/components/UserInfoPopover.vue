@@ -134,12 +134,14 @@ const handleUserFollow = (event: MouseEvent) => {
 
   const currentUserInfo = userInfo.value;
 
-  if (!currentUserInfo || currentUserInfo.blocked) {
+  if (!currentUserInfo?.uid || currentUserInfo.blocked) {
     return;
   }
 
+  const { uid } = currentUserInfo;
+
   handleUserInfoRequest(props.uid, () => {
-    return followUser(currentUserInfo.uid);
+    return followUser(uid);
   });
 };
 
@@ -148,13 +150,13 @@ const handleUserBlock = (event: MouseEvent) => {
 
   const currentUserInfo = userInfo.value;
 
-  if (!currentUserInfo) {
+  if (!currentUserInfo?.memberNo) {
     return;
   }
 
-  handleUserInfoRequest(props.uid, () => {
-    const { memberNo, blocked } = currentUserInfo;
+  const { memberNo, blocked } = currentUserInfo;
 
+  handleUserInfoRequest(props.uid, () => {
     if (blocked) {
       return unblockUser(memberNo);
     }
@@ -262,14 +264,20 @@ const handleUserBlock = (event: MouseEvent) => {
               <ElButton
                 class="user-operate-btn"
                 type="primary"
-                :disabled="isUserMySelf || userInfo.blocked"
+                :disabled="isUserMySelf || !userInfo.uid || userInfo.blocked"
                 @click="handleUserFollow"
               >
                 {{ userInfo.followed ? $t('floatUserInfo.followed') : $t('floatUserInfo.follow') }}
               </ElButton>
             </ElCol>
             <ElCol :span="12">
-              <ElButton class="user-operate-btn" type="primary" plain :disabled="isUserMySelf" @click="handleUserBlock">
+              <ElButton
+                class="user-operate-btn"
+                type="primary"
+                plain
+                :disabled="isUserMySelf || !userInfo.memberNo"
+                @click="handleUserBlock"
+              >
                 {{ userInfo.blocked ? $t('floatUserInfo.blocked') : $t('floatUserInfo.block') }}
               </ElButton>
             </ElCol>

@@ -1,5 +1,6 @@
 import { escapeRegExp } from 'lodash-es';
 
+import { t } from '@/i18n';
 import { GZK_URL, ReplyType, SearchResultType } from '@/constants';
 
 import type {
@@ -86,23 +87,85 @@ const highlightSearchKeywords = (element: HTMLElement | null, query: string): st
   return element.innerHTML || undefined;
 };
 
+const getForumUrl = (href: string | null) => {
+  if (!href) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL(href, GZK_URL);
+    return url.origin === GZK_URL ? url : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+const getMemberNo = (userDocument: Document, profileText: string) => {
+  const memberNo = profileText.match(/过早客第\s*(\d+)\s*号成员/)?.[1];
+
+  if (memberNo) {
+    return memberNo;
+  }
+
+  const memberNumbers = new Set<string>();
+
+  for (const link of userDocument.links) {
+    const url = getForumUrl(link.getAttribute('href'));
+    const actionMemberNo = url?.pathname.match(/^\/u\/(\d+)\/(?:block|unblock)$/)?.[1];
+
+    if (actionMemberNo) {
+      memberNumbers.add(actionMemberNo);
+    }
+  }
+
+  return memberNumbers.size === 1 ? Array.from(memberNumbers)[0] : undefined;
+};
+
+const getProfileUserId = (userDocument: Document, profileElement: Element | null) => {
+  const uid = getElementText(profileElement, '.username');
+
+  if (uid) {
+    return uid;
+  }
+
+  const idLabel = Array.from(userDocument.querySelectorAll('dt')).find((element) => {
+    return element.textContent?.trim().toUpperCase() === 'ID';
+  });
+  const idValue = idLabel?.nextElementSibling;
+
+  if (idValue?.tagName !== 'DD') {
+    return undefined;
+  }
+
+  return idValue.textContent?.trim() || undefined;
+};
+
+const isUserFollowed = (userDocument: Document, uid: string) => {
+  const followPath = `/f/user/${uid}`;
+
+  for (const link of userDocument.links) {
+    const url = getForumUrl(link.getAttribute('href'));
+
+    if (url?.pathname === followPath && link.textContent?.replace(/\s+/g, '') === '取消关注') {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 const isUserBlocked = (userDocument: Document, memberNo: string | undefined) => {
   if (!memberNo) {
     return false;
   }
 
-  const unblockLinks = userDocument.querySelectorAll<HTMLAnchorElement>('a[href*="/unblock"]');
   const unblockPath = `/u/${memberNo}/unblock`;
 
-  for (const link of unblockLinks) {
-    try {
-      const url = new URL(link.getAttribute('href') || '', GZK_URL);
+  for (const link of userDocument.links) {
+    const url = getForumUrl(link.getAttribute('href'));
 
-      if (url.origin === GZK_URL && url.pathname === unblockPath) {
-        return true;
-      }
-    } catch {
-      continue;
+    if (url?.pathname === unblockPath) {
+      return true;
     }
   }
 
@@ -113,17 +176,20 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
   const userDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
   const profileElement = userDocument.querySelector('.user-page .profile');
   const statisticsElement = userDocument.querySelector('.user-page .usercard');
-  const profileText = profileElement?.textContent || '';
-  const memberNo = profileText.match(/过早客第(\d+)号成员/)?.[1];
-  const followed = Array.from(profileElement?.querySelectorAll<HTMLAnchorElement>('a[href^="/f/user/"]') || []).some(
-    (element) => element.textContent?.trim() === '取消关注',
-  );
+  const profileText = profileElement?.textContent || userDocument.body.textContent || '';
+  const uid = getProfileUserId(userDocument, profileElement);
+  const memberNo = getMemberNo(userDocument, profileText);
+  const checkInTime = profileText.match(/入住于\s*(\d{4}-\d{2}-\d{2})/)?.[1];
+
+  if (!uid || (!memberNo && !checkInTime)) {
+    throw new Error(t('floatUserInfo.parseFailed'));
+  }
 
   return {
-    uid: getElementText(profileElement, '.username'),
+    uid,
     avatarUrl: profileElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
     memberNo,
-    checkInTime: profileText.match(/入住于(\d{4}-\d{2}-\d{2})/)?.[1],
+    checkInTime,
     topicNumber: getElementText(statisticsElement, '.status-topic strong'),
     replyNumber: getElementText(statisticsElement, '.status-reply strong'),
     favoriteNumber: getElementText(statisticsElement, '.status-favorite strong'),
@@ -137,7 +203,7 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
     favoriteListTitle:
       statisticsElement?.querySelector('.status-favorite strong [title]')?.getAttribute('title') || undefined,
     creditValue: getElementText(statisticsElement, '.status-reputation strong'),
-    followed,
+    followed: isUserFollowed(userDocument, uid),
     blocked: isUserBlocked(userDocument, memberNo),
   };
 };

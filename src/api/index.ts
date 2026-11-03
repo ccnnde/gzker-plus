@@ -56,17 +56,17 @@ export const getUserInfo = async (uid: string): Promise<UserInfo> => {
   return parseUserInfo(data);
 };
 
-export const followUser = async (uid?: string) => {
+export const followUser = async (uid: string): Promise<UserInfo> => {
   const data = await request(`/f/user/${uid}`);
   return parseUserInfo(data);
 };
 
-export const blockUser = async (memberNo?: string): Promise<UserInfo> => {
+export const blockUser = async (memberNo: string): Promise<UserInfo> => {
   const data = await request(`${API_USER}${memberNo}/block`);
   return parseUserInfo(data);
 };
 
-export const unblockUser = async (memberNo?: string): Promise<UserInfo> => {
+export const unblockUser = async (memberNo: string): Promise<UserInfo> => {
   const data = await request(`${API_USER}${memberNo}/unblock`);
   return parseUserInfo(data);
 };

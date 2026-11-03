@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 import { ElLoading } from 'element-plus/es/components/loading/index.mjs';
-import { ElMessage } from 'element-plus/es/components/message/index.mjs';
 import Cookies from 'js-cookie';
 import { cloneDeep, debounce, merge } from 'lodash-es';
 import { browser } from 'wxt/browser';
@@ -157,19 +156,19 @@ export const requestJson = async <T extends ApiJsonResponse>(url: string, init?:
 
 export const request = async (url: string, init?: RequestInit): Promise<string> => {
   const data = await requestText(url, init);
+  let response: ApiJsonResponse;
 
-  // 若 JSON.parse(data) 未报错，代表返回的数据是 JSON 格式的字符串，否则为 HTML 字符串
   try {
-    const { message, success } = JSON.parse(data) as ApiJsonResponse;
-
-    if (!success) {
-      ElMessage.error(getResMessage(message));
-    }
-
-    return message;
+    response = JSON.parse(data) as ApiJsonResponse;
   } catch {
     return data;
   }
+
+  if (!response.success) {
+    throw new Error(getResMessage(response.message));
+  }
+
+  return response.message;
 };
 
 export const addUnit = (val: number, unit: string = 'px'): string => {
