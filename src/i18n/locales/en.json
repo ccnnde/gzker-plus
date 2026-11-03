@@ -194,6 +194,7 @@
     "deleteAll": "Delete All",
     "deleteInBatches": "Delete in Batches",
     "deleteSuccessfully": "Delete Successful",
+    "directMessage": "Message",
     "emptyData": "The query returned no results. Please try again later",
     "extName": "Gzker Plus",
     "favorite": "Favorite",

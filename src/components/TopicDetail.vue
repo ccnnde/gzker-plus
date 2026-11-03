@@ -74,6 +74,16 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
               {{ meta.lastReplySuffix }}
             </span>
             <span v-if="meta.lastReplyTime" class="topic-detail-meta-item">{{ meta.lastReplyTime }}</span>
+            <span v-if="meta.directMessageLink?.href" class="topic-detail-meta-item">
+              <a
+                :href="meta.directMessageLink.href"
+                :title="meta.directMessageLink.title"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ $t('common.directMessage') }}
+              </a>
+            </span>
           </div>
         </div>
       </div>
