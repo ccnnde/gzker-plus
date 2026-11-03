@@ -100,9 +100,18 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
     avatarUrl: profileElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
     memberNo: profileText.match(/过早客第(\d+)号成员/)?.[1],
     checkInTime: profileText.match(/入住于(\d{4}-\d{2}-\d{2})/)?.[1],
-    topicNumber: getElementText(statisticsElement, 'a[href$="/topics"]'),
-    replyNumber: getElementText(statisticsElement, 'a[href$="/replies"]'),
-    favoriteNumber: getElementText(statisticsElement, 'a[href$="/favorites"]'),
+    topicNumber: getElementText(statisticsElement, '.status-topic strong'),
+    replyNumber: getElementText(statisticsElement, '.status-reply strong'),
+    favoriteNumber: getElementText(statisticsElement, '.status-favorite strong'),
+    topicListPublic: Boolean(statisticsElement?.querySelector('.status-topic strong a[href]')),
+    replyListPublic: Boolean(statisticsElement?.querySelector('.status-reply strong a[href]')),
+    favoriteListPublic: Boolean(statisticsElement?.querySelector('.status-favorite strong a[href]')),
+    topicListTitle:
+      statisticsElement?.querySelector('.status-topic strong [title]')?.getAttribute('title') || undefined,
+    replyListTitle:
+      statisticsElement?.querySelector('.status-reply strong [title]')?.getAttribute('title') || undefined,
+    favoriteListTitle:
+      statisticsElement?.querySelector('.status-favorite strong [title]')?.getAttribute('title') || undefined,
     creditValue: getElementText(statisticsElement, '.status-reputation strong'),
     followed,
     blocked: Boolean(profileElement?.querySelector('a[href$="/unblock"]')),

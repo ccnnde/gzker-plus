@@ -40,6 +40,12 @@ const isLoading = ref(false);
 const errorOccurred = ref(false);
 const userInfo = ref<UserInfo>();
 
+const STATISTIC_PLACEHOLDER = '—';
+
+const isEmptyStatistic = (value: string | undefined): boolean => {
+  return !value || value.trim() === STATISTIC_PLACEHOLDER;
+};
+
 let requestVersion = 0;
 
 const isUserMySelf = computed(() => {
@@ -211,21 +217,44 @@ const handleUserBlock = (event: MouseEvent) => {
             </div>
           </div>
           <ElRow>
-            <ElCol class="user-statistic-info" :span="6" @click="openUserPage('/topics')">
+            <ElCol
+              :class="['user-statistic-info', { 'user-info-popover-statistic-link': userInfo.topicListPublic }]"
+              :span="6"
+              :title="userInfo.topicListTitle"
+              @click="userInfo.topicListPublic && openUserPage('/topics')"
+            >
               <span class="user-statistic-type">{{ $t('floatUserInfo.topic') }}</span>
-              <span class="user-statistic-value">{{ userInfo.topicNumber }}</span>
+              <span class="user-statistic-value" :data-empty="isEmptyStatistic(userInfo.topicNumber)">
+                {{ userInfo.topicNumber || STATISTIC_PLACEHOLDER }}
+              </span>
             </ElCol>
-            <ElCol class="user-statistic-info" :span="6" @click="openUserPage('/replies')">
+            <ElCol
+              :class="['user-statistic-info', { 'user-info-popover-statistic-link': userInfo.replyListPublic }]"
+              :span="6"
+              :title="userInfo.replyListTitle"
+              @click="userInfo.replyListPublic && openUserPage('/replies')"
+            >
               <span class="user-statistic-type">{{ $t('common.reply') }}</span>
-              <span class="user-statistic-value">{{ userInfo.replyNumber }}</span>
+              <span class="user-statistic-value" :data-empty="isEmptyStatistic(userInfo.replyNumber)">
+                {{ userInfo.replyNumber || STATISTIC_PLACEHOLDER }}
+              </span>
             </ElCol>
-            <ElCol class="user-statistic-info" :span="6" @click="openUserPage('/favorites')">
+            <ElCol
+              :class="['user-statistic-info', { 'user-info-popover-statistic-link': userInfo.favoriteListPublic }]"
+              :span="6"
+              :title="userInfo.favoriteListTitle"
+              @click="userInfo.favoriteListPublic && openUserPage('/favorites')"
+            >
               <span class="user-statistic-type">{{ $t('common.favorite') }}</span>
-              <span class="user-statistic-value">{{ userInfo.favoriteNumber }}</span>
+              <span class="user-statistic-value" :data-empty="isEmptyStatistic(userInfo.favoriteNumber)">
+                {{ userInfo.favoriteNumber || STATISTIC_PLACEHOLDER }}
+              </span>
             </ElCol>
-            <ElCol class="user-statistic-info user-statistic-credit" :span="6">
+            <ElCol class="user-statistic-info" :span="6">
               <span class="user-statistic-type">{{ $t('floatUserInfo.credit') }}</span>
-              <span class="user-statistic-value">{{ userInfo.creditValue }}</span>
+              <span class="user-statistic-value" :data-empty="isEmptyStatistic(userInfo.creditValue)">
+                {{ userInfo.creditValue || STATISTIC_PLACEHOLDER }}
+              </span>
             </ElCol>
           </ElRow>
           <ElRow :gutter="10">
@@ -297,25 +326,32 @@ const handleUserBlock = (event: MouseEvent) => {
 
 .user-statistic-value {
   font-size: 15px;
+  line-height: 22px;
   color: var(--el-text-color-primary);
+
+  &[data-empty='true'] {
+    font-size: 12px;
+    color: var(--el-text-color-regular);
+    transform: scaleX(0.5);
+  }
 }
 
 .user-statistic-info {
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: default;
+}
+
+.user-info-popover-statistic-link {
   cursor: pointer;
 
   &:hover {
     .user-statistic-type,
-    .user-statistic-value {
+    .user-statistic-value:not([data-empty='true']) {
       color: var(--el-color-primary);
     }
   }
-}
-
-.user-statistic-credit {
-  cursor: default;
 }
 
 .user-operate-btn {

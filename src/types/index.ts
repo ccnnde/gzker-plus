@@ -183,6 +183,12 @@ export interface UserInfo {
   topicNumber?: string;
   replyNumber?: string;
   favoriteNumber?: string;
+  topicListPublic: boolean;
+  replyListPublic: boolean;
+  favoriteListPublic: boolean;
+  topicListTitle?: string;
+  replyListTitle?: string;
+  favoriteListTitle?: string;
   creditValue?: string;
   followed?: boolean;
   blocked?: boolean;
