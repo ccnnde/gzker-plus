@@ -24,6 +24,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
   const editInfoElement = contentElement?.querySelector(':scope > .edit-info');
   const editInfo = editInfoElement?.textContent?.trim();
   const statisticsElement = topicDocument.querySelector('.gzk-topic-stats');
+  const ownerActionsElement = topicDocument.querySelector('.gzk-topic-owner-actions');
   const tags = Array.from(
     topicElement?.querySelectorAll<HTMLAnchorElement>(':scope > .topic-tags > a.tag-badge') || [],
   ).map((element) => ({
@@ -62,7 +63,8 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
     favorited: topicElement?.querySelector('.J_topicFavorite')?.getAttribute('data-type') === 'unfavorite',
     favoriteNumber: statisticsElement?.querySelector('.favorited')?.textContent?.match(/(\d+)\s*人收藏/)?.[1],
     clickNumber: topicElement?.querySelector('.hits')?.textContent?.match(/(\d+) 次点击/)?.[1],
-    editable: Boolean(topicElement?.querySelector('a[href^="/t/edit/"]')),
+    editable: Boolean(ownerActionsElement?.querySelector('a.gzk-topic-edit[href^="/t/edit/"]')),
+    deletable: Boolean(ownerActionsElement?.querySelector('a.gzk-topic-delete[href^="/t/destory/"]')),
   };
 };
 

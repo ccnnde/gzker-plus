@@ -258,6 +258,7 @@ export interface UserTopicDetail {
   likeNumber?: string;
   clickNumber?: string;
   editable?: boolean;
+  deletable?: boolean;
 }
 
 export interface UserTopicStatus {

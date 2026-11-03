@@ -252,6 +252,18 @@ export const modifyTopic = async (topicId: string, title: string, content: strin
   checkAlertInfo(data);
 };
 
+export const deleteTopic = async (topicId: string): Promise<void> => {
+  await request(`/t/destory/${topicId}`, {
+    method: 'POST',
+    credentials: 'include',
+    body: new URLSearchParams({
+      _xsrf: getXsrfToken(),
+      confirm_delete: '1',
+      version: 'member-controls-20261101-v1',
+    }),
+  });
+};
+
 export const likeReply = async (replyId: string | undefined, voted: boolean): Promise<VoteResponse> => {
   return vote(`/replyVote?reply_id=${replyId}`, voted);
 };
