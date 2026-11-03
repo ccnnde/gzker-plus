@@ -448,13 +448,21 @@ export interface CherryFileUploadStatus {
 
 export type CherryAnchor = [number, number] | false;
 
-export interface TopicAction {
-  label: string;
-  iconClass: string;
-  handler: () => void;
-  loading?: boolean;
-  showDivider?: boolean;
-}
+export type TopicAction =
+  | {
+      type?: 'button';
+      label: string;
+      iconClass: string;
+      handler: () => void;
+      loading?: boolean;
+      showDivider?: boolean;
+    }
+  | {
+      type: 'share';
+      label: string;
+      iconClass: string;
+      showDivider?: boolean;
+    };
 
 export interface TopicMarkdownLabels {
   author: string;

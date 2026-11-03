@@ -13,6 +13,7 @@ import { useTopicReplies } from '@/composables/topic-replies';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import {
+  deleteTopic,
   favoriteTopic,
   getEditedTopic,
   getTopicExportSnapshot,
@@ -76,6 +77,7 @@ const topicContainer = ref<HTMLDivElement | null>(null);
 const topicEditorContainer = ref<HTMLDivElement | null>(null);
 const isTopicEditing = ref(false);
 const isTopicEditorFullscreen = ref(false);
+const isDeletingTopic = ref(false);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
 const replyHoverDisabled = ref(false);
 
@@ -261,6 +263,40 @@ const handleTopicEdit = () => {
   });
 };
 
+const handleTopicDelete = async () => {
+  if (!topicId.value || !topicDetail.value?.deletable || isDeletingTopic.value) {
+    return;
+  }
+
+  const deletedTopicId = topicId.value;
+  isDeletingTopic.value = true;
+
+  try {
+    await ElMessageBox.confirm(t('enhancedTopic.confirmDeleteTopic'), t('common.warning'), {
+      type: 'warning',
+      autofocus: false,
+    });
+  } catch {
+    isDeletingTopic.value = false;
+    return;
+  }
+
+  await handleTopicActionRequest(async () => {
+    await deleteTopic(deletedTopicId);
+
+    if (topicId.value === deletedTopicId && topicDetail.value) {
+      topicDetail.value.deletable = false;
+    }
+
+    ElMessage.success({
+      message: t('enhancedTopic.deleteTopicSuccessful'),
+      onClose: () => window.location.reload(),
+    });
+  });
+
+  isDeletingTopic.value = false;
+};
+
 const handleTopicBlock = async () => {
   try {
     if (!topicId.value || !topicDetail.value?.title) {
@@ -421,23 +457,57 @@ const handleRefreshTopic = () => {
 
 // @unocss-include
 const topicActions = computed<readonly TopicAction[]>(() => {
-  return [
+  const actions: TopicAction[] = [];
+
+  if (topicId.value && topicDetail.value?.deletable) {
+    actions.push({
+      label: t('enhancedTopic.deleteTopic'),
+      iconClass: 'i-mdi-trash-can-outline',
+      handler: handleTopicDelete,
+      loading: isDeletingTopic.value,
+    });
+  }
+
+  if (topicId.value) {
+    actions.push({
+      type: 'share',
+      label: t('enhancedTopic.shareTopic'),
+      iconClass: 'i-mdi-share-variant-outline',
+    });
+  }
+
+  actions.push(
     {
       label: t('enhancedTopic.exportTopic'),
       iconClass: 'i-mdi-tray-arrow-down',
       handler: handleExportTopic,
       loading: isExporting.value,
     },
-    { label: t('enhancedTopic.hotReplies'), iconClass: 'i-mdi-heart-outline', handler: handleHotReplies },
+    {
+      label: t('enhancedTopic.hotReplies'),
+      iconClass: 'i-mdi-heart-outline',
+      handler: handleHotReplies,
+    },
     {
       label: t('enhancedTopic.refreshTopic'),
       iconClass: 'i-mdi-refresh',
       handler: handleRefreshTopic,
       loading: isTopicRefreshing.value,
     },
-    { label: t('enhancedTopic.scrollToTop'), iconClass: 'i-mdi-arrow-up', handler: scrollToTop, showDivider: true },
-    { label: t('enhancedTopic.scrollToBottom'), iconClass: 'i-mdi-arrow-down', handler: scrollToBottom },
-  ];
+    {
+      label: t('enhancedTopic.scrollToTop'),
+      iconClass: 'i-mdi-arrow-up',
+      handler: scrollToTop,
+      showDivider: true,
+    },
+    {
+      label: t('enhancedTopic.scrollToBottom'),
+      iconClass: 'i-mdi-arrow-down',
+      handler: scrollToBottom,
+    },
+  );
+
+  return actions;
 });
 
 const replyEditorHeight = computed(() => {

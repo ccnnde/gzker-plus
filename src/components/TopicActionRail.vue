@@ -55,18 +55,22 @@ const shareToWeibo = () => {
 
 <template>
   <div class="topic-action-rail">
-    <div v-if="topicId" class="topic-action-rail-item">
-      <ElDropdown placement="left-start" trigger="click">
+    <div
+      v-for="action in actions"
+      :key="action.label"
+      :class="['topic-action-rail-item', { 'topic-action-rail-item-divided': action.showDivider }]"
+    >
+      <ElDropdown v-if="action.type === 'share'" placement="left-start" trigger="click">
         <span class="topic-action-rail-dropdown-trigger">
           <ElTooltip
-            :content="$t('enhancedTopic.shareTopic')"
+            :content="action.label"
             :enterable="false"
             :hide-after="0"
             placement="left"
             popper-class="gzk-tooltip-popper"
           >
-            <button class="topic-action-rail-button" type="button" :aria-label="$t('enhancedTopic.shareTopic')">
-              <span class="topic-action-rail-button-icon i-mdi-share-variant-outline"></span>
+            <button class="topic-action-rail-button" type="button" :aria-label="action.label">
+              <span :class="['topic-action-rail-button-icon', action.iconClass]"></span>
             </button>
           </ElTooltip>
         </span>
@@ -95,13 +99,8 @@ const shareToWeibo = () => {
           </ElDropdownMenu>
         </template>
       </ElDropdown>
-    </div>
-    <div
-      v-for="action in actions"
-      :key="action.label"
-      :class="['topic-action-rail-item', { 'topic-action-rail-item-divided': action.showDivider }]"
-    >
       <ElTooltip
+        v-else
         :content="action.label"
         :enterable="false"
         :hide-after="0"
