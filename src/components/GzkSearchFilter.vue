@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import { SEARCH_FILTER_INJECTION_KEY } from '@/constants/inject-key';
 
@@ -31,9 +31,19 @@ if (!controller) {
 const { filters, timePreset, sortOptions, timeOptions, activeFilterCount } = controller;
 const { applyTimePreset, updateDateRange, disabledStartDate, disabledEndDate } = controller;
 const authorInputRef = ref<InputInstance>();
+const nodeGroupRef = ref<HTMLElement>();
 const isPopoverVisible = ref(false);
 const suppressHover = ref(false);
+const nodeDropdownMaxHeight = ref<number>();
 let closeTimer: number | undefined;
+
+const nodeGroupStyle = computed(() => {
+  if (nodeDropdownMaxHeight.value === undefined) {
+    return undefined;
+  }
+
+  return { '--gzk-node-dropdown-max-height': `${nodeDropdownMaxHeight.value}px` };
+});
 
 const commitAuthor = () => {
   filters.author = filters.author.trim();
@@ -58,6 +68,33 @@ const handleSortChange = (sort: SearchSort) => {
 const handleNodeChange = (node: unknown) => {
   filters.node = typeof node === 'number' ? node : 0;
   emit('change');
+};
+
+const syncNodeDropdownHeight = () => {
+  const groupEl = nodeGroupRef.value;
+  const wrapEl = groupEl?.querySelector<HTMLElement>('.el-select-dropdown__wrap');
+  const popoverEl = groupEl?.closest<HTMLElement>('.gzk-search-filter-popover');
+
+  if (!groupEl || !wrapEl || !popoverEl) {
+    return;
+  }
+
+  const popoverRect = popoverEl.getBoundingClientRect();
+  const wrapRect = wrapEl.getBoundingClientRect();
+  const sideGap = wrapRect.left - popoverRect.left;
+
+  nodeDropdownMaxHeight.value = Math.max(popoverRect.bottom - wrapRect.top - sideGap, 0);
+};
+
+const handleNodeDropdownVisible = async (visible: boolean) => {
+  if (!visible) {
+    return;
+  }
+
+  await nextTick();
+  requestAnimationFrame(() => {
+    syncNodeDropdownHeight();
+  });
 };
 
 const handleTimePresetChange = (preset: SearchTimePreset) => {
@@ -216,7 +253,7 @@ onUnmounted(() => {
         </div>
       </section>
       <div class="gzk-search-filter-pair">
-        <section class="gzk-search-filter-group">
+        <section ref="nodeGroupRef" class="gzk-search-filter-group" :style="nodeGroupStyle">
           <h3 class="gzk-search-filter-group__title">{{ $t('search.belongingNode') }}</h3>
           <ElSelect
             v-model="filters.node"
@@ -224,6 +261,7 @@ onUnmounted(() => {
             :loading="nodesLoading"
             :teleported="false"
             @change="handleNodeChange"
+            @visible-change="handleNodeDropdownVisible"
           >
             <ElOption :value="0" :label="$t('search.allNodes')" />
             <ElOption
@@ -420,6 +458,10 @@ onUnmounted(() => {
 :global(.gzk-search-filter-popover .el-input__inner),
 :global(.gzk-search-filter-popover .el-select__selected-item) {
   font-size: 13px;
+}
+
+:global(.gzk-search-filter-popover .el-select-dropdown__wrap) {
+  max-height: var(--gzk-node-dropdown-max-height, 274px);
 }
 
 .gzk-search-filter-range {
