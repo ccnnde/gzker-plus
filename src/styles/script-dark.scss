@@ -53,7 +53,7 @@ html[data-theme] {
 
   .btn-primary,
   .dropdown.open > .dropdown-toggle.btn-primary {
-    color: var(--el-color-white);
+    color: var(--el-color-white) !important;
     background-color: var(--el-color-primary);
     border-color: var(--el-color-primary);
 
@@ -234,25 +234,79 @@ html[data-theme] {
     }
   }
 
-  .usercard .ui-header,
-  .user-page .profile .ui-header {
-    color: var(--el-text-color-primary);
-    background: var(--el-bg-color);
-    border-bottom: 1px solid var(--el-border-color-light);
-
-    .user-number {
-      color: var(--el-text-color-primary);
+  .usercard,
+  .user-page .profile {
+    .ui-header {
+      color: var(--el-text-color-primary) !important;
       text-shadow: none;
+      background: var(--el-bg-color) !important;
+      border-bottom: 1px solid var(--el-border-color-light);
+
+      .username {
+        color: var(--el-text-color-primary) !important;
+        text-shadow: none;
+      }
+
+      .user-number {
+        color: var(--el-text-color-primary);
+        text-shadow: none;
+      }
+    }
+
+    .ui-content .status {
+      border-color: var(--el-border-color-light);
+
+      strong,
+      a {
+        color: var(--el-text-color-primary);
+      }
     }
   }
 
-  .usercard .ui-content .status,
-  .user-page .profile .ui-content .status {
+  .usercard .ui-header,
+  .user-page .profile .ui-header,
+  .gzk-points {
+    .gzk-credit-level {
+      color: var(--el-color-primary);
+      background: var(--el-color-primary-light-9);
+      border-color: var(--el-color-primary-light-5);
+
+      &:hover {
+        background: var(--el-color-primary-light-8);
+      }
+    }
+  }
+
+  .usercard .gzk-dm-dual-card {
+    background: var(--el-bg-color);
     border-color: var(--el-border-color-light);
 
-    strong,
-    a {
-      color: var(--el-text-color-primary);
+    .gzk-dm-card-half,
+    .gzk-points-card {
+      color: var(--el-text-color-regular) !important;
+      text-shadow: none;
+      background: transparent;
+      border-color: var(--el-border-color-light);
+      box-shadow: none;
+
+      &:hover {
+        color: var(--el-color-primary) !important;
+        background: var(--el-fill-color-light);
+      }
+    }
+
+    .gzk-points-card::before {
+      background: var(--el-border-color-light);
+    }
+
+    .gzk-points-card-value,
+    .gzk-dm-points-label,
+    .gzk-point-icon {
+      color: var(--el-color-primary);
+    }
+
+    .gzk-points-card-unit {
+      color: var(--el-text-color-secondary);
     }
   }
 
@@ -264,6 +318,121 @@ html[data-theme] {
     a {
       padding: 0.2em 0.6em;
       text-decoration: none;
+    }
+  }
+
+  .gzk-points {
+    --gzk-point-red: var(--el-color-primary);
+
+    .gzk-points-header,
+    .gzk-points-wallet,
+    .gzk-points-tabs,
+    .gzk-points-stats,
+    .gzk-point-records > li,
+    .gzk-shop-product {
+      border-color: var(--el-border-color-light);
+    }
+
+    .gzk-points-header {
+      color: var(--el-text-color-primary);
+      text-shadow: none;
+    }
+
+    .gzk-points-wallet {
+      background: var(--el-fill-color-light);
+    }
+
+    .muted,
+    .gzk-points-stats span,
+    .gzk-points-balance > span {
+      color: var(--el-text-color-secondary);
+    }
+
+    .gzk-points-rules {
+      th,
+      td {
+        border-color: var(--el-border-color-light);
+      }
+    }
+
+    .gzk-shop-product {
+      select {
+        color: var(--el-text-color-regular);
+        background-color: var(--el-bg-color);
+        border-color: var(--el-border-color);
+
+        &:hover {
+          border-color: var(--el-border-color-hover);
+        }
+
+        &:focus {
+          border-color: var(--el-color-primary);
+          outline-color: var(--el-color-primary);
+        }
+
+        option {
+          color: var(--el-text-color-regular);
+          background-color: var(--el-bg-color-overlay);
+        }
+      }
+
+      .btn-success:disabled,
+      .btn-success:disabled:hover {
+        color: var(--el-text-color-disabled);
+        background-color: var(--el-disabled-bg-color);
+        border-color: var(--el-disabled-border-color);
+      }
+    }
+
+    .gzk-points-tabs a:hover,
+    .gzk-points-wallet-actions > a:not(.btn):hover,
+    .gzk-points-more:hover {
+      color: var(--el-color-primary);
+    }
+  }
+
+  &:has(.dm-wrap) {
+    --bg: var(--el-bg-color);
+    --panel: var(--el-bg-color-overlay);
+    --text: var(--el-text-color-primary);
+    --muted: var(--el-text-color-secondary);
+    --line: var(--el-border-color-light);
+    --blue: var(--el-color-primary);
+    --soft: var(--el-fill-color-light);
+    --bubble: var(--el-color-primary-light-9);
+
+    color-scheme: light;
+
+    &.dark {
+      color-scheme: dark;
+    }
+
+    .primary {
+      color: var(--el-color-white);
+      background: var(--el-color-primary);
+      border-color: var(--el-color-primary);
+
+      &:hover {
+        background: var(--el-color-primary-light-3);
+        border-color: var(--el-color-primary-light-3);
+      }
+    }
+
+    .dm-source {
+      border-left-color: var(--el-color-primary);
+    }
+
+    .dm-badge {
+      color: var(--el-color-white);
+      background: var(--el-color-success);
+    }
+
+    .dm-error {
+      color: var(--el-color-error) !important;
+    }
+
+    #report-dialog::backdrop {
+      background: var(--el-mask-color-extra-light);
     }
   }
 
