@@ -288,14 +288,14 @@ defineExpose({
   <ElDialog
     v-if="showEditorDialog"
     :model-value="showEditorDialog"
-    :class="['editor-dialog', 'topic-editor-dialog', dialogFullscreenClass]"
+    :class="['gzkp-editor-dialog', 'gzkp-topic-editor-dialog', dialogFullscreenClass]"
     :style="dialogFullscreenStyle"
-    :modal-class="isAddContent ? 'gzk-dialog-overlay' : ''"
+    :modal-class="isAddContent ? 'gzkp-dialog-overlay' : ''"
     :lock-scroll="false"
     :z-index="2001"
     :before-close="handleEditorBeforeClose"
     :close-on-click-modal="closeOnClickModal"
-    :transition="{ name: 'topic-editor-dialog', css: false }"
+    :transition="{ name: 'gzkp-topic-editor-dialog', css: false }"
     align-center
     append-to-body
     @update:model-value="!$event && closeEditor()"
@@ -329,17 +329,17 @@ defineExpose({
 </template>
 
 <style lang="scss">
-.topic-editor-dialog {
+.gzkp-topic-editor-dialog {
   height: 540px;
 
   .el-dialog__body {
-    padding-bottom: var(--gzk-topic-padding);
+    padding-bottom: var(--gzkp-topic-padding);
   }
 }
 
 .topic-editor-container {
   height: 100%;
-  padding: var(--gzk-topic-padding);
+  padding: var(--gzkp-topic-padding);
 }
 </style>
 

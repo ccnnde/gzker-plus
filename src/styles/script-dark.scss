@@ -1,10 +1,10 @@
 /* stylelint-disable selector-class-pattern */
 /* stylelint-disable no-descending-specificity */
-html[data-theme] {
+html[data-gzkp-theme] {
   background: var(--el-bg-color);
 
   body {
-    --gzk-navbar-text-hover: var(--el-color-primary);
+    --gzkp-navbar-text-hover: var(--el-color-primary);
 
     color: var(--el-text-color-primary);
     background: var(--el-bg-color);
@@ -167,7 +167,7 @@ html[data-theme] {
       text-shadow: none;
 
       &:hover {
-        color: var(--gzk-navbar-text-hover);
+        color: var(--gzkp-navbar-text-hover);
       }
     }
 
@@ -444,7 +444,7 @@ html[data-theme] {
 
     color-scheme: light;
 
-    &.dark {
+    &.gzkp-dark {
       color-scheme: dark;
     }
 
@@ -523,7 +523,7 @@ html[data-theme] {
     }
   }
 
-  &.dark .gzk-search input[type='date'] {
+  &.gzkp-dark .gzk-search input[type='date'] {
     color-scheme: dark;
   }
 
@@ -560,7 +560,7 @@ html[data-theme] {
       border-bottom: 1px solid var(--el-border-color-light);
 
       &:hover {
-        background-color: var(--gzk-topic-hover-bg-color);
+        background-color: var(--gzkp-topic-hover-bg-color);
       }
 
       .title a {
@@ -572,7 +572,7 @@ html[data-theme] {
         color: var(--el-color-info-light-3);
 
         .node {
-          background: var(--gzk-node-bg-color);
+          background: var(--gzkp-node-bg-color);
 
           a {
             color: var(--el-text-color-secondary);
@@ -593,10 +593,10 @@ html[data-theme] {
 
         a {
           color: var(--el-text-color-primary);
-          background: var(--gzk-reply-count-bg-color);
+          background: var(--gzkp-reply-count-bg-color);
 
           &:visited {
-            background: var(--gzk-reply-count-visited-bg-color);
+            background: var(--gzkp-reply-count-visited-bg-color);
           }
         }
       }
@@ -658,7 +658,7 @@ html[data-theme] {
 
       .tag-badge {
         color: var(--el-text-color-secondary) !important;
-        background: var(--gzk-node-bg-color) !important;
+        background: var(--gzkp-node-bg-color) !important;
       }
     }
   }
@@ -711,7 +711,7 @@ html[data-theme] {
 
     code {
       color: var(--el-text-color-regular);
-      background-color: var(--gzk-node-bg-color);
+      background-color: var(--gzkp-node-bg-color);
     }
 
     pre {
@@ -823,8 +823,8 @@ html[data-theme] {
   .hot-nodes a {
     color: var(--el-text-color-secondary);
     text-shadow: none;
-    background: var(--gzk-node-bg-color);
-    border-color: var(--gzk-node-bg-color);
+    background: var(--gzkp-node-bg-color);
+    border-color: var(--gzkp-node-bg-color);
   }
 
   .nodes-cloud {

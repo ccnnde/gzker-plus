@@ -67,7 +67,7 @@ const shareToWeibo = () => {
             :enterable="false"
             :hide-after="0"
             placement="left"
-            popper-class="gzk-tooltip-popper"
+            popper-class="gzkp-tooltip-popper"
           >
             <button class="topic-action-rail-button" type="button" :aria-label="action.label">
               <span :class="['topic-action-rail-button-icon', action.iconClass]"></span>
@@ -77,16 +77,16 @@ const shareToWeibo = () => {
         <template #dropdown>
           <ElDropdownMenu>
             <ElDropdownItem @click="copyTopicUrl">
-              <un-i-mdi-link-variant class="topic-action-rail-share-icon topic-action-rail-share-icon-link" />
+              <un-i-mdi-link-variant class="gzkp-topic-action-rail-share-icon gzkp-topic-action-rail-share-icon-link" />
               {{ $t('enhancedTopic.shareLink') }}
             </ElDropdownItem>
             <ElDropdownItem @click="shareToWeibo">
-              <un-i-mdi-sina-weibo class="topic-action-rail-share-icon topic-action-rail-share-icon-weibo" />
+              <un-i-mdi-sina-weibo class="gzkp-topic-action-rail-share-icon gzkp-topic-action-rail-share-icon-weibo" />
               {{ $t('enhancedTopic.shareWeibo') }}
             </ElDropdownItem>
-            <ElDropdownItem class="topic-action-rail-share-dropdown-wechat">
+            <ElDropdownItem class="gzkp-topic-action-rail-share-dropdown-wechat">
               <div>
-                <un-i-mdi-wechat class="topic-action-rail-share-icon topic-action-rail-share-icon-wechat" />
+                <un-i-mdi-wechat class="gzkp-topic-action-rail-share-icon gzkp-topic-action-rail-share-icon-wechat" />
                 {{ $t('enhancedTopic.shareWeChat') }}
               </div>
               <QrcodeVue
@@ -105,7 +105,7 @@ const shareToWeibo = () => {
         :enterable="false"
         :hide-after="0"
         placement="left"
-        popper-class="gzk-tooltip-popper"
+        popper-class="gzkp-tooltip-popper"
       >
         <button
           class="topic-action-rail-button"
@@ -128,7 +128,7 @@ const shareToWeibo = () => {
 </template>
 
 <style lang="scss">
-.topic-action-rail-share-dropdown-wechat {
+.gzkp-topic-action-rail-share-dropdown-wechat {
   flex-direction: column;
 
   & > div {
@@ -138,20 +138,20 @@ const shareToWeibo = () => {
   }
 }
 
-.topic-action-rail-share-icon {
+.gzkp-topic-action-rail-share-icon {
   margin-right: 5px;
   font-size: 16px;
 }
 
-.topic-action-rail-share-icon-link {
+.gzkp-topic-action-rail-share-icon-link {
   color: #9fadc7;
 }
 
-.topic-action-rail-share-icon-weibo {
+.gzkp-topic-action-rail-share-icon-weibo {
   color: #f46623;
 }
 
-.topic-action-rail-share-icon-wechat {
+.gzkp-topic-action-rail-share-icon-wechat {
   color: #3fc15f;
 }
 </style>

@@ -82,7 +82,7 @@ defineExpose({
   <ElPopover
     v-model:visible="visible"
     :width="353"
-    popper-class="el-dark-popper"
+    popper-class="gzkp-dark-popper"
     :popper-style="{ padding: 0 }"
     :hide-after="0"
     trigger="click"

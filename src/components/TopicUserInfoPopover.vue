@@ -46,7 +46,7 @@ const getTriggerElement = (target: EventTarget | null): HTMLElement | undefined 
   const triggerElement = target.closest<HTMLElement>(SELECTOR_USER_INFO_TRIGGER);
   const container = props.container;
 
-  if (!triggerElement || !container?.contains(triggerElement) || !triggerElement.dataset.userUid) {
+  if (!triggerElement || !container?.contains(triggerElement) || !triggerElement.dataset.gzkpUserUid) {
     return undefined;
   }
 
@@ -60,7 +60,7 @@ const isSameTriggerTarget = (triggerElement: HTMLElement, relatedTarget: EventTa
 const isActiveTrigger = (triggerElement: HTMLElement | undefined): boolean => {
   return Boolean(
     triggerElement?.isConnected &&
-      triggerElement.dataset.userUid === uid.value &&
+      triggerElement.dataset.gzkpUserUid === uid.value &&
       props.container?.contains(triggerElement),
   );
 };
@@ -107,7 +107,7 @@ const scheduleShow = () => {
 };
 
 const show = (triggerElement: HTMLElement) => {
-  const nextUid = triggerElement.dataset.userUid;
+  const nextUid = triggerElement.dataset.gzkpUserUid;
 
   if (!nextUid) {
     return;

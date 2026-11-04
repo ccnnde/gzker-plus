@@ -10,7 +10,7 @@ import { defineConfig } from 'wxt';
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { BILI_IMAGE_HOST_ORIGIN, BILI_IMAGE_PAGE_ORIGIN, SM_IMAGE_HOST_ORIGIN } from './src/constants';
+import { BILI_IMAGE_HOST_ORIGIN, BILI_IMAGE_PAGE_ORIGIN, DARK_MODE_CLASS, SM_IMAGE_HOST_ORIGIN } from './src/constants';
 import packageJson from './package.json';
 
 import type { Wxt } from 'wxt';
@@ -124,6 +124,22 @@ export default defineConfig({
   },
   vite: () => ({
     plugins: [
+      {
+        name: 'gzkp-element-dark',
+        enforce: 'pre',
+        transform(code: string, id: string) {
+          const path = id.replace(/\?.*$/, '').replaceAll('\\', '/');
+
+          if (!path.endsWith('/element-plus/theme-chalk/dark/css-vars.css')) {
+            return;
+          }
+
+          return {
+            code: code.replaceAll('html.dark', `html.${DARK_MODE_CLASS}`),
+            map: null,
+          };
+        },
+      },
       VueI18nPlugin({
         include: resolve('src/i18n/locales/**'),
       }),

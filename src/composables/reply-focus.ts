@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted } from 'vue';
 
-const REPLY_FLASH_CLASS = 'gzk-reply-item-flash';
+const REPLY_FLASH_CLASS = 'gzkp-reply-item-flash';
 const REPLY_FOCUS_TIMEOUT = 10_000;
 
 interface UseReplyFocusResult {
@@ -45,7 +45,9 @@ export const useReplyFocus = (): UseReplyFocusResult => {
     let nativeReplyFocused = false;
 
     const focusReply = (): boolean => {
-      const enhancedReplyElement = document.querySelector<HTMLElement>(`.topic-dialog [data-reply-id="${replyId}"]`);
+      const enhancedReplyElement = document.querySelector<HTMLElement>(
+        `.gzkp-topic-dialog [data-gzkp-reply-id="${replyId}"]`,
+      );
 
       if (enhancedReplyElement) {
         clearReplyFocus();

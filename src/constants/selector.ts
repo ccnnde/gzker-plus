@@ -66,7 +66,7 @@ export const SELECTOR_USER_MENTION_LINK = 'a[href^="/u/"]';
 /**
  * 用户资料弹窗触发元素
  */
-export const SELECTOR_USER_INFO_TRIGGER = '[data-gzk-user-info-trigger]';
+export const SELECTOR_USER_INFO_TRIGGER = '[data-gzkp-user-info-trigger]';
 
 /**
  * 未读消息提醒元素

@@ -123,7 +123,7 @@
       }
 
       .CodeMirror-selected {
-        background-color: var(--gzk-cm-selected-bg-color);
+        background-color: var(--gzkp-cm-selected-bg-color);
       }
     }
   }
@@ -338,7 +338,7 @@
   }
 }
 
-html[data-theme] {
+html[data-gzkp-theme] {
   .cherry.theme__github {
     .cherry-drag {
       &.cherry-drag--show {

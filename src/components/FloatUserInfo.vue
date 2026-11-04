@@ -76,7 +76,7 @@ const handlePopoverHide = () => {
 .avatar-wrapper {
   position: absolute;
   cursor: pointer;
-  border-radius: var(--gzk-avatar-border-radius);
+  border-radius: var(--gzkp-avatar-border-radius);
 
   &::before,
   &::after {

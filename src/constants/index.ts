@@ -28,7 +28,7 @@ export const SM_IMAGE_HOST_ORIGIN = 'https://s.ee';
 /**
  * 根组件类名前缀
  */
-export const APP_ROOT_CLASS_PREFIX = 'gzk-app-';
+export const APP_ROOT_CLASS_PREFIX = 'gzkp-app-';
 
 /**
  * Loading 暗色背景
@@ -146,8 +146,8 @@ export const enum GzkInfoType {
 }
 
 export const GzkInfoHideClass: Partial<Record<GzkInfoType, string>> = {
-  [GzkInfoType.GzkLogo]: 'hide-gzk-logo',
-  [GzkInfoType.Profile]: 'hide-profile',
+  [GzkInfoType.GzkLogo]: 'gzkp-hide-logo',
+  [GzkInfoType.Profile]: 'gzkp-hide-profile',
 };
 
 export const enum BellStyle {
@@ -163,7 +163,7 @@ export const enum DarkMode {
   System = 'system',
 }
 
-export const DARK_MODE_CLASS = 'dark';
+export const DARK_MODE_CLASS = 'gzkp-dark';
 
 export const enum DarkTheme {
   Default = 'default',
@@ -176,7 +176,7 @@ export const enum LightTheme {
   TokyoNight = 'tokyo-night',
 }
 
-export const THEME_ATTR = 'data-theme';
+export const THEME_ATTR = 'data-gzkp-theme';
 
 export const enum ReplyType {
   Topic = 'topic',

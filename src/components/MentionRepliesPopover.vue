@@ -428,7 +428,7 @@ defineExpose({
     :visible="visible"
     :virtual-ref="referenceElement"
     width="min(420px, calc(100vw - 32px))"
-    popper-class="mention-replies-popover"
+    popper-class="gzkp-mention-replies-popover"
     :popper-style="{ padding: 0 }"
     :z-index="zIndex"
     placement="top-start"
@@ -440,19 +440,22 @@ defineExpose({
     <div
       ref="mentionRepliesContainer"
       v-viewer="popoverViewerOptions"
-      :class="['mention-replies-popover-container', { 'mention-replies-popover-container-ready': positionReady }]"
+      :class="[
+        'gzkp-mention-replies-popover-container',
+        { 'gzkp-mention-replies-popover-container-ready': positionReady },
+      ]"
       @mouseenter="handlePopoverMouseEnter"
       @mouseleave="handlePopoverMouseLeave"
       @focusin="handlePopoverFocusIn"
       @focusout="hide()"
     >
-      <div class="mention-replies-popover-header">
-        <span class="mention-replies-popover-title">
+      <div class="gzkp-mention-replies-popover-header">
+        <span class="gzkp-mention-replies-popover-title">
           {{ $t('enhancedTopic.mentionRepliesTitle', { uid: mentionUid }) }}
         </span>
       </div>
       <ElScrollbar ref="scrollbar" max-height="min(40vh, 360px)">
-        <ul class="mention-replies-popover-list">
+        <ul class="gzkp-mention-replies-popover-list">
           <MentionReplyItem
             v-for="(item, index) in mentionReplies"
             :key="getReplyKey(item, index)"
@@ -467,27 +470,27 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-.mention-replies-popover-container {
+.gzkp-mention-replies-popover-container {
   overflow: hidden;
   visibility: hidden;
   border-radius: var(--el-border-radius-base);
 
-  &.mention-replies-popover-container-ready {
+  &.gzkp-mention-replies-popover-container-ready {
     visibility: visible;
   }
 }
 
-.mention-replies-popover-list {
+.gzkp-mention-replies-popover-list {
   padding: 4px 0 8px;
   margin: 0;
   list-style: none;
 }
 
-.mention-replies-popover-header {
+.gzkp-mention-replies-popover-header {
   padding: 10px 12px;
 }
 
-.mention-replies-popover-title {
+.gzkp-mention-replies-popover-title {
   overflow: hidden;
   font-size: var(--el-font-size-base);
   font-weight: 600;

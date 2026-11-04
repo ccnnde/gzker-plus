@@ -21,14 +21,14 @@ export const applyHideTopic = async (ctx: ContentScriptContext) => {
   showGlobalLoading({
     target: document.documentElement,
     background: 'transparent',
-    customClass: 'gzk-loading-global gzk-loading-ring',
+    customClass: 'gzkp-loading-global gzkp-loading-ring',
   });
 
-  document.documentElement.classList.add('hide-topic');
+  document.documentElement.classList.add('gzkp-hide-topic');
 
   ctx.onInvalidated(() => {
     window.__GZK_ElLoading?.close();
     window.__GZK_ElLoading = undefined;
-    document.documentElement.classList.remove('hide-topic');
+    document.documentElement.classList.remove('gzkp-hide-topic');
   });
 };

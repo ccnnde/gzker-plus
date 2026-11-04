@@ -169,7 +169,7 @@ const handleUserBlock = (event: MouseEvent) => {
 <template>
   <ElPopover
     :width="300"
-    popper-class="el-dark-popper"
+    popper-class="gzkp-dark-popper"
     :popper-style="{ padding: 0 }"
     :show-after="showAfter"
     :hide-after="hideAfter"
@@ -307,7 +307,7 @@ const handleUserBlock = (event: MouseEvent) => {
 .user-basic-info-avatar {
   height: 100%;
   margin-right: 10px;
-  border-radius: var(--gzk-avatar-border-radius);
+  border-radius: var(--gzkp-avatar-border-radius);
 }
 
 .user-basic-info-detail {

@@ -42,8 +42,8 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
             <a
               v-if="meta.authorName"
               class="topic-detail-author-link"
-              :data-gzk-user-info-trigger="authorId ? '' : undefined"
-              :data-user-uid="authorId"
+              :data-gzkp-user-info-trigger="authorId ? '' : undefined"
+              :data-gzkp-user-uid="authorId"
               :href="authorLink"
               target="_blank"
               rel="noopener noreferrer"
@@ -143,11 +143,11 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
   max-width: 100%;
   padding: 2px 12px;
   line-height: 20px;
-  color: var(--gzk-topic-tag-text-color);
+  color: var(--gzkp-topic-tag-text-color);
   text-decoration: none;
   overflow-wrap: anywhere;
   user-select: none;
-  background-color: var(--gzk-topic-tag-bg-color);
+  background-color: var(--gzkp-topic-tag-bg-color);
   border-radius: 12px;
 }
 

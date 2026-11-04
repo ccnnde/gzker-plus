@@ -48,7 +48,7 @@ const datePanelStyle = computed(() => {
     return undefined;
   }
 
-  return { '--gzk-search-filter-date-height': `${datePanelHeight.value}px` };
+  return { '--gzkp-search-filter-date-height': `${datePanelHeight.value}px` };
 });
 
 const syncDatePanelHeight = () => {
@@ -114,7 +114,7 @@ const nodeGroupStyle = computed(() => {
     return undefined;
   }
 
-  return { '--gzk-node-dropdown-max-height': `${nodeDropdownMaxHeight.value}px` };
+  return { '--gzkp-node-dropdown-max-height': `${nodeDropdownMaxHeight.value}px` };
 });
 
 const commitAuthor = () => {
@@ -145,7 +145,7 @@ const handleNodeChange = (node: unknown) => {
 const syncNodeDropdownHeight = () => {
   const groupEl = nodeGroupRef.value;
   const wrapEl = groupEl?.querySelector<HTMLElement>('.el-select-dropdown__wrap');
-  const popoverEl = groupEl?.closest<HTMLElement>('.gzk-search-filter-popover');
+  const popoverEl = groupEl?.closest<HTMLElement>('.gzkp-search-filter-popover');
 
   if (!groupEl || !wrapEl || !popoverEl) {
     return;
@@ -239,7 +239,7 @@ const handleOutsideClick = (event: MouseEvent) => {
     return;
   }
 
-  if (event.target.closest('.gzk-search-filter-trigger, .gzk-search-filter-popover')) {
+  if (event.target.closest('.gzkp-search-filter-trigger, .gzkp-search-filter-popover')) {
     return;
   }
 
@@ -298,13 +298,13 @@ onUnmounted(() => {
     :width="380"
     :offset="8"
     placement="bottom-end"
-    popper-class="gzk-search-filter-popover"
+    popper-class="gzkp-search-filter-popover"
     :show-arrow="false"
     persistent
   >
     <template #reference>
       <ElButton
-        :class="['gzk-search-filter-trigger', { 'is-active': activeFilterCount > 0 }]"
+        :class="['gzkp-search-filter-trigger', { 'is-active': activeFilterCount > 0 }]"
         text
         :aria-expanded="isPopoverVisible"
         @click="handleFilterEnter"
@@ -312,23 +312,23 @@ onUnmounted(() => {
         @mouseleave="handleFilterLeave"
       >
         <span>{{ $t(activeFilterCount > 0 ? 'search.filtered' : 'search.filter') }}</span>
-        <un-i-mdi-filter-variant class="gzk-search-filter-trigger__icon" />
+        <un-i-mdi-filter-variant class="gzkp-search-filter-trigger__icon" />
       </ElButton>
     </template>
     <div
       ref="panelRef"
-      class="gzk-search-filter-panel"
+      class="gzkp-search-filter-panel"
       :style="datePanelStyle"
       @mouseenter="handleFilterEnter"
       @mouseleave="handleFilterLeave"
     >
-      <section class="gzk-search-filter-group">
-        <h3 class="gzk-search-filter-group__title">{{ $t('search.sortBasis') }}</h3>
-        <div class="gzk-search-filter-options">
+      <section class="gzkp-search-filter-group">
+        <h3 class="gzkp-search-filter-group__title">{{ $t('search.sortBasis') }}</h3>
+        <div class="gzkp-search-filter-options">
           <ElCheckTag
             v-for="option in sortOptions"
             :key="option.value"
-            class="gzk-search-filter-option"
+            class="gzkp-search-filter-option"
             :checked="filters.sort === option.value"
             @change="handleSortChange(option.value)"
           >
@@ -336,12 +336,12 @@ onUnmounted(() => {
           </ElCheckTag>
         </div>
       </section>
-      <div class="gzk-search-filter-pair">
-        <section ref="nodeGroupRef" class="gzk-search-filter-group" :style="nodeGroupStyle">
-          <h3 class="gzk-search-filter-group__title">{{ $t('search.belongingNode') }}</h3>
+      <div class="gzkp-search-filter-pair">
+        <section ref="nodeGroupRef" class="gzkp-search-filter-group" :style="nodeGroupStyle">
+          <h3 class="gzkp-search-filter-group__title">{{ $t('search.belongingNode') }}</h3>
           <ElSelect
             v-model="filters.node"
-            class="gzk-search-filter-control"
+            class="gzkp-search-filter-control"
             filterable
             :loading="nodesLoading"
             :teleported="false"
@@ -357,12 +357,12 @@ onUnmounted(() => {
             />
           </ElSelect>
         </section>
-        <section class="gzk-search-filter-group">
-          <h3 class="gzk-search-filter-group__title">{{ $t('search.author') }}</h3>
+        <section class="gzkp-search-filter-group">
+          <h3 class="gzkp-search-filter-group__title">{{ $t('search.author') }}</h3>
           <ElInput
             ref="authorInputRef"
             v-model="filters.author"
-            class="gzk-search-filter-control"
+            class="gzkp-search-filter-control"
             :placeholder="$t('search.username')"
             maxlength="80"
             clearable
@@ -372,29 +372,29 @@ onUnmounted(() => {
           />
         </section>
       </div>
-      <section class="gzk-search-filter-group">
-        <h3 class="gzk-search-filter-group__title">{{ $t('search.publishTime') }}</h3>
-        <div class="gzk-search-filter-options">
+      <section class="gzkp-search-filter-group">
+        <h3 class="gzkp-search-filter-group__title">{{ $t('search.publishTime') }}</h3>
+        <div class="gzkp-search-filter-options">
           <ElCheckTag
             v-for="option in timeOptions"
             :key="option.value"
-            class="gzk-search-filter-option"
+            class="gzkp-search-filter-option"
             :checked="timePreset === option.value"
             @change="handleTimePresetChange(option.value)"
           >
             {{ option.label }}
           </ElCheckTag>
         </div>
-        <div class="gzk-search-filter-range">
-          <div ref="dateRangeRef" class="gzk-search-time-range" @click="handleDateRangeClick">
-            <span class="gzk-search-time-range__field">
+        <div class="gzkp-search-filter-range">
+          <div ref="dateRangeRef" class="gzkp-search-time-range" @click="handleDateRangeClick">
+            <span class="gzkp-search-time-range__field">
               <ElDatePicker
                 v-model="filters.since"
                 type="date"
                 format="YYYY-MM-DD"
                 value-format="YYYY-MM-DD"
                 placement="top-start"
-                popper-class="gzk-search-filter-date-popper"
+                popper-class="gzkp-search-filter-date-popper"
                 :popper-options="getDatePopperOptions('since')"
                 :disabled-date="disabledStartDate"
                 :placeholder="$t('search.startDate')"
@@ -403,15 +403,15 @@ onUnmounted(() => {
                 @visible-change="syncDatePanelHeight"
               />
             </span>
-            <span class="gzk-search-time-range__separator">-</span>
-            <span class="gzk-search-time-range__field">
+            <span class="gzkp-search-time-range__separator">-</span>
+            <span class="gzkp-search-time-range__field">
               <ElDatePicker
                 v-model="filters.until"
                 type="date"
                 format="YYYY-MM-DD"
                 value-format="YYYY-MM-DD"
                 placement="top-end"
-                popper-class="gzk-search-filter-date-popper"
+                popper-class="gzkp-search-filter-date-popper"
                 :popper-options="getDatePopperOptions('until')"
                 :disabled-date="disabledEndDate"
                 :placeholder="$t('search.endDate')"
@@ -423,14 +423,14 @@ onUnmounted(() => {
           </div>
         </div>
       </section>
-      <div class="gzk-search-filter-actions">
-        <ElButton class="gzk-search-filter-action" text @click="handleReset">
-          <un-i-mdi-restore class="gzk-search-filter-action__icon" />
+      <div class="gzkp-search-filter-actions">
+        <ElButton class="gzkp-search-filter-action" text @click="handleReset">
+          <un-i-mdi-restore class="gzkp-search-filter-action__icon" />
           <span>{{ $t('search.reset') }}</span>
         </ElButton>
-        <ElButton class="gzk-search-filter-action" text @click="closeFilterPanel(true)">
+        <ElButton class="gzkp-search-filter-action" text @click="closeFilterPanel(true)">
           <svg
-            class="gzk-search-filter-action__icon"
+            class="gzkp-search-filter-action__icon"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -448,7 +448,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.gzk-search-filter-trigger {
+.gzkp-search-filter-trigger {
   flex: 0 0 auto;
   height: 30px;
   padding: 0 8px;
@@ -467,16 +467,16 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-filter-trigger__icon {
+.gzkp-search-filter-trigger__icon {
   width: 16px;
   height: 16px;
   margin-left: 4px;
 }
 
-:global(.gzk-search-filter-popover.el-popover.el-popper) {
-  --gzk-search-filter-hover-bg-color: var(--el-fill-color-dark);
-  --gzk-search-filter-selected-color: var(--el-color-primary);
-  --gzk-search-filter-selected-border-color: transparent;
+:global(.gzkp-search-filter-popover.el-popover.el-popper) {
+  --gzkp-search-filter-hover-bg-color: var(--el-fill-color-dark);
+  --gzkp-search-filter-selected-color: var(--el-color-primary);
+  --gzkp-search-filter-selected-border-color: transparent;
 
   box-sizing: border-box;
   max-width: calc(100vw - 40px);
@@ -485,25 +485,25 @@ onUnmounted(() => {
   border-radius: 12px;
 }
 
-:global(html[data-theme='dark-soft'] .gzk-search-filter-popover.el-popover) {
-  --gzk-search-filter-hover-bg-color: var(--el-fill-color-darker);
-  --gzk-search-filter-selected-border-color: var(--el-color-primary-light-5);
+:global(html[data-gzkp-theme='dark-soft'] .gzkp-search-filter-popover.el-popover) {
+  --gzkp-search-filter-hover-bg-color: var(--el-fill-color-darker);
+  --gzkp-search-filter-selected-border-color: var(--el-color-primary-light-5);
 }
 
-:global(html[data-theme='light-solarized'] .gzk-search-filter-popover.el-popover) {
-  --gzk-search-filter-selected-color: var(--el-color-primary-dark-2);
+:global(html[data-gzkp-theme='light-solarized'] .gzkp-search-filter-popover.el-popover) {
+  --gzkp-search-filter-selected-color: var(--el-color-primary-dark-2);
 }
 
-.gzk-search-filter-panel {
+.gzkp-search-filter-panel {
   padding: 16px 16px 0;
   color: var(--el-text-color-primary);
 }
 
-.gzk-search-filter-pair + .gzk-search-filter-group {
+.gzkp-search-filter-pair + .gzkp-search-filter-group {
   margin-top: 14px;
 }
 
-.gzk-search-filter-group__title {
+.gzkp-search-filter-group__title {
   margin: 0 0 8px;
   font-size: 13px;
   font-weight: 400;
@@ -511,24 +511,24 @@ onUnmounted(() => {
   color: var(--el-text-color-primary);
 }
 
-.gzk-search-filter-pair {
+.gzkp-search-filter-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 14px;
 }
 
-.gzk-search-filter-control {
+.gzkp-search-filter-control {
   width: 100%;
 }
 
-.gzk-search-filter-options {
+.gzkp-search-filter-options {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
-.gzk-search-filter-option {
+.gzkp-search-filter-option {
   display: inline-grid;
   place-items: center;
   width: 100%;
@@ -541,13 +541,13 @@ onUnmounted(() => {
   border-radius: 8px;
 
   &:hover {
-    background: var(--gzk-search-filter-hover-bg-color);
+    background: var(--gzkp-search-filter-hover-bg-color);
   }
 
   &.is-checked {
-    color: var(--gzk-search-filter-selected-color);
+    color: var(--gzkp-search-filter-selected-color);
     background: var(--el-color-primary-light-9);
-    box-shadow: inset 0 0 0 1px var(--gzk-search-filter-selected-border-color);
+    box-shadow: inset 0 0 0 1px var(--gzkp-search-filter-selected-border-color);
   }
 
   &.is-checked:hover {
@@ -555,29 +555,29 @@ onUnmounted(() => {
   }
 }
 
-:global(.gzk-search-filter-popover .el-input__wrapper),
-:global(.gzk-search-filter-popover .el-select__wrapper) {
+:global(.gzkp-search-filter-popover .el-input__wrapper),
+:global(.gzkp-search-filter-popover .el-select__wrapper) {
   height: 34px;
   min-height: 34px;
   padding: 0 12px;
   border-radius: 8px;
 }
 
-:global(.gzk-search-filter-popover .el-input__inner),
-:global(.gzk-search-filter-popover .el-select__selected-item) {
+:global(.gzkp-search-filter-popover .el-input__inner),
+:global(.gzkp-search-filter-popover .el-select__selected-item) {
   font-size: 13px;
 }
 
-:global(.gzk-search-filter-popover .el-select-dropdown__wrap) {
-  max-height: var(--gzk-node-dropdown-max-height, 274px);
+:global(.gzkp-search-filter-popover .el-select-dropdown__wrap) {
+  max-height: var(--gzkp-node-dropdown-max-height, 274px);
 }
 
-.gzk-search-filter-range {
+.gzkp-search-filter-range {
   margin-top: 12px;
 }
 
-.gzk-search-filter-panel :deep(.el-select__popper),
-.gzk-search-filter-panel :deep(.gzk-search-filter-date-popper) {
+.gzkp-search-filter-panel :deep(.el-select__popper),
+.gzkp-search-filter-panel :deep(.gzkp-search-filter-date-popper) {
   border: 1px solid var(--el-border-color);
 
   .el-popper__arrow::before {
@@ -585,10 +585,10 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-filter-panel :deep(.gzk-search-filter-date-popper) {
+.gzkp-search-filter-panel :deep(.gzkp-search-filter-date-popper) {
   box-sizing: border-box;
   width: min(280px, calc(100vw - 88px));
-  height: var(--gzk-search-filter-date-height, 248px);
+  height: var(--gzkp-search-filter-date-height, 248px);
 
   .el-date-picker {
     display: flex;
@@ -653,7 +653,7 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-time-range {
+.gzkp-search-time-range {
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -726,7 +726,7 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-time-range__field {
+.gzkp-search-time-range__field {
   position: relative;
   display: flex;
   flex: 1 1 0;
@@ -742,7 +742,7 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-time-range__separator {
+.gzkp-search-time-range__separator {
   flex: none;
   margin: 0 5px;
   font-size: 14px;
@@ -751,7 +751,7 @@ onUnmounted(() => {
   user-select: none;
 }
 
-.gzk-search-filter-actions {
+.gzkp-search-filter-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -760,7 +760,7 @@ onUnmounted(() => {
   border-top: 1px solid var(--el-border-color-lighter);
 }
 
-.gzk-search-filter-action {
+.gzkp-search-filter-action {
   width: 100%;
   min-height: 36px;
   margin: 0;
@@ -770,11 +770,11 @@ onUnmounted(() => {
 
   &:hover {
     color: var(--el-text-color-primary);
-    background: var(--gzk-search-filter-hover-bg-color) !important;
+    background: var(--gzkp-search-filter-hover-bg-color) !important;
   }
 }
 
-.gzk-search-filter-action__icon {
+.gzkp-search-filter-action__icon {
   flex: none;
   width: 16px;
   height: 16px;
@@ -782,13 +782,13 @@ onUnmounted(() => {
 }
 
 @media (width <= 479px) {
-  :global(.gzk-search-filter-popover.el-popover.el-popper) {
+  :global(.gzkp-search-filter-popover.el-popover.el-popper) {
     max-width: calc(100vw - 32px);
   }
 }
 
 @media (width <= 360px) {
-  .gzk-search-filter-pair {
+  .gzkp-search-filter-pair {
     grid-template-columns: 1fr;
   }
 }

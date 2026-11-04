@@ -30,13 +30,13 @@ const imgStyle = computed<CSSProperties>(() => {
 </script>
 
 <template>
-  <a data-gzk-user-info-trigger :data-user-uid="uid" :href="userLink" target="_blank">
+  <a data-gzkp-user-info-trigger :data-gzkp-user-uid="uid" :href="userLink" target="_blank">
     <img class="avatar-img" :style="imgStyle" :src="avatarUrl" />
   </a>
 </template>
 
 <style lang="scss" scoped>
 .avatar-img {
-  border-radius: var(--gzk-avatar-border-radius);
+  border-radius: var(--gzkp-avatar-border-radius);
 }
 </style>

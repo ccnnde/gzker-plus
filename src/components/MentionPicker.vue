@@ -37,7 +37,7 @@ defineExpose({
     v-show="isPickerVisible"
     ref="select"
     :placeholder="$t('enhancedTopic.mentionWho')"
-    popper-class="editor-picker-popper"
+    popper-class="gzkp-editor-picker-popper"
     filterable
     allow-create
     automatic-dropdown

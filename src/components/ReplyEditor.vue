@@ -76,7 +76,7 @@ const editorStyle = computed<CSSProperties>(() => {
 });
 
 const editorFullscreenClass = computed(() => {
-  return props.fullscreen ? 'reply-editor-fullscreen' : 'reply-editor-minscreen';
+  return props.fullscreen ? 'gzkp-reply-editor-fullscreen' : 'gzkp-reply-editor-minscreen';
 });
 
 const uidList = computed(() => {
@@ -251,9 +251,9 @@ defineExpose({
 </script>
 
 <template>
-  <div v-show="editorVisible" :class="['reply-editor-container', editorFullscreenClass]" :style="editorStyle">
-    <div class="reply-editor-header">{{ editorTitle }}</div>
-    <div class="reply-editor-body">
+  <div v-show="editorVisible" :class="['gzkp-reply-editor-container', editorFullscreenClass]" :style="editorStyle">
+    <div class="gzkp-reply-editor-header">{{ editorTitle }}</div>
+    <div class="gzkp-reply-editor-body">
       <ContentEditor
         ref="contentEditor"
         v-model="replyContent"
@@ -281,7 +281,7 @@ defineExpose({
         @hide="contentEditor?.focusEditor"
       />
     </div>
-    <div class="reply-editor-footer">
+    <div class="gzkp-reply-editor-footer">
       <EmojiPicker ref="emojiPicker" @select="insertEmoji" />
       <span>
         <ElButton @click="closeEditor">{{ $t('common.cancel') }}</ElButton>
@@ -292,28 +292,28 @@ defineExpose({
 </template>
 
 <style lang="scss">
-.reply-editor-container {
+.gzkp-reply-editor-container {
   display: flex;
   flex-direction: column;
-  padding: var(--gzk-topic-padding);
+  padding: var(--gzkp-topic-padding);
   border-top: 1px solid var(--el-border-color-lighter);
   border-bottom-right-radius: var(--el-border-radius-base);
   border-bottom-left-radius: var(--el-border-radius-base);
 }
 
-.reply-editor-header {
+.gzkp-reply-editor-header {
   font-size: var(--el-font-size-large);
   line-height: var(--el-font-line-height-primary);
   color: var(--el-text-color-primary);
 }
 
-.reply-editor-body {
+.gzkp-reply-editor-body {
   flex: 1;
-  margin: var(--gzk-topic-padding) 0;
+  margin: var(--gzkp-topic-padding) 0;
   overflow: hidden;
 }
 
-.reply-editor-footer {
+.gzkp-reply-editor-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;

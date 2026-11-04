@@ -38,7 +38,7 @@ const showOperateText = computed(() => {
     :enterable="false"
     :hide-after="0"
     placement="bottom"
-    popper-class="gzk-tooltip-popper"
+    popper-class="gzkp-tooltip-popper"
     :show-arrow="false"
   >
     <div class="operate-button-container" @click="$emit('click')">

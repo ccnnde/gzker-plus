@@ -6,7 +6,7 @@ export const useDialogFullscreen = (toggleFullscreenCallback: () => void) => {
   const dialogFullscreen = ref(false);
 
   const dialogFullscreenClass = computed(() => {
-    return dialogFullscreen.value ? 'editor-dialog-fullscreen' : 'editor-dialog-minscreen';
+    return dialogFullscreen.value ? 'gzkp-editor-dialog-fullscreen' : 'gzkp-editor-dialog-minscreen';
   });
 
   const dialogFullscreenStyle = computed<CSSProperties | undefined>(() => {

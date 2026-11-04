@@ -44,11 +44,11 @@ const handleInput = (value: string) => {
   </div>
   <ElDialog
     v-model="dialogVisible"
-    class="options-bottom-sheet options-dialog topic-keyword-block-dialog"
+    class="gzkp-options-bottom-sheet options-dialog topic-keyword-block-dialog"
     :title="$t('basicSetting.topicKeywordBlock.keywordBlockHelp')"
     :lock-scroll="false"
-    modal-class="options-dialog-overlay"
-    transition="options-dialog-transition"
+    modal-class="gzkp-options-dialog-overlay"
+    transition="gzkp-options-dialog-transition"
     align-center
   >
     <ElScrollbar class="topic-keyword-block-dialog__scrollbar">

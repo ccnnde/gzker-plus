@@ -15,7 +15,7 @@ defineExpose({
 <template>
   <ElDialog
     v-model="dialogVisible"
-    class="editor-help-dialog"
+    class="gzkp-editor-help-dialog"
     :title="$t('enhancedTopic.editorHelp')"
     :lock-scroll="false"
     :z-index="2001"
@@ -37,7 +37,7 @@ defineExpose({
 </template>
 
 <style lang="scss">
-.editor-help-dialog {
+.gzkp-editor-help-dialog {
   display: flex;
   flex-direction: column;
   height: 500px;
@@ -59,6 +59,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 .editor-help-content {
-  padding: var(--gzk-topic-padding) var(--el-dialog-padding-primary);
+  padding: var(--gzkp-topic-padding) var(--el-dialog-padding-primary);
 }
 </style>

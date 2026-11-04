@@ -195,9 +195,9 @@ watch(
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--nested-reply-item-rail-left);
+  left: var(--gzkp-nested-reply-item-rail-left);
   z-index: 2;
-  width: var(--nested-reply-item-elbow-width);
+  width: var(--gzkp-nested-reply-item-elbow-width);
   pointer-events: none;
 
   &::before {
@@ -224,8 +224,8 @@ watch(
 }
 
 .nested-reply-item-children {
-  --nested-reply-item-rail-left: -34px;
-  --nested-reply-item-elbow-width: 26px;
+  --gzkp-nested-reply-item-rail-left: -34px;
+  --gzkp-nested-reply-item-elbow-width: 26px;
 
   position: relative;
 
@@ -236,8 +236,8 @@ watch(
 
   &-align-root,
   &-align-nested {
-    --nested-reply-item-rail-left: -30px;
-    --nested-reply-item-elbow-width: 22px;
+    --gzkp-nested-reply-item-rail-left: -30px;
+    --gzkp-nested-reply-item-elbow-width: 22px;
   }
 
   &-align-nested {
@@ -246,8 +246,8 @@ watch(
 }
 
 .nested-reply-item-container-root > .nested-reply-item-children {
-  --nested-reply-item-rail-left: -30px;
-  --nested-reply-item-elbow-width: 22px;
+  --gzkp-nested-reply-item-rail-left: -30px;
+  --gzkp-nested-reply-item-elbow-width: 22px;
 }
 
 .nested-reply-item-branch {
@@ -259,7 +259,7 @@ watch(
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--nested-reply-item-rail-left);
+  left: var(--gzkp-nested-reply-item-rail-left);
   width: 0;
   pointer-events: none;
   content: '';

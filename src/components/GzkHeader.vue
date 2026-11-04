@@ -23,32 +23,37 @@ const openExtOptions = () => {
 
 <template>
   <ElementConfig>
-    <ElDropdown ref="feedbackDropdown" trigger="click" popper-class="feedback-popper">
+    <ElDropdown ref="feedbackDropdown" trigger="click" popper-class="gzkp-feedback-popper">
       <div>
         <ElTooltip
           :content="$t('gzkHeader.feedback')"
           :enterable="false"
           :hide-after="0"
           :show-arrow="false"
-          popper-class="gzk-tooltip-popper"
+          popper-class="gzkp-tooltip-popper"
         >
-          <un-i-mdi-account-question-outline class="header-icon" />
+          <un-i-mdi-account-question-outline class="gzkp-header-icon" />
         </ElTooltip>
       </div>
       <template #dropdown>
         <ElDropdownMenu>
           <ElDropdownItem>
-            <a class="feedback-link" href="/t/108340" target="_blank" @click="feedbackDropdown?.popperRef?.onClose">
+            <a
+              class="gzkp-feedback-link"
+              href="/t/108340"
+              target="_blank"
+              @click="feedbackDropdown?.popperRef?.onClose"
+            >
               {{ $t('gzkHeader.gzkTopic') }}
             </a>
           </ElDropdownItem>
           <ElDropdownItem>
-            <a class="feedback-link" href="https://github.com/ccnnde/gzker-plus/issues" target="_blank">
+            <a class="gzkp-feedback-link" href="https://github.com/ccnnde/gzker-plus/issues" target="_blank">
               {{ $t('gzkHeader.gzkIssue') }}
             </a>
           </ElDropdownItem>
           <ElDropdownItem>
-            <div class="qq-group-qrcode"></div>
+            <div class="gzkp-qq-group-qrcode"></div>
           </ElDropdownItem>
         </ElDropdownMenu>
       </template>
@@ -59,52 +64,52 @@ const openExtOptions = () => {
       :enterable="false"
       :hide-after="0"
       :show-arrow="false"
-      popper-class="gzk-tooltip-popper"
+      popper-class="gzkp-tooltip-popper"
     >
-      <un-i-mdi-cog-outline class="header-icon" @click="openExtOptions" />
+      <un-i-mdi-cog-outline class="gzkp-header-icon" @click="openExtOptions" />
     </ElTooltip>
   </ElementConfig>
 </template>
 
 <style lang="scss">
-#gzk-app-header {
-  --gzk-header-width: 9em;
+#gzkp-app-header {
+  --gzkp-header-width: 9em;
 
   position: absolute;
-  left: calc(-1 * var(--gzk-header-width));
+  left: calc(-1 * var(--gzkp-header-width));
   display: flex;
   align-items: center;
   justify-content: space-around;
-  width: var(--gzk-header-width);
+  width: var(--gzkp-header-width);
   height: 100%;
 
   &:not(:has(un-i-mdi-bell-outline)) {
-    --gzk-header-width: 6.5em;
+    --gzkp-header-width: 6.5em;
 
     div:nth-child(2) {
       display: none;
     }
   }
 
-  .header-icon {
+  .gzkp-header-icon {
     font-size: 1.4em;
     color: var(--el-text-color-primary);
     cursor: pointer;
     transition: color 0.1s ease-in;
 
     &:hover {
-      color: var(--gzk-navbar-text-hover);
+      color: var(--gzkp-navbar-text-hover);
     }
   }
 }
 
-.feedback-popper {
+.gzkp-feedback-popper {
   .el-dropdown-menu__item {
-    &:has(.feedback-link) {
+    &:has(.gzkp-feedback-link) {
       padding: 0;
     }
 
-    .feedback-link {
+    .gzkp-feedback-link {
       box-sizing: border-box;
       display: block;
       width: 100%;
@@ -120,7 +125,7 @@ const openExtOptions = () => {
       color: var(--el-color-primary);
     }
 
-    &:has(.qq-group-qrcode) {
+    &:has(.gzkp-qq-group-qrcode) {
       padding: 0;
 
       &:not(.is-disabled):focus {
@@ -130,10 +135,10 @@ const openExtOptions = () => {
   }
 }
 
-.qq-group-qrcode {
+.gzkp-qq-group-qrcode {
   width: 150px;
   height: 200px;
-  background-image: var(--gzk-qq-group-qrcode);
+  background-image: var(--gzkp-qq-group-qrcode);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

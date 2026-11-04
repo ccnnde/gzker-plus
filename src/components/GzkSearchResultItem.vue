@@ -15,10 +15,10 @@ const getResultLink = (): string => {
 </script>
 
 <template>
-  <div class="gzk-search-result">
-    <span class="gzk-search-result__topline">
+  <div class="gzkp-search-result">
+    <span class="gzkp-search-result__topline">
       <a
-        class="gzk-search-result__title"
+        class="gzkp-search-result__title"
         :href="getResultLink()"
         target="_blank"
         rel="noopener noreferrer"
@@ -26,7 +26,7 @@ const getResultLink = (): string => {
         v-html="item.title"
       ></a>
     </span>
-    <span class="gzk-search-result__meta">
+    <span class="gzkp-search-result__meta">
       <a
         v-if="item.nodeName && item.nodeLink"
         :href="item.nodeLink"
@@ -50,12 +50,12 @@ const getResultLink = (): string => {
         {{ item.matchType === SearchResultType.Reply ? $t('search.reply') : $t('search.topic') }}
       </span>
     </span>
-    <span v-if="item.excerpt" class="gzk-search-result__excerpt" v-html="item.excerpt"></span>
+    <span v-if="item.excerpt" class="gzkp-search-result__excerpt" v-html="item.excerpt"></span>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.gzk-search-result {
+.gzkp-search-result {
   display: block;
   min-width: 0;
   padding: 12px 14px;
@@ -65,12 +65,12 @@ const getResultLink = (): string => {
   border-radius: 9px;
 }
 
-.gzk-search-result__topline {
+.gzkp-search-result__topline {
   display: flex;
   align-items: flex-start;
 }
 
-.gzk-search-result__title {
+.gzkp-search-result__title {
   min-width: 0;
   font-size: 16px;
   font-weight: 700;
@@ -93,7 +93,7 @@ const getResultLink = (): string => {
   }
 }
 
-.gzk-search-result__meta {
+.gzkp-search-result__meta {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -131,7 +131,7 @@ const getResultLink = (): string => {
   }
 }
 
-.gzk-search-result__excerpt {
+.gzkp-search-result__excerpt {
   display: -webkit-box;
   margin-top: 6px;
   overflow: hidden;

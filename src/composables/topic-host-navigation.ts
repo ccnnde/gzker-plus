@@ -17,7 +17,7 @@ interface UseTopicHostNavigationOptions {
 
 // @unocss-include
 const CREATE_TOPIC_LINK_REGEXP = /\/t\/create\/(\w+)/;
-const CREATE_BUTTON_CLASS = 'gzk-create-btn';
+const CREATE_BUTTON_CLASS = 'gzkp-create-btn';
 const CREATE_BUTTON_LOADING_CLASS = `${CREATE_BUTTON_CLASS}-loading`;
 
 export const useTopicHostNavigation = ({

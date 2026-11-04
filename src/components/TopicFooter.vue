@@ -172,7 +172,7 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
   display: flex;
   gap: 6px;
   align-items: center;
-  padding: 0 var(--gzk-topic-padding);
+  padding: 0 var(--gzkp-topic-padding);
   border-top: 1px solid var(--el-border-color-lighter);
   border-bottom-right-radius: var(--el-border-radius-base);
   border-bottom-left-radius: var(--el-border-radius-base);

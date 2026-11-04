@@ -151,8 +151,8 @@ const handleReplyEdit = () => {
     v-loading="isLoading"
     :class="['reply-container', { 'reply-container-compact': compact }]"
     element-loading-background="transparent"
-    element-loading-custom-class="gzk-loading-ring"
-    :data-reply-id="replyId"
+    element-loading-custom-class="gzkp-loading-ring"
+    :data-gzkp-reply-id="replyId"
     :data-reply-no="replyNo"
   >
     <div class="reply-avatar">
@@ -163,8 +163,8 @@ const handleReplyEdit = () => {
         <span>
           <a
             class="reply-user user-id"
-            data-gzk-user-info-trigger
-            :data-user-uid="uid"
+            data-gzkp-user-info-trigger
+            :data-gzkp-user-uid="uid"
             :href="userLink"
             target="_blank"
           >

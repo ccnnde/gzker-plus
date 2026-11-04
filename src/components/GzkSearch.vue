@@ -407,7 +407,7 @@ const activateHistoryItem = (index: number) => {
 };
 
 const isSearchInputTarget = (target: EventTarget | null): target is HTMLInputElement => {
-  return target instanceof HTMLInputElement && Boolean(target.closest('.gzk-search-dialog__input'));
+  return target instanceof HTMLInputElement && Boolean(target.closest('.gzkp-search-dialog__input'));
 };
 
 const shouldIgnoreHistoryShortcut = (event: KeyboardEvent): boolean => {
@@ -421,7 +421,7 @@ const shouldIgnoreHistoryShortcut = (event: KeyboardEvent): boolean => {
     return event.shiftKey;
   }
 
-  return Boolean(target.closest('input, textarea, button, [contenteditable="true"], .gzk-search-tools, .el-popper'));
+  return Boolean(target.closest('input, textarea, button, [contenteditable="true"], .gzkp-search-tools, .el-popper'));
 };
 
 const handleHistoryKeyboard = (event: KeyboardEvent) => {
@@ -470,7 +470,7 @@ const shouldIgnoreResultScroll = (event: KeyboardEvent): boolean => {
     return event.shiftKey || event.key === ' ' || event.key === 'Home' || event.key === 'End';
   }
 
-  return Boolean(target.closest('input, textarea, button, [contenteditable="true"], .gzk-search-tools, .el-popper'));
+  return Boolean(target.closest('input, textarea, button, [contenteditable="true"], .gzkp-search-tools, .el-popper'));
 };
 
 const handleResultKeyboardScroll = (event: KeyboardEvent) => {
@@ -542,8 +542,8 @@ const handleDialogKeydown = (event: KeyboardEvent) => {
 
 const hasVisibleBlockingOverlay = (): boolean => {
   return [...document.querySelectorAll<HTMLElement>('.el-overlay')].some((overlayElement) => {
-    const isTopicPageOverlay = overlayElement.classList.contains('topic-overlay');
-    const isSearchOverlay = Boolean(overlayElement.querySelector('.gzk-search-dialog'));
+    const isTopicPageOverlay = overlayElement.classList.contains('gzkp-topic-overlay');
+    const isSearchOverlay = Boolean(overlayElement.querySelector('.gzkp-search-dialog'));
     return overlayElement.style.display !== 'none' && !isTopicPageOverlay && !isSearchOverlay;
   });
 };
@@ -577,7 +577,7 @@ useReplyFocus();
 
 watch(activeIndex, async () => {
   await nextTick();
-  contentRef.value?.wrapRef?.querySelector('.gzk-search-item-active')?.scrollIntoView({ block: 'nearest' });
+  contentRef.value?.wrapRef?.querySelector('.gzkp-search-item-active')?.scrollIntoView({ block: 'nearest' });
 });
 
 onMounted(() => {
@@ -596,37 +596,37 @@ onUnmounted(() => {
   <ElementConfig>
     <ElDialog
       v-model="isOpen"
-      class="gzk-search-dialog"
+      class="gzkp-search-dialog"
       append-to-body
-      :modal-class="isTopicPage ? 'gzk-search-overlay--topic-page' : ''"
+      :modal-class="isTopicPage ? 'gzkp-search-overlay--topic-page' : ''"
       :show-close="false"
       @close="closeDialog"
     >
       <template #header>
-        <header class="gzk-search-dialog__header">
+        <header class="gzkp-search-dialog__header">
           <ElInput
             ref="inputRef"
             v-model="query"
-            class="gzk-search-dialog__input"
+            class="gzkp-search-dialog__input"
             :placeholder="$t(searchPlaceholderKey)"
             maxlength="120"
             size="large"
           >
             <template #prefix>
               <ElButton
-                class="gzk-search-dialog__submit"
+                class="gzkp-search-dialog__submit"
                 text
                 circle
                 :aria-label="$t('search.shortPlaceholder')"
                 @click="submitSearch"
               >
-                <un-i-mdi-magnify class="gzk-search-dialog__search-icon" />
+                <un-i-mdi-magnify class="gzkp-search-dialog__search-icon" />
               </ElButton>
             </template>
             <template #suffix>
               <ElButton
                 v-if="query"
-                class="gzk-search-dialog__clear"
+                class="gzkp-search-dialog__clear"
                 text
                 circle
                 size="small"
@@ -639,8 +639,8 @@ onUnmounted(() => {
           </ElInput>
         </header>
       </template>
-      <div class="gzk-search-tools">
-        <ElTabs v-model="filters.scope" class="gzk-search-scope-tabs" @tab-click="handleScopeClick">
+      <div class="gzkp-search-tools">
+        <ElTabs v-model="filters.scope" class="gzkp-search-scope-tabs" @tab-click="handleScopeClick">
           <ElTabPane :name="SearchScope.All" :label="$t('search.tabAll')" />
           <ElTabPane :name="SearchScope.Title" :label="$t('search.tabTitle')" />
           <ElTabPane :name="SearchScope.Topic" :label="$t('search.tabTopic')" />
@@ -656,19 +656,19 @@ onUnmounted(() => {
       </div>
       <ElScrollbar
         ref="contentRef"
-        class="gzk-search-content"
+        class="gzkp-search-content"
         :distance="INFINITE_SCROLL_LOAD_DISTANCE"
         always
         @end-reached="handleResultScrollEnd"
       >
         <template v-if="!isResultMode">
-          <div v-if="historyList.length > 0" class="gzk-search-content__header">
-            <span class="gzk-search-content__title">
+          <div v-if="historyList.length > 0" class="gzkp-search-content__header">
+            <span class="gzkp-search-content__title">
               {{ $t('search.searchHistory') }}
             </span>
-            <div class="gzk-search-content__actions">
+            <div class="gzkp-search-content__actions">
               <ElButton
-                class="gzk-search-history__clear-all"
+                class="gzkp-search-history__clear-all"
                 text
                 circle
                 size="small"
@@ -679,22 +679,22 @@ onUnmounted(() => {
               </ElButton>
             </div>
           </div>
-          <div v-if="historyList.length > 0" class="gzk-search-history">
+          <div v-if="historyList.length > 0" class="gzkp-search-history">
             <div
               v-for="(item, index) in historyList"
               :key="item.id"
-              :class="['gzk-search-history__item', { 'gzk-search-item-active': index === activeIndex }]"
+              :class="['gzkp-search-history__item', { 'gzkp-search-item-active': index === activeIndex }]"
               role="button"
               tabindex="0"
               @click="searchHistoryItem(item)"
               @focus="activateHistoryItem(index)"
             >
-              <un-i-mdi-history class="gzk-search-history__icon" />
-              <span class="gzk-search-history__main">
-                <span class="gzk-search-history__query">{{ item.keyword }}</span>
+              <un-i-mdi-history class="gzkp-search-history__icon" />
+              <span class="gzkp-search-history__main">
+                <span class="gzkp-search-history__query">{{ item.keyword }}</span>
               </span>
               <ElButton
-                class="gzk-search-history__remove"
+                class="gzkp-search-history__remove"
                 text
                 circle
                 size="small"
@@ -705,79 +705,79 @@ onUnmounted(() => {
               </ElButton>
             </div>
           </div>
-          <ElEmpty v-else class="gzk-search-empty" :description="$t('search.emptyHistory')" :image-size="64" />
+          <ElEmpty v-else class="gzkp-search-empty" :description="$t('search.emptyHistory')" :image-size="64" />
         </template>
         <template v-else>
           <div
             v-if="isSearching"
             v-loading="isSearching"
-            class="gzk-search-state"
-            element-loading-custom-class="gzk-loading-ring"
+            class="gzkp-search-state"
+            element-loading-custom-class="gzkp-loading-ring"
           ></div>
           <LoadError
             v-else-if="errorMessage"
-            class="gzk-search-load-error"
+            class="gzkp-search-load-error"
             :error-text="errorMessage"
             @retry="retrySearch"
           />
           <ElEmpty
             v-else-if="resultList.length === 0"
-            class="gzk-search-empty"
+            class="gzkp-search-empty"
             :description="emptyMessage || notice || $t('search.noResults')"
             :image-size="64"
           />
-          <div v-else class="gzk-search-results">
+          <div v-else class="gzkp-search-results">
             <GzkSearchResultItem
               v-for="(item, index) in resultList"
               :key="item.replyId ? `reply-${item.replyId}` : `topic-${item.topicId}-${index}`"
               :item="item"
             />
-            <ElSkeleton v-if="isLoadingMore" class="gzk-search-result-loading" aria-hidden="true" animated>
+            <ElSkeleton v-if="isLoadingMore" class="gzkp-search-result-loading" aria-hidden="true" animated>
               <template #template>
-                <div class="gzk-search-result-loading__content">
-                  <ElSkeletonItem class="gzk-search-result-loading__line" variant="text" />
-                  <ElSkeletonItem class="gzk-search-result-loading__line" variant="text" />
+                <div class="gzkp-search-result-loading__content">
+                  <ElSkeletonItem class="gzkp-search-result-loading__line" variant="text" />
+                  <ElSkeletonItem class="gzkp-search-result-loading__line" variant="text" />
                   <ElSkeletonItem
-                    class="gzk-search-result-loading__line gzk-search-result-loading__line--short"
+                    class="gzkp-search-result-loading__line gzkp-search-result-loading__line--short"
                     variant="text"
                   />
                 </div>
               </template>
             </ElSkeleton>
-            <div v-else-if="!nextPage" class="gzk-search-results__end">
+            <div v-else-if="!nextPage" class="gzkp-search-results__end">
               {{ $t('search.noMoreResults') }}
             </div>
           </div>
         </template>
       </ElScrollbar>
       <template #footer>
-        <footer class="gzk-search-footer">
-          <span v-if="isResultMode" class="gzk-search-footer__stats">{{ resultStats }}</span>
+        <footer class="gzkp-search-footer">
+          <span v-if="isResultMode" class="gzkp-search-footer__stats">{{ resultStats }}</span>
           <template v-else>
-            <span class="gzk-search-footer__hint">
-              <kbd class="gzk-search-keycap gzk-search-keycap--icon">
+            <span class="gzkp-search-footer__hint">
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--icon">
                 <un-i-mdi-arrow-up />
               </kbd>
-              <kbd class="gzk-search-keycap gzk-search-keycap--icon">
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--icon">
                 <un-i-mdi-arrow-down />
               </kbd>
               <span>{{ $t('search.navigate') }}</span>
             </span>
-            <span class="gzk-search-footer__hint">
-              <kbd class="gzk-search-keycap gzk-search-keycap--icon">
+            <span class="gzkp-search-footer__hint">
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--icon">
                 <un-i-mdi-keyboard-return />
               </kbd>
               <span>{{ $t('search.confirm') }}</span>
             </span>
-            <span class="gzk-search-footer__hint">
-              <kbd class="gzk-search-keycap">ESC</kbd>
+            <span class="gzkp-search-footer__hint">
+              <kbd class="gzkp-search-keycap">ESC</kbd>
               <span>{{ $t('search.close') }}</span>
             </span>
           </template>
-          <span class="gzk-search-footer__spacer"></span>
-          <span class="gzk-search-footer__hint">
-            <kbd class="gzk-search-keycap">{{ shortcutLabel }}</kbd>
-            <kbd class="gzk-search-keycap">K</kbd>
+          <span class="gzkp-search-footer__spacer"></span>
+          <span class="gzkp-search-footer__hint">
+            <kbd class="gzkp-search-keycap">{{ shortcutLabel }}</kbd>
+            <kbd class="gzkp-search-keycap">K</kbd>
           </span>
         </footer>
       </template>
@@ -788,11 +788,11 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 @import '@/styles/mixin';
 
-:global(.gzk-search-overlay--topic-page > .el-overlay-dialog) {
-  top: var(--gzk-top-navbar-height, 52px);
+:global(.gzkp-search-overlay--topic-page > .el-overlay-dialog) {
+  top: var(--gzkp-top-navbar-height, 52px);
 }
 
-:global(.gzk-search-dialog.el-dialog) {
+:global(.gzkp-search-dialog.el-dialog) {
   --el-dialog-padding-primary: 0px;
 
   position: absolute !important;
@@ -818,12 +818,12 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
 }
 
-:global(.gzk-search-dialog.el-dialog > .el-dialog__header) {
+:global(.gzkp-search-dialog.el-dialog > .el-dialog__header) {
   padding: 0 !important;
   margin: 0 !important;
 }
 
-:global(.gzk-search-dialog.el-dialog > .el-dialog__body) {
+:global(.gzkp-search-dialog.el-dialog > .el-dialog__body) {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -834,12 +834,12 @@ onUnmounted(() => {
   color: var(--el-text-color-primary);
 }
 
-:global(.gzk-search-dialog.el-dialog > .el-dialog__footer) {
+:global(.gzkp-search-dialog.el-dialog > .el-dialog__footer) {
   padding: 0 !important;
   margin: 0 !important;
 }
 
-.gzk-search-dialog__header {
+.gzkp-search-dialog__header {
   display: flex;
   align-items: center;
   min-height: 58px;
@@ -847,21 +847,21 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
-.gzk-search-dialog__submit {
+.gzkp-search-dialog__submit {
   width: 36px;
   height: 36px;
   margin-left: -6px;
   color: var(--el-text-color-secondary);
 }
 
-.gzk-search-dialog__search-icon {
+.gzkp-search-dialog__search-icon {
   flex: 0 0 auto;
   width: 20px;
   height: 20px;
   color: var(--el-text-color-secondary);
 }
 
-.gzk-search-dialog__input {
+.gzkp-search-dialog__input {
   width: 100%;
 
   :deep(.el-input__wrapper) {
@@ -877,11 +877,11 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-dialog__clear {
+.gzkp-search-dialog__clear {
   font-size: 16px;
 }
 
-.gzk-search-tools {
+.gzkp-search-tools {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -891,7 +891,7 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
-.gzk-search-scope-tabs {
+.gzkp-search-scope-tabs {
   flex: 1 1 auto;
   min-width: 0;
 
@@ -929,7 +929,7 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-content__header {
+.gzkp-search-content__header {
   display: grid;
   flex: 0 0 auto;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -939,7 +939,7 @@ onUnmounted(() => {
   padding: 8px 16px 8px 26px;
 }
 
-.gzk-search-content__title {
+.gzkp-search-content__title {
   min-width: 0;
   font-size: var(--el-font-size-base);
   font-weight: 400;
@@ -947,13 +947,13 @@ onUnmounted(() => {
   color: var(--el-text-color-primary);
 }
 
-.gzk-search-content__actions {
+.gzkp-search-content__actions {
   display: flex;
   gap: 12px;
   align-items: center;
 }
 
-.gzk-search-history__clear-all {
+.gzkp-search-history__clear-all {
   width: 28px;
   height: 28px;
   margin: 0;
@@ -972,7 +972,7 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-content {
+.gzkp-search-content {
   flex: 1 1 0;
   height: 0;
   min-height: 0;
@@ -990,24 +990,24 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-history,
-.gzk-search-results {
+.gzkp-search-history,
+.gzkp-search-results {
   display: grid;
   flex: 0 0 auto;
   gap: 2px;
   min-width: 0;
 }
 
-.gzk-search-history {
+.gzkp-search-history {
   gap: 0;
   padding: 0 16px 12px 14px;
 }
 
-.gzk-search-results {
+.gzkp-search-results {
   padding: 0 10px 16px;
 }
 
-.gzk-search-history__item {
+.gzkp-search-history__item {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr) auto;
   gap: 8px;
@@ -1023,23 +1023,23 @@ onUnmounted(() => {
   transition: background 120ms ease;
 
   &:hover,
-  &.gzk-search-item-active {
+  &.gzkp-search-item-active {
     background: var(--el-fill-color-light);
   }
 }
 
-.gzk-search-history__icon {
+.gzkp-search-history__icon {
   width: 16px;
   height: 16px;
   color: var(--el-text-color-secondary);
 }
 
-.gzk-search-history__main {
+.gzkp-search-history__main {
   display: block;
   min-width: 0;
 }
 
-.gzk-search-history__query {
+.gzkp-search-history__query {
   display: block;
   overflow: hidden;
   font-size: 14px;
@@ -1049,7 +1049,7 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-.gzk-search-history__remove {
+.gzkp-search-history__remove {
   width: 28px;
   height: 28px;
   font-size: 15px;
@@ -1067,13 +1067,13 @@ onUnmounted(() => {
   }
 }
 
-.gzk-search-empty {
+.gzkp-search-empty {
   flex: 1 1 auto;
   height: auto;
   min-height: 0;
 }
 
-.gzk-search-state {
+.gzkp-search-state {
   display: grid;
   flex: 1 1 auto;
   gap: 10px;
@@ -1084,34 +1084,34 @@ onUnmounted(() => {
   text-align: center;
 }
 
-.gzk-search-load-error {
+.gzkp-search-load-error {
   flex: 1 1 auto;
   height: auto !important;
   min-height: 0;
 }
 
-.gzk-search-result-loading {
+.gzkp-search-result-loading {
   box-sizing: border-box;
   padding: 13px 14px 20px;
   overflow: hidden;
   overflow-anchor: none;
 }
 
-.gzk-search-result-loading__content {
+.gzkp-search-result-loading__content {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.gzk-search-result-loading__line {
+.gzkp-search-result-loading__line {
   height: 12px;
 }
 
-.gzk-search-result-loading__line--short {
+.gzkp-search-result-loading__line--short {
   width: 23%;
 }
 
-.gzk-search-results__end {
+.gzkp-search-results__end {
   display: grid;
   place-items: center;
   min-height: 28px;
@@ -1119,7 +1119,7 @@ onUnmounted(() => {
   color: var(--el-text-color-placeholder);
 }
 
-.gzk-search-footer {
+.gzkp-search-footer {
   display: flex;
   gap: 16px;
   align-items: center;
@@ -1131,21 +1131,21 @@ onUnmounted(() => {
   border-top: 1px solid var(--el-border-color-lighter);
 }
 
-.gzk-search-footer__hint {
+.gzkp-search-footer__hint {
   display: flex;
   gap: 6px;
   align-items: center;
 }
 
-.gzk-search-footer__stats {
+.gzkp-search-footer__stats {
   color: var(--el-text-color-secondary);
 }
 
-.gzk-search-footer__spacer {
+.gzkp-search-footer__spacer {
   flex: 1;
 }
 
-.gzk-search-keycap {
+.gzkp-search-keycap {
   box-sizing: border-box;
   display: inline-grid;
   place-items: center;
@@ -1163,28 +1163,28 @@ onUnmounted(() => {
   box-shadow: none;
 }
 
-.gzk-search-keycap--icon {
+.gzkp-search-keycap--icon {
   width: auto;
   font-size: 13px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gzk-search-result-loading.is-animated :deep(.el-skeleton__item) {
+  .gzkp-search-result-loading.is-animated :deep(.el-skeleton__item) {
     animation: none;
   }
 }
 
 @media (width <= 479px) {
-  .gzk-search-keycap,
-  .gzk-search-footer {
+  .gzkp-search-keycap,
+  .gzkp-search-footer {
     display: none;
   }
 
-  :global(.gzk-search-overlay--topic-page > .el-overlay-dialog) {
+  :global(.gzkp-search-overlay--topic-page > .el-overlay-dialog) {
     top: 0;
   }
 
-  :global(.gzk-search-dialog.el-dialog) {
+  :global(.gzkp-search-dialog.el-dialog) {
     inset: 0;
     width: 100% !important;
     height: auto !important;
@@ -1196,26 +1196,26 @@ onUnmounted(() => {
     transform: none;
   }
 
-  .gzk-search-content__header {
+  .gzkp-search-content__header {
     gap: 8px;
     padding-inline: 16px;
   }
 
-  .gzk-search-content__actions {
+  .gzkp-search-content__actions {
     gap: 8px;
   }
 
-  .gzk-search-tools {
+  .gzkp-search-tools {
     padding-inline: 12px;
   }
 
-  .gzk-search-scope-tabs {
+  .gzkp-search-scope-tabs {
     :deep(.el-tabs__item) {
       padding-inline: 10px !important;
     }
   }
 
-  .gzk-search-content {
+  .gzkp-search-content {
     max-height: none;
   }
 }

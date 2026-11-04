@@ -57,7 +57,7 @@ const handleAnimationEnd = (event: AnimationEvent) => {
   }
 
   &.mention-reply-item-flash {
-    animation: gzk-reply-highlight-flash 800ms ease-out;
+    animation: gzkp-reply-highlight-flash 800ms ease-out;
   }
 }
 

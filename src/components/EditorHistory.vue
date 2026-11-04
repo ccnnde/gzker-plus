@@ -97,7 +97,7 @@ defineExpose({
 <template>
   <ElDialog
     v-model="dialogVisible"
-    class="editor-history-dialog"
+    class="gzkp-editor-history-dialog"
     :lock-scroll="false"
     :show-close="false"
     :z-index="2001"
@@ -129,7 +129,7 @@ defineExpose({
     <ElScrollbar ref="scrollbar">
       <div class="editor-history-content">
         <ElTimeline>
-          <TransitionGroup name="history-list" @after-enter="scrollbar?.update" @after-leave="scrollbar?.update">
+          <TransitionGroup name="gzkp-history-list" @after-enter="scrollbar?.update" @after-leave="scrollbar?.update">
             <ElTimelineItem
               v-for="(item, index) in editHistoryList"
               :key="item.id"
@@ -138,7 +138,7 @@ defineExpose({
               placement="top"
               hollow
             >
-              <ElCard class="history-card-container" body-class="history-card-body" shadow="hover">
+              <ElCard class="gzkp-history-card-container" body-class="gzkp-history-card-body" shadow="hover">
                 <template #header>
                   <div class="history-card-header">
                     <span>
@@ -192,7 +192,7 @@ defineExpose({
 </template>
 
 <style lang="scss">
-.editor-history-dialog {
+.gzkp-editor-history-dialog {
   padding: 0;
   border-radius: var(--el-border-radius-base);
 
@@ -206,27 +206,27 @@ defineExpose({
   }
 }
 
-.history-list-move,
-.history-list-enter-active,
-.history-list-leave-active {
+.gzkp-history-list-move,
+.gzkp-history-list-enter-active,
+.gzkp-history-list-leave-active {
   transition: all 0.5s ease;
 }
 
-.history-list-enter-from,
-.history-list-leave-to {
+.gzkp-history-list-enter-from,
+.gzkp-history-list-leave-to {
   opacity: 0;
   transform: translateX(30px);
 }
 
-.history-list-leave-active {
+.gzkp-history-list-leave-active {
   position: absolute;
 }
 
-.history-card-container {
+.gzkp-history-card-container {
   background-color: transparent;
 }
 
-.history-card-body {
+.gzkp-history-card-body {
   .cherry-markdown {
     ul {
       list-style: disc;
@@ -262,7 +262,7 @@ defineExpose({
 
 .editor-history-content {
   height: 50vh;
-  padding: var(--gzk-topic-padding) var(--el-dialog-padding-primary);
+  padding: var(--gzkp-topic-padding) var(--el-dialog-padding-primary);
 
   ul {
     padding: 0;

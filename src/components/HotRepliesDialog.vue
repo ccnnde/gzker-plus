@@ -108,7 +108,7 @@ defineExpose({
 <template>
   <ElDialog
     v-model="dialogVisible"
-    class="hot-replies-dialog"
+    class="gzkp-hot-replies-dialog"
     :lock-scroll="false"
     :z-index="2001"
     :before-close="handleDialogBeforeClose"
@@ -140,14 +140,14 @@ defineExpose({
 </template>
 
 <style lang="scss">
-.hot-replies-dialog {
+.gzkp-hot-replies-dialog {
   padding: 0;
 
   .el-dialog__header {
     padding-top: var(--el-dialog-padding-primary);
     padding-bottom: 0;
-    padding-left: var(--gzk-topic-padding);
-    margin-right: var(--gzk-topic-padding);
+    padding-left: var(--gzkp-topic-padding);
+    margin-right: var(--gzkp-topic-padding);
   }
 
   .el-dialog__body {
@@ -159,10 +159,10 @@ defineExpose({
 <style lang="scss" scoped>
 .hot-replies-container {
   max-height: 50vh;
-  padding: 0 var(--gzk-topic-padding);
+  padding: 0 var(--gzkp-topic-padding);
 }
 
 .hot-replies-title {
-  margin-right: var(--gzk-topic-padding);
+  margin-right: var(--gzkp-topic-padding);
 }
 </style>

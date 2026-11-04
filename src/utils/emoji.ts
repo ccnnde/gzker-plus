@@ -35,7 +35,7 @@ const convertEmojiImageToNative = (imageTag: string): string => {
   return emoji || imageTag;
 };
 
-const EMOJI_FONT_STYLE_ID = 'gzk-emoji-font';
+const EMOJI_FONT_STYLE_ID = 'gzkp-emoji-font';
 
 export const NOTO_EMOJI_FONT = 'Noto-COLRv1';
 

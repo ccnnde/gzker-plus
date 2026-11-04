@@ -621,21 +621,24 @@ onUnmounted(() => {
   <ElementConfig>
     <ElDialog
       v-model="dialogVisible"
-      :class="['topic-dialog', { 'topic-page-dialog': isTopicPage, 'topic-dialog-editing': isTopicEditing }]"
+      :class="[
+        'gzkp-topic-dialog',
+        { 'gzkp-topic-page-dialog': isTopicPage, 'gzkp-topic-dialog-editing': isTopicEditing },
+      ]"
       :style="topicDialogStyle"
-      :modal-class="isTopicPage ? 'topic-overlay' : ''"
+      :modal-class="isTopicPage ? 'gzkp-topic-overlay' : ''"
       :z-index="isTopicPage ? 1000 : 2000"
       :show-close="false"
       :before-close="handleTopicDialogBeforeClose"
       :close-on-click-modal="!isTopicPage && closeOnClickModal"
       :close-on-press-escape="isTopicEditing || !isTopicPage"
-      :transition="{ name: 'topic-dialog', css: false }"
+      :transition="{ name: 'gzkp-topic-dialog', css: false }"
       align-center
       @opened="handleTopicDialogOpened"
       @closed="handleTopicDialogClosed"
     >
       <template #header="{ close }">
-        <div v-if="!isTopicPage && !isTopicEditing" class="topic-dialog-absolute">
+        <div v-if="!isTopicPage && !isTopicEditing" class="gzkp-topic-dialog-absolute">
           <un-i-mdi-close class="topic-operate-icon" @click="close" />
         </div>
       </template>
@@ -644,7 +647,7 @@ onUnmounted(() => {
         v-loading="isTopicBodyLoading"
         :style="topicBodyStyle"
         :element-loading-background="isTopicActionLoading ? 'transparent' : undefined"
-        element-loading-custom-class="gzk-loading-ring gzk-loading-instant-enter"
+        element-loading-custom-class="gzkp-loading-ring gzkp-loading-instant-enter"
       >
         <ElScrollbar ref="scrollbar" :distance="INFINITE_SCROLL_LOAD_DISTANCE" @end-reached="handleReplyScrollEnd">
           <div ref="topicContainer" v-viewer="viewerOptions" class="topic-container" :style="topicContainerStyle">
@@ -763,18 +766,18 @@ onUnmounted(() => {
 <style lang="scss">
 @import '@/styles/mixin';
 
-.topic-overlay {
-  top: var(--gzk-top-navbar-height);
+.gzkp-topic-overlay {
+  top: var(--gzkp-top-navbar-height);
   background-color: transparent;
 
   & > .el-overlay-dialog {
-    top: var(--gzk-top-navbar-height);
+    top: var(--gzkp-top-navbar-height);
   }
 }
 
-.topic-dialog,
-.hot-replies-dialog,
-.mention-replies-popover {
+.gzkp-topic-dialog,
+.gzkp-hot-replies-dialog,
+.gzkp-mention-replies-popover {
   img {
     max-width: 100%;
   }
@@ -830,14 +833,14 @@ onUnmounted(() => {
   }
 }
 
-.mention-replies-popover {
+.gzkp-mention-replies-popover {
   .mention-reply-item-content {
     margin: 0;
   }
 }
 
-.gzk-app-img-viewer {
-  background-color: var(--gzk-img-viewer-bg-color);
+.gzkp-app-img-viewer {
+  background-color: var(--gzkp-img-viewer-bg-color);
 
   .viewer-footer {
     bottom: 12px;
@@ -862,7 +865,7 @@ onUnmounted(() => {
     align-items: center;
     padding: 3px 7px;
     margin: 0 auto;
-    background-color: var(--gzk-img-viewer-ctrl-bg-color);
+    background-color: var(--gzkp-img-viewer-ctrl-bg-color);
     border-radius: 999px;
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%), 0 12px 30px rgb(0 0 0 / 42%);
 
@@ -946,18 +949,18 @@ onUnmounted(() => {
       width: 40px;
       height: 40px;
       margin-top: -20px;
-      background-color: var(--gzk-img-viewer-ctrl-bg-color);
+      background-color: var(--gzkp-img-viewer-ctrl-bg-color);
       box-shadow: 0 12px 30px rgb(0 0 0 / 42%);
       transition: none;
 
       &:focus {
-        background-color: var(--gzk-img-viewer-ctrl-bg-color);
+        background-color: var(--gzkp-img-viewer-ctrl-bg-color);
         outline: none;
         box-shadow: 0 12px 30px rgb(0 0 0 / 42%);
       }
 
       &:hover {
-        background-color: var(--gzk-img-viewer-ctrl-hover-bg-color);
+        background-color: var(--gzkp-img-viewer-ctrl-hover-bg-color);
       }
 
       &::before {
@@ -981,18 +984,18 @@ onUnmounted(() => {
     right: 24px;
     width: 40px;
     height: 40px;
-    background-color: var(--gzk-img-viewer-ctrl-bg-color);
+    background-color: var(--gzkp-img-viewer-ctrl-bg-color);
     box-shadow: 0 12px 30px rgb(0 0 0 / 42%);
     transition: none;
 
     &:focus {
-      background-color: var(--gzk-img-viewer-ctrl-bg-color);
+      background-color: var(--gzkp-img-viewer-ctrl-bg-color);
       outline: none;
       box-shadow: 0 12px 30px rgb(0 0 0 / 42%);
     }
 
     &:hover {
-      background-color: var(--gzk-img-viewer-ctrl-hover-bg-color);
+      background-color: var(--gzkp-img-viewer-ctrl-hover-bg-color);
     }
 
     &::before {
@@ -1003,7 +1006,7 @@ onUnmounted(() => {
   }
 }
 
-.topic-dialog {
+.gzkp-topic-dialog {
   padding: 0;
 
   .el-dialog__header {
@@ -1021,7 +1024,7 @@ onUnmounted(() => {
   }
 }
 
-.topic-dialog-editing {
+.gzkp-topic-dialog-editing {
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1033,14 +1036,14 @@ onUnmounted(() => {
   }
 }
 
-.editor-dialog {
+.gzkp-editor-dialog {
   display: flex;
   flex-direction: column;
 
   .el-dialog__body {
     flex: 1;
-    padding-top: var(--gzk-topic-padding);
-    padding-bottom: var(--gzk-topic-padding);
+    padding-top: var(--gzkp-topic-padding);
+    padding-bottom: var(--gzkp-topic-padding);
     overflow: hidden;
   }
 
@@ -1051,8 +1054,8 @@ onUnmounted(() => {
   }
 }
 
-.editor-dialog-fullscreen,
-.reply-editor-fullscreen {
+.gzkp-editor-dialog-fullscreen,
+.gzkp-reply-editor-fullscreen {
   .cherry-toolbar {
     .ch-icon-dialog-fullscreen::before {
       content: '\EA42';
@@ -1060,8 +1063,8 @@ onUnmounted(() => {
   }
 }
 
-.editor-dialog-minscreen,
-.reply-editor-minscreen {
+.gzkp-editor-dialog-minscreen,
+.gzkp-reply-editor-minscreen {
   .cherry-toolbar {
     .ch-icon-dialog-fullscreen::before {
       content: '\EA41';
@@ -1069,11 +1072,11 @@ onUnmounted(() => {
   }
 }
 
-.topic-dialog,
-.hot-replies-dialog,
-.topic-editor-dialog,
-.reply-editor-dialog,
-.editor-help-dialog {
+.gzkp-topic-dialog,
+.gzkp-hot-replies-dialog,
+.gzkp-topic-editor-dialog,
+.gzkp-reply-editor-dialog,
+.gzkp-editor-help-dialog {
   border-radius: var(--el-border-radius-base);
 
   .el-dialog__header {
@@ -1081,23 +1084,23 @@ onUnmounted(() => {
   }
 }
 
-.topic-dialog,
-.topic-editor-dialog {
+.gzkp-topic-dialog,
+.gzkp-topic-editor-dialog {
   width: 45%;
 
   @include dynamic-width(55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%);
 }
 
-.reply-editor-dialog,
-.editor-help-dialog,
-.editor-history-dialog,
-.hot-replies-dialog {
+.gzkp-reply-editor-dialog,
+.gzkp-editor-help-dialog,
+.gzkp-editor-history-dialog,
+.gzkp-hot-replies-dialog {
   width: 40%;
 
   @include dynamic-width(50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%);
 }
 
-.editor-picker-popper {
+.gzkp-editor-picker-popper {
   .el-select-dropdown__item {
     &:hover,
     &.hover {
@@ -1108,7 +1111,7 @@ onUnmounted(() => {
 </style>
 
 <style lang="scss" scoped>
-.topic-dialog-absolute {
+.gzkp-topic-dialog-absolute {
   position: absolute;
   right: -10px;
 }
@@ -1123,7 +1126,7 @@ onUnmounted(() => {
 
 .topic-container {
   width: 100%;
-  padding: var(--gzk-topic-padding);
+  padding: var(--gzkp-topic-padding);
 }
 
 .topic-reply-action-prompt {

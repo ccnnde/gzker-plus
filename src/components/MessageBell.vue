@@ -139,7 +139,7 @@ const isMsgUnread = (index: number): boolean => {
 <template>
   <ElPopover
     :width="350"
-    popper-class="el-dark-popper"
+    popper-class="gzkp-dark-popper"
     :popper-style="{ padding: 0, zIndex: 2000 }"
     trigger="click"
     @show="handlePopoverShow"
@@ -154,7 +154,7 @@ const isMsgUnread = (index: number): boolean => {
           :hide-after="0"
           :show-arrow="false"
           :disabled="disableTooltip"
-          popper-class="gzk-tooltip-popper"
+          popper-class="gzkp-tooltip-popper"
         >
           <ElBadge
             class="message-badge"
@@ -163,7 +163,7 @@ const isMsgUnread = (index: number): boolean => {
             :hidden="disableBadge || hideBadge"
             :is-dot="isBadgeDot"
           >
-            <un-i-mdi-bell-outline class="header-icon" />
+            <un-i-mdi-bell-outline class="gzkp-header-icon" />
           </ElBadge>
         </ElTooltip>
       </div>
@@ -330,7 +330,7 @@ $msg-padding: 15px;
   height: 40px;
   margin-top: 5px;
   margin-right: 10px;
-  border-radius: var(--gzk-avatar-border-radius);
+  border-radius: var(--gzkp-avatar-border-radius);
 }
 
 .message-main {

@@ -187,7 +187,7 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--gzk-topic-padding);
+  margin-bottom: var(--gzkp-topic-padding);
   font-size: var(--el-font-size-large);
   line-height: var(--el-font-line-height-primary);
   color: var(--el-text-color-primary);

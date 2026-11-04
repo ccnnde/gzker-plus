@@ -10,7 +10,7 @@ img[src^="https://img.whzxc.cn/bd"]
   vertical-align: -0.214em !important;
 }
 
-.gzk-tooltip-popper {
+.gzkp-tooltip-popper {
   padding: 2px 8px;
   font-size: 12px;
   line-height: 18px;
@@ -21,11 +21,11 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
-.gzk-reply-item-flash {
-  animation: gzk-reply-highlight-flash 800ms ease-out;
+.gzkp-reply-item-flash {
+  animation: gzkp-reply-highlight-flash 800ms ease-out;
 }
 
-@keyframes gzk-reply-highlight-flash {
+@keyframes gzkp-reply-highlight-flash {
   0%,
   100% {
     background-color: transparent;
@@ -36,7 +36,7 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
-form.gzk-header-search.gzk-search-enhanced {
+form.gzk-header-search.gzkp-search-enhanced {
   position: relative;
   width: 230px;
   height: 34px;
@@ -74,7 +74,7 @@ form.gzk-header-search.gzk-search-enhanced {
     }
   }
 
-  .gzk-search-shortcut {
+  .gzkp-search-shortcut {
     position: absolute;
     top: 50%;
     right: 8px;
@@ -108,7 +108,7 @@ form.gzk-header-search.gzk-search-enhanced {
 }
 
 @media (width <= 479px) {
-  form.gzk-header-search.gzk-search-enhanced .gzk-search-shortcut {
+  form.gzk-header-search.gzkp-search-enhanced .gzkp-search-shortcut {
     display: none;
   }
 }
@@ -155,19 +155,19 @@ form.gzk-header-search.gzk-search-enhanced {
   }
 }
 
-.hide-gzk-logo {
+.gzkp-hide-logo {
   .navbar-brand > img {
     @include blur-element;
   }
 }
 
-.hide-profile {
+.gzkp-hide-profile {
   .navbar-right a[href^='/u/'] {
     @include blur-element;
   }
 }
 
-.hide-topic {
+.gzkp-hide-topic {
   height: 100%;
 
   & > body > {
@@ -179,7 +179,7 @@ form.gzk-header-search.gzk-search-enhanced {
   }
 }
 
-.gzk-create-btn {
+.gzkp-create-btn {
   position: relative;
 
   div.i-mdi-loading {
@@ -209,12 +209,12 @@ form.gzk-header-search.gzk-search-enhanced {
 
     div.i-mdi-loading {
       display: block;
-      animation: gzk-loading-rotate 0.5s linear infinite;
+      animation: gzkp-loading-rotate 0.5s linear infinite;
     }
   }
 }
 
-@keyframes gzk-loading-rotate {
+@keyframes gzkp-loading-rotate {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
@@ -224,14 +224,14 @@ form.gzk-header-search.gzk-search-enhanced {
   }
 }
 
-.gzk-loading-global {
+.gzkp-loading-global {
   &.el-loading-mask {
-    top: var(--gzk-top-navbar-height);
+    top: var(--gzkp-top-navbar-height);
   }
 }
 
 // 让遮罩立即出现，避免预加载内容在淡入期间露出后又被盖住；保留退出淡出动画。
-.gzk-loading-instant-enter {
+.gzkp-loading-instant-enter {
   &.el-loading-fade-enter-from {
     opacity: 1;
   }
@@ -241,7 +241,7 @@ form.gzk-header-search.gzk-search-enhanced {
   }
 }
 
-.gzk-loading-ring {
+.gzkp-loading-ring {
   --el-loading-spinner-size: 32px;
 
   .circular {
@@ -257,12 +257,12 @@ form.gzk-header-search.gzk-search-enhanced {
     border: 2px solid var(--el-color-primary-light-8);
     border-top-color: var(--el-color-primary);
     border-radius: 50%;
-    animation: gzk-loading-ring-rotate 0.8s linear infinite;
+    animation: gzkp-loading-ring-rotate 0.8s linear infinite;
     will-change: transform;
   }
 }
 
-@keyframes gzk-loading-ring-rotate {
+@keyframes gzkp-loading-ring-rotate {
   from {
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
@@ -309,27 +309,27 @@ html {
    * 覆盖论坛 [tabindex]:focus:not(:focus-visible) 的 box-shadow: none !important。
    * 防止点击筛选浮层空白或快捷时间项后阴影消失，恢复 Element Plus 默认阴影。
    */
-  .gzk-search-filter-popover.el-popover:focus:not(:focus-visible) {
+  .gzkp-search-filter-popover.el-popover:focus:not(:focus-visible) {
     box-shadow: var(--el-box-shadow-light) !important;
   }
 }
 
-html[data-theme] {
-  .topic-dialog {
+html[data-gzkp-theme] {
+  .gzkp-topic-dialog {
     --el-mask-color: var(--el-bg-color);
   }
 
-  .topic-page-dialog {
+  .gzkp-topic-page-dialog {
     border: 1px solid var(--el-border-color);
     box-shadow: none;
 
-    .reply-editor-container,
+    .gzkp-reply-editor-container,
     .topic-footer-container {
       border-color: var(--el-border-color);
     }
   }
 
-  .el-dark-popper {
+  .gzkp-dark-popper {
     --el-mask-color: var(--el-bg-color-overlay);
   }
 

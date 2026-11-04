@@ -34,7 +34,7 @@ defineExpose({
     ref="select"
     :placeholder="$t('enhancedTopic.selectWeiboEmoji')"
     :persistent="false"
-    popper-class="editor-picker-popper"
+    popper-class="gzkp-editor-picker-popper"
     filterable
     automatic-dropdown
     default-first-option

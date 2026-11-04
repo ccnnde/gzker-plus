@@ -1,15 +1,15 @@
 /* stylelint-disable no-descending-specificity */
 html {
-  --gzk-cm-selected-bg-color: var(--el-fill-color);
-  --gzk-img-viewer-bg-color: rgb(0 0 0 / 90%);
-  --gzk-img-viewer-ctrl-bg-color: #444;
-  --gzk-img-viewer-ctrl-hover-bg-color: #5c5c5c;
-  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.webp');
-  --gzk-topic-tag-bg-color: var(--el-fill-color-light);
-  --gzk-topic-tag-text-color: var(--el-text-color-primary);
+  --gzkp-cm-selected-bg-color: var(--el-fill-color);
+  --gzkp-img-viewer-bg-color: rgb(0 0 0 / 90%);
+  --gzkp-img-viewer-ctrl-bg-color: #444;
+  --gzkp-img-viewer-ctrl-hover-bg-color: #5c5c5c;
+  --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.webp');
+  --gzkp-topic-tag-bg-color: var(--el-fill-color-light);
+  --gzkp-topic-tag-text-color: var(--el-text-color-primary);
 }
 
-html[data-theme] {
+html[data-gzkp-theme] {
   --el-fill-color-blank: transparent;
 
   .markdown-body,
@@ -24,27 +24,27 @@ html[data-theme] {
   }
 }
 
-html[data-theme^='dark'] {
-  --gzk-node-bg-color: rgb(255 255 255 / 10%);
-  --gzk-topic-hover-bg-color: rgb(255 255 255 / 5%);
-  --gzk-cm-selected-bg-color: rgb(255 255 255 / 20%);
-  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.webp');
-  --gzk-topic-tag-bg-color: var(--el-fill-color-dark);
+html[data-gzkp-theme^='dark'] {
+  --gzkp-node-bg-color: rgb(255 255 255 / 10%);
+  --gzkp-topic-hover-bg-color: rgb(255 255 255 / 5%);
+  --gzkp-cm-selected-bg-color: rgb(255 255 255 / 20%);
+  --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.webp');
+  --gzkp-topic-tag-bg-color: var(--el-fill-color-dark);
 }
 
-html[data-theme^='light'] {
-  --gzk-node-bg-color: rgb(0 0 0 / 10%);
-  --gzk-topic-hover-bg-color: rgb(0 0 0 / 5%);
-  --gzk-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.webp');
+html[data-gzkp-theme^='light'] {
+  --gzkp-node-bg-color: rgb(0 0 0 / 10%);
+  --gzkp-topic-hover-bg-color: rgb(0 0 0 / 5%);
+  --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.webp');
 }
 
-html.dark[data-theme='dark-default'] {
-  --gzk-reply-count-bg-color: var(--el-color-info-light-5);
-  --gzk-reply-count-visited-bg-color: var(--el-color-info);
+html.gzkp-dark[data-gzkp-theme='dark-default'] {
+  --gzkp-reply-count-bg-color: var(--el-color-info-light-5);
+  --gzkp-reply-count-visited-bg-color: var(--el-color-info);
 }
 
 // Dark Soft Theme (GitHub Dark Dimmed inspired)
-html.dark[data-theme='dark-soft'] {
+html.gzkp-dark[data-gzkp-theme='dark-soft'] {
   // 功能色 info
   --el-color-info: #7d8590;
   --el-color-info-light-3: #6e7681;
@@ -94,9 +94,9 @@ html.dark[data-theme='dark-soft'] {
   --el-mask-color-extra-light: rgb(1 4 9 / 30%);
 
   // 其他
-  --gzk-topic-tag-bg-color: var(--el-fill-color-darker);
-  --gzk-reply-count-bg-color: #4c5359;
-  --gzk-reply-count-visited-bg-color: #757b83;
+  --gzkp-topic-tag-bg-color: var(--el-fill-color-darker);
+  --gzkp-reply-count-bg-color: #4c5359;
+  --gzkp-reply-count-visited-bg-color: #757b83;
 
   // 组件相关
   .el-empty {
@@ -122,7 +122,7 @@ html.dark[data-theme='dark-soft'] {
 }
 
 // Light Solarized Theme (Solarized Light inspired)
-html[data-theme='light-solarized'] {
+html[data-gzkp-theme='light-solarized'] {
   // 主题色 - Solarized yellow
   --el-color-primary: #b58900;
   --el-color-primary-light-3: #c9a01a;
@@ -217,8 +217,8 @@ html[data-theme='light-solarized'] {
   --el-mask-color-extra-light: rgb(7 54 66 / 20%);
 
   // 其他
-  --gzk-reply-count-bg-color: #bcc7c9;
-  --gzk-reply-count-visited-bg-color: #e2e3eb;
+  --gzkp-reply-count-bg-color: #bcc7c9;
+  --gzkp-reply-count-visited-bg-color: #e2e3eb;
 
   // 组件相关
   .el-empty {
@@ -255,7 +255,7 @@ html[data-theme='light-solarized'] {
 }
 
 // Light Tokyo Night Theme (Tokyo Night Light inspired)
-html[data-theme='light-tokyo-night'] {
+html[data-gzkp-theme='light-tokyo-night'] {
   // 主题色 - Tokyo Night blue
   --el-color-primary: #2959aa;
   --el-color-primary-light-3: #5885c9;
@@ -350,8 +350,8 @@ html[data-theme='light-tokyo-night'] {
   --el-mask-color-extra-light: rgb(54 60 77 / 20%);
 
   // 其他
-  --gzk-reply-count-bg-color: #c1c2c7;
-  --gzk-reply-count-visited-bg-color: #dfe0e5;
+  --gzkp-reply-count-bg-color: #c1c2c7;
+  --gzkp-reply-count-visited-bg-color: #dfe0e5;
 
   // 组件相关
   .el-empty {

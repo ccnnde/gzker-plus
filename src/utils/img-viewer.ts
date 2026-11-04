@@ -7,7 +7,7 @@ import type { DialogBeforeCloseFn } from 'element-plus';
 import type Viewer from 'viewerjs';
 import type { ImageViewer } from '@/types';
 
-const VIEWER_CLASS_NAME = 'gzk-app-img-viewer';
+const VIEWER_CLASS_NAME = 'gzkp-app-img-viewer';
 const VIEWER_IMAGE_SELECTOR = '.viewer-canvas > img';
 const VIEWER_DOWNLOAD_SUCCESS_CLASS_NAME = 'viewer-download-success';
 const VIEWER_DOWNLOAD_SUCCESS_DURATION = 1000;

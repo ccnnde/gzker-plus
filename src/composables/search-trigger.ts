@@ -4,8 +4,8 @@ import { t } from '@/i18n';
 import { blurActiveElement } from '@/utils';
 import { SELECTOR_MOBILE_SEARCH_LINK, SELECTOR_SEARCH_FORM } from '@/constants/selector';
 
-const SHORTCUT_ELEMENT_CLASS = 'gzk-search-shortcut';
-const SEARCH_FORM_ENHANCED_CLASS = 'gzk-search-enhanced';
+const SHORTCUT_ELEMENT_CLASS = 'gzkp-search-shortcut';
+const SEARCH_FORM_ENHANCED_CLASS = 'gzkp-search-enhanced';
 
 interface UseSearchTriggerOptions {
   shortcutLabel: string;
