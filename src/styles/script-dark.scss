@@ -837,6 +837,10 @@ html[data-gzkp-theme] {
     ul li {
       border-color: var(--el-border-color-light);
 
+      label {
+        text-shadow: none;
+      }
+
       .nodes a {
         color: var(--el-text-color-regular);
         text-shadow: none;
