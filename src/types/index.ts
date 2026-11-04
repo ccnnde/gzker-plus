@@ -177,6 +177,12 @@ export interface ScriptAppOptions {
 
 export interface UserInfo {
   uid?: string;
+  nickname?: string;
+  online?: boolean;
+  gender?: string;
+  generation?: string;
+  signature?: string;
+  email?: string;
   directMessageLink?: MetadataLink;
   creditLevel?: MetadataLink;
   avatarUrl?: string;

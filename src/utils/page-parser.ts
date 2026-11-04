@@ -129,6 +129,19 @@ const getMemberNo = (userDocument: Document, profileText: string) => {
   return memberNumbers.size === 1 ? Array.from(memberNumbers)[0] : undefined;
 };
 
+const getProfileField = (parent: ParentNode, label: string): string | undefined => {
+  const fieldLabel = Array.from(parent.querySelectorAll('dt')).find((element) => {
+    return element.textContent?.trim().toUpperCase() === label.toUpperCase();
+  });
+  const fieldValue = fieldLabel?.nextElementSibling;
+
+  if (fieldValue?.tagName !== 'DD') {
+    return undefined;
+  }
+
+  return fieldValue.textContent?.trim() || undefined;
+};
+
 const getProfileUserId = (userDocument: Document, profileElement: Element | null) => {
   const uid = getElementText(profileElement, '.username');
 
@@ -136,16 +149,7 @@ const getProfileUserId = (userDocument: Document, profileElement: Element | null
     return uid;
   }
 
-  const idLabel = Array.from(userDocument.querySelectorAll('dt')).find((element) => {
-    return element.textContent?.trim().toUpperCase() === 'ID';
-  });
-  const idValue = idLabel?.nextElementSibling;
-
-  if (idValue?.tagName !== 'DD') {
-    return undefined;
-  }
-
-  return idValue.textContent?.trim() || undefined;
+  return getProfileField(profileElement || userDocument, 'ID');
 };
 
 const isUserFollowed = (userDocument: Document, uid: string) => {
@@ -231,12 +235,15 @@ const getMessageReplyType = (noticeKind: string | undefined, title: string): Rep
 
 export const parseUserInfo = (htmlStr: string): UserInfo => {
   const userDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
-  const profileElement = userDocument.querySelector('.user-page .profile');
+  const profileElement = userDocument.querySelector('.user-page .profile, .profile.container-box');
   const statisticsElement = userDocument.querySelector('.user-page .usercard');
   const profileText = profileElement?.textContent || userDocument.body.textContent || '';
   const uid = getProfileUserId(userDocument, profileElement);
   const memberNo = getMemberNo(userDocument, profileText);
   const checkInTime = profileText.match(/入住于\s*(\d{4}-\d{2}-\d{2})/)?.[1];
+  const creditLevelElement = profileElement?.querySelector(SELECTOR_CREDIT_LEVEL);
+  const creditTitle = creditLevelElement?.getAttribute('title');
+  const genderElement = profileElement?.querySelector('.gzk-profile-gender');
 
   if (!uid || (!memberNo && !checkInTime)) {
     throw new Error(t('floatUserInfo.parseFailed'));
@@ -244,8 +251,15 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
 
   return {
     uid,
+    nickname: getProfileField(profileElement || userDocument, '昵称'),
+    online: profileElement ? Boolean(profileElement.querySelector('.gzk-online')) : undefined,
+    gender:
+      genderElement?.getAttribute('aria-label')?.trim() || genderElement?.getAttribute('title')?.trim() || undefined,
+    generation: getElementText(profileElement, '.gzk-profile-generation'),
+    signature: getElementText(profileElement, '.gzk-card-signature'),
+    email: getProfileField(profileElement || userDocument, 'Email'),
     directMessageLink: parseMetadataLink(profileElement?.querySelector(SELECTOR_PROFILE_DIRECT_MESSAGE_LINK)),
-    creditLevel: parseMetadataLink(profileElement?.querySelector(SELECTOR_CREDIT_LEVEL)),
+    creditLevel: parseMetadataLink(creditLevelElement),
     avatarUrl: profileElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
     memberNo,
     checkInTime,
@@ -261,7 +275,8 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
       statisticsElement?.querySelector('.status-reply strong [title]')?.getAttribute('title') || undefined,
     favoriteListTitle:
       statisticsElement?.querySelector('.status-favorite strong [title]')?.getAttribute('title') || undefined,
-    creditValue: getElementText(statisticsElement, '.status-reputation strong'),
+    creditValue:
+      getElementText(statisticsElement, '.status-reputation strong') || creditTitle?.match(/信用\s*(\d+)/)?.[1],
     followed: isUserFollowed(userDocument, uid),
     blocked: isUserBlocked(userDocument, memberNo),
   };
