@@ -36,6 +36,30 @@ img[src^="https://img.whzxc.cn/bd"]
   }
 }
 
+.top-navbar {
+  .gzk-search-symbol {
+    display: block;
+    flex-shrink: 0;
+    width: 1.4em;
+    height: 1.4em;
+  }
+
+  .gzk-mobile-search > a[href='/search'] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--gzkp-top-navbar-height);
+    padding: 0 8px;
+    color: var(--el-text-color-primary);
+    transition: color 0.1s ease-in;
+
+    &:hover {
+      color: var(--gzkp-navbar-text-hover);
+      background-color: transparent;
+    }
+  }
+}
+
 form.gzk-header-search.gzkp-search-enhanced {
   position: relative;
   width: 230px;
