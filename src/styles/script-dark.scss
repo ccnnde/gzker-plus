@@ -183,53 +183,54 @@ html[data-theme] {
     }
   }
 
-  .sidebar-left {
-    .nav.nav-pills {
-      a {
+  .sidebar-left .nav.nav-pills,
+  .nav.nav-pills.gzk-home-tabs {
+    > li {
+      > a {
         color: var(--el-text-color-regular);
         transition: color 0.5s;
       }
 
-      li {
-        > a:focus,
-        > a:hover {
-          color: var(--el-color-primary);
-          background-color: transparent;
+      > a:focus,
+      > a:hover {
+        color: var(--el-color-primary);
+        background-color: transparent;
+      }
+
+      &.active {
+        > a {
+          transition: background-color 0.1s;
         }
 
-        &.active {
-          a {
-            transition: background-color 0.1s;
-          }
+        > a,
+        > a:focus {
+          color: var(--el-color-white);
+          background-color: var(--el-color-primary);
+        }
 
-          a,
-          a:focus {
-            color: var(--el-color-white);
-            background-color: var(--el-color-primary);
-          }
-
-          a:hover {
-            background-color: var(--el-color-primary-light-3);
-          }
+        > a:hover {
+          background-color: var(--el-color-primary-light-3);
         }
       }
     }
+  }
 
-    .dropdown-menu {
-      background-color: var(--el-bg-color-overlay);
-      border-color: var(--el-border-color);
-      box-shadow: none;
+  .sidebar-left .dropdown-menu,
+  .gzk-home-tabs .dropdown-menu,
+  .dropdown-menu[aria-labelledby='dropdownMenu1'] {
+    background-color: var(--el-bg-color-overlay);
+    border-color: var(--el-border-color);
+    box-shadow: none;
 
-      > li {
-        a {
-          color: var(--el-text-color-regular);
-        }
+    > li {
+      a {
+        color: var(--el-text-color-regular);
+      }
 
-        a:focus,
-        a:hover {
-          color: var(--el-color-primary);
-          background-color: var(--el-color-primary-light-9);
-        }
+      a:focus,
+      a:hover {
+        color: var(--el-color-primary);
+        background-color: var(--el-color-primary-light-9);
       }
     }
   }
