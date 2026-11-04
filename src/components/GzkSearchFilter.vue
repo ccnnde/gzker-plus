@@ -473,12 +473,25 @@ onUnmounted(() => {
   margin-left: 4px;
 }
 
-:global(.gzk-search-filter-popover.el-popover) {
+:global(.gzk-search-filter-popover.el-popover.el-popper) {
+  --gzk-search-filter-hover-bg-color: var(--el-fill-color-dark);
+  --gzk-search-filter-selected-color: var(--el-color-primary);
+  --gzk-search-filter-selected-border-color: transparent;
+
   box-sizing: border-box;
   max-width: calc(100vw - 40px);
   padding: 0;
-  border-color: var(--el-border-color-lighter);
+  border: 1px solid var(--el-border-color);
   border-radius: 12px;
+}
+
+:global(html[data-theme='dark-soft'] .gzk-search-filter-popover.el-popover) {
+  --gzk-search-filter-hover-bg-color: var(--el-fill-color-darker);
+  --gzk-search-filter-selected-border-color: var(--el-color-primary-light-5);
+}
+
+:global(html[data-theme='light-solarized'] .gzk-search-filter-popover.el-popover) {
+  --gzk-search-filter-selected-color: var(--el-color-primary-dark-2);
 }
 
 .gzk-search-filter-panel {
@@ -528,12 +541,13 @@ onUnmounted(() => {
   border-radius: 8px;
 
   &:hover {
-    background: var(--el-fill-color);
+    background: var(--gzk-search-filter-hover-bg-color);
   }
 
   &.is-checked {
-    color: var(--el-color-primary);
+    color: var(--gzk-search-filter-selected-color);
     background: var(--el-color-primary-light-9);
+    box-shadow: inset 0 0 0 1px var(--gzk-search-filter-selected-border-color);
   }
 
   &.is-checked:hover {
@@ -560,6 +574,15 @@ onUnmounted(() => {
 
 .gzk-search-filter-range {
   margin-top: 12px;
+}
+
+.gzk-search-filter-panel :deep(.el-select__popper),
+.gzk-search-filter-panel :deep(.gzk-search-filter-date-popper) {
+  border: 1px solid var(--el-border-color);
+
+  .el-popper__arrow::before {
+    border-color: var(--el-border-color);
+  }
 }
 
 .gzk-search-filter-panel :deep(.gzk-search-filter-date-popper) {
@@ -742,12 +765,12 @@ onUnmounted(() => {
   min-height: 36px;
   margin: 0;
   font-size: 13px;
-  color: var(--el-text-color-secondary);
+  color: var(--el-text-color-regular);
   border-radius: 9px;
 
   &:hover {
     color: var(--el-text-color-primary);
-    background: var(--el-fill-color) !important;
+    background: var(--gzk-search-filter-hover-bg-color) !important;
   }
 }
 
@@ -759,7 +782,7 @@ onUnmounted(() => {
 }
 
 @media (width <= 479px) {
-  :global(.gzk-search-filter-popover.el-popover) {
+  :global(.gzk-search-filter-popover.el-popover.el-popper) {
     max-width: calc(100vw - 32px);
   }
 }
