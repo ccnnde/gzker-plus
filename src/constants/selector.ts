@@ -49,6 +49,11 @@ export const SELECTOR_MAIN_CONTAINER = '.navbar.top-navbar + div.container';
 export const SELECTOR_NAVBAR_RIGHT = '.navbar-right';
 
 /**
+ * 论坛原生主题切换入口
+ */
+export const SELECTOR_THEME_SWITCH = '.gzk-nav-theme';
+
+/**
  * 用户头像元素
  */
 export const SELECTOR_USER_AVATAR = 'a[href^="/u/"] > img.avatar';

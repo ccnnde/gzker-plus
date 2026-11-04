@@ -178,6 +178,8 @@ export const enum LightTheme {
 
 export const THEME_ATTR = 'data-gzkp-theme';
 
+export const FORUM_THEME_ATTR = 'data-theme';
+
 export const enum ReplyType {
   Topic = 'topic',
   Mention = 'mention',

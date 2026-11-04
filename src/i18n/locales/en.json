@@ -338,6 +338,7 @@
     "gzkIssue": "Submit GitHub issue",
     "gzkSettings": "Gzker Plus settings",
     "gzkTopic": "Gzker Plus theme post",
+    "lightMode": "Light Mode",
     "message": "Message",
     "unreadMessage": "You have {num} unread messages"
   },

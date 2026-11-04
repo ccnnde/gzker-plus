@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { ElDropdown } from 'element-plus';
 import { browser } from 'wxt/browser';
 
-import { ExtensionMessageType } from '@/constants';
+import { useStorageStore } from '@/stores/storage';
+import { t } from '@/i18n';
+import { DarkMode, ExtensionMessageType, OptionsKey } from '@/constants';
 
 import ElementConfig from './ElementConfig.vue';
 import MessageBell from './MessageBell.vue';
@@ -11,6 +13,50 @@ import MessageBell from './MessageBell.vue';
 import type { ExtensionMessage } from '@/types';
 
 const feedbackDropdown = ref<InstanceType<typeof ElDropdown> | null>(null);
+
+const storage = useStorageStore();
+
+const settings = computed(() => {
+  return storage.options?.[OptionsKey.DarkMode];
+});
+
+const mode = computed(() => {
+  return settings.value?.mode ?? DarkMode.System;
+});
+
+const modeLabels = computed(() => {
+  return {
+    [DarkMode.Off]: t('gzkHeader.lightMode'),
+    [DarkMode.On]: t('basicSetting.darkMode.title'),
+    [DarkMode.System]: t('basicSetting.darkMode.system'),
+  };
+});
+
+const modeIconClass = computed(() => {
+  if (mode.value === DarkMode.On) {
+    return 'i-mdi-weather-night';
+  }
+
+  if (mode.value === DarkMode.Off) {
+    return 'i-mdi-weather-sunny';
+  }
+
+  return 'i-mdi-theme-light-dark';
+});
+
+const cycleMode = () => {
+  if (!settings.value) {
+    return;
+  }
+
+  if (mode.value === DarkMode.On) {
+    settings.value.mode = DarkMode.Off;
+  } else if (mode.value === DarkMode.Off) {
+    settings.value.mode = DarkMode.System;
+  } else {
+    settings.value.mode = DarkMode.On;
+  }
+};
 
 const openExtOptions = () => {
   const msg: ExtensionMessage = {
@@ -68,25 +114,33 @@ const openExtOptions = () => {
     >
       <un-i-mdi-cog-outline class="gzkp-header-icon" @click="openExtOptions" />
     </ElTooltip>
+    <ElTooltip
+      :content="modeLabels[mode]"
+      :enterable="false"
+      :hide-after="0"
+      :show-arrow="false"
+      popper-class="gzkp-tooltip-popper"
+    >
+      <div
+        :class="['gzkp-header-icon', modeIconClass]"
+        @click="cycleMode"
+        @keydown.enter.prevent="cycleMode"
+        @keydown.space.prevent="cycleMode"
+      ></div>
+    </ElTooltip>
   </ElementConfig>
 </template>
 
 <style lang="scss">
 #gzkp-app-header {
-  --gzkp-header-width: 9em;
-
-  position: absolute;
-  left: calc(-1 * var(--gzkp-header-width));
   display: flex;
+  gap: 20px;
   align-items: center;
-  justify-content: space-around;
-  width: var(--gzkp-header-width);
-  height: 100%;
+  height: var(--gzkp-top-navbar-height);
+  padding: 0 12px;
 
   &:not(:has(un-i-mdi-bell-outline)) {
-    --gzkp-header-width: 6.5em;
-
-    div:nth-child(2) {
+    > div:nth-child(2) {
       display: none;
     }
   }
@@ -146,5 +200,12 @@ const openExtOptions = () => {
 
 .navbar-right {
   position: relative;
+}
+
+.gzkp-theme-controlled {
+  .gzk-nav-theme > [data-gzk-theme-toggle],
+  .gzk-night-notice {
+    display: none !important;
+  }
 }
 </style>
