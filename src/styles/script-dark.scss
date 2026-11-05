@@ -35,8 +35,197 @@ html[data-gzkp-theme] {
     }
   }
 
-  .help-block {
+  .help-block,
+  .text-muted,
+  .gzk-mention-note,
+  .gzk-recent-empty,
+  .gzk-reply-summary .gzk-topic-stats,
+  .gzk-topic-created {
     color: var(--el-text-color-secondary);
+  }
+
+  select.form-control {
+    color: var(--el-text-color-regular);
+    color-scheme: light;
+    border: 1px solid var(--el-border-color);
+  }
+
+  // 扩展的 Vue 组件挂载在带有 data-v-app 的容器中。
+  select:where(:not([data-v-app] *, [multiple])):where(:not([size]), [size='0'], [size='1']) {
+    option {
+      color: var(--el-text-color-regular);
+      background-color: var(--el-bg-color-overlay);
+    }
+
+    @supports (appearance: base-select) and selector(::picker(select)) {
+      appearance: base-select;
+
+      &,
+      &.form-control {
+        display: flex;
+        align-items: center;
+      }
+
+      /* stylelint-disable-next-line selector-pseudo-element-no-unknown -- Stylelint 15 尚未识别 ::picker-icon。 */
+      &::picker-icon {
+        width: 6px;
+        height: 6px;
+        margin-inline-start: auto;
+        content: '';
+        border-right: 1px solid currentcolor;
+        border-bottom: 1px solid currentcolor;
+        transform: rotate(45deg);
+      }
+
+      /* stylelint-disable-next-line selector-pseudo-element-no-unknown -- Stylelint 15 尚未识别 ::picker()。 */
+      &::picker(select) {
+        color: var(--el-text-color-regular);
+        appearance: base-select;
+        background-color: var(--el-bg-color-overlay);
+        border: 1px solid var(--el-border-color);
+      }
+
+      option {
+        padding-inline: 12px;
+
+        /* stylelint-disable-next-line selector-pseudo-element-no-unknown -- Stylelint 15 尚未识别 ::checkmark。 */
+        &::checkmark {
+          display: none;
+        }
+
+        &:checked {
+          font-weight: 600;
+          color: var(--el-text-color-primary);
+          background-color: var(--el-color-primary-light-7);
+        }
+
+        &:is(:hover, :focus-visible):not(:checked, :disabled) {
+          background-color: var(--el-color-primary-light-9);
+        }
+      }
+    }
+  }
+
+  input[type='checkbox']:where(:not([data-v-app] *)) {
+    accent-color: var(--el-color-primary);
+    color-scheme: light;
+
+    @media (forced-colors: none) {
+      &:not(.el-checkbox__original):focus {
+        outline: none;
+      }
+
+      &:not(.el-checkbox__original, :checked, :indeterminate, :disabled) {
+        box-sizing: border-box;
+        width: 13px;
+        height: 13px;
+        appearance: none;
+        background-color: var(--el-bg-color);
+        border: 1px solid var(--el-border-color-dark);
+        border-radius: 3px;
+
+        &:hover,
+        &:focus-visible {
+          border-color: var(--el-color-primary);
+        }
+      }
+    }
+  }
+
+  &.gzkp-dark {
+    select.form-control,
+    input[type='checkbox']:where(:not([data-v-app] *)) {
+      color-scheme: dark;
+    }
+  }
+
+  .gzk-recent-heading .gzk-text-action {
+    color: var(--el-text-color-secondary);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--el-color-primary);
+    }
+
+    &:disabled {
+      color: var(--el-text-color-disabled);
+    }
+  }
+
+  body .topic-reply-create[data-gzk-reply-docked='1'] {
+    background: var(--el-bg-color);
+    border-color: var(--el-border-color);
+    box-shadow: var(--el-box-shadow-light);
+
+    > .ui-header {
+      color: var(--el-text-color-primary);
+      border-color: var(--el-border-color-light);
+    }
+
+    > .ui-header,
+    > .ui-content,
+    .gzk-reply-submit {
+      background: var(--el-bg-color);
+    }
+  }
+
+  .gzk-reply-compose-tools {
+    color: var(--el-text-color-secondary);
+
+    .gzk-reply-compose-nav a {
+      color: inherit;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--el-color-primary);
+      }
+    }
+
+    .gzk-reply-dock-toggle {
+      color: inherit;
+      background: transparent;
+
+      &:hover,
+      &:focus-visible,
+      &[aria-pressed='true'] {
+        color: var(--el-color-primary);
+        background: var(--el-color-primary-light-9);
+      }
+    }
+  }
+
+  .gzk-mention-picker {
+    color: var(--el-text-color-primary);
+    background: var(--el-bg-color-overlay);
+    border-color: var(--el-border-color);
+    box-shadow: var(--el-box-shadow-light);
+
+    .gzk-mention-empty {
+      color: var(--el-text-color-secondary);
+    }
+
+    .gzk-mention-option {
+      color: inherit;
+      background: transparent;
+      border-color: var(--el-border-color-light);
+
+      :is(span, strong, bdi) {
+        color: inherit;
+      }
+
+      small {
+        color: var(--el-text-color-secondary);
+      }
+
+      &:hover,
+      &:focus-visible {
+        background: var(--el-color-primary-light-9);
+      }
+
+      &[aria-selected='true'] {
+        background: var(--el-color-primary-light-8);
+      }
+    }
   }
 
   .gzk-image-panel {
@@ -145,6 +334,20 @@ html[data-gzkp-theme] {
           color: var(--el-text-color-primary);
           border-color: var(--el-border-color-light);
         }
+
+        input[type='file'] {
+          &::file-selector-button {
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color);
+            border: 1px solid var(--el-border-color-light);
+          }
+
+          &:enabled::file-selector-button:hover {
+            color: var(--el-color-primary);
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-color-primary-light-5);
+          }
+        }
       }
     }
   }
@@ -247,7 +450,8 @@ html[data-gzkp-theme] {
       background: var(--el-bg-color) !important;
       border-bottom: 1px solid var(--el-border-color-light);
 
-      .username {
+      .username,
+      .gzk-card-display > .gzk-display-name {
         color: var(--el-text-color-primary) !important;
         text-shadow: none;
       }
@@ -284,30 +488,38 @@ html[data-gzkp-theme] {
     }
   }
 
-  .user-page .profile .gzk-profile-actions {
-    .gzk-profile-action {
-      color: var(--el-color-primary) !important;
-      background: var(--el-color-primary-light-9);
-      box-shadow: inset 0 0 0 1px var(--el-color-primary-light-5);
+  .user-page .profile {
+    .gzk-profile-actions {
+      .gzk-profile-action {
+        color: var(--el-color-primary) !important;
+        background: var(--el-color-primary-light-9);
+        box-shadow: inset 0 0 0 1px var(--el-color-primary-light-5);
 
-      a {
-        color: inherit !important;
+        a {
+          color: inherit !important;
+        }
+
+        &:hover {
+          background: var(--el-color-primary-light-8);
+        }
       }
 
-      &:hover {
-        background: var(--el-color-primary-light-8);
+      a:focus-visible {
+        outline-color: var(--el-color-primary);
       }
     }
 
-    a:focus-visible {
-      outline-color: var(--el-color-primary);
+    .ui-header a.gzk-credit-level {
+      color: var(--el-color-primary) !important;
+      border-color: var(--el-color-primary-light-5) !important;
     }
   }
 
   .usercard .ui-header,
   .user-page .profile .ui-header,
+  .gzk-visible-identity,
   .gzk-points {
-    .gzk-credit-level {
+    a.gzk-credit-level {
       color: var(--el-color-primary);
       background: var(--el-color-primary-light-9);
       border-color: var(--el-color-primary-light-5);
@@ -410,11 +622,6 @@ html[data-gzkp-theme] {
           border-color: var(--el-color-primary);
           outline-color: var(--el-color-primary);
         }
-
-        option {
-          color: var(--el-text-color-regular);
-          background-color: var(--el-bg-color-overlay);
-        }
       }
 
       .btn-success:disabled,
@@ -433,19 +640,38 @@ html[data-gzkp-theme] {
   }
 
   &:has(.dm-wrap) {
-    --bg: var(--el-bg-color);
-    --panel: var(--el-bg-color-overlay);
-    --text: var(--el-text-color-primary);
-    --muted: var(--el-text-color-secondary);
-    --line: var(--el-border-color-light);
-    --blue: var(--el-color-primary);
-    --soft: var(--el-fill-color-light);
-    --bubble: var(--el-color-primary-light-9);
+    &,
+    .dm-wrap {
+      --bg: var(--el-bg-color-page);
+      --panel: var(--el-bg-color-overlay);
+      --text: var(--el-text-color-primary);
+      --muted: var(--el-text-color-secondary);
+      --line: var(--el-border-color);
+      --blue: var(--el-color-primary);
+      --soft: var(--el-fill-color-light);
+      --bubble: var(--el-color-primary-light-9);
+    }
 
     color-scheme: light;
 
     &.gzkp-dark {
       color-scheme: dark;
+
+      &,
+      .dm-wrap {
+        --panel: var(--el-bg-color);
+      }
+    }
+
+    .dm-wrap textarea {
+      color: var(--el-text-color-regular);
+      background: var(--el-fill-color-lighter);
+      border-color: var(--el-border-color);
+
+      &::placeholder {
+        color: var(--el-text-color-secondary);
+        opacity: 1;
+      }
     }
 
     .primary {
@@ -579,7 +805,8 @@ html[data-gzkp-theme] {
           }
         }
 
-        .username a {
+        .username a,
+        .gzk-display-name {
           color: var(--el-color-info);
         }
 
@@ -616,6 +843,10 @@ html[data-gzkp-theme] {
       background: var(--el-bg-color-overlay);
       background-image: none;
       border-color: var(--el-border-color-light);
+
+      .meta .gzk-display-name {
+        color: var(--el-text-color-primary);
+      }
     }
 
     .ui-content {
@@ -676,7 +907,8 @@ html[data-gzkp-theme] {
 
         .main {
           .meta {
-            .reply-username {
+            .reply-username,
+            .gzk-display-name {
               color: var(--el-text-color-primary);
             }
 

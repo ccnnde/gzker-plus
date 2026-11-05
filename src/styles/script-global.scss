@@ -1,6 +1,12 @@
 /* stylelint-disable no-descending-specificity */
 @import 'mixin';
 
+html.gzkp-theme-controlled[data-theme='light']:not([data-gzkp-theme]) body {
+  form.setting a.btn-danger[href$='/delete'] {
+    color: #fff;
+  }
+}
+
 img[src^='/static/emoji'],
 img[src^="https://face.t.sinajs.cn"],
 img[src^="https://img.whzxc.cn/bd"]
@@ -67,6 +73,10 @@ form.gzk-header-search.gzkp-search-enhanced {
   margin: 0;
   cursor: pointer;
 
+  &:hover input.form-control[type='search']:not(:focus) {
+    border-color: var(--gzkp-search-border-color-hover, var(--el-border-color-hover));
+  }
+
   input.form-control[type='search'] {
     box-sizing: border-box;
     width: 100%;
@@ -79,10 +89,6 @@ form.gzk-header-search.gzkp-search-enhanced {
     border-color: var(--el-border-color);
     box-shadow: none;
     transition: border-color 120ms ease, box-shadow 120ms ease;
-
-    &:hover {
-      border-color: var(--el-border-color-hover);
-    }
 
     &:focus {
       border-color: var(--el-color-primary);
@@ -339,6 +345,12 @@ html {
 }
 
 html[data-gzkp-theme] {
+  scrollbar-color: var(--gzkp-scrollbar-thumb-color) transparent;
+
+  .top-navbar form.gzk-header-search .gzk-search-symbol {
+    color: var(--el-text-color-secondary);
+  }
+
   .gzkp-topic-dialog {
     --el-mask-color: var(--el-bg-color);
   }

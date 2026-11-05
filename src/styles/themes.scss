@@ -19,6 +19,7 @@ html[data-gzkp-theme] {
     --color-fg-default: var(--el-text-color-primary);
     --color-fg-muted: var(--el-text-color-secondary);
     --color-fg-subtle: var(--el-text-color-placeholder);
+    --color-accent-fg: var(--el-color-primary);
     --color-border-default: var(--el-border-color);
     --color-border-muted: var(--el-border-color-light);
   }
@@ -30,6 +31,10 @@ html[data-gzkp-theme^='dark'] {
   --gzkp-cm-selected-bg-color: rgb(255 255 255 / 20%);
   --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.webp');
   --gzkp-topic-tag-bg-color: var(--el-fill-color-dark);
+
+  body:not(.gzkp-hide-logo) .top-navbar .navbar-brand img {
+    filter: brightness(1.7);
+  }
 }
 
 html[data-gzkp-theme^='light'] {
@@ -38,65 +43,104 @@ html[data-gzkp-theme^='light'] {
   --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.webp');
 }
 
+html[data-gzkp-theme='dark-default'] {
+  --gzkp-scrollbar-thumb-color: #5e6269;
+}
+
 html.gzkp-dark[data-gzkp-theme='dark-default'] {
   --gzkp-reply-count-bg-color: var(--el-color-info-light-5);
   --gzkp-reply-count-visited-bg-color: var(--el-color-info);
 }
 
-// Dark Soft Theme (GitHub Dark Dimmed inspired)
+// Dark Soft Theme (native forum blue-gray inspired)
 html.gzkp-dark[data-gzkp-theme='dark-soft'] {
+  --gzkp-scrollbar-thumb-color: #607889;
+
+  // 交互色：链接保持浅蓝，实心按钮使用更沉稳的深蓝。
+  --el-color-primary: #79b4e3;
+  --el-color-primary-light-3: #639ac4;
+  --el-color-primary-light-5: #46789e;
+  --el-color-primary-light-7: #355c78;
+  --el-color-primary-light-8: #29475d;
+  --el-color-primary-light-9: #213847;
+  --el-color-primary-dark-2: #315f7e;
+
   // 功能色 info
-  --el-color-info: #7d8590;
-  --el-color-info-light-3: #6e7681;
-  --el-color-info-light-5: #5d656d;
-  --el-color-info-light-7: #4c5359;
-  --el-color-info-light-8: #3d444d;
-  --el-color-info-light-9: #2d333b;
-  --el-color-info-dark-2: #9da4ae;
+  --el-color-info: #94adc1;
+  --el-color-info-light-3: #849caf;
+  --el-color-info-light-5: #536b7e;
+  --el-color-info-light-7: #3e566a;
+  --el-color-info-light-8: #344c5e;
+  --el-color-info-light-9: #243845;
+  --el-color-info-dark-2: #b5cadd;
 
   // 阴影
-  --el-box-shadow: 0px 12px 32px 4px rgb(1 4 9 / 36%), 0px 8px 20px rgb(1 4 9 / 72%);
-  --el-box-shadow-light: 0px 0px 12px rgb(1 4 9 / 72%);
-  --el-box-shadow-lighter: 0px 0px 6px rgb(1 4 9 / 72%);
-  --el-box-shadow-dark: 0px 16px 48px 16px rgb(1 4 9 / 72%), 0px 12px 32px rgb(1 4 9 / 72%),
-    0px 8px 16px -8px rgb(1 4 9 / 72%);
+  --el-box-shadow: 0px 12px 32px 4px rgb(7 16 24 / 24%), 0px 8px 20px rgb(7 16 24 / 32%);
+  --el-box-shadow-light: 0px 0px 12px rgb(7 16 24 / 32%);
+  --el-box-shadow-lighter: 0px 0px 6px rgb(7 16 24 / 32%);
+  --el-box-shadow-dark: 0px 16px 48px 16px rgb(7 16 24 / 32%), 0px 12px 32px rgb(7 16 24 / 32%),
+    0px 8px 16px -8px rgb(7 16 24 / 32%);
 
   // 背景色
-  --el-bg-color-page: #0d1117;
-  --el-bg-color: #212830;
-  --el-bg-color-overlay: #262c36;
+  --el-bg-color-page: #20303c;
+  --el-bg-color: #17252f;
+  --el-bg-color-overlay: #1d2f3c;
 
   // 文字色
-  --el-text-color-primary: #d1d7e0;
-  --el-text-color-regular: #b7bcc4;
-  --el-text-color-secondary: #9198a1;
-  --el-text-color-placeholder: #656c76;
-  --el-text-color-disabled: #484f58;
+  --el-text-color-primary: #d4e2ed;
+  --el-text-color-regular: #b5cde2;
+  --el-text-color-secondary: #95aec2;
+  --el-text-color-placeholder: #748c9f;
+  --el-text-color-disabled: #52697b;
 
   // 边框色
-  --el-border-color-darker: #6e7681;
-  --el-border-color-dark: #484f58;
-  --el-border-color: #3d444d;
-  --el-border-color-light: #394049;
-  --el-border-color-lighter: #30363d;
-  --el-border-color-extra-light: #161b22;
+  --el-border-color-darker: #849caf;
+  --el-border-color-dark: #52697b;
+  --el-border-color: #344c5e;
+  --el-border-color-light: #2c4150;
+  --el-border-color-lighter: #263b49;
+  --el-border-color-extra-light: #14212b;
 
   // 填充色
-  --el-fill-color-darker: #363b41;
-  --el-fill-color-dark: #2d3238;
-  --el-fill-color: #262c36;
-  --el-fill-color-light: #1e2328;
-  --el-fill-color-lighter: #161b22;
-  --el-fill-color-extra-light: #0d1117;
+  --el-fill-color-darker: #354c5e;
+  --el-fill-color-dark: #2b4051;
+  --el-fill-color: #1d2f3c;
+  --el-fill-color-light: #1b2c38;
+  --el-fill-color-lighter: #14212b;
+  --el-fill-color-extra-light: #20303c;
 
   // 遮罩
   --el-mask-color: rgb(1 4 9 / 80%);
   --el-mask-color-extra-light: rgb(1 4 9 / 30%);
 
   // 其他
+  --gzkp-node-bg-color: #2b4051;
+  --gzkp-topic-hover-bg-color: #1e313f;
+  --gzkp-cm-selected-bg-color: #355c78;
   --gzkp-topic-tag-bg-color: var(--el-fill-color-darker);
-  --gzkp-reply-count-bg-color: #4c5359;
-  --gzkp-reply-count-visited-bg-color: #757b83;
+  --gzkp-reply-count-bg-color: #3e5160;
+  --gzkp-reply-count-visited-bg-color: #708598;
+
+  // 页面与卡片分层，仅应用于此主题。
+  &,
+  body {
+    background: var(--el-bg-color-page);
+  }
+
+  .btn-primary,
+  .dropdown.open > .dropdown-toggle.btn-primary,
+  .sidebar-left .nav.nav-pills > li.active > a,
+  .nav.nav-pills.gzk-home-tabs > li.active > a,
+  .pagination > li.active a {
+    background-color: var(--el-color-primary-dark-2);
+    border-color: var(--el-color-primary-light-5);
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--el-color-primary-light-7);
+      border-color: var(--el-color-primary);
+    }
+  }
 
   // 组件相关
   .el-empty {
@@ -117,12 +161,15 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
   .cherry-markdown.theme__github,
   .topic-detail .ui-content,
   .topic-reply .ui-content {
-    --color-canvas-subtle: #161b22;
+    --color-canvas-subtle: #14212b;
   }
 }
 
 // Light Solarized Theme (Solarized Light inspired)
 html[data-gzkp-theme='light-solarized'] {
+  --gzkp-search-border-color-hover: var(--el-border-color-dark);
+  --gzkp-scrollbar-thumb-color: #b5b0a4;
+
   // 主题色 - Solarized yellow
   --el-color-primary: #b58900;
   --el-color-primary-light-3: #c9a01a;
@@ -256,6 +303,8 @@ html[data-gzkp-theme='light-solarized'] {
 
 // Light Tokyo Night Theme (Tokyo Night Light inspired)
 html[data-gzkp-theme='light-tokyo-night'] {
+  --gzkp-scrollbar-thumb-color: #838798;
+
   // 主题色 - Tokyo Night blue
   --el-color-primary: #2959aa;
   --el-color-primary-light-3: #5885c9;

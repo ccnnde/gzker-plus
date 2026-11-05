@@ -42,6 +42,9 @@
   $corner-color: transparent,
   $border-radius: var(--el-border-radius-base)
 ) {
+  // 保留组件的 WebKit 滚动条样式，避免继承页面的 scrollbar-color。
+  scrollbar-color: auto;
+
   @supports (-moz-appearance: auto) {
     scrollbar-width: thin;
     scrollbar-color: $thumb-color $track-color;
