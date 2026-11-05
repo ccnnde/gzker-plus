@@ -142,18 +142,32 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
     }
   }
 
+  .el-button--primary:not(.is-plain) {
+    --el-button-text-color: var(--el-color-white);
+    --el-button-bg-color: var(--el-color-primary-dark-2);
+    --el-button-border-color: var(--el-color-primary-light-5);
+    --el-button-hover-text-color: var(--el-color-white);
+    --el-button-hover-bg-color: var(--el-color-primary-light-7);
+    --el-button-hover-border-color: var(--el-color-primary);
+    --el-button-active-bg-color: var(--el-color-primary-light-8);
+    --el-button-active-border-color: var(--el-color-primary-light-5);
+    --el-button-disabled-text-color: var(--el-text-color-placeholder);
+    --el-button-disabled-bg-color: var(--el-color-primary-light-9);
+    --el-button-disabled-border-color: var(--el-border-color-light);
+  }
+
   // 组件相关
   .el-empty {
     --el-empty-fill-color-0: var(--el-color-black);
-    --el-empty-fill-color-1: #3d434d;
-    --el-empty-fill-color-2: #2d333b;
-    --el-empty-fill-color-3: #21262d;
-    --el-empty-fill-color-4: #262c36;
-    --el-empty-fill-color-5: #1e2328;
-    --el-empty-fill-color-6: #1f2428;
-    --el-empty-fill-color-7: #1a1e22;
-    --el-empty-fill-color-8: #1a1e22;
-    --el-empty-fill-color-9: #161b1f;
+    --el-empty-fill-color-1: #344c5e;
+    --el-empty-fill-color-2: #243845;
+    --el-empty-fill-color-3: #1c2d39;
+    --el-empty-fill-color-4: #1d2f3c;
+    --el-empty-fill-color-5: #1b2c38;
+    --el-empty-fill-color-6: #192a36;
+    --el-empty-fill-color-7: #172630;
+    --el-empty-fill-color-8: #172630;
+    --el-empty-fill-color-9: #14212b;
   }
 
   // Markdown 相关
