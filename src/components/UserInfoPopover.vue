@@ -324,7 +324,7 @@ const handleUserBlock = (event: MouseEvent) => {
 .user-basic-info-icon {
   margin-right: 3px;
   font-size: 15px;
-  color: #8d8f92;
+  color: var(--el-text-color-secondary);
 }
 
 .user-basic-info-text {

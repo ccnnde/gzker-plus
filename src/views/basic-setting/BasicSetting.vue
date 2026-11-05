@@ -232,6 +232,7 @@ onMounted(() => {
   margin-bottom: 8px;
   font-size: 1.5em;
   font-weight: bold;
+  color: var(--el-text-color-primary);
 
   &::before {
     position: absolute;
@@ -260,6 +261,7 @@ onMounted(() => {
 .setting-item-title {
   font-size: 1.2em;
   font-weight: 500;
+  color: var(--el-text-color-primary);
 }
 
 .setting-item-description,
@@ -272,7 +274,7 @@ onMounted(() => {
   font-size: 1em;
   font-weight: normal;
   line-height: 20px;
-  color: #777;
+  color: var(--el-text-color-regular);
 }
 
 .setting-item-description-check {
