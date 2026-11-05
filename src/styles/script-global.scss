@@ -372,8 +372,12 @@ html[data-gzkp-theme] {
   .emoji-mart {
     background: transparent;
 
-    .emoji-mart-anchor:hover {
-      color: var(--el-text-color-primary);
+    .emoji-mart-anchor {
+      color: var(--el-text-color-secondary);
+
+      &:hover {
+        color: var(--el-text-color-primary);
+      }
     }
 
     .emoji-mart-category-label h3 {
@@ -394,7 +398,8 @@ html[data-gzkp-theme] {
       color: var(--el-text-color-primary);
     }
 
-    .emoji-mart-preview-shortname {
+    .emoji-mart-preview-shortname,
+    .emoji-mart-title-label {
       color: var(--el-text-color-secondary);
     }
   }
