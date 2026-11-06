@@ -108,29 +108,8 @@ const getForumUrl = (href: string | null) => {
   }
 };
 
-const getMemberNo = (userDocument: Document, profileText: string) => {
-  const memberNo = profileText.match(/过早客第\s*(\d+)\s*号成员/)?.[1];
-
-  if (memberNo) {
-    return memberNo;
-  }
-
-  const memberNumbers = new Set<string>();
-
-  for (const link of userDocument.links) {
-    const url = getForumUrl(link.getAttribute('href'));
-    const actionMemberNo = url?.pathname.match(/^\/u\/(\d+)\/(?:block|unblock)$/)?.[1];
-
-    if (actionMemberNo) {
-      memberNumbers.add(actionMemberNo);
-    }
-  }
-
-  return memberNumbers.size === 1 ? Array.from(memberNumbers)[0] : undefined;
-};
-
-const getProfileField = (parent: ParentNode, label: string): string | undefined => {
-  const fieldLabel = Array.from(parent.querySelectorAll('dt')).find((element) => {
+const getProfileField = (parent: ParentNode | null, label: string): string | undefined => {
+  const fieldLabel = Array.from(parent?.querySelectorAll('dt') || []).find((element) => {
     return element.textContent?.trim().toUpperCase() === label.toUpperCase();
   });
   const fieldValue = fieldLabel?.nextElementSibling;
@@ -142,46 +121,14 @@ const getProfileField = (parent: ParentNode, label: string): string | undefined 
   return fieldValue.textContent?.trim() || undefined;
 };
 
-const getProfileUserId = (userDocument: Document, profileElement: Element | null) => {
-  const uid = getElementText(profileElement, '.username');
+const parseProfileStatistic = (statistics: Element | null, selector: string) => {
+  const value = statistics?.querySelector(selector);
 
-  if (uid) {
-    return uid;
-  }
-
-  return getProfileField(profileElement || userDocument, 'ID');
-};
-
-const isUserFollowed = (userDocument: Document, uid: string) => {
-  const followPath = `/f/user/${uid}`;
-
-  for (const link of userDocument.links) {
-    const url = getForumUrl(link.getAttribute('href'));
-
-    if (url?.pathname === followPath && link.textContent?.replace(/\s+/g, '') === '取消关注') {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const isUserBlocked = (userDocument: Document, memberNo: string | undefined) => {
-  if (!memberNo) {
-    return false;
-  }
-
-  const unblockPath = `/u/${memberNo}/unblock`;
-
-  for (const link of userDocument.links) {
-    const url = getForumUrl(link.getAttribute('href'));
-
-    if (url?.pathname === unblockPath) {
-      return true;
-    }
-  }
-
-  return false;
+  return {
+    count: value?.textContent?.trim() || undefined,
+    publicList: Boolean(value?.querySelector('a[href]')),
+    title: value?.querySelector('[title]')?.getAttribute('title') || undefined,
+  };
 };
 
 const getMessageTitleParts = (element: Element | null): MetadataLink[] => {
@@ -235,50 +182,57 @@ const getMessageReplyType = (noticeKind: string | undefined, title: string): Rep
 
 export const parseUserInfo = (htmlStr: string): UserInfo => {
   const userDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
-  const profileElement = userDocument.querySelector('.user-page .profile, .profile.container-box');
-  const statisticsElement = userDocument.querySelector('.user-page .usercard');
-  const profileText = profileElement?.textContent || userDocument.body.textContent || '';
-  const uid = getProfileUserId(userDocument, profileElement);
-  const memberNo = getMemberNo(userDocument, profileText);
-  const checkInTime = profileText.match(/入住于\s*(\d{4}-\d{2}-\d{2})/)?.[1];
-  const creditLevelElement = profileElement?.querySelector(SELECTOR_CREDIT_LEVEL);
-  const creditTitle = creditLevelElement?.getAttribute('title');
-  const genderElement = profileElement?.querySelector('.gzk-profile-gender');
+  const profile = userDocument.querySelector('.user-page > .profile');
 
-  if (!uid || (!memberNo && !checkInTime)) {
+  if (!profile) {
     throw new Error(t('floatUserInfo.parseFailed'));
   }
 
+  const details = profile.querySelector(':scope > .ui-content');
+  const uid = getProfileField(details, 'ID');
+  const memberNo = getElementText(profile, '.user-number > .number')?.match(/过早客第\s*(\d+)\s*号成员/)?.[1];
+  const checkInTime = getElementText(profile, '.user-number > .since')?.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+
+  if (!uid || !memberNo) {
+    throw new Error(t('floatUserInfo.parseFailed'));
+  }
+
+  const identity = profile.querySelector('.gzk-profile-identity');
+  const displayName = identity?.querySelector<HTMLAnchorElement>('.gzk-card-display > .gzk-display-name');
+  const statistics = userDocument.querySelector('.sidebar-right .user-page > .usercard > .ui-content');
+  const topics = parseProfileStatistic(statistics, '.status-topic > strong');
+  const replies = parseProfileStatistic(statistics, '.status-reply > strong');
+  const favorites = parseProfileStatistic(statistics, '.status-favorite > strong');
+  const followText = getElementText(profile, '.gzk-profile-follow > a');
+  const unblockLink = userDocument.querySelector(
+    `.sidebar-right .user-page > .self-introduction a[href="/u/${memberNo}/unblock"]`,
+  );
+
   return {
     uid,
-    nickname: getProfileField(profileElement || userDocument, '昵称'),
-    online: profileElement ? Boolean(profileElement.querySelector('.gzk-online')) : undefined,
-    gender:
-      genderElement?.getAttribute('aria-label')?.trim() || genderElement?.getAttribute('title')?.trim() || undefined,
-    generation: getElementText(profileElement, '.gzk-profile-generation'),
-    signature: getElementText(profileElement, '.gzk-card-signature'),
-    email: getProfileField(profileElement || userDocument, 'Email'),
-    directMessageLink: parseMetadataLink(profileElement?.querySelector(SELECTOR_PROFILE_DIRECT_MESSAGE_LINK)),
-    creditLevel: parseMetadataLink(creditLevelElement),
-    avatarUrl: profileElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
+    nickname: displayName?.dataset.displayName?.trim() || undefined,
+    online: Boolean(identity?.querySelector('.gzk-online')),
+    gender: identity?.querySelector('.gzk-profile-gender')?.getAttribute('aria-label')?.trim() || undefined,
+    generation: getElementText(identity, '.gzk-profile-generation'),
+    signature: getElementText(profile, '.gzk-card-signature'),
+    email: getProfileField(details, 'Email'),
+    directMessageLink: parseMetadataLink(profile.querySelector(SELECTOR_PROFILE_DIRECT_MESSAGE_LINK)),
+    creditLevel: parseMetadataLink(identity?.querySelector(SELECTOR_CREDIT_LEVEL)),
+    avatarUrl: profile.querySelector('.gzk-profile-avatar > img')?.getAttribute('src') || undefined,
     memberNo,
     checkInTime,
-    topicNumber: getElementText(statisticsElement, '.status-topic strong'),
-    replyNumber: getElementText(statisticsElement, '.status-reply strong'),
-    favoriteNumber: getElementText(statisticsElement, '.status-favorite strong'),
-    topicListPublic: Boolean(statisticsElement?.querySelector('.status-topic strong a[href]')),
-    replyListPublic: Boolean(statisticsElement?.querySelector('.status-reply strong a[href]')),
-    favoriteListPublic: Boolean(statisticsElement?.querySelector('.status-favorite strong a[href]')),
-    topicListTitle:
-      statisticsElement?.querySelector('.status-topic strong [title]')?.getAttribute('title') || undefined,
-    replyListTitle:
-      statisticsElement?.querySelector('.status-reply strong [title]')?.getAttribute('title') || undefined,
-    favoriteListTitle:
-      statisticsElement?.querySelector('.status-favorite strong [title]')?.getAttribute('title') || undefined,
-    creditValue:
-      getElementText(statisticsElement, '.status-reputation strong') || creditTitle?.match(/信用\s*(\d+)/)?.[1],
-    followed: isUserFollowed(userDocument, uid),
-    blocked: isUserBlocked(userDocument, memberNo),
+    topicNumber: topics.count,
+    replyNumber: replies.count,
+    favoriteNumber: favorites.count,
+    topicListPublic: topics.publicList,
+    replyListPublic: replies.publicList,
+    favoriteListPublic: favorites.publicList,
+    topicListTitle: topics.title,
+    replyListTitle: replies.title,
+    favoriteListTitle: favorites.title,
+    creditValue: getElementText(statistics, '.status-reputation > strong'),
+    followed: followText?.replace(/\s+/g, '') === '取消关注',
+    blocked: Boolean(unblockLink),
   };
 };
 
