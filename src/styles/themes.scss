@@ -46,6 +46,15 @@ html[data-gzkp-theme^='light'] {
   --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-light.webp');
 }
 
+html.gzkp-dark[data-gzkp-theme='dark-default'],
+html.gzkp-dark[data-gzkp-theme='dark-soft'],
+html[data-gzkp-theme='light-solarized'] {
+  .el-select-dropdown__item.is-hovering:not(.is-disabled),
+  .el-dropdown-menu__item:not(.is-disabled):where(:hover, :focus) {
+    background-color: var(--gzkp-dropdown-item-hover-bg-color, var(--el-fill-color-dark));
+  }
+}
+
 html[data-gzkp-theme='dark-default'] {
   --gzkp-scrollbar-thumb-color: #5e6269;
 }
@@ -117,6 +126,7 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
   --el-mask-color-extra-light: rgb(1 4 9 / 30%);
 
   // 其他
+  --gzkp-dropdown-item-hover-bg-color: var(--el-color-primary-light-8);
   --gzkp-node-bg-color: #2b4051;
   --gzkp-topic-hover-bg-color: #1e313f;
   --gzkp-cm-selected-bg-color: #355c78;
@@ -282,6 +292,7 @@ html[data-gzkp-theme='light-solarized'] {
   --el-mask-color-extra-light: rgb(7 54 66 / 20%);
 
   // 其他
+  --gzkp-dropdown-item-hover-bg-color: #e5e0d0;
   --gzkp-reply-count-bg-color: #bcc7c9;
   --gzkp-reply-count-visited-bg-color: #e2e3eb;
 
