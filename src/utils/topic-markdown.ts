@@ -126,7 +126,7 @@ const formatTopicMetadata = ({ topic, topicId, date, labels }: FormatTopicMetada
 const formatReplyHeader = (reply: UserReplyItem, authorId: string | undefined, labels: TopicMarkdownLabels): string => {
   const replyNumber = getReplyNumber(reply);
   const floor = Number.isFinite(replyNumber) ? `#${replyNumber}` : '#?';
-  const userName = reply.uid || '';
+  const userName = reply.displayName || reply.uid || '';
   const userLink = toAbsoluteUrl(reply.userLink);
   const markers: string[] = [];
 

@@ -16,6 +16,7 @@ const MENTION_LINK_TEXT_REGEXP = /^@([a-z][a-z0-9_]{2,13})$/i;
 const PLAIN_TEXT_MENTION_REGEXP = /(?:^|[^a-z0-9_])@([a-z][a-z0-9_]{2,13})(?![a-z0-9_])(?:\s+#(\d+))?/gi;
 const TRAILING_URL_PUNCTUATION_REGEXP = /[.,!?;:，。！？；：]+$/u;
 const USER_LINK_REGEXP = /^\/u\/([a-z][a-z0-9_]{2,13})\/?(?:[?#].*)?$/i;
+const NUMERIC_MENTION_LINK_REGEXP = /^\/u\/(\d+)(?:\?reply=(\d+))?$/;
 const URL_BRACKET_PAIRS = [
   ['(', ')'],
   ['[', ']'],
@@ -205,17 +206,36 @@ const replaceTextNodeLinks = (textNode: Text) => {
   textNode.replaceWith(fragment);
 };
 
-const getMentionCandidateUid = (mentionElement: HTMLAnchorElement): string | undefined => {
+const parseMentionLink = (mentionElement: HTMLAnchorElement): UserReplyMention | undefined => {
   const userLink = mentionElement.getAttribute('href') || '';
-  const linkedUid = userLink.match(USER_LINK_REGEXP)?.[1];
+  const numericLink = userLink.match(NUMERIC_MENTION_LINK_REGEXP);
   const mentionText = mentionElement.textContent?.trim() || '';
+
+  if (numericLink?.[1] && mentionElement.classList.contains('gzk-content-mention') && mentionText.startsWith('@')) {
+    return { userId: numericLink[1], replyId: numericLink[2] };
+  }
+
+  const uid = userLink.match(USER_LINK_REGEXP)?.[1];
   const textUid = mentionText.match(MENTION_LINK_TEXT_REGEXP)?.[1];
 
-  if (!linkedUid || !textUid || linkedUid !== textUid) {
+  if (!uid || uid !== textUid) {
     return undefined;
   }
 
-  return linkedUid;
+  const nextSiblingText = mentionElement.nextSibling?.textContent || '';
+  const floor = nextSiblingText.match(FLOOR_TEXT_REGEXP)?.[1];
+  return { uid, floor };
+};
+
+const getReplyMention = (mentionElement: HTMLAnchorElement): UserReplyMention | undefined => {
+  if (
+    !mentionElement.matches(SELECTOR_USER_MENTION_LINK) ||
+    mentionElement.closest(EXCLUDED_MENTION_CONTAINER_SELECTOR)
+  ) {
+    return undefined;
+  }
+
+  return parseMentionLink(mentionElement);
 };
 
 const renderBareImageLink = (element: HTMLAnchorElement, href: string) => {
@@ -239,7 +259,7 @@ const normalizeExistingReplyLinks = (container: DocumentFragment) => {
 
   anchorElements.forEach((element) => {
     const href = element.getAttribute('href') || '';
-    const isMentionLink = Boolean(getMentionCandidateUid(element));
+    const isMentionLink = Boolean(parseMentionLink(element));
     const isHttpLink = HTTP_LINK_PREFIX_REGEXP.test(href);
 
     if (isMentionLink || isHttpLink) {
@@ -269,21 +289,6 @@ const getLinkifiableTextNodes = (container: DocumentFragment): Text[] => {
   }
 
   return textNodes;
-};
-
-const getReplyMentionFloor = (mentionElement: HTMLAnchorElement): string | undefined => {
-  const nextSiblingText = mentionElement.nextSibling?.textContent || '';
-  return nextSiblingText.match(FLOOR_TEXT_REGEXP)?.[1];
-};
-
-const getReplyMentionUid = (mentionElement: HTMLAnchorElement): string | undefined => {
-  const excludedContainer = mentionElement.closest(EXCLUDED_MENTION_CONTAINER_SELECTOR);
-
-  if (!mentionElement.matches(SELECTOR_USER_MENTION_LINK) || excludedContainer) {
-    return undefined;
-  }
-
-  return getMentionCandidateUid(mentionElement);
 };
 
 const parsePlainTextMentions = (content: string): UserReplyMention[] => {
@@ -318,13 +323,10 @@ const appendReplyMentions = (node: Node, mentions: UserReplyMention[]) => {
 
     if (element.tagName === 'A') {
       const anchorElement = element as HTMLAnchorElement;
-      const uid = getReplyMentionUid(anchorElement);
+      const mention = getReplyMention(anchorElement);
 
-      if (uid) {
-        mentions.push({
-          uid,
-          floor: getReplyMentionFloor(anchorElement),
-        });
+      if (mention) {
+        mentions.push(mention);
       }
 
       return;
@@ -366,4 +368,4 @@ export const parseReplyMentions = (content?: string): UserReplyMention[] => {
   return mentions;
 };
 
-export { getReplyMentionFloor, getReplyMentionUid };
+export { getReplyMention };

@@ -6,6 +6,7 @@ import { debounce } from 'lodash-es';
 import { useScrollbar } from '@/composables/scrollbar';
 import { getReplyKey } from '@/utils';
 import { viewerOptions, vViewer } from '@/utils/img-viewer';
+import { getReplyMention } from '@/utils/reply-content';
 import { REPLY_HOVER_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import MentionReplyItem from './MentionReplyItem.vue';
@@ -30,10 +31,16 @@ const replyHover = inject(REPLY_HOVER_INJECTION_KEY);
 const visible = ref(false);
 const positionReady = ref(false);
 const referenceElement = ref<HTMLAnchorElement>();
-const mentionUid = computed(() => {
-  const mentionText = referenceElement.value?.textContent?.trim() || '';
+const mentionName = computed(() => {
+  const anchor = referenceElement.value;
+  const name = (anchor?.textContent?.trim() || '').replace(/^@/, '');
+  const mention = anchor && getReplyMention(anchor);
 
-  return mentionText.replace(/^@/, '');
+  if (mention && 'userId' in mention && mention.replyId) {
+    return name.replace(/\s+#\d+$/, '');
+  }
+
+  return name;
 });
 const mentionRepliesContainer = ref<HTMLDivElement | null>(null);
 const mentionReplies = ref<UserReplyItem[]>([]);
@@ -451,7 +458,7 @@ defineExpose({
     >
       <div class="gzkp-mention-replies-popover-header">
         <span class="gzkp-mention-replies-popover-title">
-          {{ $t('enhancedTopic.mentionRepliesTitle', { uid: mentionUid }) }}
+          {{ $t('enhancedTopic.mentionRepliesTitle', { uid: mentionName }) }}
         </span>
       </div>
       <ElScrollbar ref="scrollbar" max-height="min(40vh, 360px)">

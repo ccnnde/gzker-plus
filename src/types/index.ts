@@ -282,6 +282,8 @@ export interface UserTopicReply {
 
 export interface UserReplyItem {
   uid?: string;
+  userId?: string;
+  displayName?: string;
   userLink?: string;
   directMessageLink?: MetadataLink;
   avatarUrl?: string;
@@ -300,8 +302,7 @@ export interface UserReplyItem {
 export interface MentionRepliesTarget {
   replyId?: string;
   replyNo?: string;
-  mentionFloor?: string;
-  mentionUid: string;
+  mention: UserReplyMention;
   referenceElement: HTMLAnchorElement;
 }
 
@@ -310,15 +311,17 @@ export interface MentionRepliesController {
   show: (target: MentionRepliesTarget) => void;
 }
 
+export interface MentionRepliesResult {
+  replies: UserReplyItem[];
+  focusReplyNo?: string;
+}
+
 export interface ReplyHoverController {
   disabled: Readonly<Ref<boolean>>;
   suppress: () => void;
 }
 
-export interface UserReplyMention {
-  uid: string;
-  floor?: string;
-}
+export type UserReplyMention = { uid: string; floor?: string } | { userId: string; replyId?: string };
 
 export interface UserReplyTreeNode {
   reply: UserReplyItem;

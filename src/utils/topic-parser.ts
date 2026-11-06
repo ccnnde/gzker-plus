@@ -1,5 +1,10 @@
 import { parseMetadataLink } from '@/utils';
-import { SELECTOR_CREDIT_LEVEL, SELECTOR_TOPIC_DIRECT_MESSAGE_LINK, SELECTOR_USER_LINK } from '@/constants/selector';
+import {
+  SELECTOR_CREDIT_LEVEL,
+  SELECTOR_TOPIC_DIRECT_MESSAGE_LINK,
+  SELECTOR_USER_DISPLAY_NAME,
+  SELECTOR_USER_LINK,
+} from '@/constants/selector';
 
 import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
@@ -14,8 +19,14 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
   const avatarElement = headerElement?.querySelector<HTMLAnchorElement>(`:scope > ${SELECTOR_USER_LINK}`);
   const usernameElement = metaElement?.querySelector(':scope > .username');
   const authorElement = usernameElement?.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK) || avatarElement;
-  const authorLink = authorElement?.getAttribute('href') || undefined;
-  const lastReplyElement = metaElement?.querySelector(':scope > .last-reply-username');
+  const visibleIdentity = metaElement?.querySelector(':scope > .gzk-visible-identity');
+  const displayNameElement = visibleIdentity?.querySelector<HTMLAnchorElement>(SELECTOR_USER_DISPLAY_NAME);
+  const authorId =
+    displayNameElement?.dataset.username?.trim() || getUserId(authorElement?.getAttribute('href') || undefined);
+  const authorLink = displayNameElement?.getAttribute('href') || authorElement?.getAttribute('href') || undefined;
+  const lastReplyElement =
+    metaElement?.querySelector(':scope > .gzk-last-reply-name') ||
+    metaElement?.querySelector(':scope > .last-reply-username');
   const lastReplyAnchor = lastReplyElement?.querySelector(SELECTOR_USER_LINK);
   const lastReplyText = lastReplyElement?.textContent || '';
   const lastReplyName = lastReplyAnchor?.textContent || '';
@@ -36,13 +47,15 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
 
   return {
     title: headerElement?.querySelector('.title')?.innerHTML,
-    authorId: getUserId(authorLink),
+    authorId,
     authorLink,
     avatarUrl: avatarElement?.querySelector<HTMLImageElement>('img.avatar')?.getAttribute('src') || undefined,
     meta: {
       node: parseMetadataLink(metaElement?.querySelector(':scope > .node > a')),
-      authorName: authorElement?.textContent?.trim() || getUserId(authorLink),
-      authorLevel: parseMetadataLink(usernameElement?.querySelector(SELECTOR_CREDIT_LEVEL)),
+      authorName: displayNameElement?.dataset.displayName?.trim() || authorElement?.textContent?.trim() || authorId,
+      authorLevel: parseMetadataLink(
+        visibleIdentity?.querySelector(SELECTOR_CREDIT_LEVEL) || usernameElement?.querySelector(SELECTOR_CREDIT_LEVEL),
+      ),
       directMessageLink: parseMetadataLink(
         metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`),
       ),
@@ -82,6 +95,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   const authorElement =
     metaElement?.querySelector<HTMLAnchorElement>(':scope > a.reply-username') ||
     item.querySelector<HTMLAnchorElement>(`:scope > ${SELECTOR_USER_LINK}`);
+  const displayNameElement = metaElement?.querySelector<HTMLAnchorElement>(`:scope > ${SELECTOR_USER_DISPLAY_NAME}`);
   const authorLink = authorElement?.getAttribute('href') || undefined;
   const voteElement = metaElement?.querySelector<HTMLAnchorElement>('.J_replyVote');
   const timeElements = Array.from(metaElement?.querySelectorAll<HTMLElement>(':scope > span.time') || []);
@@ -100,8 +114,10 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   const isAdministrator = hasAdministratorIcon || hasTimeLabel('管理员');
 
   return {
-    uid: getUserId(authorLink),
-    userLink: authorLink,
+    uid: displayNameElement?.dataset.username?.trim() || getUserId(authorLink),
+    userId: displayNameElement?.dataset.gzkMentionUser,
+    displayName: displayNameElement?.dataset.displayName?.trim() || undefined,
+    userLink: displayNameElement?.getAttribute('href') || authorLink,
     directMessageLink: parseMetadataLink(metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`)),
     avatarUrl: item.querySelector<HTMLImageElement>(':scope > a > img.avatar')?.getAttribute('src') || undefined,
     isOriginalPoster,

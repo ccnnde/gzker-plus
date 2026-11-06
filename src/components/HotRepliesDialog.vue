@@ -7,6 +7,7 @@ import { useDialog } from '@/composables/dialog';
 import { useScrollbar } from '@/composables/scrollbar';
 import { getReplyKey, handleReplyLike } from '@/utils';
 import { handleDialogBeforeClose, viewerOptions, vViewer } from '@/utils/img-viewer';
+import { getMentionedUserReplies } from '@/utils/reply-tree';
 import { MENTION_REPLIES_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import MentionRepliesPopover from './MentionRepliesPopover.vue';
@@ -14,11 +15,6 @@ import ReplyItem from './ReplyItem.vue';
 import TopicUserInfoPopover from './TopicUserInfoPopover.vue';
 
 import type { MentionRepliesController, MentionRepliesTarget, UserReplyItem } from '@/types';
-
-interface MentionRepliesResult {
-  replies: UserReplyItem[];
-  focusReplyNo?: string;
-}
 
 const { dialogVisible, openDialog, closeDialog } = useDialog();
 const { scrollbar, scrollToTop } = useScrollbar();
@@ -46,28 +42,12 @@ const getSortedHotReplies = (replies: UserReplyItem[]): UserReplyItem[] => {
     });
 };
 
-const getMentionedUserReplies = (target: MentionRepliesTarget): MentionRepliesResult => {
-  const currentReplyNo = Number(target.replyNo);
-  const replies = replySnapshot.value
-    .filter((item) => Number(item.replyNo) < currentReplyNo && item.uid === target.mentionUid)
-    .sort((a, b) => normalizeSortableNumber(a.replyNo) - normalizeSortableNumber(b.replyNo));
-  const explicitReply = target.mentionFloor
-    ? replies.find(({ replyNo }) => replyNo === target.mentionFloor)
-    : undefined;
-  const focusReply = explicitReply || replies[replies.length - 1];
-
-  return {
-    replies,
-    focusReplyNo: focusReply?.replyNo,
-  };
-};
-
 const mentionRepliesController: MentionRepliesController = {
   hide: (referenceElement: HTMLAnchorElement) => {
     mentionRepliesPopover.value?.hide(referenceElement);
   },
   show: (target: MentionRepliesTarget) => {
-    const { replies, focusReplyNo } = getMentionedUserReplies(target);
+    const { replies, focusReplyNo } = getMentionedUserReplies(replySnapshot.value, target);
     mentionRepliesPopover.value?.show(target.referenceElement, replies, focusReplyNo);
   },
 };

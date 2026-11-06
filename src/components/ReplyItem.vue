@@ -6,7 +6,7 @@ import { useRequest } from '@/composables/request';
 import { vImgLoad } from '@/directives';
 import { getEditedReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
-import { getReplyMentionFloor, getReplyMentionUid, linkifyContent } from '@/utils/reply-content';
+import { getReplyMention, linkifyContent } from '@/utils/reply-content';
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
@@ -85,17 +85,16 @@ const handleMentionEnter = (event: MouseEvent | FocusEvent) => {
     return;
   }
 
-  const mentionUid = getReplyMentionUid(mentionAnchor);
+  const mention = getReplyMention(mentionAnchor);
 
-  if (!mentionUid) {
+  if (!mention) {
     return;
   }
 
   mentionReplies?.show({
     replyId: props.replyId,
     replyNo: props.replyNo,
-    mentionFloor: getReplyMentionFloor(mentionAnchor),
-    mentionUid,
+    mention,
     referenceElement: mentionAnchor,
   });
 };
@@ -168,7 +167,7 @@ const handleReplyEdit = () => {
             :href="userLink"
             target="_blank"
           >
-            {{ uid }}
+            {{ displayName || uid }}
           </a>
           <span v-if="isOriginalPoster" class="uno-relative">
             <ElTag class="uno-absolute" size="small" disable-transitions>

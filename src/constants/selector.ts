@@ -13,6 +13,8 @@ export const SELECTOR_TOPIC_REPLY_TOTAL = '.flat-reply-list-total, .nested-reply
  */
 export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 
+export const SELECTOR_USER_DISPLAY_NAME = 'a.gzk-display-name[href^="/u/"]';
+
 /**
  * 主题及回复中的私信链接元素
  */
