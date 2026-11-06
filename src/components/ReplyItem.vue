@@ -121,8 +121,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 const addReply = inject(ADD_REPLY_INJECTION_KEY);
 
 const handleUserReply = () => {
-  const content = `@${props.uid} #${props.replyNo} `;
-  addReply?.(content);
+  addReply?.(props);
 
   setTimeout(() => {
     if (replyItemEl.value) {

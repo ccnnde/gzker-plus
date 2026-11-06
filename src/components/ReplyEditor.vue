@@ -24,7 +24,7 @@ import MentionPicker from './MentionPicker.vue';
 import WeiboEmojiPicker from './WeiboEmojiPicker.vue';
 
 import type { CSSProperties } from 'vue';
-import type { EditHistoryItem, UserReplyItem, UserTopic } from '@/types';
+import type { EditHistoryItem, MentionUser, ReplyMentionBinding, UserReplyItem, UserTopic } from '@/types';
 
 interface Props {
   topicId?: string;
@@ -79,13 +79,28 @@ const editorFullscreenClass = computed(() => {
   return props.fullscreen ? 'gzkp-reply-editor-fullscreen' : 'gzkp-reply-editor-minscreen';
 });
 
-const uidList = computed(() => {
-  const replyUids = props.replyList.flatMap(({ uid }) => {
-    return uid && uid !== GZK_AI_AGENT_UID ? [uid] : [];
-  });
+const topicMentionUsers = computed(() => {
+  const users = new Map<string, MentionUser>();
+  users.set(GZK_AI_AGENT_UID, { uid: 0, username: GZK_AI_AGENT_UID, display_name: GZK_AI_AGENT_UID });
 
-  return [GZK_AI_AGENT_UID, ...new Set(replyUids)];
+  for (const { uid, userId, displayName, avatarUrl } of props.replyList) {
+    if (!uid || (users.has(uid) && !userId)) {
+      continue;
+    }
+
+    users.set(uid, { uid: Number(userId) || 0, username: uid, display_name: displayName || uid, avatar: avatarUrl });
+  }
+
+  return [...users.values()];
 });
+
+const pickMention = (username: string, user?: MentionUser) => {
+  if (isAddContent.value && user?.uid) {
+    contentEditor.value?.insertMention(`@${user.display_name}`, { uid: user.uid });
+  } else {
+    insertUid(username);
+  }
+};
 
 watch(
   () => props.fullscreen,
@@ -114,21 +129,30 @@ const closeEditor = () => {
   emit('closed');
 };
 
-const addReply = (content?: string) => {
+const addReply = (reply?: UserReplyItem) => {
   if (!isAddContent.value) {
     clearContent();
   }
 
   isAddContent.value = true;
 
-  if (!content) {
+  if (!reply) {
     return;
   }
 
-  setTimeout(() => {
-    const newLine = replyContent.value ? '\n' : '';
-    contentEditor.value?.appendValue(newLine + content);
-  }, 50);
+  const { displayName, uid, userId, replyId, replyNo } = reply;
+  const name = (userId && displayName) || uid;
+
+  if (!name) {
+    return;
+  }
+
+  const label = replyNo ? `@${name} #${replyNo}` : `@${name}`;
+  contentEditor.value?.insertMention(label, {
+    uid: Number(userId),
+    replyId: Number(replyId) || 0,
+    append: true,
+  });
 };
 
 const editReply = (reply: UserReplyItem) => {
@@ -136,10 +160,8 @@ const editReply = (reply: UserReplyItem) => {
   editedReplyId = reply.replyId as string;
   modifyHistoryId = '';
 
-  setTimeout(() => {
-    const content = convertWeiboImgToEmoji(reply.content as string);
-    contentEditor.value?.setValue(content);
-  }, 0);
+  const content = convertWeiboImgToEmoji(reply.content as string);
+  contentEditor.value?.setValue(content);
 
   setTimeout(() => {
     generateModifyHistoryId();
@@ -148,18 +170,46 @@ const editReply = (reply: UserReplyItem) => {
 
 const { isLoading, handleRequest } = useRequest();
 
+const prepareReply = (draft: string, mentions: ReplyMentionBinding[]) => {
+  const bindings: ReplyMentionBinding[] = [];
+  let content = '';
+  let draftOffset = 0;
+
+  for (const mention of mentions) {
+    const { start, end, label } = mention;
+
+    if (draft.slice(start, end) !== label) {
+      continue;
+    }
+
+    content += convertWeiboEmojiToImg(draft.slice(draftOffset, start));
+    const labelStart = content.length;
+    content += label;
+    bindings.push({ ...mention, start: labelStart, end: content.length });
+    draftOffset = end;
+  }
+
+  content += convertWeiboEmojiToImg(draft.slice(draftOffset));
+  return { content, bindings };
+};
+
 const sendReply = () => {
-  if (!replyContent.value) {
+  if (isLoading.value) {
+    return;
+  }
+
+  const draft = contentEditor.value?.getValue() ?? replyContent.value;
+
+  if (!draft) {
     ElMessage.error(t('enhancedTopic.replyContentCannotBeEmpty'));
     return;
   }
 
   handleRequest(async () => {
-    const content = convertWeiboEmojiToImg(replyContent.value);
-    let data;
-
     if (isAddContent.value) {
-      data = await createReply(props.topicId as string, content);
+      const mentions = contentEditor.value?.getMentionBindings() ?? [];
+      const { content, bindings } = prepareReply(draft, mentions);
+      const data = await createReply(props.topicId as string, content, bindings);
       createHistoryId = '';
       clearContent();
       ElMessage.success(t('enhancedTopic.replyContentIsUnderReview'));
@@ -170,13 +220,15 @@ const sendReply = () => {
 
       closeEditor();
       emit('sended', data);
-    } else {
-      data = await modifyReply(editedReplyId, content);
-      ElMessage.success(t('enhancedTopic.editReplySuccessful'));
-
-      closeEditor();
-      emit('modified', data, editedReplyId);
+      return;
     }
+
+    const content = convertWeiboEmojiToImg(draft);
+    const data = await modifyReply(editedReplyId, content);
+    ElMessage.success(t('enhancedTopic.editReplySuccessful'));
+
+    closeEditor();
+    emit('modified', data, editedReplyId);
   });
 };
 
@@ -270,8 +322,8 @@ defineExpose({
       <MentionPicker
         ref="mentionPicker"
         :style="mentionPickerStyle"
-        :uid-list="uidList"
-        @picked="insertUid"
+        :users="topicMentionUsers"
+        @picked="pickMention"
         @hide="contentEditor?.focusEditor"
       />
       <WeiboEmojiPicker

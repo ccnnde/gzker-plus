@@ -583,7 +583,7 @@ const handleTopicEditFullscreenChange = (fullscreen: boolean) => {
   isTopicEditorFullscreen.value = fullscreen;
 };
 
-const addReply = (content?: string) => {
+const addReply = (reply?: UserReplyItem) => {
   if (import.meta.env.PROD) {
     if (topicStatus.value?.unbindedPhone) {
       ElMessage.error(t('enhancedTopic.cannotReplyByInvalidUser'));
@@ -598,7 +598,7 @@ const addReply = (content?: string) => {
 
   hideTopicFooter();
   replyEditor.value?.openEditor();
-  replyEditor.value?.addReply(content);
+  replyEditor.value?.addReply(reply);
 };
 
 provide(ADD_REPLY_INJECTION_KEY, addReply);

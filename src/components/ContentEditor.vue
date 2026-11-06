@@ -43,6 +43,7 @@ import type {
   EditHistoryItem,
   ExtensionMessage,
   Keybindings,
+  ReplyMentionBinding,
 } from '@/types';
 
 import 'cherry-markdown/dist/cherry-markdown.css';
@@ -71,6 +72,12 @@ const emit = defineEmits<{
 let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
 let isEditorFirstRender = true;
+let mentionMarkers: {
+  marker: CodeMirror.TextMarker<CodeMirror.MarkerRange>;
+  uid: number;
+  replyId: number;
+  label: string;
+}[] = [];
 
 const isEditorFocused = ref(false);
 const mdEditorEl = ref<HTMLDivElement | undefined>(undefined);
@@ -205,6 +212,8 @@ const initCherryMarkdown = () => {
   cmEditor.on('focus', () => {
     isEditorFocused.value = true;
   });
+
+  cmEditor.on('change', pruneMentionMarkers);
 
   cmEditor.on('blur', () => {
     isEditorFocused.value = false;
@@ -576,6 +585,11 @@ const resetScrollbarPosition = () => {
 };
 
 const setValue = (content: string) => {
+  for (const { marker } of mentionMarkers) {
+    marker.clear();
+  }
+
+  mentionMarkers = [];
   cherryEditor?.setValue(content);
   resetScrollbarPosition();
 };
@@ -584,10 +598,83 @@ const insertValue = (content: string) => {
   cherryEditor?.insertValue(content);
 };
 
-const appendValue = (content: string) => {
-  const lastLineNumber = cmEditor?.lastLine() || 0;
-  const insertAnchor: CherryAnchor = [lastLineNumber + 1, 0];
-  cherryEditor?.insertValue(content, false, insertAnchor, false);
+const insertMention = (
+  label: string,
+  { uid, replyId = 0, append = false }: { uid: number; replyId?: number; append?: boolean },
+) => {
+  const editor = cmEditor;
+
+  if (!editor) {
+    return;
+  }
+
+  const draft = editor.getValue();
+  let start = editor.indexFromPos(editor.getCursor('from'));
+  let end = editor.indexFromPos(editor.getCursor('to'));
+  let prefix = '';
+
+  if (append) {
+    start = draft.length;
+    end = start;
+    prefix = draft && !draft.endsWith('\n') ? '\n' : '';
+  } else if (draft[start - 1] === '@') {
+    start--;
+  }
+
+  const labelStart = start + prefix.length;
+  const labelEnd = labelStart + label.length;
+
+  editor.replaceRange(prefix + label + ' ', editor.posFromIndex(start), editor.posFromIndex(end));
+
+  if (Number.isSafeInteger(uid) && uid > 0) {
+    const marker = editor.markText(editor.posFromIndex(labelStart), editor.posFromIndex(labelEnd));
+    mentionMarkers.push({ marker, uid, replyId, label });
+  }
+
+  editor.setCursor(editor.posFromIndex(labelEnd + 1));
+  focusEditor();
+};
+
+const pruneMentionMarkers = (editor: CodeMirror.Editor) => {
+  mentionMarkers = mentionMarkers.filter(({ marker, label }) => {
+    const range = marker.find();
+
+    if (range && editor.getRange(range.from, range.to) === label) {
+      return true;
+    }
+
+    marker.clear();
+    return false;
+  });
+};
+
+const getMentionBindings = (): ReplyMentionBinding[] => {
+  const editor = cmEditor;
+
+  if (!editor) {
+    return [];
+  }
+
+  const bindings: ReplyMentionBinding[] = [];
+  for (const { marker, uid, replyId, label } of mentionMarkers) {
+    const range = marker.find();
+
+    if (!range) {
+      continue;
+    }
+
+    bindings.push({
+      uid,
+      reply_id: replyId,
+      label,
+      start: editor.indexFromPos(range.from),
+      end: editor.indexFromPos(range.to),
+    });
+  }
+
+  return bindings.sort((a, b) => {
+    return a.start - b.start;
+  });
 };
 
 const hideAllSubMenu = () => {
@@ -609,8 +696,12 @@ defineExpose({
   setEditorLayout,
   scrollToCursor,
   setValue,
+  getValue: () => {
+    return cmEditor?.getValue();
+  },
   insertValue,
-  appendValue,
+  insertMention,
+  getMentionBindings,
   hideAllSubMenu,
 });
 </script>

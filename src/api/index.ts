@@ -12,11 +12,13 @@ import {
 } from '@/utils/page-parser';
 import { mergeTopicReplies } from '@/utils/topic-export';
 import { parseUserTopic } from '@/utils/topic-parser';
-import { TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
+import { GZK_URL, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type {
   FavoriteResponse,
+  MentionUser,
+  ReplyMentionBinding,
   SearchNodeOption,
   SearchParams,
   SearchTopicResult,
@@ -54,6 +56,32 @@ export const API_SEARCH = '/search';
 export const getUserInfo = async (uid: string): Promise<UserInfo> => {
   const data = await request(`${API_USER}${uid}`);
   return parseUserInfo(data);
+};
+
+export const searchMentionUsers = async (query: string, signal: AbortSignal): Promise<MentionUser[]> => {
+  const params = new URLSearchParams({ q: query });
+  const response = await fetch(`${GZK_URL}/api/users/mentions?${params}`, {
+    cache: 'no-store',
+    headers: { Accept: 'application/json' },
+    signal,
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const { items = [] }: { items?: MentionUser[] } = await response.json();
+  const users: MentionUser[] = [];
+
+  for (const { uid, username, display_name, avatar } of items) {
+    if (!Number.isSafeInteger(uid) || uid <= 0 || !username) {
+      continue;
+    }
+
+    users.push({ uid, username, display_name: display_name || username, avatar });
+  }
+
+  return users;
 };
 
 export const followUser = async (uid: string): Promise<UserInfo> => {
@@ -277,12 +305,17 @@ export const getEditedReply = async (replyId?: string): Promise<UserReplyItem> =
   };
 };
 
-export const createReply = async (topicId: string, content: string): Promise<UserTopic> => {
+export const createReply = async (
+  topicId: string,
+  content: string,
+  mentions: ReplyMentionBinding[] = [],
+): Promise<UserTopic> => {
   const data = await request(`${API_TOPIC}${topicId}`, {
     method: 'POST',
     body: new URLSearchParams({
       tid: topicId,
       content,
+      gzk_mentions: JSON.stringify(mentions),
       _xsrf: getXsrfToken(),
     }),
   });

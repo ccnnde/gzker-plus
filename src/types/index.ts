@@ -297,6 +297,21 @@ export interface UserReplyItem {
   editable?: boolean;
 }
 
+export interface MentionUser {
+  uid: number;
+  username: string;
+  display_name: string;
+  avatar?: string;
+}
+
+export interface ReplyMentionBinding {
+  uid: number;
+  reply_id: number;
+  start: number;
+  end: number;
+  label: string;
+}
+
 export interface MentionRepliesTarget {
   replyId?: string;
   replyNo?: string;
