@@ -16,11 +16,6 @@ export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 export const SELECTOR_USER_DISPLAY_NAME = 'a.gzk-display-name[href^="/u/"]';
 
 /**
- * 主题及回复中的私信链接元素
- */
-export const SELECTOR_TOPIC_DIRECT_MESSAGE_LINK = 'a.gzk-dm-topic-link';
-
-/**
  * 用户页中的私信链接元素
  */
 export const SELECTOR_PROFILE_DIRECT_MESSAGE_LINK = 'a.gzk-dm-profile-link';

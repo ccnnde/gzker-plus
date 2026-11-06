@@ -252,7 +252,6 @@ export interface UserTopicDetail {
     node?: MetadataLink;
     authorName?: string;
     authorLevel?: MetadataLink;
-    directMessageLink?: MetadataLink;
     createdTime?: string;
     postedAt?: string;
     lastReplyUser?: MetadataLink;
@@ -285,7 +284,6 @@ export interface UserReplyItem {
   userId?: string;
   displayName?: string;
   userLink?: string;
-  directMessageLink?: MetadataLink;
   avatarUrl?: string;
   isOriginalPoster?: boolean;
   isAdministrator?: boolean;

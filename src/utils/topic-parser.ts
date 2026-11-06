@@ -1,10 +1,5 @@
 import { parseMetadataLink } from '@/utils';
-import {
-  SELECTOR_CREDIT_LEVEL,
-  SELECTOR_TOPIC_DIRECT_MESSAGE_LINK,
-  SELECTOR_USER_DISPLAY_NAME,
-  SELECTOR_USER_LINK,
-} from '@/constants/selector';
+import { SELECTOR_CREDIT_LEVEL, SELECTOR_USER_DISPLAY_NAME, SELECTOR_USER_LINK } from '@/constants/selector';
 
 import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
@@ -55,9 +50,6 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
       authorName: displayNameElement?.dataset.displayName?.trim() || authorElement?.textContent?.trim() || authorId,
       authorLevel: parseMetadataLink(
         visibleIdentity?.querySelector(SELECTOR_CREDIT_LEVEL) || usernameElement?.querySelector(SELECTOR_CREDIT_LEVEL),
-      ),
-      directMessageLink: parseMetadataLink(
-        metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`),
       ),
       createdTime: metaElement?.querySelector(':scope > .created-time')?.textContent?.trim(),
       postedAt: topicDocument.querySelector('time.gzk-topic-created')?.getAttribute('datetime') || undefined,
@@ -118,7 +110,6 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
     userId: displayNameElement?.dataset.gzkMentionUser,
     displayName: displayNameElement?.dataset.displayName?.trim() || undefined,
     userLink: displayNameElement?.getAttribute('href') || authorLink,
-    directMessageLink: parseMetadataLink(metaElement?.querySelector(`:scope > ${SELECTOR_TOPIC_DIRECT_MESSAGE_LINK}`)),
     avatarUrl: item.querySelector<HTMLImageElement>(':scope > a > img.avatar')?.getAttribute('src') || undefined,
     isOriginalPoster,
     isAdministrator,

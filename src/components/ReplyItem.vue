@@ -185,11 +185,6 @@ const handleReplyEdit = () => {
       <div class="reply-meta user-meta">
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
-        <span v-if="directMessageLink?.href">
-          <a :href="directMessageLink.href" :title="directMessageLink.title" target="_blank" rel="noopener noreferrer">
-            {{ $t('common.directMessage') }}
-          </a>
-        </span>
       </div>
       <div
         v-img-load="updateScrollbar"
