@@ -489,6 +489,10 @@ html[data-gzkp-theme] {
   }
 
   .user-page .profile {
+    .ui-content dl > dd.gzk-previous-nickname {
+      color: inherit;
+    }
+
     .gzk-profile-actions {
       .gzk-profile-action {
         color: var(--el-color-primary) !important;
