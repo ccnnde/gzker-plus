@@ -198,7 +198,7 @@ const handleUserBlock = (event: MouseEvent) => {
       >
         <template v-if="userInfo">
           <div class="user-basic-info">
-            <img class="user-basic-info-avatar" :src="userInfo.avatarUrl" />
+            <img class="user-info-popover-avatar" :src="userInfo.avatarUrl" alt="" />
             <div class="user-basic-info-detail">
               <div class="user-basic-info-item">
                 <un-i-mdi-account class="user-basic-info-icon" />
@@ -306,9 +306,12 @@ const handleUserBlock = (event: MouseEvent) => {
   height: 65px;
 }
 
-.user-basic-info-avatar {
+.user-info-popover-avatar {
+  flex-shrink: 0;
+  width: 65px;
   height: 100%;
   margin-right: 10px;
+  object-fit: cover;
   border-radius: var(--gzkp-avatar-border-radius);
 }
 
