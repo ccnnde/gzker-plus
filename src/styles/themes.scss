@@ -7,10 +7,12 @@ html {
   --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.webp');
   --gzkp-topic-tag-bg-color: var(--el-fill-color-light);
   --gzkp-topic-tag-text-color: var(--el-text-color-primary);
+  --gzkp-search-highlight-color: #d93025;
 }
 
 html[data-gzkp-theme] {
   --el-fill-color-blank: transparent;
+  --gzkp-search-highlight-color: var(--el-color-primary-dark-2);
 
   .markdown-body,
   .cherry-markdown.theme__github,
@@ -26,6 +28,7 @@ html[data-gzkp-theme] {
 }
 
 html[data-gzkp-theme^='dark'] {
+  --gzkp-search-highlight-color: #ff897e;
   --gzkp-node-bg-color: rgb(255 255 255 / 10%);
   --gzkp-topic-hover-bg-color: rgb(255 255 255 / 5%);
   --gzkp-cm-selected-bg-color: rgb(255 255 255 / 20%);
@@ -183,6 +186,7 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
 html[data-gzkp-theme='light-solarized'] {
   --gzkp-search-border-color-hover: var(--el-border-color-dark);
   --gzkp-scrollbar-thumb-color: #b5b0a4;
+  --gzkp-search-highlight-color: var(--el-color-danger-dark-2);
 
   // 主题色 - Solarized yellow
   --el-color-primary: #b58900;
@@ -317,6 +321,7 @@ html[data-gzkp-theme='light-solarized'] {
 
 // Light Tokyo Night Theme (Tokyo Night Light inspired)
 html[data-gzkp-theme='light-tokyo-night'] {
+  --gzkp-search-highlight-color: #913e4e;
   --gzkp-scrollbar-thumb-color: #838798;
 
   // 主题色 - Tokyo Night blue

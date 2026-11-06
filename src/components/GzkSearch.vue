@@ -1163,6 +1163,12 @@ onUnmounted(() => {
   box-shadow: none;
 }
 
+:global(html[data-gzkp-theme^='dark'] .gzkp-search-keycap) {
+  color: var(--el-text-color-primary);
+  background: var(--el-fill-color-dark);
+  border-color: var(--el-border-color-dark);
+}
+
 .gzkp-search-keycap--icon {
   width: auto;
   font-size: 13px;

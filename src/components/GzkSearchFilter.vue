@@ -474,6 +474,8 @@ onUnmounted(() => {
 }
 
 :global(.gzkp-search-filter-popover.el-popover.el-popper) {
+  --gzkp-search-filter-option-bg-color: var(--el-fill-color-light);
+  --gzkp-search-filter-option-border-color: transparent;
   --gzkp-search-filter-hover-bg-color: var(--el-fill-color-dark);
   --gzkp-search-filter-selected-color: var(--el-color-primary);
   --gzkp-search-filter-selected-border-color: transparent;
@@ -486,6 +488,8 @@ onUnmounted(() => {
 }
 
 :global(html[data-gzkp-theme='dark-soft'] .gzkp-search-filter-popover.el-popover) {
+  --gzkp-search-filter-option-bg-color: var(--el-fill-color-dark);
+  --gzkp-search-filter-option-border-color: var(--el-border-color);
   --gzkp-search-filter-hover-bg-color: var(--el-fill-color-darker);
   --gzkp-search-filter-selected-border-color: var(--el-color-primary-light-5);
 }
@@ -537,8 +541,9 @@ onUnmounted(() => {
   font-size: 13px;
   font-weight: 400;
   color: var(--el-text-color-primary);
-  background: var(--el-fill-color-light);
+  background: var(--gzkp-search-filter-option-bg-color);
   border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--gzkp-search-filter-option-border-color);
 
   &:hover {
     background: var(--gzkp-search-filter-hover-bg-color);

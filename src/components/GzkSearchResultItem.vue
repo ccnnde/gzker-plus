@@ -70,6 +70,15 @@ const getResultLink = (): string => {
   align-items: flex-start;
 }
 
+.gzkp-search-result__title,
+.gzkp-search-result__excerpt {
+  :deep(mark) {
+    padding: 0;
+    color: var(--gzkp-search-highlight-color);
+    background: transparent;
+  }
+}
+
 .gzkp-search-result__title {
   min-width: 0;
   font-size: 16px;
@@ -84,12 +93,6 @@ const getResultLink = (): string => {
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
-  }
-
-  :deep(mark) {
-    padding: 0;
-    color: #d93025;
-    background: transparent;
   }
 }
 
@@ -141,11 +144,5 @@ const getResultLink = (): string => {
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-
-  :deep(mark) {
-    padding: 0;
-    color: #d93025;
-    background: transparent;
-  }
 }
 </style>
