@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { browser } from 'wxt/browser';
@@ -8,6 +8,7 @@ import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
+import { mountBilibiliPlayers } from '@/utils/bilibili-player';
 import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
 import { getUploadCapability } from '@/utils/permissions';
@@ -71,6 +72,7 @@ const emit = defineEmits<{
 
 let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
+let previewObserver: MutationObserver | undefined;
 let isEditorFirstRender = true;
 let mentionMarkers: {
   marker: CodeMirror.TextMarker<CodeMirror.MarkerRange>;
@@ -93,6 +95,29 @@ watch(editorTheme, () => {
 
 onMounted(() => {
   initCherryMarkdown();
+
+  const preview = mdEditorEl.value?.querySelector<HTMLElement>('.cherry-previewer');
+
+  if (!preview) {
+    return;
+  }
+
+  mountBilibiliPlayers(preview);
+
+  previewObserver = new MutationObserver(() => {
+    mountBilibiliPlayers(preview);
+  });
+
+  previewObserver.observe(preview, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['href'],
+  });
+});
+
+onBeforeUnmount(() => {
+  previewObserver?.disconnect();
 });
 
 const initCherryMarkdown = () => {

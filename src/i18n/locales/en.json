@@ -248,6 +248,7 @@
   "enhancedTopic": {
     "administrator": "Administrator",
     "alreadyBlockTopic": "The topic has already been blocked, please do not repeat the operation",
+    "bilibiliPlayer": "Bilibili video player",
     "blockTopic": "Block topic",
     "blockTopicSuccessful": "Topic blocked successfully",
     "cannotReplyByInvalidUser": "Not logged in or not bound to a phone number, unable to reply",

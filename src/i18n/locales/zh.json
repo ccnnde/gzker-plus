@@ -248,6 +248,7 @@
   "enhancedTopic": {
     "administrator": "管理员",
     "alreadyBlockTopic": "该主题已经被屏蔽，请勿重复操作",
+    "bilibiliPlayer": "哔哩哔哩视频播放器",
     "blockTopic": "屏蔽主题",
     "blockTopicSuccessful": "屏蔽主题成功",
     "cannotReplyByInvalidUser": "未登录或未绑定手机号，无法回复",

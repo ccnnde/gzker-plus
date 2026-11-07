@@ -192,6 +192,17 @@ form.gzk-header-search.gzkp-search-enhanced {
   }
 }
 
+.gzkp-bilibili-player {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 16 / 9;
+  margin: 12px auto;
+  border: 0;
+}
+
 .gzkp-hide-logo {
   .navbar-brand > img {
     @include blur-element;

@@ -3,7 +3,7 @@ import { computed, inject, ref } from 'vue';
 import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { useRequest } from '@/composables/request';
-import { vImgLoad } from '@/directives';
+import { vBiliPlayers, vImgLoad } from '@/directives';
 import { getEditedReply, likeReply } from '@/api';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { getReplyMention, linkifyContent } from '@/utils/reply-content';
@@ -187,6 +187,7 @@ const handleReplyEdit = () => {
       </div>
       <div
         v-img-load="updateScrollbar"
+        v-bili-players="updateScrollbar"
         class="main-content markdown-body"
         @mouseover="handleMentionEnter"
         @mouseout="handleMentionLeave"

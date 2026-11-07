@@ -1,3 +1,5 @@
+import { mountBilibiliPlayers } from '@/utils/bilibili-player';
+
 import type { ObjectDirective } from 'vue';
 
 interface HTMLElementWithRemoveListeners extends HTMLElement {
@@ -42,5 +44,14 @@ export const vImgLoad: ObjectDirective<HTMLElementWithRemoveListeners, (() => vo
   },
   beforeUnmount(el) {
     el.__removeListeners__?.();
+  },
+};
+
+export const vBiliPlayers: ObjectDirective<HTMLElement, (() => void) | undefined> = {
+  mounted(el, { value }) {
+    mountBilibiliPlayers(el, value);
+  },
+  updated(el, { value }) {
+    mountBilibiliPlayers(el, value);
   },
 };

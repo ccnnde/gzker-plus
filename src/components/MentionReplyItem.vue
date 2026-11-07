@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue';
 
-import { vImgLoad } from '@/directives';
+import { vBiliPlayers, vImgLoad } from '@/directives';
 import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
@@ -32,6 +32,7 @@ const handleAnimationEnd = (event: AnimationEvent) => {
   <li class="mention-reply-item-container" :data-reply-no="replyNo" @animationend.self="handleAnimationEnd">
     <div
       v-img-load="updateScrollbar"
+      v-bili-players="updateScrollbar"
       class="main-content markdown-body mention-reply-item-content"
       v-html="renderedContent"
     ></div>

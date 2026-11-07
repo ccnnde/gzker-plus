@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue';
 
-import { vImgLoad } from '@/directives';
+import { vBiliPlayers, vImgLoad } from '@/directives';
 import { convertEmojiToNative } from '@/utils/emoji';
 import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
@@ -80,6 +80,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
     </header>
     <section
       v-img-load="updateScrollbar"
+      v-bili-players="updateScrollbar"
       class="main-content markdown-body"
       v-html="linkifyContent(convertEmojiToNative(content) || '')"
     ></section>
