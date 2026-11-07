@@ -22,6 +22,8 @@ const emit = defineEmits<{
 
 const query = ref('');
 const remoteUsers = ref<MentionUser[]>([]);
+const cachedAiAgent = ref<MentionUser>();
+const isSearching = ref(false);
 let searchController: AbortController | undefined;
 
 const normalize = (value: string) => {
@@ -51,6 +53,8 @@ const matchingUsers = computed(() => {
 });
 
 const searchUsers = debounce(async (term: string, controller: AbortController) => {
+  isSearching.value = true;
+
   try {
     const results = await searchMentionUsers(term || GZK_AI_AGENT_UID, controller.signal);
 
@@ -58,9 +62,20 @@ const searchUsers = debounce(async (term: string, controller: AbortController) =
       return;
     }
 
-    remoteUsers.value = term ? results : results.filter(isAiAgent);
+    const aiAgent = results.find(isAiAgent);
+
+    if (aiAgent) {
+      cachedAiAgent.value = aiAgent;
+    }
+
+    const defaultResults = aiAgent ? [aiAgent] : [];
+    remoteUsers.value = term ? results : defaultResults;
   } catch {
     // Local suggestions remain available when the search fails.
+  } finally {
+    if (!controller.signal.aborted) {
+      isSearching.value = false;
+    }
   }
 }, 300);
 
@@ -68,20 +83,42 @@ const isAiAgent = (user: MentionUser) => {
   return normalize(user.username) === GZK_AI_AGENT_UID;
 };
 
+const stopSearch = () => {
+  searchController?.abort();
+  searchUsers.cancel();
+  isSearching.value = false;
+};
+
 const filterUsers = (term: string) => {
+  stopSearch();
+
   query.value = term.trim();
   remoteUsers.value = [];
-  searchController?.abort();
+
+  if (!query.value) {
+    const localAiAgent = props.users.find(isAiAgent);
+
+    if (localAiAgent?.uid && localAiAgent.avatar) {
+      return;
+    }
+
+    if (cachedAiAgent.value) {
+      remoteUsers.value = [cachedAiAgent.value];
+      return;
+    }
+  }
+
   searchController = new AbortController();
   searchUsers(query.value, searchController);
 };
 
-const stopSearch = () => {
-  searchController?.abort();
-  searchUsers.cancel();
-};
-
 onBeforeUnmount(stopSearch);
+
+const hideBrokenAvatar = (event: Event) => {
+  if (event.currentTarget instanceof HTMLImageElement) {
+    event.currentTarget.style.visibility = 'hidden';
+  }
+};
 
 const handleSelect = (username: string) => {
   if (!username) {
@@ -106,7 +143,7 @@ const {
   showPicker: openPicker,
   handleFocus,
   handleVisibleChange,
-} = useEditorPicker(handleSelect, handleHide);
+} = useEditorPicker(undefined, handleHide);
 
 const showPicker = () => {
   filterUsers('');
@@ -124,9 +161,13 @@ defineExpose({
     ref="select"
     :placeholder="$t('enhancedTopic.mentionWho')"
     :filter-method="filterUsers"
+    :loading="isSearching"
+    :aria-busy="isSearching"
     popper-class="gzkp-editor-picker-popper"
+    placement="top-start"
+    :fallback-placements="[]"
     filterable
-    allow-create
+    fit-input-width
     automatic-dropdown
     default-first-option
     @focus="handleFocus"
@@ -140,12 +181,20 @@ defineExpose({
       :value="user.username"
       :label="user.display_name === user.username ? user.username : `${user.display_name} (@${user.username})`"
     >
-      <ElAvatar class="mention-picker-avatar" :size="28" shape="square" :src="user.avatar" alt="">
-        {{ user.username.slice(0, 1).toUpperCase() }}
-      </ElAvatar>
+      <span class="mention-picker-avatar">
+        <img
+          v-if="user.avatar"
+          :key="user.avatar"
+          class="mention-picker-avatar-image"
+          :src="user.avatar"
+          alt=""
+          loading="lazy"
+          @error="hideBrokenAvatar"
+        />
+      </span>
       <span class="mention-picker-identity">
-        <strong class="mention-picker-name">{{ user.display_name }}</strong>
-        <span class="mention-picker-username">@{{ user.username }}</span>
+        <strong class="mention-picker-name" :title="user.display_name">{{ user.display_name }}</strong>
+        <span class="mention-picker-username" :title="`@${user.username}`">@{{ user.username }}</span>
       </span>
     </ElOption>
   </ElSelect>
@@ -154,21 +203,32 @@ defineExpose({
 <style lang="scss" scoped>
 .mention-picker-option {
   display: flex;
-  gap: 9px;
+  gap: 10px;
   align-items: center;
   height: auto;
-  min-height: 44px;
-  padding: 6px 11px;
+  min-height: 46px;
+  padding: 6px 12px;
   line-height: 1.2;
 }
 
 .mention-picker-avatar {
   flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.mention-picker-avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--el-border-radius-base);
+  object-fit: cover;
 }
 
 .mention-picker-identity {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
@@ -176,14 +236,18 @@ defineExpose({
 .mention-picker-username {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mention-picker-name {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
 }
 
 .mention-picker-username {
   font-size: 12px;
-  color: var(--el-text-color-secondary);
+  font-weight: 400;
+  color: var(--el-text-color-regular);
 }
 </style>
