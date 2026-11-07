@@ -24,9 +24,9 @@ export const SHORTCUT_SHOW_WEIBO_EMOJI_PICKER = 'shift+:';
 export const SHORTCUT_SHOW_MENTION_PICKER = 'shift+@';
 
 /**
- * 清除提及用户
+ * 退格清除用户提及和 Emoji 短码
  */
-export const SHORTCUT_CLEAR_MENTION_UID = 'backspace';
+export const SHORTCUT_BACKSPACE = 'backspace';
 
 /**
  * 关闭或展示预览区域

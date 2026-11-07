@@ -90,6 +90,8 @@ declare module 'emoji-mart-vue-fast/src' {
 
     emoji(emojiId: string): EmojiObject;
 
+    findEmoji(value: string): EmojiObject | null;
+
     search(value: string, maxResults?: number): EmojiObject[] | null;
   }
 

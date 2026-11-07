@@ -11,6 +11,7 @@ import { checkMacOS, fileToBase64 } from '@/utils';
 import { mountBilibiliPlayers } from '@/utils/bilibili-player';
 import { autoImageHook, CherryHookName, emojiHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
+import { findTrailingEmojiStart } from '@/utils/emoji';
 import { getUploadCapability } from '@/utils/permissions';
 import { resolveMentionBindings } from '@/utils/reply-mention-binding';
 import { ensurePermission } from '@/utils/upload-permission';
@@ -23,7 +24,7 @@ import {
   OptionsRoutePaths,
 } from '@/constants';
 import {
-  SHORTCUT_CLEAR_MENTION_UID,
+  SHORTCUT_BACKSPACE,
   SHORTCUT_SHOW_EDITOR_HELP,
   SHORTCUT_SHOW_EDITOR_HISTORY,
   SHORTCUT_SHOW_EMOJI_PICKER,
@@ -280,6 +281,25 @@ const toggleEditorFullscreen = (e?: KeyboardEvent) => {
   e?.preventDefault();
 };
 
+const findTrailingMentionStart = (beforeCursor: string, afterCursor: string | undefined) => {
+  if (afterCursor && !/\s/.test(afterCursor)) {
+    return;
+  }
+
+  const match = beforeCursor.match(/(?:^|[\s(（\[【「『])@([a-zA-Z0-9\p{Script=Han}][\w\p{Script=Han}]*)$/u);
+  const nickname = match?.[1];
+
+  if (!nickname || (/^\w+$/.test(nickname) && nickname.length < 3)) {
+    return;
+  }
+
+  const nicknameLength = nickname.replace(/\p{Script=Han}/gu, 'aa').length;
+
+  if (nicknameLength <= 24) {
+    return beforeCursor.length - nickname.length - 1;
+  }
+};
+
 const keybindings: Keybindings = {
   [SHORTCUT_SHOW_EDITOR_HISTORY]: openEditorHistory,
   [SHORTCUT_SHOW_EDITOR_HELP]: openEditorHelp,
@@ -301,7 +321,7 @@ const keybindings: Keybindings = {
       emit('showMentionPicker', cmEditor?.cursorCoords(false, 'window') as Coordinates);
     }, 50);
   },
-  [SHORTCUT_CLEAR_MENTION_UID]: (e: KeyboardEvent) => {
+  [SHORTCUT_BACKSPACE]: (e: KeyboardEvent) => {
     const editor = cmEditor;
 
     if (!editor || e.isComposing || editor.somethingSelected() || editor.listSelections().length > 1) {
@@ -327,29 +347,16 @@ const keybindings: Keybindings = {
     }
 
     const lineContent = editor.getLine(line);
-    const afterCursor = lineContent[ch];
-
-    if (afterCursor && !/\s/.test(afterCursor)) {
-      return;
-    }
-
     const beforeCursor = lineContent.slice(0, ch);
-    const match = beforeCursor.match(/(?:^|[\s(（\[【「『])@([a-zA-Z0-9\p{Script=Han}][\w\p{Script=Han}]*)$/u);
-    const nickname = match?.[1];
+    const startCh = findTrailingEmojiStart(beforeCursor) ?? findTrailingMentionStart(beforeCursor, lineContent[ch]);
 
-    if (!nickname || (/^\w+$/.test(nickname) && nickname.length < 3)) {
-      return;
-    }
-
-    const nicknameLength = nickname.replace(/\p{Script=Han}/gu, 'aa').length;
-
-    if (nicknameLength > 24) {
+    if (startCh === undefined) {
       return;
     }
 
     const start: CodeMirror.Position = {
       line,
-      ch: ch - nickname.length - 1,
+      ch: startCh,
     };
     const markersInRange = editor.findMarks(start, cursor);
     const overlapsMention = mentionMarkers.some(({ marker }) => {

@@ -37,6 +37,8 @@ const convertEmojiImageToNative = (imageTag: string): string => {
 
 const EMOJI_FONT_STYLE_ID = 'gzkp-emoji-font';
 
+export const EMOJI_SHORTCODE_PATTERN = /:([-a-zA-Z0-9\u4e00-\u9fa5+_]+?):/g;
+
 export const NOTO_EMOJI_FONT = 'Noto-COLRv1';
 
 export const EMOJI_CLASS_NAME = 'emoji-type-native';
@@ -109,6 +111,31 @@ export const emojiIndex = new EmojiIndex(data, {
   ],
 });
 
+export const findTrailingEmojiStart = (text: string): number | undefined => {
+  if (!text.endsWith(':')) {
+    return;
+  }
+
+  for (const match of text.matchAll(EMOJI_SHORTCODE_PATTERN)) {
+    const [shortcode, id] = match;
+    const start = match.index ?? 0;
+
+    if (!id || start + shortcode.length !== text.length) {
+      continue;
+    }
+
+    if (gzkSpecialEmojis.includes(id)) {
+      return start;
+    }
+
+    const emoji = emojiIndex.findEmoji(id);
+
+    if (emoji?.native || emoji?.custom) {
+      return start;
+    }
+  }
+};
+
 export const convertWeiboEmojiToImg = (content: string): string => {
   const weiboEmojiReg = /:wb_([-a-zA-Z0-9\u4e00-\u9fa5+_]+?):/g;
 
@@ -132,7 +159,7 @@ export const convertWeiboImgToEmoji = (content: string): string => {
  * @param htmlStr html 内容字符串
  */
 export const convertEmojiToNative = (htmlStr?: string): string | undefined => {
-  const htmlTagOrEmojiReg = /<[^>]+>|:([-a-zA-Z0-9\u4e00-\u9fa5+_]+?):/g;
+  const htmlTagOrEmojiReg = new RegExp(`<[^>]+>|${EMOJI_SHORTCODE_PATTERN.source}`, 'g');
 
   return htmlStr?.replace(htmlTagOrEmojiReg, (match: string, emojiId?: string) => {
     if (match.startsWith('<')) {

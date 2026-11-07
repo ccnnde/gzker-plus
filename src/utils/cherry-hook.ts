@@ -1,6 +1,6 @@
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 
-import { getEmojiById } from './emoji';
+import { EMOJI_SHORTCODE_PATTERN, getEmojiById } from './emoji';
 
 const { SEN } = Cherry.constants.HOOKS_TYPE_LIST;
 
@@ -22,7 +22,7 @@ export const emojiHook = Cherry.createSyntaxHook(CherryHookName.Emoji, SEN, {
   },
   rule() {
     return {
-      reg: /:([-a-zA-Z0-9\u4e00-\u9fa5+_]+?):/g,
+      reg: new RegExp(EMOJI_SHORTCODE_PATTERN),
     };
   },
 });
