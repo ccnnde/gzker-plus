@@ -312,6 +312,10 @@ export interface ReplyMentionBinding {
   label: string;
 }
 
+export interface TrackedReplyMention extends Pick<ReplyMentionBinding, 'uid' | 'reply_id' | 'label'> {
+  range?: Pick<ReplyMentionBinding, 'start' | 'end'>;
+}
+
 export interface MentionRepliesTarget {
   replyId?: string;
   replyNo?: string;

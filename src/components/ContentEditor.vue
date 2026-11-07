@@ -12,6 +12,7 @@ import { mountBilibiliPlayers } from '@/utils/bilibili-player';
 import { autoImageHook, CherryHookName, emojiHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
 import { getUploadCapability } from '@/utils/permissions';
+import { resolveMentionBindings } from '@/utils/reply-mention-binding';
 import { ensurePermission } from '@/utils/upload-permission';
 import {
   ExtensionMessageType,
@@ -233,8 +234,6 @@ const initCherryMarkdown = () => {
   cmEditor.on('focus', () => {
     isEditorFocused.value = true;
   });
-
-  cmEditor.on('change', pruneMentionMarkers);
 
   cmEditor.on('blur', () => {
     isEditorFocused.value = false;
@@ -656,46 +655,28 @@ const insertMention = (
   focusEditor();
 };
 
-const pruneMentionMarkers = (editor: CodeMirror.Editor) => {
-  mentionMarkers = mentionMarkers.filter(({ marker, label }) => {
-    const range = marker.find();
-
-    if (range && editor.getRange(range.from, range.to) === label) {
-      return true;
-    }
-
-    marker.clear();
-    return false;
-  });
-};
-
-const getMentionBindings = (): ReplyMentionBinding[] => {
+const getMentionBindings = (draft: string): ReplyMentionBinding[] => {
   const editor = cmEditor;
 
   if (!editor) {
     return [];
   }
 
-  const bindings: ReplyMentionBinding[] = [];
-  for (const { marker, uid, replyId, label } of mentionMarkers) {
+  const mentions = mentionMarkers.map(({ marker, uid, replyId, label }) => {
     const range = marker.find();
 
     if (!range) {
-      continue;
+      return { uid, reply_id: replyId, label };
     }
 
-    bindings.push({
-      uid,
-      reply_id: replyId,
-      label,
+    const offsets = {
       start: editor.indexFromPos(range.from),
       end: editor.indexFromPos(range.to),
-    });
-  }
-
-  return bindings.sort((a, b) => {
-    return a.start - b.start;
+    };
+    return { uid, reply_id: replyId, label, range: offsets };
   });
+
+  return resolveMentionBindings(draft, mentions);
 };
 
 const hideAllSubMenu = () => {

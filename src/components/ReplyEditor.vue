@@ -207,7 +207,7 @@ const sendReply = () => {
 
   handleRequest(async () => {
     if (isAddContent.value) {
-      const mentions = contentEditor.value?.getMentionBindings() ?? [];
+      const mentions = contentEditor.value?.getMentionBindings(draft) ?? [];
       const { content, bindings } = prepareReply(draft, mentions);
       const data = await createReply(props.topicId as string, content, bindings);
       createHistoryId = '';
