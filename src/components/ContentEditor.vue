@@ -302,27 +302,66 @@ const keybindings: Keybindings = {
     }, 50);
   },
   [SHORTCUT_CLEAR_MENTION_UID]: (e: KeyboardEvent) => {
-    if (!cmEditor) {
+    const editor = cmEditor;
+
+    if (!editor || e.isComposing || editor.somethingSelected() || editor.listSelections().length > 1) {
       return;
     }
 
-    const cursor = cmEditor.getCursor();
+    const cursor = editor.getCursor();
     const { line, ch } = cursor;
-    const currentLineContent = cmEditor.getLine(line);
-    const beforeCursorContent = currentLineContent.substring(0, ch);
-    const afterCursorChar = currentLineContent.substring(ch, ch + 1);
-    const mentionUidMatch = beforeCursorContent.match(/@[a-z]\w{2,}$/i);
-    const isAfterCursorCharEmpty = afterCursorChar === '' || afterCursorChar === ' ';
+    const markersAtCursor = editor.findMarksAt(cursor);
+    const mention = mentionMarkers.find(({ marker }) => {
+      return markersAtCursor.includes(marker);
+    });
 
-    if (mentionUidMatch && isAfterCursorCharEmpty) {
-      const start: CodeMirror.Position = {
-        line,
-        ch: ch - mentionUidMatch[0].length,
-      };
+    if (mention) {
+      const range = mention.marker.find();
 
-      cmEditor.replaceRange('', start, cursor);
-      e.preventDefault();
+      if (range?.to.line === line && range.to.ch === ch && editor.getRange(range.from, range.to) === mention.label) {
+        editor.replaceRange('', range.from, cursor);
+        e.preventDefault();
+      }
+
+      return;
     }
+
+    const lineContent = editor.getLine(line);
+    const afterCursor = lineContent[ch];
+
+    if (afterCursor && !/\s/.test(afterCursor)) {
+      return;
+    }
+
+    const beforeCursor = lineContent.slice(0, ch);
+    const match = beforeCursor.match(/(?:^|[\s(（\[【「『])@([a-zA-Z0-9\p{Script=Han}][\w\p{Script=Han}]*)$/u);
+    const nickname = match?.[1];
+
+    if (!nickname || (/^\w+$/.test(nickname) && nickname.length < 3)) {
+      return;
+    }
+
+    const nicknameLength = nickname.replace(/\p{Script=Han}/gu, 'aa').length;
+
+    if (nicknameLength > 24) {
+      return;
+    }
+
+    const start: CodeMirror.Position = {
+      line,
+      ch: ch - nickname.length - 1,
+    };
+    const markersInRange = editor.findMarks(start, cursor);
+    const overlapsMention = mentionMarkers.some(({ marker }) => {
+      return markersInRange.includes(marker);
+    });
+
+    if (overlapsMention) {
+      return;
+    }
+
+    editor.replaceRange('', start, cursor);
+    e.preventDefault();
   },
   [SHORTCUT_TOGGLE_PREVIEW]: () => {
     cherryEditor?.toolbar.menus.hooks.togglePreview.onClick();
