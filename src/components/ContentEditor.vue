@@ -9,7 +9,7 @@ import { t } from '@/i18n';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { mountBilibiliPlayers } from '@/utils/bilibili-player';
-import { autoImageHook, CherryHookName, emojiHook, mentionUserHook } from '@/utils/cherry-hook';
+import { autoImageHook, CherryHookName, emojiHook } from '@/utils/cherry-hook';
 import type { EditHistoryType } from '@/utils/edit-history';
 import { getUploadCapability } from '@/utils/permissions';
 import { ensurePermission } from '@/utils/upload-permission';
@@ -217,10 +217,6 @@ const initCherryMarkdown = () => {
         [CherryHookName.AutoImage]: {
           syntaxClass: autoImageHook,
           before: 'autoLink',
-        },
-        [CherryHookName.MentionUser]: {
-          syntaxClass: mentionUserHook,
-          before: 'bgColor',
         },
       },
     },
