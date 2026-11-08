@@ -10,6 +10,7 @@ import { useRequest } from '@/composables/request';
 import { useTopicHostNavigation } from '@/composables/topic-host-navigation';
 import { useTopicKeyboardScroll } from '@/composables/topic-keyboard-scroll';
 import { useTopicReplies } from '@/composables/topic-replies';
+import { useTopicShortcuts } from '@/composables/topic-shortcuts';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import {
@@ -41,6 +42,7 @@ import {
   REPLY_HOVER_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
+import { SELECTOR_ENHANCED_REPLY_ITEM, SELECTOR_REPLY_EDIT_BUTTON } from '@/constants/selector';
 
 import ElementConfig from './ElementConfig.vue';
 import HotRepliesDialog from './HotRepliesDialog.vue';
@@ -216,7 +218,7 @@ onBeforeMount(() => {
   hideGlobalLoading();
 });
 
-useTopicHostNavigation({
+const { openCreateTopicForCurrentNode } = useTopicHostNavigation({
   isTopicPage,
   openTopicInBlank: isTopicLinkBlank,
   onTopicSelected: (selectedTopicId) => {
@@ -229,6 +231,10 @@ useTopicHostNavigation({
 });
 
 const handleTopicFavorite = () => {
+  if (isTopicActionLoading.value) {
+    return;
+  }
+
   handleTopicActionRequest(async () => {
     if (!topicDetail.value) {
       return;
@@ -244,6 +250,10 @@ const handleTopicFavorite = () => {
 };
 
 const handleTopicLike = () => {
+  if (isTopicActionLoading.value) {
+    return;
+  }
+
   handleTopicActionRequest(async () => {
     if (!topicDetail.value) {
       return;
@@ -257,6 +267,10 @@ const handleTopicLike = () => {
 };
 
 const handleTopicEdit = () => {
+  if (!topicDetail.value?.editable || isTopicActionLoading.value) {
+    return;
+  }
+
   handleTopicActionRequest(async () => {
     const data = await getEditedTopic(topicId.value);
     topicEditor.value?.openEditEditor(topicId.value as string, data);
@@ -396,7 +410,8 @@ provide(UPDATE_SCROLLBAR_INJECTION_KEY, updateScrollbar);
 const topicEditor = ref<InstanceType<typeof TopicEditor> | null>(null);
 
 const addTopic = (node: string) => {
-  topicEditor.value?.openCreateEditor(node);
+  const shouldRefreshAfterCreate = !dialogVisible.value;
+  topicEditor.value?.openCreateEditor(node, shouldRefreshAfterCreate);
 };
 
 const replyEditor = ref<InstanceType<typeof ReplyEditor> | null>(null);
@@ -572,7 +587,6 @@ const handleTopicEditModeChange = (editing: boolean) => {
   }
 
   isTopicEditorFullscreen.value = false;
-  showTopicFooter();
 
   if (dialogVisible.value) {
     startKeyboardScroll();
@@ -610,6 +624,86 @@ const editReply = (reply: UserReplyItem) => {
 };
 
 provide(EDIT_REPLY_INJECTION_KEY, editReply);
+
+const isVisibleReplyEditButton = (button: HTMLElement) => {
+  return button.getClientRects().length > 0 && getComputedStyle(button).visibility === 'visible';
+};
+
+const handleReplyEditShortcut = () => {
+  const container = topicContainer.value;
+
+  if (!container) {
+    return;
+  }
+
+  const hoveredReply = [...container.querySelectorAll(`${SELECTOR_ENHANCED_REPLY_ITEM}:hover`)].at(-1);
+
+  if (hoveredReply) {
+    const button = [...hoveredReply.querySelectorAll<HTMLElement>(SELECTOR_REPLY_EDIT_BUTTON)].find((item) => {
+      return item.closest(SELECTOR_ENHANCED_REPLY_ITEM) === hoveredReply && isVisibleReplyEditButton(item);
+    });
+
+    if (button) {
+      button.click();
+    } else {
+      ElMessage.warning(t('enhancedTopic.cannotEditSelectedReply'));
+    }
+
+    return;
+  }
+
+  const loginUserId = storage.settings?.loginUserId;
+  const ownReplies = effectiveReplyList.value.filter((reply) => {
+    return loginUserId && reply.uid === loginUserId && reply.editable;
+  });
+  const ownReplyIds = new Set(
+    ownReplies.map((reply) => {
+      return reply.replyId;
+    }),
+  );
+  const editButtons = [...container.querySelectorAll<HTMLElement>(SELECTOR_REPLY_EDIT_BUTTON)];
+  const button = editButtons.reverse().find((item) => {
+    const replyId = item.closest<HTMLElement>(SELECTOR_ENHANCED_REPLY_ITEM)?.dataset.gzkpReplyId;
+
+    return replyId && ownReplyIds.has(replyId) && isVisibleReplyEditButton(item);
+  });
+
+  if (button) {
+    button.click();
+  } else {
+    ElMessage.warning(t('enhancedTopic.noOwnEditableReply'));
+  }
+};
+
+useTopicShortcuts({
+  container: topicContainer,
+  isActive: () => {
+    return (
+      dialogVisible.value &&
+      Boolean(topicDetail.value) &&
+      !isTopicEditing.value &&
+      !isImgViewerVisible() &&
+      !isGlobalLoadingVisible()
+    );
+  },
+  favorite: handleTopicFavorite,
+  like: handleTopicLike,
+  reply: () => {
+    if (topicFooterVisible.value) {
+      addReply();
+    } else {
+      replyEditor.value?.openEditor();
+    }
+  },
+  scrollToTop,
+  editTopic: handleTopicEdit,
+  editReply: handleReplyEditShortcut,
+  createTopic: () => {
+    if (!isImgViewerVisible() && !isGlobalLoadingVisible()) {
+      openCreateTopicForCurrentNode();
+    }
+  },
+});
 
 onUnmounted(() => {
   window.clearTimeout(enableReplyHoverTimer);

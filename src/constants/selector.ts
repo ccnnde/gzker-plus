@@ -7,6 +7,8 @@ export const SELECTOR_TOPIC_LINK = 'a[href^="/t/"]:not([href*="?p="])';
  * Topic reply total element
  */
 export const SELECTOR_TOPIC_REPLY_TOTAL = '.flat-reply-list-total, .nested-reply-list-total';
+export const SELECTOR_ENHANCED_REPLY_ITEM = '[data-gzkp-reply-id]';
+export const SELECTOR_REPLY_EDIT_BUTTON = '[data-gzkp-reply-edit]';
 
 /**
  * 用户链接元素
@@ -29,6 +31,7 @@ export const SELECTOR_CREDIT_LEVEL = '.gzk-credit-level';
  * 节点链接元素
  */
 export const SELECTOR_NODE_LINK = 'a[href^="/node/"]:not([href*="?p="])';
+export const SELECTOR_TOPIC_NODE_LINK = '.topic-detail .meta .node a[href^="/node/"]';
 
 /**
  * 顶栏导航条元素
@@ -52,6 +55,7 @@ export const SELECTOR_THEME_SWITCH = '.gzk-nav-theme';
 
 export const SELECTOR_SHORTCUT_TRIGGER = `${SELECTOR_TOP_NAVBAR} .gzk-nav-shortcuts > .gzk-shortcut-trigger`;
 export const SELECTOR_OPEN_SHORTCUT_DIALOG = 'dialog#gzk-shortcut-dialog[open]';
+export const SELECTOR_SHORTCUT_ENABLED_CHECKBOX = '#gzk-shortcut-dialog #gzk-shortcut-enabled';
 
 /**
  * 用户头像元素

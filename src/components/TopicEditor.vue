@@ -37,6 +37,7 @@ const emit = defineEmits<{
 }>();
 
 let editedTopicId: string;
+let refreshAfterCreate = true;
 
 const topicForm = reactive<TopicForm>({
   node: '',
@@ -98,12 +99,13 @@ const focusCreateTitle = () => {
   });
 };
 
-const openCreateEditor = async (node: string) => {
+const openCreateEditor = async (node: string, shouldRefreshAfterCreate: boolean) => {
   if (editorVisible.value) {
     closeEditor();
   }
 
   isAddContent.value = true;
+  refreshAfterCreate = shouldRefreshAfterCreate;
   editHistoryId = '';
   topicForm.node = node;
   topicForm.title = '';
@@ -154,11 +156,16 @@ const sendTopic = async () => {
     const content = convertWeiboEmojiToImg(topicForm.content);
 
     if (isAddContent.value) {
+      const shouldRefresh = refreshAfterCreate;
       await createTopic(topicForm.node, topicForm.title, content);
 
       ElMessage.success({
         message: t('enhancedTopic.topicContentIsUnderReview'),
-        onClose: () => window.location.reload(),
+        onClose: () => {
+          if (shouldRefresh) {
+            window.location.reload();
+          }
+        },
       });
     } else {
       await modifyTopic(editedTopicId, topicForm.title, content);

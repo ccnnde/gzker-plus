@@ -1,3 +1,4 @@
+import { isForumShortcutEvent, isIgnoredForumShiftKey } from '@/utils/forum-shortcuts';
 import { SELECTOR_OPEN_SHORTCUT_DIALOG } from '@/constants/selector';
 
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
@@ -11,25 +12,7 @@ const handleKeydown = (event: KeyboardEvent) => {
     return;
   }
 
-  if (
-    event.ctrlKey ||
-    event.metaKey ||
-    event.altKey ||
-    event.isComposing ||
-    (event.shiftKey && event.key !== '?') ||
-    !FORUM_SHORTCUT_KEY.test(event.key)
-  ) {
-    return;
-  }
-
-  const isEditable = event.composedPath().some((target) => {
-    return (
-      target instanceof HTMLElement &&
-      (target.isContentEditable || target.matches('input, textarea, select, [role="textbox"], [role="combobox"]'))
-    );
-  });
-
-  if (isEditable) {
+  if (!FORUM_SHORTCUT_KEY.test(event.key) || !isForumShortcutEvent(event) || isIgnoredForumShiftKey(event)) {
     return;
   }
 

@@ -136,6 +136,10 @@ const handleUserReply = () => {
 const editReply = inject(EDIT_REPLY_INJECTION_KEY);
 
 const handleReplyEdit = () => {
+  if (isLoading.value) {
+    return;
+  }
+
   handleRequest(async () => {
     const reply = await getEditedReply(props.replyId);
     editReply?.(reply);
@@ -199,7 +203,12 @@ const handleReplyEdit = () => {
         <LikeButton :liked="liked" :like-number="likeNumber" hide-tip @handle-like="handleReplyLike" />
         <template v-if="isNotInConversation">
           <OperateButton icon-class="i-mdi-chat-outline" @click="handleUserReply" />
-          <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editReply')" @click="handleReplyEdit" />
+          <OperateButton
+            v-if="editable"
+            :operate-text="$t('enhancedTopic.editReply')"
+            data-gzkp-reply-edit
+            @click="handleReplyEdit"
+          />
         </template>
       </div>
     </div>
