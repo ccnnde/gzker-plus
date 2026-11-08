@@ -1,15 +1,18 @@
 import { createI18n } from 'vue-i18n';
-import messages from '@intlify/unplugin-vue-i18n/messages';
 
 import { LanguageType } from '@/constants';
 
-import type { I18nOptions } from 'vue-i18n';
+import en from './locales/en.json';
+import zh from './locales/zh.json';
 
 const i18n = createI18n({
   legacy: false,
   locale: LanguageType.ZH,
   fallbackLocale: LanguageType.ZH,
-  messages: messages as I18nOptions['messages'],
+  messages: {
+    [LanguageType.EN]: en,
+    [LanguageType.ZH]: zh,
+  },
 });
 
 const { t } = i18n.global;
