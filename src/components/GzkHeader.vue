@@ -35,17 +35,11 @@ const modeLabels = computed(() => {
   };
 });
 
-const modeIconClass = computed(() => {
-  if (mode.value === DarkMode.On) {
-    return 'i-mdi-weather-night';
-  }
-
-  if (mode.value === DarkMode.Off) {
-    return 'i-mdi-weather-sunny';
-  }
-
-  return 'i-mdi-theme-light-dark';
-});
+const modeIconClasses = {
+  [DarkMode.On]: 'i-gzkp-theme-moon',
+  [DarkMode.Off]: 'i-gzkp-theme-sun',
+  [DarkMode.System]: 'i-gzkp-theme-system',
+};
 
 const cycleMode = () => {
   if (!settings.value) {
@@ -146,7 +140,7 @@ onUnmounted(() => {
       popper-class="gzkp-tooltip-popper"
     >
       <div
-        :class="['gzkp-header-icon', modeIconClass]"
+        :class="['gzkp-header-icon', modeIconClasses[mode]]"
         @click="cycleMode"
         @keydown.enter.prevent="cycleMode"
         @keydown.space.prevent="cycleMode"

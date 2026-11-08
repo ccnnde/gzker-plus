@@ -11,19 +11,19 @@ defineProps<SettingProps<OptionsKey.DarkMode>>();
   <ElRadioGroup v-model="settings.mode" class="radio-group-transparent">
     <ElRadioButton :value="DarkMode.On">
       <div class="radio-content-with-icon">
-        <un-i-mdi-weather-night class="radio-icon" />
+        <i class="radio-icon i-gzkp-theme-moon" aria-hidden="true"></i>
         <span>{{ $t('basicSetting.darkMode.on') }}</span>
       </div>
     </ElRadioButton>
     <ElRadioButton :value="DarkMode.Off">
       <div class="radio-content-with-icon">
-        <un-i-mdi-white-balance-sunny class="radio-icon" />
+        <i class="radio-icon i-gzkp-theme-sun" aria-hidden="true"></i>
         <span>{{ $t('basicSetting.darkMode.off') }}</span>
       </div>
     </ElRadioButton>
     <ElRadioButton :value="DarkMode.System">
       <div class="radio-content-with-icon">
-        <un-i-mdi-theme-light-dark class="radio-icon" />
+        <i class="radio-icon i-gzkp-theme-system" aria-hidden="true"></i>
         <span>{{ $t('basicSetting.darkMode.system') }}</span>
       </div>
     </ElRadioButton>
