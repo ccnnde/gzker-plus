@@ -1,6 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 html {
-  --gzkp-cm-selected-bg-color: var(--el-fill-color);
+  --gzkp-selection-bg-color: #b5cfee;
   --gzkp-img-viewer-bg-color: rgb(0 0 0 / 90%);
   --gzkp-img-viewer-ctrl-bg-color: #444;
   --gzkp-img-viewer-ctrl-hover-bg-color: #5c5c5c;
@@ -8,6 +8,10 @@ html {
   --gzkp-topic-tag-bg-color: var(--el-fill-color-light);
   --gzkp-topic-tag-text-color: var(--el-text-color-primary);
   --gzkp-search-highlight-color: #d93025;
+
+  &::selection {
+    background-color: var(--gzkp-selection-bg-color);
+  }
 }
 
 html[data-gzkp-theme] {
@@ -31,7 +35,7 @@ html[data-gzkp-theme^='dark'] {
   --gzkp-search-highlight-color: #ff897e;
   --gzkp-node-bg-color: rgb(255 255 255 / 10%);
   --gzkp-topic-hover-bg-color: rgb(255 255 255 / 5%);
-  --gzkp-cm-selected-bg-color: rgb(255 255 255 / 20%);
+  --gzkp-selection-bg-color: rgb(255 255 255 / 17%);
   --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode-dark.webp');
   --gzkp-topic-tag-bg-color: var(--el-fill-color-dark);
 
@@ -57,6 +61,7 @@ html[data-gzkp-theme='light-solarized'] {
 
 html[data-gzkp-theme='dark-default'] {
   --gzkp-scrollbar-thumb-color: #5e6269;
+  --gzkp-selection-bg-color: #345e8c;
 }
 
 html.gzkp-dark[data-gzkp-theme='dark-default'] {
@@ -129,7 +134,7 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
   --gzkp-dropdown-item-hover-bg-color: var(--el-color-primary-light-8);
   --gzkp-node-bg-color: #2b4051;
   --gzkp-topic-hover-bg-color: #1e313f;
-  --gzkp-cm-selected-bg-color: #355c78;
+  --gzkp-selection-bg-color: #355c78;
   --gzkp-topic-tag-bg-color: var(--el-fill-color-darker);
   --gzkp-reply-count-bg-color: #3e5160;
   --gzkp-reply-count-visited-bg-color: #708598;
@@ -194,6 +199,7 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
 
 // Light Solarized Theme (Solarized Light inspired)
 html[data-gzkp-theme='light-solarized'] {
+  --gzkp-selection-bg-color: var(--el-color-primary-light-9);
   --gzkp-search-border-color-hover: var(--el-border-color-dark);
   --gzkp-scrollbar-thumb-color: #b5b0a4;
   --gzkp-search-highlight-color: var(--el-color-danger-dark-2);
@@ -332,6 +338,7 @@ html[data-gzkp-theme='light-solarized'] {
 
 // Light Tokyo Night Theme (Tokyo Night Light inspired)
 html[data-gzkp-theme='light-tokyo-night'] {
+  --gzkp-selection-bg-color: var(--el-color-primary-light-7);
   --gzkp-search-highlight-color: #913e4e;
   --gzkp-scrollbar-thumb-color: #838798;
 

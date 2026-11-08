@@ -122,8 +122,10 @@
         }
       }
 
-      .CodeMirror-selected {
-        background-color: var(--gzkp-cm-selected-bg-color);
+      .CodeMirror-selected,
+      .CodeMirror-line::selection,
+      .CodeMirror-line ::selection {
+        background-color: var(--gzkp-selection-bg-color);
       }
     }
   }
