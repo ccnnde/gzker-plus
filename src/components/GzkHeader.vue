@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { ElDropdown } from 'element-plus';
 import { browser } from 'wxt/browser';
 
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import { DarkMode, ExtensionMessageType, OptionsKey } from '@/constants';
+import { SELECTOR_SHORTCUT_TRIGGER } from '@/constants/selector';
 
 import ElementConfig from './ElementConfig.vue';
 import MessageBell from './MessageBell.vue';
@@ -13,6 +14,8 @@ import MessageBell from './MessageBell.vue';
 import type { ExtensionMessage } from '@/types';
 
 const feedbackDropdown = ref<InstanceType<typeof ElDropdown> | null>(null);
+const shortcutTrigger = document.querySelector(SELECTOR_SHORTCUT_TRIGGER);
+const shortcutTitle = shortcutTrigger?.getAttribute('title');
 
 const storage = useStorageStore();
 
@@ -65,10 +68,31 @@ const openExtOptions = () => {
 
   browser.runtime.sendMessage(msg);
 };
+
+onMounted(() => {
+  shortcutTrigger?.removeAttribute('title');
+});
+
+onUnmounted(() => {
+  if (shortcutTrigger && typeof shortcutTitle === 'string' && !shortcutTrigger.hasAttribute('title')) {
+    shortcutTrigger.setAttribute('title', shortcutTitle);
+  }
+});
 </script>
 
 <template>
   <ElementConfig>
+    <Teleport v-if="shortcutTrigger" :to="shortcutTrigger">
+      <ElTooltip
+        :content="shortcutTitle?.trim()"
+        :enterable="false"
+        :hide-after="0"
+        :show-arrow="false"
+        popper-class="gzkp-tooltip-popper"
+      >
+        <un-i-mdi-apple-keyboard-command class="gzkp-shortcut-icon" aria-hidden="true" />
+      </ElTooltip>
+    </Teleport>
     <ElDropdown ref="feedbackDropdown" trigger="click" popper-class="gzkp-feedback-popper">
       <div>
         <ElTooltip
@@ -132,12 +156,19 @@ const openExtOptions = () => {
 </template>
 
 <style lang="scss">
+#gzkp-app-header .gzkp-header-icon,
+.top-navbar .gzk-nav-shortcuts > .gzk-shortcut-trigger:has(> .gzkp-shortcut-icon) {
+  color: var(--el-text-color-primary);
+  cursor: pointer;
+  transition: color 0.1s ease-in;
+}
+
 #gzkp-app-header {
   display: flex;
-  gap: 20px;
+  gap: var(--gzkp-header-icon-gap);
   align-items: center;
   height: var(--gzkp-top-navbar-height);
-  padding: 0 12px;
+  padding: 0 var(--gzkp-header-padding-inline);
 
   &:not(:has(un-i-mdi-bell-outline)) {
     > div:nth-child(2) {
@@ -146,13 +177,43 @@ const openExtOptions = () => {
   }
 
   .gzkp-header-icon {
-    font-size: 1.4em;
-    color: var(--el-text-color-primary);
-    cursor: pointer;
-    transition: color 0.1s ease-in;
+    font-size: var(--gzkp-header-icon-size);
+
+    &:is(:hover, :focus-visible) {
+      color: var(--gzkp-navbar-text-hover);
+    }
+  }
+}
+
+.top-navbar .gzk-nav-shortcuts {
+  &:has(> .gzk-shortcut-trigger > .gzkp-shortcut-icon) {
+    padding-block: calc((var(--gzkp-top-navbar-height) - var(--gzkp-header-icon-size)) / 2);
+  }
+
+  > .gzk-shortcut-trigger:has(> .gzkp-shortcut-icon) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--gzkp-header-icon-size);
+    height: var(--gzkp-header-icon-size);
+    padding: 0;
+    margin: 0 calc(var(--gzkp-header-icon-gap) - var(--gzkp-header-padding-inline)) 0 0;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
 
     &:hover {
       color: var(--gzkp-navbar-text-hover);
+    }
+
+    > svg {
+      display: none;
+    }
+
+    > .gzkp-shortcut-icon {
+      font-size: 1.3em;
     }
   }
 }
@@ -199,6 +260,10 @@ const openExtOptions = () => {
 }
 
 .navbar-right {
+  --gzkp-header-icon-gap: 20px;
+  --gzkp-header-icon-size: 1.4em;
+  --gzkp-header-padding-inline: 12px;
+
   position: relative;
 }
 

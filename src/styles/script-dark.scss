@@ -390,6 +390,89 @@ html[data-gzkp-theme] {
     }
   }
 
+  .gzk-shortcut-dialog {
+    color: var(--el-text-color-primary);
+    background-color: var(--el-bg-color);
+    border-color: var(--el-border-color);
+    box-shadow: var(--el-box-shadow);
+
+    &::backdrop {
+      background-color: var(--el-overlay-color-lighter);
+    }
+
+    .gzk-shortcut-header,
+    .gzk-shortcut-footer,
+    .gzk-shortcut-group,
+    .gzk-shortcut-group h3,
+    .gzk-shortcut-row {
+      border-color: var(--el-border-color-light);
+    }
+
+    .gzk-shortcut-header,
+    .gzk-shortcut-body,
+    .gzk-shortcut-footer,
+    .gzk-shortcut-group,
+    .gzk-shortcut-close {
+      background-color: transparent;
+    }
+
+    .gzk-shortcut-header h2,
+    .gzk-shortcut-group h3,
+    .gzk-shortcut-label {
+      color: var(--el-text-color-primary);
+    }
+
+    .gzk-shortcut-intro,
+    .gzk-shortcut-empty,
+    .gzk-shortcut-footer,
+    .gzk-shortcut-footer label,
+    .gzk-shortcut-label small,
+    .gzk-shortcut-keys,
+    .gzk-shortcut-close {
+      color: var(--el-text-color-secondary);
+    }
+
+    .gzk-shortcut-close:hover {
+      color: var(--el-text-color-primary);
+      background-color: var(--el-fill-color-light);
+    }
+
+    .gzk-shortcut-group h3,
+    .gzk-shortcut-keys kbd {
+      background-color: var(--el-fill-color-light);
+    }
+
+    .gzk-shortcut-keys kbd {
+      color: var(--el-text-color-regular);
+      border-color: var(--el-border-color);
+      box-shadow: none;
+    }
+
+    #gzk-shortcut-filter {
+      color: var(--el-text-color-primary);
+      background-color: var(--el-bg-color);
+      border-color: var(--el-border-color);
+
+      &::placeholder {
+        color: var(--el-text-color-secondary);
+      }
+
+      &:focus {
+        border-color: var(--el-color-primary);
+        outline: none;
+        box-shadow: none;
+      }
+    }
+
+    :is(button, input):focus-visible {
+      outline-color: var(--el-color-primary);
+    }
+
+    #gzk-shortcut-enabled {
+      accent-color: var(--el-color-primary);
+    }
+  }
+
   .sidebar-left .nav.nav-pills,
   .nav.nav-pills.gzk-home-tabs {
     > li {
