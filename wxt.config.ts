@@ -5,13 +5,14 @@ import MarkdownItTaskCheckbox from 'markdown-it-task-checkbox';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import Markdown from 'unplugin-vue-markdown/vite';
-import { defineConfig } from 'wxt';
+import { defineConfig, normalizePath } from 'wxt';
 
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { BILI_IMAGE_HOST_ORIGIN, BILI_IMAGE_PAGE_ORIGIN, DARK_MODE_CLASS, SM_IMAGE_HOST_ORIGIN } from './src/constants';
 import packageJson from './package.json';
+import { iconFiles } from './uno.config';
 
 import type { Wxt } from 'wxt';
 
@@ -121,6 +122,38 @@ export default defineConfig({
   },
   hooks: {
     ready: ensureBrowserProfile,
+    'vite:build:extendConfig': (entrypoints, config) => {
+      if (
+        !entrypoints.some((entrypoint) => {
+          return entrypoint.type === 'content-script';
+        })
+      ) {
+        return;
+      }
+
+      config.plugins?.push({
+        name: 'gzkp-icon-dependencies',
+        apply: (config) => {
+          return config.mode === 'development';
+        },
+        generateBundle(_options, bundle) {
+          for (const output of Object.values(bundle)) {
+            if (output.type !== 'chunk') {
+              continue;
+            }
+
+            const usesHeaderIcons = output.moduleIds.some((id: string) => {
+              return id.endsWith('/components/GzkHeader.vue');
+            });
+
+            if (usesHeaderIcons) {
+              // WXT uses chunk module IDs to decide which content scripts to rebuild.
+              output.moduleIds.push(...iconFiles.map(normalizePath));
+            }
+          }
+        },
+      });
+    },
   },
   vite: () => ({
     plugins: [
