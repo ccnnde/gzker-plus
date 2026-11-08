@@ -43,6 +43,10 @@ img[src^="https://img.whzxc.cn/bd"]
 }
 
 .top-navbar {
+  &.navbar .gzk-nav-shortcuts > .gzk-shortcut-trigger {
+    display: none !important;
+  }
+
   form.gzk-header-search {
     button,
     .gzk-search-symbol {

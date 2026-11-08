@@ -146,7 +146,7 @@ const isMsgUnread = (index: number): boolean => {
     @hide="handlePopoverHide"
   >
     <template #reference>
-      <div>
+      <div v-show="showBell">
         <ElTooltip
           v-if="showBell"
           :content="bellTip"
