@@ -19,6 +19,7 @@ import { getKeywordList, handleBlockKeyword } from './block-keyword';
 import { createUserInfoApp } from './float-user-info';
 import { createHeaderApp } from './header';
 import { createSearchApp } from './search';
+import { isolateForumShortcuts } from './shortcut-conflicts';
 import { createTopicApp } from './topic';
 
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
@@ -84,6 +85,7 @@ export const setupGzker = async (ctx: ContentScriptContext) => {
   const { options, blockedTopicList } = settings;
 
   createHeaderApp(pinia, ctx);
+  isolateForumShortcuts(ctx);
 
   if (options[OptionsKey.FloatUserInfo].checked) {
     createUserInfoApp(pinia, ctx);

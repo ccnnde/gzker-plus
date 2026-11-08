@@ -51,6 +51,7 @@ export const SELECTOR_NAVBAR_RIGHT = '.navbar-right';
 export const SELECTOR_THEME_SWITCH = '.gzk-nav-theme';
 
 export const SELECTOR_SHORTCUT_TRIGGER = `${SELECTOR_TOP_NAVBAR} .gzk-nav-shortcuts > .gzk-shortcut-trigger`;
+export const SELECTOR_OPEN_SHORTCUT_DIALOG = 'dialog#gzk-shortcut-dialog[open]';
 
 /**
  * 用户头像元素

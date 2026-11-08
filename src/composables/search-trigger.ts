@@ -27,6 +27,7 @@ export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOpti
   let originalInputExpanded: string | null = null;
   let originalMobileHasPopup: string | null = null;
   let originalMobileExpanded: string | null = null;
+  let isTriggerExpanded = false;
 
   const restoreAttribute = (element: Element, name: string, value: string | null) => {
     if (value === null) {
@@ -37,6 +38,7 @@ export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOpti
   };
 
   const setTriggerExpanded = (expanded: boolean) => {
+    isTriggerExpanded = expanded;
     const value = String(expanded);
 
     desktopSearchInput?.setAttribute('aria-expanded', value);
@@ -45,8 +47,21 @@ export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOpti
 
   const handleOpenTrigger = (event: Event) => {
     event.preventDefault();
+
+    if (isTriggerExpanded) {
+      return;
+    }
+
     blurActiveElement();
     onOpen();
+  };
+
+  const handleSearchInputFocus = () => {
+    desktopSearchInput?.blur();
+
+    if (!isTriggerExpanded) {
+      onOpen();
+    }
   };
 
   const createShortcutElement = (): HTMLSpanElement => {
@@ -77,6 +92,7 @@ export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOpti
       desktopSearchInput.setAttribute('aria-haspopup', 'dialog');
       desktopSearchInput.setAttribute('aria-expanded', 'false');
       desktopSearchForm.classList.add(SEARCH_FORM_ENHANCED_CLASS);
+      desktopSearchInput.addEventListener('focus', handleSearchInputFocus);
       desktopSearchForm.addEventListener('click', handleOpenTrigger);
       desktopSearchForm.addEventListener('submit', handleOpenTrigger);
 
@@ -95,6 +111,7 @@ export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOpti
 
   const removeSearchTriggers = () => {
     if (desktopSearchForm && desktopSearchInput) {
+      desktopSearchInput.removeEventListener('focus', handleSearchInputFocus);
       desktopSearchForm.removeEventListener('click', handleOpenTrigger);
       desktopSearchForm.removeEventListener('submit', handleOpenTrigger);
       desktopSearchForm.classList.remove(SEARCH_FORM_ENHANCED_CLASS);

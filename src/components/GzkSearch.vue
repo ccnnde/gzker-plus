@@ -16,6 +16,7 @@ import {
 } from '@/utils/search-history-store';
 import { INFINITE_SCROLL_LOAD_DISTANCE, SearchScope, topicLinkRegExp } from '@/constants';
 import { SEARCH_FILTER_INJECTION_KEY } from '@/constants/inject-key';
+import { SELECTOR_OPEN_SHORTCUT_DIALOG } from '@/constants/selector';
 
 import ElementConfig from './ElementConfig.vue';
 import GzkSearchFilter from './GzkSearchFilter.vue';
@@ -125,7 +126,13 @@ const loadNodeOptions = async () => {
   }
 };
 
-const openDialog = async () => {
+const openDialog = async (event?: KeyboardEvent) => {
+  if (hasVisibleBlockingOverlay()) {
+    return;
+  }
+
+  event?.preventDefault();
+
   if (!isOpen.value) {
     isOpen.value = true;
     setTriggerExpanded(true);
@@ -541,6 +548,10 @@ const handleDialogKeydown = (event: KeyboardEvent) => {
 };
 
 const hasVisibleBlockingOverlay = (): boolean => {
+  if (document.querySelector(SELECTOR_OPEN_SHORTCUT_DIALOG)) {
+    return true;
+  }
+
   return [...document.querySelectorAll<HTMLElement>('.el-overlay')].some((overlayElement) => {
     const isTopicPageOverlay = overlayElement.classList.contains('gzkp-topic-overlay');
     const isSearchOverlay = Boolean(overlayElement.querySelector('.gzkp-search-dialog'));
@@ -549,17 +560,16 @@ const hasVisibleBlockingOverlay = (): boolean => {
 };
 
 const handleGlobalKeydown = (event: KeyboardEvent) => {
+  if (document.querySelector(SELECTOR_OPEN_SHORTCUT_DIALOG)) {
+    return;
+  }
+
   const hasSingleSystemModifier = event.ctrlKey !== event.metaKey;
   const isSearchShortcut =
     hasSingleSystemModifier && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'k';
 
   if (isSearchShortcut) {
-    if (hasVisibleBlockingOverlay()) {
-      return;
-    }
-
-    event.preventDefault();
-    openDialog();
+    openDialog(event);
     return;
   }
 
@@ -568,9 +578,7 @@ const handleGlobalKeydown = (event: KeyboardEvent) => {
 
 const { setTriggerExpanded } = useSearchTrigger({
   shortcutLabel,
-  onOpen: () => {
-    openDialog();
-  },
+  onOpen: openDialog,
 });
 
 useReplyFocus();

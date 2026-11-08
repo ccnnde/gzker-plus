@@ -2,6 +2,7 @@ import { onUnmounted } from 'vue';
 
 import { isGlobalLoadingVisible } from '@/utils';
 import { isImgViewerVisible } from '@/utils/img-viewer';
+import { SELECTOR_OPEN_SHORTCUT_DIALOG } from '@/constants/selector';
 
 import type { Ref } from 'vue';
 import type { ElScrollbar } from 'element-plus';
@@ -20,6 +21,12 @@ interface UseTopicKeyboardScrollResult {
 
 const ARROW_SCROLL_DISTANCE = 50;
 
+const isKeyboardScrollBlocked = () => {
+  return (
+    isImgViewerVisible() || isGlobalLoadingVisible() || Boolean(document.querySelector(SELECTOR_OPEN_SHORTCUT_DIALOG))
+  );
+};
+
 export const useTopicKeyboardScroll = ({
   scrollbar,
   scrollToTop,
@@ -27,7 +34,7 @@ export const useTopicKeyboardScroll = ({
   scrollBy,
 }: UseTopicKeyboardScrollOptions): UseTopicKeyboardScrollResult => {
   const handleKeydown = (event: KeyboardEvent) => {
-    if (isImgViewerVisible() || isGlobalLoadingVisible()) {
+    if (isKeyboardScrollBlocked()) {
       return;
     }
 
