@@ -127,7 +127,7 @@ const openShortcuts = () => {
       :show-arrow="false"
       popper-class="gzkp-tooltip-popper"
     >
-      <un-i-mdi-cog-outline class="gzkp-header-icon" @click="openExtOptions" />
+      <div class="gzkp-header-icon i-gzkp-settings" @click="openExtOptions"></div>
     </ElTooltip>
     <ElTooltip
       :content="modeLabels[mode]"
