@@ -360,13 +360,36 @@ const handleTopicDialogOpened = () => {
   replyEditor.value?.generateCreateHistoryId();
 };
 
-const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
-  if (
+const isTopicDialogCloseBlocked = () => {
+  return (
     isImgViewerVisible() ||
     isGlobalLoadingVisible() ||
     replyEditor.value?.isEmojiPickerVisible() ||
     topicEditor.value?.isEmojiPickerVisible()
-  ) {
+  );
+};
+
+const handleTopicDialogEscape = (event: KeyboardEvent) => {
+  if (isTopicEditing.value || topicFooterVisible.value || event.defaultPrevented || event.isComposing) {
+    return;
+  }
+
+  if (isTopicDialogCloseBlocked()) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  if (event.repeat || replyEditor.value?.dismissSelectPicker()) {
+    return;
+  }
+
+  replyEditor.value?.closeEditor();
+};
+
+const handleTopicDialogBeforeClose: DialogBeforeCloseFn = (done) => {
+  if (isTopicDialogCloseBlocked()) {
     return;
   }
 
@@ -725,9 +748,10 @@ onUnmounted(() => {
       :show-close="false"
       :before-close="handleTopicDialogBeforeClose"
       :close-on-click-modal="!isTopicPage && closeOnClickModal"
-      :close-on-press-escape="isTopicEditing || !isTopicPage"
+      :close-on-press-escape="isTopicEditing || (!isTopicPage && topicFooterVisible)"
       :transition="{ name: 'gzkp-topic-dialog', css: false }"
       align-center
+      @keydown.esc.capture="handleTopicDialogEscape"
       @opened="handleTopicDialogOpened"
       @closed="handleTopicDialogClosed"
     >

@@ -117,6 +117,10 @@ const openEditor = () => {
   });
 };
 
+const dismissSelectPicker = () => {
+  return mentionPicker.value?.hidePicker() || weiboEmojiPicker.value?.hidePicker();
+};
+
 const closeEditor = () => {
   editorVisible.value = false;
 
@@ -299,6 +303,7 @@ defineExpose({
   editReply,
   clearContent,
   isEmojiPickerVisible,
+  dismissSelectPicker,
 });
 </script>
 

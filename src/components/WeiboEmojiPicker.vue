@@ -18,13 +18,14 @@ const handleHide = () => {
   emit('hide');
 };
 
-const { select, isPickerVisible, showPicker, handleFocus, handleVisibleChange } = useEditorPicker(
+const { select, isPickerVisible, showPicker, hidePicker, handleFocus, handleVisibleChange } = useEditorPicker(
   undefined,
   handleHide,
 );
 
 defineExpose({
   showPicker,
+  hidePicker,
 });
 </script>
 

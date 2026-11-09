@@ -141,6 +141,7 @@ const {
   select,
   isPickerVisible,
   showPicker: openPicker,
+  hidePicker,
   handleFocus,
   handleVisibleChange,
 } = useEditorPicker(undefined, handleHide);
@@ -152,6 +153,7 @@ const showPicker = () => {
 
 defineExpose({
   showPicker,
+  hidePicker,
 });
 </script>
 

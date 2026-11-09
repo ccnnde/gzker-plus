@@ -1,13 +1,18 @@
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 
 import type { SelectInstance } from 'element-plus';
 
 export const useEditorPicker = (handleSelect: ((val: string) => void) | undefined, handleHide: () => void) => {
   const select = ref<SelectInstance | null>(null);
   const isPickerVisible = ref(false);
+  let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
   onMounted(() => {
     initPicker();
+  });
+
+  onUnmounted(() => {
+    clearTimeout(hideTimer);
   });
 
   const initPicker = () => {
@@ -26,11 +31,24 @@ export const useEditorPicker = (handleSelect: ((val: string) => void) | undefine
   };
 
   const showPicker = () => {
+    clearTimeout(hideTimer);
     isPickerVisible.value = true;
 
     nextTick(() => {
       select.value?.focus();
     });
+  };
+
+  const hidePicker = () => {
+    if (!isPickerVisible.value) {
+      return false;
+    }
+
+    clearTimeout(hideTimer);
+    isPickerVisible.value = false;
+    select.value?.blur();
+    handleHide();
+    return true;
   };
 
   const handleFocus = () => {
@@ -40,20 +58,19 @@ export const useEditorPicker = (handleSelect: ((val: string) => void) | undefine
   };
 
   const handleVisibleChange = (visible: boolean) => {
-    if (visible) {
+    if (visible || !isPickerVisible.value) {
       return;
     }
 
-    setTimeout(() => {
-      isPickerVisible.value = false;
-      handleHide();
-    }, 250);
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hidePicker, 250);
   };
 
   return {
     select,
     isPickerVisible,
     showPicker,
+    hidePicker,
     handleFocus,
     handleVisibleChange,
   };
