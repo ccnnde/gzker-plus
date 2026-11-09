@@ -50,7 +50,7 @@ const getChromiumPreferences = (): Record<string, unknown> => {
   }
 };
 
-const getBrowserManifestFields = (browser: string) => {
+const getBrowserManifestFields = (browser: string, wxtRequiresScripting: boolean) => {
   const permissions = [...extensionPermissions];
 
   if (browser === 'firefox') {
@@ -67,7 +67,7 @@ const getBrowserManifestFields = (browser: string) => {
 
   return {
     permissions,
-    optional_permissions: [...optionalPermissions, 'scripting'],
+    optional_permissions: wxtRequiresScripting ? [...optionalPermissions] : [...optionalPermissions, 'scripting'],
     optional_host_permissions: [...imageHostingOrigins],
   };
 };
@@ -203,11 +203,11 @@ export default defineConfig({
       }),
     ],
   }),
-  manifest: ({ browser, manifestVersion }) => ({
+  manifest: ({ browser, command, manifestVersion }) => ({
     name: '过早客 Plus',
     description: packageJson.description,
     version: packageJson.version,
-    ...getBrowserManifestFields(browser),
+    ...getBrowserManifestFields(browser, command === 'serve' && manifestVersion === 3),
     icons: {
       16: 'icon/16.png',
       32: 'icon/32.png',
