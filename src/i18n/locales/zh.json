@@ -68,7 +68,7 @@
     },
     "enhancedSearch": {
       "title": "搜索增强",
-      "titleDesc": "优化导航栏搜索框样式，以及支持搜索历史"
+      "titleDesc": "按 / 打开站内搜索弹窗，可搜索标题、正文或回复，支持节点筛选、搜索历史和键盘导航"
     },
     "enhancedTopic": {
       "title": "主题增强",

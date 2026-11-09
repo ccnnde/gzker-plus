@@ -68,7 +68,7 @@
     },
     "enhancedSearch": {
       "title": "Enhanced Search",
-      "titleDesc": "Enhance the navbar search box style and support search history"
+      "titleDesc": "Press / to open forum search. Search titles, topic content, or replies, with node filters, search history, and keyboard navigation."
     },
     "enhancedTopic": {
       "title": "Enhanced Topic",
