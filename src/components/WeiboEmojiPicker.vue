@@ -18,10 +18,15 @@ const handleHide = () => {
   emit('hide');
 };
 
-const { select, isPickerVisible, showPicker, hidePicker, handleFocus, handleVisibleChange } = useEditorPicker(
-  undefined,
-  handleHide,
-);
+const {
+  select,
+  isPickerVisible,
+  popperStyle,
+  showPicker,
+  hidePicker,
+  handleFocus,
+  handleVisibleChange, //
+} = useEditorPicker(undefined, handleHide);
 
 defineExpose({
   showPicker,
@@ -35,6 +40,7 @@ defineExpose({
     ref="select"
     :placeholder="$t('enhancedTopic.selectWeiboEmoji')"
     popper-class="gzkp-editor-picker-popper"
+    :popper-style="popperStyle"
     filterable
     automatic-dropdown
     default-first-option

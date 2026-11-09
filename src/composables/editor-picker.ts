@@ -1,10 +1,17 @@
-import { nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 
+import type { CSSProperties } from 'vue';
 import type { SelectInstance } from 'element-plus';
 
 export const useEditorPicker = (handleSelect: ((val: string) => void) | undefined, handleHide: () => void) => {
   const select = ref<SelectInstance | null>(null);
   const isPickerVisible = ref(false);
+
+  const popperStyle = computed<CSSProperties>(() => {
+    // The teleported menu can still be leaving after the select is hidden.
+    return isPickerVisible.value ? {} : { visibility: 'hidden' };
+  });
+
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
   onMounted(() => {
@@ -69,6 +76,7 @@ export const useEditorPicker = (handleSelect: ((val: string) => void) | undefine
   return {
     select,
     isPickerVisible,
+    popperStyle,
     showPicker,
     hidePicker,
     handleFocus,

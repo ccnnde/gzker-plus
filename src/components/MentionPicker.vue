@@ -140,6 +140,7 @@ const handleHide = () => {
 const {
   select,
   isPickerVisible,
+  popperStyle,
   showPicker: openPicker,
   hidePicker,
   handleFocus,
@@ -163,9 +164,10 @@ defineExpose({
     ref="select"
     :placeholder="$t('enhancedTopic.mentionWho')"
     :filter-method="filterUsers"
-    :loading="isSearching"
+    :loading="isSearching && matchingUsers.length === 0"
     :aria-busy="isSearching"
     popper-class="gzkp-editor-picker-popper"
+    :popper-style="popperStyle"
     placement="top-start"
     :fallback-placements="[]"
     filterable
