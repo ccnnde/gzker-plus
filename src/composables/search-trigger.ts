@@ -8,7 +8,6 @@ const SHORTCUT_ELEMENT_CLASS = 'gzkp-search-shortcut';
 const SEARCH_FORM_ENHANCED_CLASS = 'gzkp-search-enhanced';
 
 interface UseSearchTriggerOptions {
-  shortcutLabel: string;
   onOpen: () => void;
 }
 
@@ -16,7 +15,7 @@ interface UseSearchTriggerResult {
   setTriggerExpanded: (expanded: boolean) => void;
 }
 
-export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOptions): UseSearchTriggerResult => {
+export const useSearchTrigger = ({ onOpen }: UseSearchTriggerOptions): UseSearchTriggerResult => {
   let desktopSearchForm: HTMLFormElement | null = null;
   let desktopSearchInput: HTMLInputElement | null = null;
   let mobileSearchLink: HTMLAnchorElement | null = null;
@@ -66,14 +65,16 @@ export const useSearchTrigger = ({ shortcutLabel, onOpen }: UseSearchTriggerOpti
 
   const createShortcutElement = (): HTMLSpanElement => {
     const element = document.createElement('span');
-    const modifierElement = document.createElement('kbd');
     const keyElement = document.createElement('kbd');
+    const iconElement = document.createElement('span');
 
     element.className = SHORTCUT_ELEMENT_CLASS;
     element.setAttribute('aria-hidden', 'true');
-    modifierElement.textContent = shortcutLabel;
-    keyElement.textContent = 'K';
-    element.append(modifierElement, keyElement);
+    iconElement.className = 'i-gzkp-slash';
+
+    keyElement.append(iconElement);
+    element.append(keyElement);
+
     return element;
   };
 

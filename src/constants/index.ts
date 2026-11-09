@@ -228,6 +228,8 @@ export const enum ReplyOrder {
   Desc = 'desc',
 }
 
+export const SEARCH_SHORTCUT_KEY = '/';
+
 export const enum SearchScope {
   All = 'all',
   Title = 'title',

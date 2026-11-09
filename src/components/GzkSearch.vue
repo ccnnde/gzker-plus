@@ -7,14 +7,14 @@ import { useSearchFilters } from '@/composables/search-filters';
 import { useSearchTrigger } from '@/composables/search-trigger';
 import { t } from '@/i18n';
 import { getSearchNodeOptions, searchTopic } from '@/api';
-import { checkMacOS } from '@/utils';
+import { isForumShortcutEvent } from '@/utils/forum-shortcuts';
 import {
   addSearchHistory,
   clearSearchHistory,
   deleteSearchHistory,
   getAllSearchHistory,
 } from '@/utils/search-history-store';
-import { INFINITE_SCROLL_LOAD_DISTANCE, SearchScope, topicLinkRegExp } from '@/constants';
+import { INFINITE_SCROLL_LOAD_DISTANCE, SEARCH_SHORTCUT_KEY, SearchScope, topicLinkRegExp } from '@/constants';
 import { SEARCH_FILTER_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_OPEN_SHORTCUT_DIALOG } from '@/constants/selector';
 
@@ -53,7 +53,6 @@ const { filters, getFilterKey, getSearchParams, validateDateRange, resetFilterVa
 
 provide(SEARCH_FILTER_INJECTION_KEY, searchFilters);
 
-const shortcutLabel = checkMacOS() ? '⌘' : 'Ctrl';
 const isTopicPage = topicLinkRegExp.test(window.location.pathname);
 const isResultMode = computed(() => submittedQuery.value !== '');
 
@@ -534,6 +533,10 @@ const handleDialogKeydown = (event: KeyboardEvent) => {
     return;
   }
 
+  if (document.querySelector(SELECTOR_OPEN_SHORTCUT_DIALOG)) {
+    return;
+  }
+
   if (event.key === 'Enter' && isSearchInputTarget(event.target)) {
     event.preventDefault();
     submitSearch();
@@ -559,25 +562,16 @@ const hasVisibleBlockingOverlay = (): boolean => {
   });
 };
 
-const handleGlobalKeydown = (event: KeyboardEvent) => {
-  if (document.querySelector(SELECTOR_OPEN_SHORTCUT_DIALOG)) {
+const handleSearchShortcut = (event: KeyboardEvent) => {
+  if (event.key !== SEARCH_SHORTCUT_KEY || event.shiftKey || !isForumShortcutEvent(event)) {
     return;
   }
 
-  const hasSingleSystemModifier = event.ctrlKey !== event.metaKey;
-  const isSearchShortcut =
-    hasSingleSystemModifier && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'k';
-
-  if (isSearchShortcut) {
-    openDialog(event);
-    return;
-  }
-
-  handleDialogKeydown(event);
+  // Prevent the forum's own slash handler from handling the same event.
+  openDialog(event);
 };
 
 const { setTriggerExpanded } = useSearchTrigger({
-  shortcutLabel,
   onOpen: openDialog,
 });
 
@@ -589,14 +583,16 @@ watch(activeIndex, async () => {
 });
 
 onMounted(() => {
-  document.addEventListener('keydown', handleGlobalKeydown);
+  window.addEventListener('keydown', handleSearchShortcut, true);
+  document.addEventListener('keydown', handleDialogKeydown);
 });
 
 onUnmounted(() => {
   searchController?.abort();
   nextPageController?.abort();
   nodesController?.abort();
-  document.removeEventListener('keydown', handleGlobalKeydown);
+  window.removeEventListener('keydown', handleSearchShortcut, true);
+  document.removeEventListener('keydown', handleDialogKeydown);
 });
 </script>
 
@@ -784,8 +780,10 @@ onUnmounted(() => {
           </template>
           <span class="gzkp-search-footer__spacer"></span>
           <span class="gzkp-search-footer__hint">
-            <kbd class="gzkp-search-keycap">{{ shortcutLabel }}</kbd>
-            <kbd class="gzkp-search-keycap">K</kbd>
+            <kbd class="gzkp-search-keycap">
+              <span class="i-gzkp-slash" role="img" :aria-label="SEARCH_SHORTCUT_KEY"></span>
+            </kbd>
+            <span>{{ $t('search.shortPlaceholder') }}</span>
           </span>
         </footer>
       </template>
