@@ -390,10 +390,18 @@ html[data-gzkp-theme] {
     }
   }
 
-  .gzk-shortcut-dialog {
+  .gzk-shortcut-dialog,
+  .gzk-shortcut-status {
     color: var(--el-text-color-primary);
     background-color: var(--el-bg-color);
     border-color: var(--el-border-color);
+  }
+
+  .gzk-shortcut-status {
+    box-shadow: var(--el-box-shadow-lighter);
+  }
+
+  .gzk-shortcut-dialog {
     box-shadow: var(--el-box-shadow);
 
     &::backdrop {
@@ -527,6 +535,11 @@ html[data-gzkp-theme] {
 
   .usercard,
   .user-page .profile {
+    .ui-header .website > a,
+    .ui-content dl > dd > a {
+      color: var(--el-color-primary);
+    }
+
     .ui-header {
       color: var(--el-text-color-primary) !important;
       text-shadow: none;
@@ -572,10 +585,6 @@ html[data-gzkp-theme] {
   }
 
   .user-page .profile {
-    .ui-content dl > dd.gzk-previous-nickname {
-      color: inherit;
-    }
-
     .gzk-profile-actions {
       .gzk-profile-action {
         color: var(--el-color-primary) !important;
@@ -615,6 +624,11 @@ html[data-gzkp-theme] {
         background: var(--el-color-primary-light-8);
       }
     }
+  }
+
+  .usercard.gzk-home-usercard,
+  .sidebar-right .user-page > .usercard {
+    overflow: hidden;
   }
 
   .usercard .gzk-dm-dual-card {

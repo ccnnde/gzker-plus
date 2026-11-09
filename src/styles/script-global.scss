@@ -220,6 +220,18 @@ form.gzk-header-search.gzkp-search-enhanced {
   }
 }
 
+.user-page .profile .ui-content dl {
+  > dt:has(+ dd.gzk-previous-nickname),
+  > dd.gzk-previous-nickname {
+    padding-block-start: 5px;
+  }
+
+  > dd.gzk-previous-nickname {
+    font-size: inherit;
+    color: inherit;
+  }
+}
+
 .gzkp-hide-topic {
   height: 100%;
 
