@@ -759,28 +759,28 @@ onUnmounted(() => {
           <span v-if="isResultMode" class="gzkp-search-footer__stats">{{ resultStats }}</span>
           <template v-else>
             <span class="gzkp-search-footer__hint">
-              <kbd class="gzkp-search-keycap gzkp-search-keycap--icon">
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--square">
                 <un-i-mdi-arrow-up />
               </kbd>
-              <kbd class="gzkp-search-keycap gzkp-search-keycap--icon">
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--square">
                 <un-i-mdi-arrow-down />
               </kbd>
               <span>{{ $t('search.navigate') }}</span>
             </span>
             <span class="gzkp-search-footer__hint">
-              <kbd class="gzkp-search-keycap gzkp-search-keycap--icon">
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--square">
                 <un-i-mdi-keyboard-return />
               </kbd>
               <span>{{ $t('search.confirm') }}</span>
             </span>
             <span class="gzkp-search-footer__hint">
-              <kbd class="gzkp-search-keycap">ESC</kbd>
+              <kbd class="gzkp-search-keycap gzkp-search-keycap--square gzkp-search-keycap--escape">ESC</kbd>
               <span>{{ $t('search.close') }}</span>
             </span>
           </template>
           <span class="gzkp-search-footer__spacer"></span>
           <span class="gzkp-search-footer__hint">
-            <kbd class="gzkp-search-keycap">
+            <kbd class="gzkp-search-keycap gzkp-search-keycap--square">
               <span class="i-gzkp-slash" role="img" :aria-label="SEARCH_SHORTCUT_KEY"></span>
             </kbd>
             <span>{{ $t('search.shortPlaceholder') }}</span>
@@ -849,7 +849,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   min-height: 58px;
-  padding: 0 20px;
+  padding: 0 18px 0 20px;
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
@@ -942,7 +942,7 @@ onUnmounted(() => {
   gap: 16px;
   align-items: center;
   min-height: 48px;
-  padding: 8px 16px 8px 26px;
+  padding: 8px 16px 8px 24px;
 }
 
 .gzkp-search-content__title {
@@ -1006,7 +1006,7 @@ onUnmounted(() => {
 
 .gzkp-search-history {
   gap: 0;
-  padding: 0 16px 12px 14px;
+  padding: 0 16px 12px;
 }
 
 .gzkp-search-results {
@@ -1019,7 +1019,7 @@ onUnmounted(() => {
   gap: 8px;
   align-items: center;
   min-height: 42px;
-  padding: 4px 0 4px 12px;
+  padding: 4px 0 4px 10px;
   color: inherit;
   text-align: left;
   cursor: pointer;
@@ -1037,6 +1037,7 @@ onUnmounted(() => {
 .gzkp-search-history__icon {
   width: 16px;
   height: 16px;
+  margin-left: -3px;
   color: var(--el-text-color-secondary);
 }
 
@@ -1130,7 +1131,7 @@ onUnmounted(() => {
   gap: 16px;
   align-items: center;
   min-height: 44px;
-  padding: 0 20px;
+  padding: 0 22px 0 24px;
   font-size: 12px;
   color: var(--el-text-color-secondary);
   background: var(--el-bg-color-overlay);
@@ -1175,9 +1176,20 @@ onUnmounted(() => {
   border-color: var(--el-border-color-dark);
 }
 
-.gzkp-search-keycap--icon {
-  width: auto;
-  font-size: 13px;
+.gzkp-search-keycap--square {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 14px;
+}
+
+.gzkp-search-keycap--escape {
+  font-size: 9px;
+  letter-spacing: -0.25px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1210,7 +1222,6 @@ onUnmounted(() => {
 
   .gzkp-search-content__header {
     gap: 8px;
-    padding-inline: 16px;
   }
 
   .gzkp-search-content__actions {
@@ -1218,7 +1229,7 @@ onUnmounted(() => {
   }
 
   .gzkp-search-tools {
-    padding-inline: 12px;
+    padding-inline-start: 14px;
   }
 
   .gzkp-search-scope-tabs {
