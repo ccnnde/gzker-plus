@@ -917,7 +917,7 @@ html[data-gzkp-theme] {
         background-color: var(--gzkp-topic-hover-bg-color);
       }
 
-      .title a {
+      .title :where(a) {
         color: var(--el-text-color-regular);
         text-shadow: none;
       }

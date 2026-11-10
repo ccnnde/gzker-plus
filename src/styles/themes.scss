@@ -7,6 +7,7 @@ html {
   --gzkp-qq-group-qrcode: url('@/assets/img/qq-group-qrcode.webp');
   --gzkp-topic-tag-bg-color: var(--el-fill-color-light);
   --gzkp-topic-tag-text-color: var(--el-text-color-primary);
+  --gzkp-topic-visited-text-color: #949494;
   --gzkp-search-highlight-color: #d93025;
 
   &::selection {
@@ -16,6 +17,7 @@ html {
 
 html[data-gzkp-theme] {
   --el-fill-color-blank: transparent;
+  --gzkp-topic-visited-text-color: color-mix(in srgb, var(--el-text-color-placeholder) 80%, var(--el-bg-color));
   --gzkp-search-highlight-color: var(--el-color-primary-dark-2);
 
   .markdown-body,

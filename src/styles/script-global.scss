@@ -345,6 +345,14 @@ html {
     outline: none;
   }
 
+  .topics {
+    .topic-item {
+      .title a:visited {
+        color: var(--gzkp-topic-visited-text-color);
+      }
+    }
+  }
+
   .btn-default,
   .btn-primary,
   .btn-success,
