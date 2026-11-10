@@ -637,14 +637,12 @@ html[data-gzkp-theme] {
 
     .gzk-dm-card-half,
     .gzk-points-card {
-      color: var(--el-text-color-regular) !important;
       text-shadow: none;
       background: transparent;
       border-color: var(--el-border-color-light);
       box-shadow: none;
 
       &:hover {
-        color: var(--el-color-primary) !important;
         background: var(--el-fill-color-light);
       }
     }
@@ -653,10 +651,16 @@ html[data-gzkp-theme] {
       background: var(--el-border-color-light);
     }
 
+    .gzk-dm-card-half {
+      color: var(--el-color-primary) !important;
+      text-decoration: none;
+    }
+
+    .gzk-points-card,
     .gzk-points-card-value,
     .gzk-dm-points-label,
     .gzk-point-icon {
-      color: var(--el-color-primary);
+      color: var(--el-color-danger) !important;
     }
 
     .gzk-points-card-unit {
