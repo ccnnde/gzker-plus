@@ -129,7 +129,11 @@ const CONFIG_OPTION_VALIDATORS: Record<OptionsKey, ConfigOptionValidator> = {
     ]);
   },
   [OptionsKey.ImageHosting]: (value) => {
-    return hasOptionalEnumValue(value, 'platform', [ImageHostingPlatform.Smms, ImageHostingPlatform.Bili]);
+    return hasOptionalEnumValue(value, 'platform', [
+      ImageHostingPlatform.Gzk,
+      ImageHostingPlatform.Smms,
+      ImageHostingPlatform.Bili,
+    ]);
   },
   [OptionsKey.TopicKeywordBlock]: (value) => {
     return hasOptionalStringValue(value, 'keywords');

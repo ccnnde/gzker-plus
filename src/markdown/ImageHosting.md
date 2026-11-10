@@ -1,6 +1,12 @@
+## 过早客图床
+
+首次使用前，请在 [过早客图片托管设置](https://www.guozaoke.com/setting/image-host) 绑定 ImgURL Token
+
+之后即可在扩展编辑器中上传图片，图片由你的 ImgURL 账号公开托管
+
 ## BiliBili 图床配置
 
-推荐使用该图床，只需登录 <https://www.bilibili.com> 即可（首次传图需要）
+只需登录 <https://www.bilibili.com> 即可（首次传图需要）
 
 在【哔哩图床】页面中可以对已上传的图片进行搜索、删除等操作（仅影响本地的历史记录，不会删除已经上传到服务器的图片）
 
@@ -71,7 +77,9 @@ Token 过期时间选择 **No expiration（永不过期）**
 
 ## 编辑器上传图片
 
-支持以下方式进行图片上传（**批量上传最多 5 张图片，每张图片最大不能超过 5MB**，BiliBili 图床无此限制）
+过早客图床每批最多 9 张，每张最大 10 MB。SM\.MS 图床每批最多 5 张，每张最大 5 MB。BiliBili 图床无此限制
+
+支持以下方式进行图片上传
 
 ![smms-editor](../assets/img/smms-editor.webp)
 

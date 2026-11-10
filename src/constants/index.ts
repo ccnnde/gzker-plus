@@ -7,6 +7,8 @@ import type { ElementPositionAndSize, Options, StorageSettings } from '@/types';
  */
 export const GZK_URL = 'https://www.guozaoke.com';
 
+export const GZK_IMAGE_HOST_SETTINGS_URL = `${GZK_URL}/setting/image-host`;
+
 /**
  * 过早客论坛地址匹配模式
  */
@@ -192,6 +194,7 @@ export const enum NoticeKind {
 }
 
 export const enum ImageHostingPlatform {
+  Gzk = 'gzk',
   Smms = 'smms',
   Bili = 'bili',
 }
@@ -316,7 +319,7 @@ export const defaultExtensionOptions: Options = {
     checkedGzkInfoTypes: [],
   },
   [OptionsKey.ImageHosting]: {
-    platform: ImageHostingPlatform.Bili,
+    platform: ImageHostingPlatform.Gzk,
   },
   [OptionsKey.TopicKeywordBlock]: {
     keywords: '',

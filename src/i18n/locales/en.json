@@ -91,6 +91,7 @@
       "permissionRequestFailed": "Failed to request access to the image host",
       "platform": {
         "bili": "BiliBili",
+        "gzk": "Gzker",
         "smms": "SM.MS"
       },
       "title": "Select Image Hosting",
@@ -256,6 +257,7 @@
     "cannotReplyByLockedPost": "This post has been locked and cannot be replied to",
     "cannotUploadByBiliLogout": "You are not logged into the BiliBili website, unable to upload images. Please click the OK button to open BiliBili and log in",
     "cannotUploadByEmptyApiKey": "API Key for the image hosting is not configured, unable to upload pictures. Please click the OK button to view the configuration instructions",
+    "cannotUploadByGzkBinding": "ImgURL isn’t linked, or its token has expired. Click OK to open Gzker image host settings, then link ImgURL and reupload",
     "cannotUploadBySmmsUnauthorized": "SM.MS image hosting API Key has expired or is invalid, unable to upload pictures. Please click the OK button to view the configuration instructions and reconfigure",
     "clickNumber": "Read",
     "collapseReplies": "Hide replies",
@@ -347,8 +349,8 @@
   },
   "imageHostPermission": {
     "allow": "Allow and continue upload",
-    "alternativeBili": "BiliBili is another option; sign-in and permission are required. Reupload after switching.",
-    "alternativeSmms": "SM.MS (S.EE) is another option; it needs an API key and permission. Reupload after switching.",
+    "alternativeBili": "You can switch to Gzker (link ImgURL, no browser permission needed) or BiliBili (sign-in and browser permission required). Reupload after switching",
+    "alternativeSmms": "You can switch to Gzker (link ImgURL, no browser permission needed) or SM.MS (S.EE) (API key and browser permission required). Reupload after switching",
     "denied": "Image hosting permission was not granted. Try again or cancel this upload.",
     "description": "Uploading images to {platform} requires browser permission. The upload will continue after you allow it.",
     "requestFailed": "Permission request failed. Please try again.",

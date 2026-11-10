@@ -392,6 +392,12 @@ export interface Keybindings {
   [key: string]: ((e: KeyboardEvent) => void) | undefined;
 }
 
+export interface GzkImageResponse<T> {
+  ok: boolean;
+  error?: string;
+  data?: T;
+}
+
 export interface SMApiResponse<T> {
   success: boolean;
   code: number;

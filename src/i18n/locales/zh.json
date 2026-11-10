@@ -91,6 +91,7 @@
       "permissionRequestFailed": "请求图床网站访问权限失败",
       "platform": {
         "bili": "BiliBili 图床",
+        "gzk": "过早客图床",
         "smms": "SM.MS 图床"
       },
       "title": "选择图床",
@@ -256,6 +257,7 @@
     "cannotReplyByLockedPost": "本帖已锁，无法回复",
     "cannotUploadByBiliLogout": "未登录 BiliBili 网站，无法上传图片。请点击确定按钮打开 BiliBili 并登录",
     "cannotUploadByEmptyApiKey": "未配置图床的 API Key，无法上传图片。请点击确定按钮查看配置说明",
+    "cannotUploadByGzkBinding": "尚未绑定 ImgURL，或 Token 已失效。请点击确定打开过早客图床设置，完成绑定后重新上传",
     "cannotUploadBySmmsUnauthorized": "SM.MS 图床 API Key 已过期或无效，无法上传图片。请点击确定按钮查看配置说明并重新配置",
     "clickNumber": "阅读",
     "collapseReplies": "收起回复",
@@ -347,8 +349,8 @@
   },
   "imageHostPermission": {
     "allow": "允许并继续上传",
-    "alternativeBili": "也可改用 BiliBili 图床（需登录并授权）。切换后请重新上传图片。",
-    "alternativeSmms": "也可改用 SM.MS（S.EE）图床（需配置 API Key 并授权）。切换后请重新上传图片。",
+    "alternativeBili": "可改用过早客图床（需绑定 ImgURL，无需浏览器授权），或 BiliBili 图床（需登录并授权）。切换后请重新上传图片",
+    "alternativeSmms": "可改用过早客图床（需绑定 ImgURL，无需浏览器授权），或 SM.MS（S.EE）图床（需配置 API Key 并授权）。切换后请重新上传图片",
     "denied": "未授予图床权限，可以重试或取消本次上传。",
     "description": "上传图片到 {platform} 需要浏览器授予相应权限。授权后会继续本次上传。",
     "requestFailed": "权限申请失败，请重试。",

@@ -6,6 +6,13 @@ import { browser } from 'wxt/browser';
 
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
+import {
+  checkGzkImageBinding,
+  GZK_IMG_MAX_NUM,
+  GZK_IMG_MAX_SIZE,
+  GzkImageUploadError,
+  uploadGzkImage,
+} from '@/api/gzk-img';
 import { IMG_MAX_NUM, IMG_MAX_SIZE } from '@/api/sm-img';
 import { checkMacOS, fileToBase64 } from '@/utils';
 import { mountBilibiliPlayers } from '@/utils/bilibili-player';
@@ -17,6 +24,7 @@ import { resolveMentionBindings } from '@/utils/reply-mention-binding';
 import { ensurePermission } from '@/utils/upload-permission';
 import {
   ExtensionMessageType,
+  GZK_IMAGE_HOST_SETTINGS_URL,
   ImageHostingPlatform,
   LOADING_BACKGROUND_DARK,
   OptionsKey,
@@ -381,6 +389,33 @@ const keybindings: Keybindings = {
 };
 
 const imgFileUploadStatusMap: Map<File, CherryFileUploadStatus> = new Map();
+let gzkUploadBatch: { bindingCheck: Promise<void>; queue: AbortController } | undefined;
+
+const handleImgUploadError = (error: unknown) => {
+  if (error instanceof GzkImageUploadError && error.isBindingError) {
+    shouldOpenGzkBindingConfirm = true;
+    return;
+  }
+
+  const message = error instanceof Error ? error.message : '';
+
+  if (isBiliImgHosting && message.includes('账号未登录')) {
+    shouldOpenBiliLoginConfirm = true;
+    return;
+  }
+
+  if (imgHostingPlatform === ImageHostingPlatform.Smms && message.includes('401 Unauthorized')) {
+    shouldOpenSmmsAuthConfirm = true;
+    return;
+  }
+
+  ElMessage.error({
+    message: t('enhancedTopic.uploadFailed'),
+    grouping: true,
+  });
+
+  console.error(error);
+};
 
 const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
   const errMsg = validateImgFile(file);
@@ -394,14 +429,18 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
     return;
   }
 
-  if (!(await ensureUploadPermission())) {
-    return;
-  }
+  let apiKey: string | undefined;
 
-  const apiKey = await getApiKey();
+  if (!isGzkImgHosting) {
+    if (!(await ensureUploadPermission())) {
+      return;
+    }
 
-  if (!apiKey) {
-    return;
+    apiKey = await getApiKey();
+
+    if (!apiKey) {
+      return;
+    }
   }
 
   const capacityError = validateImgUploadCapacity();
@@ -423,36 +462,37 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
   });
 
   try {
-    const msg: ExtensionMessage = {
-      msgType: uploadImgMsgType,
-      imgFile: {
-        name: file.name,
-        type: file.type,
-        base64Str: await fileToBase64(file),
-      },
-      apiKey,
-    };
+    let imgUrl: string;
 
-    const imgUrl = await browser.runtime.sendMessage(msg);
+    if (isGzkImgHosting) {
+      gzkUploadBatch ??= {
+        bindingCheck: checkGzkImageBinding(),
+        queue: new AbortController(),
+      };
+
+      await gzkUploadBatch.bindingCheck;
+
+      imgUrl = await uploadGzkImage(file, gzkUploadBatch.queue);
+    } else {
+      const msg: ExtensionMessage = {
+        msgType: uploadImgMsgType,
+        imgFile: {
+          name: file.name,
+          type: file.type,
+          base64Str: await fileToBase64(file),
+        },
+        apiKey,
+      };
+
+      imgUrl = await browser.runtime.sendMessage(msg);
+    }
+
     const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
-    uploadStatus.uploadedCallback = () => callback(imgUrl);
-  } catch (err) {
-    if (isBiliImgHosting && (err as Error).message.includes('账号未登录')) {
-      shouldOpenBiliLoginConfirm = true;
-      return;
-    }
-
-    if (!isBiliImgHosting && (err as Error).message.includes('401 Unauthorized')) {
-      shouldOpenSmmsAuthConfirm = true;
-      return;
-    }
-
-    ElMessage.error({
-      message: t('enhancedTopic.uploadFailed'),
-      grouping: true,
-    });
-
-    console.error(err);
+    uploadStatus.uploadedCallback = () => {
+      callback(imgUrl);
+    };
+  } catch (error) {
+    handleImgUploadError(error);
   } finally {
     const uploadStatus = imgFileUploadStatusMap.get(file) as CherryFileUploadStatus;
     uploadStatus.done = true;
@@ -462,6 +502,7 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
     if (uploadedFileNum === imgFileUploadStatusMap.size) {
       imgFileUploadStatusMap.forEach((item) => item.uploadedCallback?.());
       imgFileUploadStatusMap.clear();
+      gzkUploadBatch = undefined;
 
       if (isBiliImgHosting) {
         const msg: ExtensionMessage = {
@@ -473,7 +514,21 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
 
       loading.close();
 
-      if (shouldOpenBiliLoginConfirm) {
+      if (shouldOpenGzkBindingConfirm) {
+        shouldOpenGzkBindingConfirm = false;
+
+        try {
+          await ElMessageBox.confirm(t('enhancedTopic.cannotUploadByGzkBinding'), t('common.warning'), {
+            type: 'warning',
+            autofocus: false,
+            closeOnClickModal: false,
+          });
+
+          window.open(GZK_IMAGE_HOST_SETTINGS_URL, '_blank', 'noopener');
+        } catch {
+          ElMessage(t('common.canceled'));
+        }
+      } else if (shouldOpenBiliLoginConfirm) {
         shouldOpenBiliLoginConfirm = false;
 
         try {
@@ -512,15 +567,17 @@ const handleImgFileUpload: CherryFileUploadHandler = async (file, callback) => {
 };
 
 const storage = useStorageStore();
-const imgHostingPlatform = storage.options?.[OptionsKey.ImageHosting].platform;
+const imgHostingPlatform = storage.options?.[OptionsKey.ImageHosting].platform ?? ImageHostingPlatform.Gzk;
+const isGzkImgHosting = imgHostingPlatform === ImageHostingPlatform.Gzk;
 const isBiliImgHosting = imgHostingPlatform === ImageHostingPlatform.Bili;
 const uploadImgMsgType = isBiliImgHosting ? ExtensionMessageType.UploadBiliImg : ExtensionMessageType.UploadImg;
 let shouldOpenBiliLoginConfirm = false;
+let shouldOpenGzkBindingConfirm = false;
 let shouldOpenSmmsAuthConfirm = false;
 let isApiKeyConfirmShown = false;
 const ensureUploadPermission = async (): Promise<boolean> => {
   try {
-    const capability = getUploadCapability(imgHostingPlatform ?? ImageHostingPlatform.Bili);
+    const capability = getUploadCapability(imgHostingPlatform);
     return await ensurePermission(capability);
   } catch (error) {
     console.error(error);
@@ -577,20 +634,31 @@ const validateImgFile = (file: File): string => {
   }
 
   const imgFileSize = file.size / 1024 / 1024;
+  const maxSize = isGzkImgHosting ? GZK_IMG_MAX_SIZE : IMG_MAX_SIZE;
 
-  if (imgFileSize > IMG_MAX_SIZE) {
-    return t('enhancedTopic.uploadImgMaxSize', { size: IMG_MAX_SIZE });
+  if (imgFileSize > maxSize) {
+    return t('enhancedTopic.uploadImgMaxSize', { size: maxSize });
   }
 
   return validateImgUploadCapacity();
 };
 
 const validateImgUploadCapacity = (): string => {
-  if (!isBiliImgHosting && imgFileUploadStatusMap.size >= IMG_MAX_NUM) {
-    return t('enhancedTopic.uploadImgMaxNum', { num: IMG_MAX_NUM });
+  const maxNum = isGzkImgHosting ? GZK_IMG_MAX_NUM : IMG_MAX_NUM;
+
+  if (!isBiliImgHosting && imgFileUploadStatusMap.size >= maxNum) {
+    return t('enhancedTopic.uploadImgMaxNum', { num: maxNum });
   }
 
   return '';
+};
+
+const stopForumFileEvent = (event: ClipboardEvent | DragEvent) => {
+  const data = event instanceof ClipboardEvent ? event.clipboardData : event.dataTransfer;
+
+  if (event.target instanceof HTMLTextAreaElement && data?.files.length) {
+    event.stopPropagation();
+  }
 };
 
 const handleContentChange: CherryLifecycle = (text) => {
@@ -755,7 +823,12 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="mdEditorEl" :class="['content-editor-container', { 'is-focus': isEditorFocused }]"></div>
+  <div
+    ref="mdEditorEl"
+    :class="['content-editor-container', { 'is-focus': isEditorFocused }]"
+    @paste="stopForumFileEvent"
+    @drop="stopForumFileEvent"
+  ></div>
   <EditorHistory
     ref="editorHistory"
     :editor-history-type="editorHistoryType"
