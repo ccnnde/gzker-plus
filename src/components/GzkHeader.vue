@@ -8,6 +8,10 @@ import { t } from '@/i18n';
 import { DarkMode, ExtensionMessageType, OptionsKey } from '@/constants';
 import { SELECTOR_SHORTCUT_TRIGGER } from '@/constants/selector';
 
+import themeMoonIcon from '@/assets/icons/theme-moon.svg?raw';
+import themeSunIcon from '@/assets/icons/theme-sun.svg?raw';
+import themeSystemIcon from '@/assets/icons/theme-system.svg?raw';
+
 import ElementConfig from './ElementConfig.vue';
 import MessageBell from './MessageBell.vue';
 
@@ -34,10 +38,10 @@ const modeLabels = computed(() => {
   };
 });
 
-const modeIconClasses = {
-  [DarkMode.On]: 'i-gzkp-theme-moon',
-  [DarkMode.Off]: 'i-gzkp-theme-sun',
-  [DarkMode.System]: 'i-gzkp-theme-system',
+const modeIcons = {
+  [DarkMode.On]: themeMoonIcon,
+  [DarkMode.Off]: themeSunIcon,
+  [DarkMode.System]: themeSystemIcon,
 };
 
 const cycleMode = () => {
@@ -137,10 +141,11 @@ const openShortcuts = () => {
       popper-class="gzkp-tooltip-popper"
     >
       <div
-        :class="['gzkp-header-icon', modeIconClasses[mode]]"
+        class="gzkp-header-icon gzkp-header-theme-icon"
         @click="cycleMode"
         @keydown.enter.prevent="cycleMode"
         @keydown.space.prevent="cycleMode"
+        v-html="modeIcons[mode]"
       ></div>
     </ElTooltip>
   </ElementConfig>
@@ -163,6 +168,12 @@ const openShortcuts = () => {
     &:is(:hover, :focus-visible) {
       color: var(--gzkp-navbar-text-hover);
     }
+  }
+
+  .gzkp-header-theme-icon > svg {
+    display: block;
+    width: 1em;
+    height: 1em;
   }
 }
 
