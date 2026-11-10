@@ -371,10 +371,19 @@ html {
   }
 
   /*
-   * 覆盖论坛 [tabindex]:focus:not(:focus-visible) 的 box-shadow: none !important。
-   * 防止点击筛选浮层空白或快捷时间项后阴影消失，恢复 Element Plus 默认阴影。
+   * 论坛焦点规则的 box-shadow: none !important 会清掉 Element Plus 浮层的阴影。
+   * 例如点击搜索筛选浮层的空白区域或快捷时间项后，浮层获得焦点，阴影随即消失。
+   * 在该焦点状态下恢复各组件的默认阴影。
    */
-  .gzkp-search-filter-popover.el-popover:focus:not(:focus-visible) {
+  .el-dialog[tabindex]:focus:not(:focus-visible) {
+    box-shadow: var(--el-dialog-box-shadow) !important;
+  }
+
+  .el-dropdown__popper.el-popper:focus:not(:focus-visible) {
+    box-shadow: var(--el-dropdown-menu-box-shadow) !important;
+  }
+
+  .el-popover.el-popper:focus:not(:focus-visible) {
     box-shadow: var(--el-box-shadow-light) !important;
   }
 }
