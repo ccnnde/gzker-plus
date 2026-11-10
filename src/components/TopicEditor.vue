@@ -21,7 +21,7 @@ import { DialogType } from '@/constants';
 
 import TopicEditorPanel from './TopicEditorPanel.vue';
 
-import type { CascaderProps, DialogBeforeCloseFn } from 'element-plus';
+import type { CascaderNode, CascaderProps, DialogBeforeCloseFn } from 'element-plus';
 import type { EditHistoryItem, TopicForm, TreeNode, UserTopicDetail } from '@/types';
 
 interface Props {
@@ -64,6 +64,10 @@ const nodeList = ref<TreeNode[]>([]);
 const cascaderProps: CascaderProps = {
   expandTrigger: 'hover',
   emitPath: false,
+};
+
+const filterNode = (node: CascaderNode, keyword: string) => {
+  return node.text.toLowerCase().includes(keyword.toLowerCase());
 };
 
 const editorTitle = computed(() => {
@@ -316,6 +320,8 @@ defineExpose({
           v-model="topicForm.node"
           :options="nodeList"
           :props="cascaderProps"
+          :filter-method="filterNode"
+          filterable
           size="large"
         />
       </div>
