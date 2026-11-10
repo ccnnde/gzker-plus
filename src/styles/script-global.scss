@@ -2,7 +2,8 @@
 @import 'mixin';
 
 html.gzkp-theme-controlled[data-theme='light']:not([data-gzkp-theme]) body {
-  form.setting a.btn-danger[href$='/delete'] {
+  form.setting a.btn-danger[href$='/delete'],
+  .container-box a.btn-primary {
     color: #fff;
   }
 }
