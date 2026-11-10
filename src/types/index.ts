@@ -325,7 +325,7 @@ export interface MentionRepliesTarget {
 
 export interface MentionRepliesController {
   hide: (referenceElement: HTMLAnchorElement) => void;
-  show: (target: MentionRepliesTarget) => void;
+  show: (event: MouseEvent | FocusEvent, target: MentionRepliesTarget) => void;
 }
 
 export interface MentionRepliesResult {

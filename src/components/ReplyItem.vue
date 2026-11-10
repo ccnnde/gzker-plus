@@ -91,7 +91,7 @@ const handleMentionEnter = (event: MouseEvent | FocusEvent) => {
     return;
   }
 
-  mentionReplies?.show({
+  mentionReplies?.show(event, {
     replyId: props.replyId,
     replyNo: props.replyNo,
     mention,

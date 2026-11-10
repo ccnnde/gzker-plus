@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { inject, nextTick, onUnmounted, ref, watch } from 'vue';
 
+import { usePopoverTrigger } from '@/composables/popover-trigger';
 import { REPLY_HOVER_INJECTION_KEY } from '@/constants/inject-key';
 import { SELECTOR_USER_INFO_TRIGGER } from '@/constants/selector';
 
@@ -81,6 +82,8 @@ const close = () => {
   visible.value = false;
 };
 
+const canOpen = usePopoverTrigger(close);
+
 const scheduleShow = () => {
   if (showTimer !== undefined) {
     return;
@@ -158,7 +161,7 @@ const handleTriggerEnter = (event: MouseEvent | FocusEvent) => {
 
   const triggerElement = getTriggerElement(event.target);
 
-  if (!triggerElement || isSameTriggerTarget(triggerElement, event.relatedTarget)) {
+  if (!triggerElement || isSameTriggerTarget(triggerElement, event.relatedTarget) || !canOpen(event)) {
     return;
   }
 
@@ -190,7 +193,7 @@ const handleTriggerLeave = (event: MouseEvent | FocusEvent) => {
     focusedTrigger = relatedTriggerElement;
   }
 
-  if (relatedTriggerElement) {
+  if (relatedTriggerElement && canOpen(event)) {
     show(relatedTriggerElement);
     return;
   }
@@ -269,16 +272,11 @@ watch(
   },
 );
 
-onMounted(() => {
-  window.addEventListener('blur', close);
-});
-
 onUnmounted(() => {
   if (props.container) {
     removeContainerListeners(props.container);
   }
 
-  window.removeEventListener('blur', close);
   close();
 });
 </script>

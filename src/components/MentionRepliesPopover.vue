@@ -3,6 +3,7 @@ import { computed, inject, nextTick, onMounted, onUnmounted, provide, ref, watch
 import { ElScrollbar } from 'element-plus';
 import { debounce } from 'lodash-es';
 
+import { usePopoverTrigger } from '@/composables/popover-trigger';
 import { useScrollbar } from '@/composables/scrollbar';
 import { getReplyKey } from '@/utils';
 import { viewerOptions, vViewer } from '@/utils/img-viewer';
@@ -12,7 +13,7 @@ import { REPLY_HOVER_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/con
 import MentionReplyItem from './MentionReplyItem.vue';
 
 import type Viewer from 'viewerjs';
-import type { UserReplyItem } from '@/types';
+import type { MentionRepliesResult, UserReplyItem } from '@/types';
 
 interface Props {
   zIndex?: number;
@@ -99,6 +100,8 @@ const close = () => {
   positionReady.value = false;
   visible.value = false;
 };
+
+const canOpen = usePopoverTrigger(close);
 
 watch(
   () => replyHover?.disabled.value,
@@ -342,7 +345,15 @@ const popoverViewerOptions: Viewer.Options = {
   hidden: handleImageViewerHidden,
 };
 
-const show = (targetElement: HTMLAnchorElement, nextReplies: UserReplyItem[], nextFocusReplyNo?: string) => {
+const show = (
+  event: MouseEvent | FocusEvent,
+  targetElement: HTMLAnchorElement,
+  { replies: nextReplies, focusReplyNo: nextFocusReplyNo }: MentionRepliesResult,
+) => {
+  if (!canOpen(event)) {
+    return;
+  }
+
   clearShowTimer();
 
   if (!targetElement.isConnected) {
