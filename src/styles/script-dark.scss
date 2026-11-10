@@ -768,6 +768,10 @@ html[data-gzkp-theme] {
       }
     }
 
+    .dm-wrap .dm-list.panel {
+      overflow: hidden;
+    }
+
     .dm-wrap textarea {
       color: var(--el-text-color-regular);
       background: var(--el-fill-color-lighter);
@@ -776,6 +780,25 @@ html[data-gzkp-theme] {
       &::placeholder {
         color: var(--el-text-color-secondary);
         opacity: 1;
+      }
+    }
+
+    @media (forced-colors: none) {
+      .dm-wrap #message-text:focus {
+        border-color: var(--el-color-primary);
+        outline: none;
+      }
+
+      .dm-wrap #message-text::-webkit-resizer {
+        background: linear-gradient(
+            to bottom right,
+            transparent 50%,
+            currentcolor 51% 58%,
+            transparent 59% 72%,
+            currentcolor 73% 80%,
+            transparent 81%
+          )
+          right 3px bottom 3px / 10px 10px no-repeat;
       }
     }
 
