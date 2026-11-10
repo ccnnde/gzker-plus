@@ -107,32 +107,32 @@ Firefox: <https://addons.mozilla.org/zh-CN/firefox/addon/gzker-plus>
     <td>浏览主题</td>
   </tr>
   <tr>
-    <td><img src=".github/images/gzk-setting.png" alt="gzk-setting" /></td>
-    <td><img src=".github/images/user-topic.gif" alt="user-topic" /></td>
+    <td><img src="./assets/screenshots/gzk-setting.png" alt="gzk-setting" /></td>
+    <td><img src="./assets/screenshots/user-topic.gif" alt="user-topic" /></td>
   </tr>
   <tr>
     <td>浏览图片</td>
     <td>编辑内容</td>
   </tr>
   <tr>
-    <td><img src=".github/images/img-viewer.gif" alt="img-viewer" /></td>
-    <td><img src=".github/images/content-editor.png" alt="content-editor" /></td>
+    <td><img src="./assets/screenshots/img-viewer.gif" alt="img-viewer" /></td>
+    <td><img src="./assets/screenshots/content-editor.png" alt="content-editor" /></td>
   </tr>
   <tr>
     <td>上传图片</td>
     <td>插入表情</td>
   </tr>
   <tr>
-    <td><img src=".github/images/upload-img.gif" alt="upload-img" /></td>
-    <td><img src=".github/images/insert-emoji.png" alt="insert-emoji" /></td>
+    <td><img src="./assets/screenshots/upload-img.gif" alt="upload-img" /></td>
+    <td><img src="./assets/screenshots/insert-emoji.png" alt="insert-emoji" /></td>
   </tr>
   <tr>
     <td>历史记录</td>
     <td>论坛主题</td>
   </tr>
   <tr>
-    <td><img src=".github/images/editor-history.gif" alt="editor-history" /></td>
-    <td><img src=".github/images/forum-theme.gif" alt="forum-theme" /></td>
+    <td><img src="./assets/screenshots/editor-history.gif" alt="editor-history" /></td>
+    <td><img src="./assets/screenshots/forum-theme.gif" alt="forum-theme" /></td>
   </tr>
 </table>
 
