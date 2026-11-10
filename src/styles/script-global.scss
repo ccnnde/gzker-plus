@@ -345,6 +345,12 @@ html {
     outline: none;
   }
 
+  .usercard .gzk-dm-dual-card {
+    a.gzk-dm-card-half {
+      text-decoration: none;
+    }
+  }
+
   .topics {
     .topic-item {
       .title a:visited {
