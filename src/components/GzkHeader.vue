@@ -152,34 +152,13 @@ const openShortcuts = () => {
 </template>
 
 <style lang="scss">
-#gzkp-app-header {
-  display: flex;
-  gap: var(--gzkp-header-icon-gap);
-  align-items: center;
-  height: var(--gzkp-top-navbar-height);
-  padding: 0 var(--gzkp-header-padding-inline);
-
-  .gzkp-header-icon {
-    font-size: var(--gzkp-header-icon-size);
-    color: var(--el-text-color-primary);
-    cursor: pointer;
-    transition: color 0.1s ease-in;
-
-    &:is(:hover, :focus-visible) {
-      color: var(--gzkp-navbar-text-hover);
-    }
-  }
-
-  .gzkp-header-theme-icon > svg {
-    display: block;
-    width: 1em;
-    height: 1em;
-  }
-}
-
 .gzkp-feedback-popper {
+  .el-scrollbar__wrap {
+    max-height: calc(100dvh - 72px);
+  }
+
   .el-dropdown-menu__item {
-    &:has(.gzkp-feedback-link) {
+    &:has(.gzkp-feedback-link, .gzkp-qq-group-qrcode) {
       padding: 0;
     }
 
@@ -199,12 +178,8 @@ const openShortcuts = () => {
       color: var(--el-color-primary);
     }
 
-    &:has(.gzkp-qq-group-qrcode) {
-      padding: 0;
-
-      &:not(.is-disabled):focus {
-        background-color: transparent;
-      }
+    &:has(.gzkp-qq-group-qrcode):not(.is-disabled):focus {
+      background-color: transparent;
     }
   }
 }
@@ -216,20 +191,5 @@ const openShortcuts = () => {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-}
-
-.navbar-right {
-  --gzkp-header-icon-gap: 20px;
-  --gzkp-header-icon-size: 1.4em;
-  --gzkp-header-padding-inline: 12px;
-
-  position: relative;
-}
-
-.gzkp-theme-controlled {
-  .gzk-nav-theme > [data-gzk-theme-toggle],
-  .gzk-night-notice {
-    display: none !important;
-  }
 }
 </style>

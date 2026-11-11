@@ -252,6 +252,10 @@ const isMsgUnread = (index: number): boolean => {
 </template>
 
 <style lang="scss">
+.gzkp-dark-popper.el-popover:has(> .message-list-header) {
+  max-width: calc(100vw - 24px);
+}
+
 a.notification-indicator {
   &.contextually-unread {
     padding-left: 0;

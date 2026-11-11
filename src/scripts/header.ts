@@ -7,14 +7,25 @@ import type { Pinia } from 'pinia';
 import type { CreateScriptApp } from '@/types';
 
 export const createHeaderApp: CreateScriptApp = (pinia: Pinia, context) => {
-  const id = APP_ROOT_CLASS_PREFIX + 'header';
   const navBarRight = document.querySelector(SELECTOR_NAVBAR_RIGHT);
+
+  if (!navBarRight) {
+    return;
+  }
+
+  const toolbar = document.createElement('li');
+  const themeSwitch = navBarRight.querySelector(SELECTOR_THEME_SWITCH);
+  toolbar.className = 'gzkp-header-item';
+  navBarRight.insertBefore(toolbar, themeSwitch);
 
   createScriptApp({
     root: GzkHeader,
     pinia,
     context,
-    containerId: id,
-    containerParentNode: navBarRight?.querySelector(SELECTOR_THEME_SWITCH) ?? navBarRight,
+    containerId: APP_ROOT_CLASS_PREFIX + 'header',
+    containerParentNode: toolbar,
+    onRemove: () => {
+      toolbar.remove();
+    },
   });
 };
