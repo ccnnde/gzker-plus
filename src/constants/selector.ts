@@ -18,6 +18,11 @@ export const SELECTOR_USER_LINK = 'a[href^="/u/"]:not([href*="?p="])';
 export const SELECTOR_USER_DISPLAY_NAME = 'a.gzk-display-name[href^="/u/"]';
 
 /**
+ * 旧版用户名链接元素（存在显示名链接时属于重复内容）
+ */
+export const SELECTOR_USER_LEGACY_ID = 'a.gzk-legacy-id';
+
+/**
  * 用户页中的私信链接元素
  */
 export const SELECTOR_PROFILE_DIRECT_MESSAGE_LINK = 'a.gzk-dm-profile-link';

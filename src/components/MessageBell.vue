@@ -192,7 +192,7 @@ const isMsgUnread = (index: number): boolean => {
             <div class="message-main">
               <div class="message-title">
                 <a v-if="item.replyType" class="message-link" :href="item.userLink" target="_blank">
-                  {{ item.uid }}
+                  {{ item.displayName || item.uid }}
                 </a>
                 <template v-if="item.replyType === ReplyType.Topic">
                   <span class="message-action">{{ $t('enhancedMsg.replyYou') }}</span>
@@ -210,7 +210,7 @@ const isMsgUnread = (index: number): boolean => {
                 <span v-else @click="handleTitleClick">
                   <template v-for="(part, partIndex) in item.titleParts" :key="partIndex">
                     <a v-if="part.href" class="message-link" :href="part.href" target="_blank">{{ part.text }}</a>
-                    <template v-else>{{ part.text }}</template>
+                    <span v-else-if="part.text" class="message-action">{{ part.text }}</span>
                   </template>
                 </span>
               </div>

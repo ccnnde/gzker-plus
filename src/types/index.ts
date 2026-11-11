@@ -218,6 +218,7 @@ export interface Coordinates {
 
 export interface UserMessage {
   uid?: string;
+  displayName?: string;
   userLink?: string;
   avatarUrl?: string;
   noticeKind?: string;

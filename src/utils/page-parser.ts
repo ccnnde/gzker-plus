@@ -7,6 +7,8 @@ import {
   SELECTOR_CREDIT_LEVEL,
   SELECTOR_PROFILE_DIRECT_MESSAGE_LINK,
   SELECTOR_TOPIC_LINK,
+  SELECTOR_USER_DISPLAY_NAME,
+  SELECTOR_USER_LEGACY_ID,
   SELECTOR_USER_LINK,
 } from '@/constants/selector';
 
@@ -131,10 +133,15 @@ const parseProfileStatistic = (statistics: Element | null, selector: string) => 
   };
 };
 
+const isRedundantLegacyIdLink = (node: Element): boolean => {
+  const nextElement = node.nextElementSibling;
+  return node.matches(SELECTOR_USER_LEGACY_ID) && nextElement?.matches(SELECTOR_USER_DISPLAY_NAME) === true;
+};
+
 const getMessageTitleParts = (element: Element | null): MetadataLink[] => {
   return Array.from(element?.childNodes || []).flatMap((node): MetadataLink[] => {
     if (node.nodeType === Node.TEXT_NODE) {
-      return [{ text: node.textContent || '' }];
+      return [{ text: node.textContent?.trim() || '' }];
     }
 
     if (!(node instanceof Element) || node.matches('script, style')) {
@@ -142,6 +149,10 @@ const getMessageTitleParts = (element: Element | null): MetadataLink[] => {
     }
 
     if (node.matches('a')) {
+      if (isRedundantLegacyIdLink(node)) {
+        return [];
+      }
+
       const url = getForumUrl(node.getAttribute('href'));
 
       return [
@@ -259,12 +270,14 @@ export const parseUserMessageList = (htmlStr: string): UserMessage[] => {
     const titleElement = messageElement.querySelector('.main .title');
     const avatarElement = messageElement.querySelector<HTMLImageElement>(':scope > a > img.avatar');
     const userElement = titleElement?.querySelector<HTMLAnchorElement>(SELECTOR_USER_LINK);
+    const displayNameElement = titleElement?.querySelector<HTMLAnchorElement>(SELECTOR_USER_DISPLAY_NAME);
     const userLink = userElement?.getAttribute('href') || undefined;
     const topicElement = titleElement?.querySelector<HTMLAnchorElement>(SELECTOR_TOPIC_LINK);
     const noticeKind = messageElement.getAttribute('data-notice-kind') || undefined;
 
     return {
-      uid: userLink?.match(/^\/u\/(.+)$/)?.[1],
+      uid: displayNameElement?.dataset.username?.trim() || userLink?.match(/^\/u\/(.+)$/)?.[1],
+      displayName: displayNameElement?.dataset.displayName?.trim() || undefined,
       userLink,
       avatarUrl: avatarElement?.getAttribute('src') || undefined,
       noticeKind,
