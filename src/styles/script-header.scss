@@ -15,8 +15,50 @@
     display: none !important;
   }
 
-  .gzk-mobile-account .gzk-menu-edit {
-    display: none;
+  .gzk-mobile-account {
+    .gzk-menu-edit {
+      display: none;
+    }
+
+    .gzk-menu-person {
+      width: var(--gzkp-header-icon-size);
+      height: var(--gzkp-header-icon-size);
+      stroke-width: 2.4;
+      transition: color 0.1s ease-in;
+
+      html[data-gzkp-theme] & {
+        color: var(--el-text-color-primary);
+      }
+    }
+
+    summary:is(:hover, :focus-visible) > .gzk-menu-person {
+      color: var(--gzkp-navbar-text-hover);
+    }
+  }
+
+  .gzk-mobile-account .gzk-avatar-menu > .gzk-avatar-menu-panel {
+    padding-block: 4px;
+    background-color: var(--el-bg-color-overlay);
+    border-color: var(--el-border-color-light);
+    border-radius: var(--el-border-radius-base);
+    box-shadow: var(--el-box-shadow-light);
+
+    > a {
+      padding-block: 7px;
+      color: var(--el-text-color-primary);
+      text-decoration: none;
+      border-radius: var(--el-border-radius-small);
+
+      &:is(:hover, :focus-visible) {
+        color: var(--el-text-color-primary);
+        background-color: var(--el-color-primary-light-9);
+      }
+
+      &:focus-visible {
+        outline: 1px solid var(--el-color-primary);
+        outline-offset: -1px;
+      }
+    }
   }
 
   .gzk-search-symbol {
@@ -152,7 +194,7 @@
   }
 
   .navbar-right {
-    gap: 4px;
+    gap: var(--gzkp-header-button-gap);
     margin-inline-start: auto;
   }
 
@@ -272,6 +314,10 @@
     .navbar-right > .gzk-mobile-account summary {
       width: 36px;
     }
+  }
+
+  .navbar-right > .gzk-mobile-account summary:has(> .gzk-menu-person) {
+    width: var(--gzkp-header-button-width);
   }
 }
 
