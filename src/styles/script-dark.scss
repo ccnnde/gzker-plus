@@ -916,6 +916,15 @@ html[data-gzkp-theme] {
         background-color: var(--gzkp-topic-hover-bg-color);
       }
 
+      &.gzk-paid-pinned {
+        .gzk-promotion-label {
+          color: var(--el-color-primary);
+          text-shadow: none;
+          background-color: transparent;
+          border-color: var(--el-color-primary);
+        }
+      }
+
       .title :where(a) {
         color: var(--el-text-color-regular);
         text-shadow: none;
