@@ -4,7 +4,11 @@ import scrollIntoView from 'scroll-into-view-if-needed';
 
 import { getReplyKey, handleReplyLike } from '@/utils';
 import { NestedReplyDisplay } from '@/constants';
-import { REPLY_HOVER_INJECTION_KEY, UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
+import {
+  REPLY_FOCUS_ID_INJECTION_KEY,
+  REPLY_HOVER_INJECTION_KEY,
+  UPDATE_SCROLLBAR_INJECTION_KEY,
+} from '@/constants/inject-key';
 
 import ReplyItem from './ReplyItem.vue';
 
@@ -25,6 +29,18 @@ const hasRenderedReplies = ref(false);
 const toggleButton = ref<HTMLButtonElement | null>(null);
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 const replyHover = inject(REPLY_HOVER_INJECTION_KEY);
+const replyFocusId = inject(REPLY_FOCUS_ID_INJECTION_KEY);
+
+const containsReply = (nodes: UserReplyTreeNode[], replyId: string): boolean => {
+  return nodes.some((node) => {
+    return node.reply.replyId === replyId || containsReply(node.children, replyId);
+  });
+};
+
+const containsFocusedReply = computed(() => {
+  const replyId = replyFocusId?.value;
+  return props.node.depth === 0 && Boolean(replyId && containsReply(props.node.children, replyId));
+});
 
 const countDescendantReplies = (nodes: UserReplyTreeNode[]): number => {
   return nodes.reduce((count, node) => {
@@ -83,6 +99,16 @@ watch(
 
     if (expanded) {
       hasRenderedReplies.value = true;
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  containsFocusedReply,
+  (containsReply) => {
+    if (containsReply && !isExpanded.value) {
+      toggleReplies();
     }
   },
   { immediate: true },

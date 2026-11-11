@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onUnmounted, provide, ref } from 'vue';
+import { computed, nextTick, onBeforeMount, onUnmounted, provide, ref } from 'vue';
+import { until } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { debounce } from 'lodash-es';
 
 import { useClickModal } from '@/composables/click-modal';
 import { useDialog } from '@/composables/dialog';
+import { focusRenderedReply } from '@/composables/reply-focus';
 import { useRequest } from '@/composables/request';
 import { useTopicHostNavigation } from '@/composables/topic-host-navigation';
 import { useTopicKeyboardScroll } from '@/composables/topic-keyboard-scroll';
@@ -39,6 +41,7 @@ import { DialogType, INFINITE_SCROLL_LOAD_DISTANCE, LinkElementType, OptionsKey,
 import {
   ADD_REPLY_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
+  REPLY_FOCUS_ID_INJECTION_KEY,
   REPLY_HOVER_INJECTION_KEY,
   UPDATE_SCROLLBAR_INJECTION_KEY,
 } from '@/constants/inject-key';
@@ -148,6 +151,61 @@ const {
   options,
   topicContainer,
 });
+
+const replyFocusId = ref<string>();
+
+provide(REPLY_FOCUS_ID_INJECTION_KEY, replyFocusId);
+
+const focusTopicReply = async (replyId: string) => {
+  const currentTopicId = topicId.value;
+
+  if (!currentTopicId || replyFocusId.value) {
+    return;
+  }
+
+  replyFocusId.value = replyId;
+
+  try {
+    if (onlyOriginalPoster.value && !displayedReplyList.value.some((reply) => reply.replyId === replyId)) {
+      await handleToggleOriginalPoster();
+    }
+
+    await until(() => {
+      return isTopicPreloadLoading.value || isReplyFirstPageLoading.value || isReplyNextPageLoading.value;
+    }).toBe(false, { timeout: 10_000 });
+
+    while (dialogVisible.value && topicId.value === currentTopicId) {
+      await nextTick();
+
+      if (!dialogVisible.value || topicId.value !== currentTopicId) {
+        return;
+      }
+
+      if (topicContainer.value && focusRenderedReply(topicContainer.value, replyId)) {
+        const hash = `#r${replyId}`;
+
+        if (isTopicPage.value && window.location.hash !== hash) {
+          window.history.pushState(window.history.state, '', hash);
+        }
+
+        return;
+      }
+
+      const loadedCount = effectiveReplyList.value.length;
+      await getNextReplyData();
+
+      if (effectiveReplyList.value.length <= loadedCount) {
+        break;
+      }
+    }
+
+    if (dialogVisible.value && topicId.value === currentTopicId) {
+      ElMessage.warning(t('enhancedTopic.bounty.replyUnavailable'));
+    }
+  } finally {
+    replyFocusId.value = undefined;
+  }
+};
 
 const handleReplyScrollEnd = (direction: ScrollbarDirection) => {
   if (direction !== 'bottom' || disableReplyInfiniteScroll.value) {
@@ -769,7 +827,7 @@ onUnmounted(() => {
       >
         <ElScrollbar ref="scrollbar" :distance="INFINITE_SCROLL_LOAD_DISTANCE" @end-reached="handleReplyScrollEnd">
           <div ref="topicContainer" v-viewer="viewerOptions" class="topic-container" :style="topicContainerStyle">
-            <TopicDetail v-if="topicDetail" v-bind="topicDetail" />
+            <TopicDetail v-if="topicDetail" v-bind="topicDetail" :topic-id="topicId" @focus-reply="focusTopicReply" />
             <ElDivider v-if="topicDetail" border-style="dashed">
               <un-i-mdi-comment-processing-outline class="comment-icon" />
             </ElDivider>

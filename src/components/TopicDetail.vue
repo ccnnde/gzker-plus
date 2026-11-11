@@ -6,11 +6,19 @@ import { convertEmojiToNative } from '@/utils/emoji';
 import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
+import TopicBounty from './TopicBounty.vue';
 import UserAvatar from './UserAvatar.vue';
 
 import type { UserTopicDetail } from '@/types';
 
-const props = defineProps<UserTopicDetail>();
+interface Props extends UserTopicDetail {
+  topicId?: string;
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<{
+  focusReply: [replyId: string];
+}>();
 
 const postedAtTitle = computed(() => {
   const parts = props.meta?.postedAt?.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/);
@@ -84,6 +92,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
       class="main-content markdown-body"
       v-html="linkifyContent(convertEmojiToNative(content) || '')"
     ></section>
+    <TopicBounty v-if="bounty" :bounty="bounty" :topic-id="topicId" @focus-reply="emit('focusReply', $event)" />
     <div v-if="editInfo || tags?.length" class="topic-detail-extra">
       <div v-if="editInfo" class="topic-detail-edit-info">{{ editInfo }}</div>
       <div v-if="tags?.length" class="topic-detail-tags">

@@ -242,6 +242,14 @@ export interface MetadataLink {
   title?: string;
 }
 
+export interface TopicBounty {
+  amount: number;
+  status?: string;
+  deadline?: string;
+  acceptedReplyId?: string;
+  disputeAction?: string;
+}
+
 export interface UserTopicDetail {
   editInfo?: string;
   tags?: { name: string; href: string }[];
@@ -261,6 +269,7 @@ export interface UserTopicDetail {
     lastReplyTime?: string;
   };
   content?: string;
+  bounty?: TopicBounty;
   favorited?: boolean;
   favoriteNumber?: string;
   liked?: boolean;
@@ -288,6 +297,7 @@ export interface UserReplyItem {
   avatarUrl?: string;
   isOriginalPoster?: boolean;
   isAdministrator?: boolean;
+  isBountyAccepted?: boolean;
   replyId?: string;
   replyNo?: string;
   replyTime?: string;

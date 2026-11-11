@@ -1,11 +1,44 @@
 import { onMounted, onUnmounted } from 'vue';
 
+import { SELECTOR_ENHANCED_REPLY_ITEM } from '@/constants/selector';
+
 const REPLY_FLASH_CLASS = 'gzkp-reply-item-flash';
 const REPLY_FOCUS_TIMEOUT = 10_000;
 
 interface UseReplyFocusResult {
   focusReplyFromHash: () => void;
 }
+
+const focusReplyElement = (replyElement: HTMLElement) => {
+  replyElement.scrollIntoView({ block: 'center' });
+  replyElement.classList.remove(REPLY_FLASH_CLASS);
+
+  window.requestAnimationFrame(() => {
+    replyElement.classList.add(REPLY_FLASH_CLASS);
+  });
+  replyElement.addEventListener(
+    'animationend',
+    () => {
+      replyElement.classList.remove(REPLY_FLASH_CLASS);
+    },
+    { once: true },
+  );
+};
+
+export const focusRenderedReply = (container: ParentNode, replyId: string): boolean => {
+  const replyElement = Array.from(container.querySelectorAll<HTMLElement>(SELECTOR_ENHANCED_REPLY_ITEM)).find(
+    (element) => {
+      return element.dataset.gzkpReplyId === replyId && element.getClientRects().length > 0;
+    },
+  );
+
+  if (!replyElement) {
+    return false;
+  }
+
+  focusReplyElement(replyElement);
+  return true;
+};
 
 export const useReplyFocus = (): UseReplyFocusResult => {
   let replyFocusObserver: MutationObserver | undefined;
@@ -22,17 +55,6 @@ export const useReplyFocus = (): UseReplyFocusResult => {
     return window.location.hash.match(/^#(?:r|reply-)(\d+)$/)?.[1];
   };
 
-  const focusReplyElement = (replyElement: HTMLElement) => {
-    replyElement.scrollIntoView({ block: 'center' });
-    replyElement.classList.remove(REPLY_FLASH_CLASS);
-    window.requestAnimationFrame(() => {
-      replyElement.classList.add(REPLY_FLASH_CLASS);
-    });
-    replyElement.addEventListener('animationend', () => replyElement.classList.remove(REPLY_FLASH_CLASS), {
-      once: true,
-    });
-  };
-
   const focusReplyFromHash = () => {
     clearReplyFocus();
 
@@ -45,13 +67,10 @@ export const useReplyFocus = (): UseReplyFocusResult => {
     let nativeReplyFocused = false;
 
     const focusReply = (): boolean => {
-      const enhancedReplyElement = document.querySelector<HTMLElement>(
-        `.gzkp-topic-dialog [data-gzkp-reply-id="${replyId}"]`,
-      );
+      const dialog = document.querySelector('.gzkp-topic-dialog');
 
-      if (enhancedReplyElement) {
+      if (dialog && focusRenderedReply(dialog, replyId)) {
         clearReplyFocus();
-        focusReplyElement(enhancedReplyElement);
         return true;
       }
 

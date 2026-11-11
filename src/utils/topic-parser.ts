@@ -1,10 +1,49 @@
 import { parseMetadataLink } from '@/utils';
-import { SELECTOR_CREDIT_LEVEL, SELECTOR_USER_DISPLAY_NAME, SELECTOR_USER_LINK } from '@/constants/selector';
+import {
+  SELECTOR_CREDIT_LEVEL,
+  SELECTOR_REPLY_BOUNTY_ACCEPTED,
+  SELECTOR_TOPIC_BOUNTY,
+  SELECTOR_USER_DISPLAY_NAME,
+  SELECTOR_USER_LINK,
+} from '@/constants/selector';
 
-import type { UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type { TopicBounty, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
 
 const getUserId = (userLink: string | undefined): string | undefined => {
   return userLink?.match(/^\/u\/(.+)$/)?.[1];
+};
+
+const parseTopicBounty = (topicElement: Element | null): TopicBounty | undefined => {
+  const bountyElement = topicElement?.querySelector(SELECTOR_TOPIC_BOUNTY);
+  const amountElement = bountyElement?.querySelector(':scope > strong');
+  const amountText = amountElement?.textContent?.trim().match(/^悬赏\s*(\d+)\s*早点$/)?.[1];
+
+  if (!amountText) {
+    return undefined;
+  }
+
+  const status = amountElement?.nextSibling?.textContent?.trim().match(/^·\s*(.+)$/)?.[1];
+  const detailsElement = bountyElement?.querySelector(':scope > p');
+  const deadline = detailsElement?.textContent
+    ?.trim()
+    .match(/^截止\s+([^·]+)/)?.[1]
+    ?.trim();
+  const acceptedReplyId = detailsElement
+    ?.querySelector(':scope > a[href^="#r"]')
+    ?.getAttribute('href')
+    ?.match(/^#r(\d+)$/)?.[1];
+  const disputeAction = bountyElement
+    ?.querySelector(':scope > details > form[method="post"]')
+    ?.getAttribute('action')
+    ?.match(/^\/points\/bounty\/\d+\/dispute$/)?.[0];
+
+  return {
+    amount: Number(amountText),
+    status,
+    deadline,
+    acceptedReplyId,
+    disputeAction,
+  };
 };
 
 const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
@@ -61,6 +100,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
       lastReplyTime: metaElement?.querySelector(':scope > .last-reply-time')?.textContent?.trim(),
     },
     content: contentElement?.innerHTML,
+    bounty: parseTopicBounty(topicElement),
     editInfo,
     tags,
     liked: topicElement?.querySelector('.J_topicVote')?.getAttribute('data-voted') === '1',
@@ -104,6 +144,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   const hasAdministratorIcon = Boolean(metaElement?.querySelector('.icon-group[title="管理员"]'));
   const isOriginalPoster = hasTimeLabel('楼主');
   const isAdministrator = hasAdministratorIcon || hasTimeLabel('管理员');
+  const isBountyAccepted = Boolean(metaElement?.querySelector(SELECTOR_REPLY_BOUNTY_ACCEPTED));
 
   return {
     uid: displayNameElement?.dataset.username?.trim() || getUserId(authorLink),
@@ -113,6 +154,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
     avatarUrl: item.querySelector<HTMLImageElement>(':scope > a > img.avatar')?.getAttribute('src') || undefined,
     isOriginalPoster,
     isAdministrator,
+    isBountyAccepted,
     replyId,
     replyNo: replyNumberText?.match(/#(\d+)/)?.[1],
     replyTime: replyTimeElement?.textContent?.trim(),

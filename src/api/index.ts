@@ -251,6 +251,16 @@ export const likeTopic = async (topicId: string | undefined, voted: boolean): Pr
   return vote(`/vote?topic_id=${topicId}`, voted);
 };
 
+export const disputeTopicBounty = async (action: string, reason: string): Promise<void> => {
+  await request(action, {
+    method: 'POST',
+    body: new URLSearchParams({
+      reason,
+      _xsrf: getXsrfToken(),
+    }),
+  });
+};
+
 export const getEditedTopic = async (topicId?: string): Promise<UserTopicDetail> => {
   const data = await request(`/t/edit/${topicId}`);
   return parseEditedTopic(data);

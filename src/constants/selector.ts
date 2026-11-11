@@ -4,6 +4,16 @@
 export const SELECTOR_TOPIC_LINK = 'a[href^="/t/"]:not([href*="?p="])';
 
 /**
+ * 主题详情中的悬赏区块
+ */
+export const SELECTOR_TOPIC_BOUNTY = ':scope > section#gzk-bounty';
+
+/**
+ * 回复元数据中的悬赏采纳标记
+ */
+export const SELECTOR_REPLY_BOUNTY_ACCEPTED = ':scope > .gzk-bounty-accepted';
+
+/**
  * Topic reply total element
  */
 export const SELECTOR_TOPIC_REPLY_TOTAL = '.flat-reply-list-total, .nested-reply-list-total';

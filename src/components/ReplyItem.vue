@@ -188,6 +188,9 @@ const handleReplyEdit = () => {
       <div class="reply-meta user-meta">
         <span>{{ replyTime }}</span>
         <span v-if="replyIp">{{ replyIp }}</span>
+        <span v-if="isBountyAccepted" class="reply-item-bounty-accepted">
+          {{ $t('enhancedTopic.bounty.accepted') }}
+        </span>
       </div>
       <div
         v-img-load="updateScrollbar"
@@ -262,6 +265,10 @@ const handleReplyEdit = () => {
   a {
     color: inherit;
   }
+}
+
+.reply-item-bounty-accepted {
+  color: var(--el-color-success);
 }
 
 .reply-footer {
