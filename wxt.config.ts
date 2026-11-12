@@ -38,13 +38,24 @@ const getChromiumPreferences = (): Record<string, unknown> => {
   try {
     const preferences = JSON.parse(readFileSync(preferencesPath, 'utf8')) as unknown;
 
-    if (!isPreferenceMap(preferences) || !isPreferenceMap(preferences.devtools)) {
+    if (!isPreferenceMap(preferences)) {
       return {};
     }
 
-    return {
-      devtools: preferences.devtools,
-    };
+    const chromiumPreferences: Record<string, unknown> = {};
+
+    if (isPreferenceMap(preferences.devtools)) {
+      chromiumPreferences.devtools = preferences.devtools;
+    }
+
+    // chrome-launcher replaces the top-level extensions object when enabling developer mode.
+    const extensions = preferences.extensions;
+
+    if (isPreferenceMap(extensions) && Array.isArray(extensions.pinned_extensions)) {
+      chromiumPreferences['extensions.pinned_extensions'] = extensions.pinned_extensions;
+    }
+
+    return chromiumPreferences;
   } catch {
     return {};
   }
