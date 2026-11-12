@@ -173,6 +173,30 @@ html.gzkp-dark .topic-bounty {
   --topic-bounty-accepted-text: #a7f3d0;
 }
 
+html[data-gzkp-theme='light-tokyo-night'] .topic-bounty {
+  --topic-bounty-bg: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-bg-color));
+  --topic-bounty-title: var(--el-text-color-primary);
+  --topic-bounty-accent: var(--el-color-primary);
+  --topic-bounty-amount: var(--el-color-primary-dark-2);
+  --topic-bounty-link: var(--el-color-primary);
+  --topic-bounty-deadline: var(--el-text-color-regular);
+  --topic-bounty-clock-color: var(--topic-bounty-deadline);
+  --topic-bounty-accepted-bg: var(--el-color-success-light-9);
+  --topic-bounty-accepted-border: var(--el-color-success-light-7);
+  --topic-bounty-accepted-text: color-mix(in srgb, var(--el-color-success-dark-2) 85%, var(--el-text-color-primary));
+  --topic-bounty-accepted-dot: var(--el-color-success);
+}
+
+html.gzkp-dark[data-gzkp-theme='dark-soft'] .topic-bounty {
+  --topic-bounty-bg: var(--el-bg-color-overlay);
+  --topic-bounty-title: var(--el-text-color-primary);
+  --topic-bounty-accent: var(--el-color-primary);
+  --topic-bounty-amount: var(--el-color-primary);
+  --topic-bounty-link: var(--el-color-primary);
+  --topic-bounty-deadline: var(--el-text-color-secondary);
+  --topic-bounty-clock-color: var(--topic-bounty-deadline);
+}
+
 .topic-bounty-header,
 .topic-bounty-summary {
   display: flex;
@@ -257,6 +281,7 @@ html.gzkp-dark .topic-bounty {
 }
 
 .topic-bounty-clock {
+  color: var(--topic-bounty-clock-color, var(--topic-bounty-accent));
   transform: translateY(1px);
 }
 
