@@ -127,7 +127,7 @@
     color: var(--gzkp-navbar-text-hover);
   }
 
-  @media (width < 360px) {
+  @media (width <= 600px) {
     > .i-gzkp-shortcut-command {
       display: none;
     }
