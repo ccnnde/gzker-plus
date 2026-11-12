@@ -63,12 +63,16 @@ const submitDispute = async () => {
   }
 };
 
-const isBountyActive = computed(() => {
-  return props.bounty.status === '进行中';
+const isBountyAccepted = computed(() => {
+  return props.bounty.status === '已采纳';
 });
 
 const statusLabel = computed(() => {
-  return isBountyActive.value ? t('enhancedTopic.bounty.active') : props.bounty.status;
+  if (isBountyAccepted.value) {
+    return t('enhancedTopic.bounty.accepted');
+  }
+
+  return props.bounty.status === '进行中' ? t('enhancedTopic.bounty.active') : props.bounty.status;
 });
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
@@ -77,27 +81,38 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 <template>
   <section class="topic-bounty" :aria-label="$t('enhancedTopic.bounty.label')">
     <div class="topic-bounty-header">
-      <div class="topic-bounty-summary">
-        <span class="topic-bounty-reward">
-          <span class="topic-bounty-icon i-gzkp-point" aria-hidden="true"></span>
-          <span class="topic-bounty-points">
-            {{ $t('enhancedTopic.bounty.label') }}
-            <strong>{{ bounty.amount }}</strong>
-            {{ $t('enhancedTopic.bounty.points') }}
+      <div class="topic-bounty-info">
+        <div class="topic-bounty-summary">
+          <span class="topic-bounty-reward">
+            <span class="topic-bounty-icon i-gzkp-point" aria-hidden="true"></span>
+            <span class="topic-bounty-points">
+              {{ $t('enhancedTopic.bounty.label') }}
+              <strong>{{ bounty.amount }}</strong>
+              {{ $t('enhancedTopic.bounty.points') }}
+            </span>
           </span>
-        </span>
-        <span v-if="statusLabel" class="topic-bounty-status">{{ statusLabel }}</span>
-      </div>
-      <div v-if="bounty.deadline || acceptedReplyHref" class="topic-bounty-meta">
-        <span v-if="bounty.deadline">{{ $t('enhancedTopic.bounty.deadline', { time: bounty.deadline }) }}</span>
+          <span
+            v-if="statusLabel"
+            :class="['topic-bounty-status', { 'topic-bounty-status-accepted': isBountyAccepted }]"
+          >
+            {{ statusLabel }}
+          </span>
+        </div>
         <a
           v-if="acceptedReplyHref"
           class="topic-bounty-reply-link"
           :href="acceptedReplyHref"
           @click="focusAcceptedReply"
         >
-          {{ $t('enhancedTopic.bounty.acceptedReply', { id: bounty.acceptedReplyId }) }}
+          <span class="topic-bounty-reply-arrow i-gzkp-reply-arrow" aria-hidden="true"></span>
+          <span class="topic-bounty-reply-label">
+            {{ $t('enhancedTopic.bounty.acceptedReply', { id: bounty.acceptedReplyId }) }}
+          </span>
         </a>
+      </div>
+      <div v-if="bounty.deadline" class="topic-bounty-deadline">
+        <un-i-mdi-clock-outline class="topic-bounty-clock" aria-hidden="true" />
+        <span>{{ $t('enhancedTopic.bounty.deadline', { time: bounty.deadline }) }}</span>
       </div>
     </div>
     <details v-if="bounty.disputeAction" class="topic-bounty-dispute" @toggle="updateScrollbar?.()">
@@ -124,13 +139,38 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 
 <style lang="scss" scoped>
 .topic-bounty {
-  padding: 12px 16px 10px;
+  $accent-border-width: 3px;
+
+  --topic-bounty-bg: #fffcf0;
+  --topic-bounty-title: #5c3620;
+  --topic-bounty-accent: #f59e0b;
+  --topic-bounty-amount: #d97706;
+  --topic-bounty-link: #92400e;
+  --topic-bounty-deadline: #ae856a;
+  --topic-bounty-accepted-bg: #d1fae5;
+  --topic-bounty-accepted-border: #b8f6d9;
+  --topic-bounty-accepted-text: #065f46;
+  --topic-bounty-accepted-dot: #10b981;
+
+  padding-block: 14px;
+  padding-inline: calc(20px - $accent-border-width) 20px;
   margin-top: 15px;
   font-size: 13px;
   line-height: 1.55;
-  color: var(--el-color-warning-dark-2);
-  background: var(--el-color-warning-light-9);
-  border-inline-start: 3px solid var(--el-color-warning);
+  color: var(--topic-bounty-link);
+  background: var(--topic-bounty-bg);
+  border-inline-start: $accent-border-width solid var(--topic-bounty-accent);
+}
+
+html.gzkp-dark .topic-bounty {
+  --topic-bounty-bg: #2d2519;
+  --topic-bounty-title: #f4e0cb;
+  --topic-bounty-amount: #fbbf60;
+  --topic-bounty-link: #f3bc84;
+  --topic-bounty-deadline: #cda88c;
+  --topic-bounty-accepted-bg: #15382d;
+  --topic-bounty-accepted-border: #286047;
+  --topic-bounty-accepted-text: #a7f3d0;
 }
 
 .topic-bounty-header,
@@ -142,46 +182,110 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 }
 
 .topic-bounty-header {
-  gap: 4px 16px;
+  gap: 8px 20px;
   justify-content: space-between;
 }
 
 .topic-bounty-reward {
   display: inline-flex;
-  gap: 4px;
+  gap: 8px;
   align-items: center;
-  font-weight: 600;
+  color: var(--topic-bounty-title);
 }
 
 .topic-bounty-icon {
   flex: none;
   font-size: 20px;
+  color: var(--topic-bounty-accent);
 }
 
 .topic-bounty-points strong {
-  font-size: 18px;
+  margin-inline: 2px;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
+  color: var(--topic-bounty-amount);
 }
 
 .topic-bounty-status {
-  padding: 1px 7px;
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 2px 9px;
   font-size: 12px;
-  background: var(--el-color-warning-light-7);
-  border-radius: 4px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--topic-bounty-accent) 12%, var(--topic-bounty-bg));
+  border: 1px solid color-mix(in srgb, var(--topic-bounty-accent) 25%, var(--topic-bounty-bg));
+  border-radius: 6px;
+
+  &::before {
+    width: 7px;
+    height: 7px;
+    content: '';
+    background: var(--topic-bounty-accent);
+    border-radius: 50%;
+  }
 }
 
-.topic-bounty-meta {
+.topic-bounty-status-accepted {
+  color: var(--topic-bounty-accepted-text);
+  background: var(--topic-bounty-accepted-bg);
+  border-color: var(--topic-bounty-accepted-border);
+
+  &::before {
+    background: var(--topic-bounty-accepted-dot);
+  }
+}
+
+.topic-bounty-deadline,
+.topic-bounty-reply-link {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  font-size: 12px;
+  gap: 7px;
+  align-items: center;
+}
+
+.topic-bounty-deadline {
+  font-size: 13px;
   font-variant-numeric: tabular-nums;
+  color: var(--topic-bounty-deadline);
+}
+
+.topic-bounty-clock,
+.topic-bounty-reply-arrow {
+  flex: none;
+  font-size: 16px;
+  color: var(--topic-bounty-accent);
+}
+
+.topic-bounty-clock {
+  transform: translateY(1px);
+}
+
+.topic-bounty-reply-arrow {
+  transition: transform 180ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 .topic-bounty-reply-link {
+  width: fit-content;
+  max-width: calc(100% - 28px);
+  margin-block-start: 4px;
+  margin-inline-start: 28px;
   color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+
+  &:hover .topic-bounty-reply-arrow {
+    transform: translateX(2px);
+  }
+}
+
+.topic-bounty-reply-label {
+  text-decoration: underline 1px color-mix(in srgb, var(--topic-bounty-accent) 55%, var(--topic-bounty-bg));
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
 }
 
 .topic-bounty-dispute {
