@@ -468,9 +468,12 @@ defineExpose({
       @focusout="hide()"
     >
       <div class="gzkp-mention-replies-popover-header">
-        <span class="gzkp-mention-replies-popover-title">
-          {{ $t('enhancedTopic.mentionRepliesTitle', { uid: mentionName }) }}
-        </span>
+        <div class="gzkp-mention-replies-popover-title">
+          <span class="gzkp-mention-replies-popover-name">{{ mentionName }}</span>
+          <span class="gzkp-mention-replies-popover-label">
+            {{ $t('enhancedTopic.mentionRepliesTitle') }}
+          </span>
+        </div>
       </div>
       <ElScrollbar ref="scrollbar" max-height="min(40vh, 360px)">
         <ul class="gzkp-mention-replies-popover-list">
@@ -509,11 +512,32 @@ defineExpose({
 }
 
 .gzkp-mention-replies-popover-title {
-  overflow: hidden;
+  display: flex;
+  gap: 5px;
+  align-items: center;
   font-size: var(--el-font-size-base);
   font-weight: 600;
   color: var(--el-text-color-primary);
-  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.gzkp-mention-replies-popover-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gzkp-mention-replies-popover-label {
+  display: flex;
+  flex: none;
+  gap: 5px;
+  align-items: center;
+
+  &::before {
+    width: 4px;
+    height: 4px;
+    content: '';
+    background-color: currentcolor;
+    border-radius: 50%;
+  }
 }
 </style>
