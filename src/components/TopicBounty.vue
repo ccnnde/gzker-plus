@@ -81,44 +81,33 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 <template>
   <section class="topic-bounty" :aria-label="$t('enhancedTopic.bounty.label')">
     <div class="topic-bounty-header">
-      <div class="topic-bounty-info">
-        <div class="topic-bounty-summary">
-          <span class="topic-bounty-reward">
-            <span class="topic-bounty-icon i-gzkp-point" aria-hidden="true"></span>
-            <span class="topic-bounty-points">
-              {{ $t('enhancedTopic.bounty.label') }}
-              <strong>{{ bounty.amount }}</strong>
-              {{ $t('enhancedTopic.bounty.points') }}
-            </span>
+      <div class="topic-bounty-summary">
+        <span class="topic-bounty-reward">
+          <span class="topic-bounty-icon i-gzkp-point" aria-hidden="true"></span>
+          <span class="topic-bounty-points">
+            {{ $t('enhancedTopic.bounty.label') }}
+            <strong>{{ bounty.amount }}</strong>
+            {{ $t('enhancedTopic.bounty.points') }}
           </span>
-          <span
-            v-if="statusLabel"
-            :class="['topic-bounty-status', { 'topic-bounty-status-accepted': isBountyAccepted }]"
-          >
-            {{ statusLabel }}
-          </span>
-        </div>
-        <a
-          v-if="acceptedReplyHref"
-          class="topic-bounty-reply-link"
-          :href="acceptedReplyHref"
-          @click="focusAcceptedReply"
-        >
-          <span class="topic-bounty-reply-arrow i-gzkp-reply-arrow" aria-hidden="true"></span>
-          <span class="topic-bounty-reply-label">
-            {{ $t('enhancedTopic.bounty.acceptedReply', { id: bounty.acceptedReplyId }) }}
-          </span>
-        </a>
+        </span>
+        <span v-if="statusLabel" :class="['topic-bounty-status', { 'topic-bounty-status-accepted': isBountyAccepted }]">
+          {{ statusLabel }}
+        </span>
       </div>
       <div v-if="bounty.deadline" class="topic-bounty-deadline">
         <un-i-mdi-clock-outline class="topic-bounty-clock" aria-hidden="true" />
         <span>{{ $t('enhancedTopic.bounty.deadline', { time: bounty.deadline }) }}</span>
       </div>
     </div>
+    <a v-if="acceptedReplyHref" class="topic-bounty-reply-link" :href="acceptedReplyHref" @click="focusAcceptedReply">
+      <span class="topic-bounty-reply-arrow i-gzkp-reply-arrow" aria-hidden="true"></span>
+      <span class="topic-bounty-action-label">
+        {{ $t('enhancedTopic.bounty.acceptedReply', { id: bounty.acceptedReplyId }) }}
+      </span>
+    </a>
     <details v-if="bounty.disputeAction" class="topic-bounty-dispute" @toggle="updateScrollbar?.()">
       <summary class="topic-bounty-toggle">
-        {{ $t('enhancedTopic.bounty.requestReview') }}
-        <un-i-mdi-chevron-down class="topic-bounty-chevron" aria-hidden="true" />
+        <span class="topic-bounty-action-label">{{ $t('enhancedTopic.bounty.requestReview') }}</span>
       </summary>
       <form class="topic-bounty-form" @submit.prevent="submitDispute">
         <ElInput
@@ -129,7 +118,13 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
           :placeholder="$t('enhancedTopic.bounty.reason')"
           :aria-label="$t('enhancedTopic.bounty.reason')"
         />
-        <ElButton type="warning" native-type="submit" :disabled="!disputeReason.trim()" :loading="submittingDispute">
+        <ElButton
+          class="topic-bounty-submit"
+          type="warning"
+          native-type="submit"
+          :disabled="!disputeReason.trim()"
+          :loading="submittingDispute"
+        >
           {{ $t('enhancedTopic.bounty.submitReview') }}
         </ElButton>
       </form>
@@ -138,6 +133,8 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 </template>
 
 <style lang="scss" scoped>
+$action-indent: 28px;
+
 .topic-bounty {
   $accent-border-width: 3px;
 
@@ -261,7 +258,8 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] .topic-bounty {
 }
 
 .topic-bounty-deadline,
-.topic-bounty-reply-link {
+.topic-bounty-reply-link,
+.topic-bounty-toggle {
   display: flex;
   gap: 7px;
   align-items: center;
@@ -293,11 +291,15 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] .topic-bounty {
   }
 }
 
+.topic-bounty-reply-link,
+.topic-bounty-dispute {
+  margin-block-start: 4px;
+  margin-inline-start: $action-indent;
+}
+
 .topic-bounty-reply-link {
   width: fit-content;
-  max-width: calc(100% - 28px);
-  margin-block-start: 4px;
-  margin-inline-start: 28px;
+  max-width: calc(100% - $action-indent);
   color: inherit;
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -307,27 +309,16 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] .topic-bounty {
   }
 }
 
-.topic-bounty-reply-label {
+.topic-bounty-action-label {
+  color: var(--topic-bounty-link);
   text-decoration: underline 1px color-mix(in srgb, var(--topic-bounty-accent) 55%, var(--topic-bounty-bg));
   text-decoration-skip-ink: none;
   text-underline-offset: 3px;
 }
 
-.topic-bounty-dispute {
-  margin-top: 7px;
-
-  &[open] .topic-bounty-chevron {
-    transform: rotate(180deg);
-  }
-}
-
 .topic-bounty-toggle {
-  display: flex;
-  gap: 4px;
-  align-items: center;
   width: fit-content;
   min-height: 25px;
-  font-size: 12px;
   list-style: none;
   cursor: pointer;
 
@@ -345,11 +336,62 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] .topic-bounty {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
+  margin-block-start: 8px;
 }
 
 .topic-bounty-reason {
+  --el-input-text-color: var(--topic-bounty-title);
+  --el-input-placeholder-color: color-mix(in srgb, var(--topic-bounty-deadline) 65%, var(--topic-bounty-title));
+  --el-input-icon-color: var(--el-input-placeholder-color);
+  --el-input-clear-hover-color: var(--topic-bounty-title);
+  --el-input-border-color: color-mix(in srgb, var(--topic-bounty-accent) 35%, var(--topic-bounty-bg));
+  --el-input-hover-border-color: color-mix(in srgb, var(--topic-bounty-accent) 60%, var(--topic-bounty-bg));
+  --el-input-focus-border-color: var(--topic-bounty-amount);
+
   flex: 1 1 200px;
   min-width: 0;
+}
+
+.topic-bounty-submit {
+  --topic-bounty-submit-text: var(--el-color-white);
+  --el-button-text-color: var(--topic-bounty-submit-text);
+  --el-button-hover-text-color: var(--topic-bounty-submit-text);
+  --el-button-active-text-color: var(--topic-bounty-submit-text);
+  --el-button-disabled-text-color: var(--el-color-white);
+}
+
+html[data-gzkp-theme='light-solarized'] .topic-bounty-submit {
+  --el-color-warning: #e6a23c;
+  --el-color-warning-light-3: #eebe77;
+  --el-color-warning-light-5: #f3d19e;
+  --el-color-warning-dark-2: #b88230;
+}
+
+html[data-gzkp-theme='dark-default'] .topic-bounty-submit {
+  --topic-bounty-submit-text: var(--topic-bounty-title);
+  --el-button-disabled-text-color: var(--topic-bounty-deadline);
+  --el-button-outline-color: var(--topic-bounty-accent);
+  --el-color-warning: color-mix(in srgb, var(--topic-bounty-accent) 40%, var(--topic-bounty-bg));
+  --el-color-warning-light-3: color-mix(in srgb, var(--topic-bounty-accent) 45%, var(--topic-bounty-bg));
+  --el-color-warning-light-5: color-mix(in srgb, var(--topic-bounty-accent) 18%, var(--topic-bounty-bg));
+  --el-color-warning-dark-2: color-mix(in srgb, var(--topic-bounty-accent) 35%, var(--topic-bounty-bg));
+}
+
+html:is([data-gzkp-theme='light-tokyo-night'], [data-gzkp-theme='dark-soft']) .topic-bounty-submit {
+  --el-color-warning-light-5: color-mix(in srgb, var(--topic-bounty-accent) 20%, var(--topic-bounty-bg));
+}
+
+html[data-gzkp-theme='light-tokyo-night'] .topic-bounty-submit {
+  --el-color-warning: var(--topic-bounty-accent);
+  --el-color-warning-light-3: color-mix(in srgb, var(--topic-bounty-accent) 85%, var(--topic-bounty-bg));
+  --el-color-warning-dark-2: var(--topic-bounty-amount);
+}
+
+html[data-gzkp-theme='dark-soft'] .topic-bounty-submit {
+  --topic-bounty-submit-text: var(--topic-bounty-title);
+  --el-button-disabled-text-color: var(--el-text-color-regular);
+  --el-color-warning: var(--el-color-primary-dark-2);
+  --el-color-warning-light-3: color-mix(in srgb, var(--topic-bounty-accent) 8%, var(--el-color-primary-dark-2));
+  --el-color-warning-dark-2: var(--el-color-primary-light-8);
 }
 </style>
