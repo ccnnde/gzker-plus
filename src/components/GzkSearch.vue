@@ -604,6 +604,7 @@ onUnmounted(() => {
       append-to-body
       :modal-class="isTopicPage ? 'gzkp-search-overlay--topic-page' : ''"
       :show-close="false"
+      transition="gzkp-bottom-sheet-transition"
       @close="closeDialog"
     >
       <template #header>
@@ -790,6 +791,10 @@ onUnmounted(() => {
     </ElDialog>
   </ElementConfig>
 </template>
+
+<style lang="scss">
+@use '@/styles/bottom-sheet-transition';
+</style>
 
 <style lang="scss" scoped>
 @import '@/styles/mixin';
@@ -1209,14 +1214,15 @@ onUnmounted(() => {
   }
 
   :global(.gzkp-search-dialog.el-dialog) {
-    inset: 0;
+    // Match the top of the forum's home sorting tabs on narrow screens.
+    inset: calc(var(--gzkp-top-navbar-height, 52px) + 26px) 0 0;
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
     margin: 0 !important;
     border: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 16px 16px 0 0 !important;
     transform: none;
   }
 

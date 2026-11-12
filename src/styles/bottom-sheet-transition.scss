@@ -1,0 +1,42 @@
+.gzkp-bottom-sheet-transition-enter-active,
+.gzkp-bottom-sheet-transition-leave-active {
+  transition: opacity var(--el-transition-duration);
+
+  > .el-overlay-dialog {
+    overflow: clip;
+
+    > .el-dialog {
+      transition: opacity var(--el-transition-duration), translate var(--el-transition-duration);
+    }
+  }
+}
+
+.gzkp-bottom-sheet-transition-enter-from,
+.gzkp-bottom-sheet-transition-leave-to {
+  opacity: 0;
+
+  > .el-overlay-dialog > .el-dialog {
+    opacity: 0;
+    translate: 0 -20px;
+  }
+}
+
+@media (width <= 479px) {
+  .gzkp-bottom-sheet-transition-enter-from,
+  .gzkp-bottom-sheet-transition-leave-to {
+    > .el-overlay-dialog > .el-dialog {
+      translate: 0 100%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gzkp-bottom-sheet-transition-enter-active,
+  .gzkp-bottom-sheet-transition-leave-active {
+    transition-duration: 0.01ms;
+
+    > .el-overlay-dialog > .el-dialog {
+      transition-duration: inherit;
+    }
+  }
+}

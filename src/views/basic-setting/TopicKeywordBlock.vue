@@ -48,7 +48,7 @@ const handleInput = (value: string) => {
     :title="$t('basicSetting.topicKeywordBlock.keywordBlockHelp')"
     :lock-scroll="false"
     modal-class="gzkp-options-dialog-overlay"
-    transition="gzkp-options-dialog-transition"
+    transition="gzkp-bottom-sheet-transition"
     align-center
   >
     <ElScrollbar class="topic-keyword-block-dialog__scrollbar">
@@ -60,6 +60,7 @@ const handleInput = (value: string) => {
 </template>
 
 <style lang="scss">
+@use '@/styles/bottom-sheet-transition';
 @import '@/styles/mixin';
 
 .topic-keyword-block-dialog {
