@@ -14,6 +14,25 @@ body,
   outline: none;
 }
 
+.options-icon-button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 22px;
+  color: var(--el-text-color-regular);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--el-border-radius-base);
+  transition: color 0.1s ease-in;
+
+  &:is(:hover, :focus-visible) {
+    color: var(--el-text-color-primary);
+  }
+}
+
 .no-more-tip-button {
   color: var(--el-color-warning);
   cursor: pointer;

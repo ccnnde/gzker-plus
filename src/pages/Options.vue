@@ -55,7 +55,7 @@ watch(
               <span>{{ $t('options.title') }}</span>
             </div>
             <button
-              class="options-navigation-drawer__close"
+              class="options-icon-button options-navigation-drawer__close"
               type="button"
               :aria-label="$t('options.closeNavigation')"
               @click="navigationOpen = false"
@@ -215,23 +215,7 @@ watch(
 }
 
 .options-navigation-drawer__close {
-  display: grid;
   flex: 0 0 auto;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  font-size: 22px;
-  color: var(--el-text-color-regular);
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  border-radius: var(--el-border-radius-base);
-
-  &:hover {
-    color: var(--el-text-color-primary);
-    background: var(--el-fill-color-light);
-  }
 }
 
 @media (width <= 767px) {

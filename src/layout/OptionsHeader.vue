@@ -19,7 +19,7 @@ const switchLanguage = (lang: LanguageType) => {
 <template>
   <ElHeader class="options-header">
     <button
-      class="options-header-menu"
+      class="options-icon-button options-header-menu"
       type="button"
       :aria-label="$t('options.openNavigation')"
       @click="emit('openNavigation')"
@@ -36,7 +36,11 @@ const switchLanguage = (lang: LanguageType) => {
     </div>
     <div class="options-header-actions">
       <ElDropdown @command="switchLanguage">
-        <button class="options-header-action" type="button" :aria-label="$t('options.switchLanguage')">
+        <button
+          class="options-icon-button options-header-language"
+          type="button"
+          :aria-label="$t('options.switchLanguage')"
+        >
           <un-i-mdi-translate />
         </button>
         <template #dropdown>
@@ -46,7 +50,7 @@ const switchLanguage = (lang: LanguageType) => {
           </ElDropdownMenu>
         </template>
       </ElDropdown>
-      <a class="options-header-action" href="https://github.com/ccnnde/gzker-plus" title="GitHub" target="_blank">
+      <a class="options-icon-button" href="https://github.com/ccnnde/gzker-plus" title="GitHub" target="_blank">
         <un-i-mdi-github />
       </a>
     </div>
@@ -66,20 +70,6 @@ const switchLanguage = (lang: LanguageType) => {
 .options-header-menu {
   display: none;
   flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  font-size: 22px;
-  color: var(--el-text-color-regular);
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  border-radius: var(--el-border-radius-base);
-
-  &:hover {
-    color: var(--el-text-color-primary);
-    background: var(--el-fill-color-light);
-  }
 }
 
 .options-header-title {
@@ -117,30 +107,15 @@ const switchLanguage = (lang: LanguageType) => {
   align-items: center;
 }
 
-.options-header-action {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  font-size: 22px;
-  color: var(--el-text-color-regular);
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  border-radius: var(--el-border-radius-base);
-  transition: color 0.1s ease-in;
-
-  &:hover {
-    color: var(--el-text-color-primary);
-    background: var(--el-fill-color-light);
+.options-header-language {
+  &:focus {
+    outline: none;
   }
 }
 
 @media (width <= 767px) {
   .options-header-menu {
     display: grid;
-    place-items: center;
   }
 
   .options-header-brand {
