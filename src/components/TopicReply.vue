@@ -9,15 +9,10 @@ import FlatReplyList from './FlatReplyList.vue';
 import MentionRepliesPopover from './MentionRepliesPopover.vue';
 import NestedReplyList from './NestedReplyList.vue';
 
-import type {
-  MentionRepliesController,
-  MentionRepliesTarget,
-  UserReplyBatch,
-  UserReplyItem,
-  UserTopicReply,
-} from '@/types';
+import type { MentionRepliesController, MentionRepliesTarget, UserReplyBatch, UserReplyItem } from '@/types';
 
-interface Props extends UserTopicReply {
+interface Props {
+  list: UserReplyItem[];
   batches: UserReplyBatch[];
   nestedReplyDisplay: NestedReplyDisplay;
   multipleInsideOne: boolean;
@@ -49,12 +44,11 @@ provide(MENTION_REPLIES_INJECTION_KEY, mentionRepliesController);
 <template>
   <NestedReplyList
     v-if="nestedReplyEnabled"
-    :total="total"
     :batches="batches"
     :display="nestedReplyDisplay"
     :multiple-inside-one="multipleInsideOne"
     :reverse="reverse"
   />
-  <FlatReplyList v-else :total="total" :list="list" />
+  <FlatReplyList v-else :list="list" />
   <MentionRepliesPopover ref="mentionRepliesPopover" />
 </template>

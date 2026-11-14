@@ -107,7 +107,7 @@
     "nestedReplyDisplay": {
       "align": "Left aligned",
       "indent": "Indented",
-      "off": "Disabled",
+      "off": "Flat list",
       "title": "Nested reply display",
       "titleDesc": "Set the display structure of topic replies, using either hierarchical nesting or a flat layout"
     },
@@ -305,6 +305,8 @@
     "like": "Like",
     "mentionRepliesTitle": "Previous replies",
     "mentionWho": "mention whom?",
+    "nestedReplyDisplay": "Display mode",
+    "nestedReplyDisplayOnlyOriginalPoster": "Flat list in OP-only mode",
     "noHotReplies": "No hot replies yet",
     "noOriginalPosterReply": "The OP has not replied yet",
     "noOwnEditableReply": "None of your replies in the current list can be edited",

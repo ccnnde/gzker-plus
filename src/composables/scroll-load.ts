@@ -263,6 +263,10 @@ export const useScrollLoad = <T>(
     noMoreData.value = isComplete;
   };
 
+  const getCachedPage = (page: number): T[] | undefined => {
+    return pageCache.get(page);
+  };
+
   const setPageCount = (pageCount: number) => {
     currentPageCount = Math.max(pageCount, 1);
   };
@@ -294,6 +298,7 @@ export const useScrollLoad = <T>(
     reloadFirstPageData,
     updateCurrentPageData,
     replaceLoadedData,
+    getCachedPage,
     setPageCount,
     resetScrollLoadState,
     scrollToTop,

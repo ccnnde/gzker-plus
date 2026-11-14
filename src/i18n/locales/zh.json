@@ -107,7 +107,7 @@
     "nestedReplyDisplay": {
       "align": "左侧对齐",
       "indent": "逐层缩进",
-      "off": "不使用",
+      "off": "平铺展示",
       "title": "楼中楼展示",
       "titleDesc": "设置主题回复的展示结构，可按层级嵌套或保持平铺"
     },
@@ -305,6 +305,8 @@
     "like": "点赞",
     "mentionRepliesTitle": "之前的回复",
     "mentionWho": "想提到谁？",
+    "nestedReplyDisplay": "展示方式",
+    "nestedReplyDisplayOnlyOriginalPoster": "只看楼主时平铺",
     "noHotReplies": "暂无热门回复",
     "noOriginalPosterReply": "楼主暂无回复",
     "noOwnEditableReply": "当前列表没有你可编辑的回复",

@@ -14,7 +14,7 @@ import {
   ImageHostingPlatform,
   LightTheme,
   LinkElementType,
-  NestedReplyDisplay,
+  NESTED_REPLY_DISPLAY_MODES,
   OptionsKey,
   ReplyPreloadMode,
 } from '@/constants';
@@ -139,11 +139,7 @@ const CONFIG_OPTION_VALIDATORS: Record<OptionsKey, ConfigOptionValidator> = {
     return hasOptionalStringValue(value, 'keywords');
   },
   [OptionsKey.NestedReplyDisplay]: (value) => {
-    return hasOptionalEnumValue(value, 'display', [
-      NestedReplyDisplay.Off,
-      NestedReplyDisplay.Indent,
-      NestedReplyDisplay.Align,
-    ]);
+    return hasOptionalEnumValue(value, 'display', NESTED_REPLY_DISPLAY_MODES);
   },
   [OptionsKey.ReplyPreload]: (value) => {
     return hasOptionalEnumValue(value, 'mode', [

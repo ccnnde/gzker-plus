@@ -121,7 +121,7 @@ export const createFirstPageTopicData = ({
   total,
   list,
 }: CreateFirstPageTopicDataOptions): UserTopic | undefined => {
-  if (!detail || !status) {
+  if (!detail || !status || !list.length) {
     return undefined;
   }
 
@@ -130,7 +130,7 @@ export const createFirstPageTopicData = ({
     status,
     reply: {
       total,
-      list: list.slice(0, TOPIC_REPLY_PAGE_SIZE),
+      list,
     },
   };
 };

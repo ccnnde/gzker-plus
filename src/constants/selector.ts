@@ -16,7 +16,7 @@ export const SELECTOR_REPLY_BOUNTY_ACCEPTED = ':scope > .gzk-bounty-accepted';
 /**
  * Topic reply total element
  */
-export const SELECTOR_TOPIC_REPLY_TOTAL = '.flat-reply-list-total, .nested-reply-list-total';
+export const SELECTOR_TOPIC_REPLY_TOTAL = '.topic-reply-total';
 export const SELECTOR_ENHANCED_REPLY_ITEM = '[data-gzkp-reply-id]';
 export const SELECTOR_REPLY_EDIT_BUTTON = '[data-gzkp-reply-edit]';
 

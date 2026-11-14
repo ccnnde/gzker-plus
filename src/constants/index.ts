@@ -205,6 +205,12 @@ export const enum NestedReplyDisplay {
   Align = 'align',
 }
 
+export const NESTED_REPLY_DISPLAY_MODES = [
+  NestedReplyDisplay.Off,
+  NestedReplyDisplay.Indent,
+  NestedReplyDisplay.Align,
+] as const;
+
 export const enum ReplyPreloadMode {
   NoPreload = 'noPreload',
   OnePage = 'onePage',

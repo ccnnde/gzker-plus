@@ -78,6 +78,7 @@ interface UseTopicRepliesResult {
   openTopic: (selectedTopicId: string | undefined) => void;
   resetTopicData: () => void;
   scrollToReplyTotal: () => Promise<void>;
+  changeNestedReplyDisplay: (display: NestedReplyDisplay) => Promise<void>;
   handleToggleReplyOrder: () => Promise<void>;
   handleToggleOriginalPoster: () => Promise<void>;
   refreshTopic: () => Promise<void>;
@@ -103,6 +104,7 @@ export const useTopicReplies = ({
   const topicStatus = ref<UserTopicStatus>();
   const replyTotal = ref('0');
   const replyOrder = ref<ReplyOrder>(ReplyOrder.Asc);
+  const temporaryNestedReplyDisplay = ref<NestedReplyDisplay>();
   const onlyOriginalPoster = ref(false);
   const isTopicRefreshing = ref(false);
   const isReplyInitialLoading = ref(false);
@@ -141,8 +143,12 @@ export const useTopicReplies = ({
     return replyTotal.value !== '0';
   });
 
-  const nestedReplyDisplay = computed<NestedReplyDisplay>(() => {
+  const defaultNestedReplyDisplay = computed<NestedReplyDisplay>(() => {
     return options.value?.[OptionsKey.NestedReplyDisplay]?.display || NestedReplyDisplay.Indent;
+  });
+
+  const nestedReplyDisplay = computed(() => {
+    return temporaryNestedReplyDisplay.value ?? defaultNestedReplyDisplay.value;
   });
 
   const multipleInsideOne = computed(() => {
@@ -199,13 +205,13 @@ export const useTopicReplies = ({
     isNextPageLoading,
     disableInfiniteScroll,
     errorOccurred,
-    getFirstPageData,
     getNextPageData,
     startForwardLoad,
     startReverseLoad,
     reloadPageData,
     updateCurrentPageData,
     replaceLoadedData,
+    getCachedPage,
     resetScrollLoadState,
     scrollToTop,
     scrollToBottom,
@@ -619,6 +625,52 @@ export const useTopicReplies = ({
     }
   };
 
+  const reloadReplyDisplay = async (scrollToReplies: boolean) => {
+    const reloadVersion = ++replyReloadVersion;
+    const reuseForwardReplies = !isReverseReply.value;
+    const nested = isNestedReplyEnabled.value;
+    const loadedReplies = nestedReplyList.value;
+    const loadedPage = lastNestedReplyPage.value;
+    const allRepliesLoaded = noMoreBatchData.value;
+    const cachedFirstPage = reuseForwardReplies && nested ? getCachedPage(1) : undefined;
+    const firstPageData = cachedFirstPage
+      ? createFirstPageTopicData({
+          detail: topicDetail.value,
+          status: topicStatus.value,
+          total: replyTotal.value,
+          list: cachedFirstPage,
+        })
+      : undefined;
+    const firstPageSeed = firstPageData && createTopicPageSeed(1, firstPageData);
+
+    isTopicRefreshing.value = false;
+    resetTopicPreloadRequestState();
+    resetReplyLoadState();
+
+    if (reuseForwardReplies && !nested && loadedReplies.length) {
+      replaceLoadedData(loadedPage, loadedReplies, allRepliesLoaded);
+    } else {
+      await loadTopicReplies(firstPageSeed ? { pageSeeds: [firstPageSeed] } : undefined);
+    }
+
+    if (scrollToReplies && reloadVersion === replyReloadVersion && dialogVisible.value) {
+      await scrollToReplyTotal();
+    }
+  };
+
+  const changeNestedReplyDisplay = async (display: NestedReplyDisplay) => {
+    if (!topicId.value || onlyOriginalPoster.value || display === nestedReplyDisplay.value) {
+      return;
+    }
+
+    const wasNested = isNestedReplyEnabled.value;
+    temporaryNestedReplyDisplay.value = display;
+
+    if (wasNested !== isNestedReplyEnabled.value) {
+      await reloadReplyDisplay(true);
+    }
+  };
+
   const handleToggleReplyOrder = async () => {
     const reloadVersion = ++replyReloadVersion;
     const loadedTopicId = topicId.value;
@@ -719,54 +771,20 @@ export const useTopicReplies = ({
     { immediate: true },
   );
 
-  watch(isNestedReplyEnabled, (nestedReplyEnabled, previousNestedReplyEnabled) => {
-    if (nestedReplyEnabled === previousNestedReplyEnabled || !topicId.value || !dialogVisible.value) {
+  watch(defaultNestedReplyDisplay, (display, previousDisplay) => {
+    const nestedReplyEnabled = display !== NestedReplyDisplay.Off;
+    const wasNested = previousDisplay !== NestedReplyDisplay.Off;
+
+    if (
+      wasNested === nestedReplyEnabled ||
+      temporaryNestedReplyDisplay.value !== undefined ||
+      !topicId.value ||
+      !dialogVisible.value
+    ) {
       return;
     }
 
-    replyReloadVersion++;
-    isTopicRefreshing.value = false;
-    resetReplyNextLoadLock();
-
-    if (isReverseReply.value) {
-      // 倒序下两种模式的数据形状不兼容（扁平为纯倒序、楼中楼为页组），直接重载首屏
-      resetScrollLoadState();
-      resetBatchLoadState();
-      loadTopicReplies();
-      return;
-    }
-
-    if (nestedReplyEnabled) {
-      const firstPageData = createFirstPageTopicData({
-        detail: topicDetail.value,
-        status: topicStatus.value,
-        total: replyTotal.value,
-        list: replyList.value,
-      });
-      resetScrollLoadState();
-      startBatchLoad(topicId.value, replyPreloadPageCount.value, {
-        pageSeeds: firstPageData
-          ? [
-              {
-                page: 1,
-                data: firstPageData,
-              },
-            ]
-          : [],
-      });
-      return;
-    }
-
-    const loadedReplyList = nestedReplyList.value;
-    const loadedPage = lastNestedReplyPage.value;
-    const isComplete = loadedReplyList.length >= Number(replyTotal.value);
-    resetBatchLoadState();
-
-    if (loadedReplyList.length) {
-      replaceLoadedData(loadedPage, loadedReplyList, isComplete);
-    } else if (Number(replyTotal.value) > 0) {
-      getFirstPageData();
-    }
+    reloadReplyDisplay(false);
   });
 
   const openTopic = (selectedTopicId: string | undefined) => {
@@ -774,6 +792,7 @@ export const useTopicReplies = ({
     isTopicRefreshing.value = false;
     topicId.value = selectedTopicId;
     onlyOriginalPoster.value = false;
+    temporaryNestedReplyDisplay.value = undefined;
     replyReloadVersion++;
     initReplyOrder();
 
@@ -789,6 +808,7 @@ export const useTopicReplies = ({
     topicDetail.value = undefined;
     replyTotal.value = '0';
     onlyOriginalPoster.value = false;
+    temporaryNestedReplyDisplay.value = undefined;
     initReplyOrder();
     resetTopicPreloadRequestState();
     resetReplyLoadState();
@@ -897,6 +917,7 @@ export const useTopicReplies = ({
     openTopic,
     resetTopicData,
     scrollToReplyTotal,
+    changeNestedReplyDisplay,
     handleToggleReplyOrder,
     handleToggleOriginalPoster,
     refreshTopic,

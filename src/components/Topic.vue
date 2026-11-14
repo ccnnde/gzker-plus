@@ -135,6 +135,7 @@ const {
   openTopic,
   resetTopicData,
   scrollToReplyTotal,
+  changeNestedReplyDisplay,
   handleToggleReplyOrder,
   handleToggleOriginalPoster,
   refreshTopic,
@@ -831,9 +832,11 @@ onUnmounted(() => {
             <ElDivider v-if="topicDetail" border-style="dashed">
               <un-i-mdi-comment-processing-outline class="comment-icon" />
             </ElDivider>
+            <div v-if="showReply" class="topic-reply-total">
+              {{ $t('enhancedTopic.replyTotal', { num: replyTotal }) }}
+            </div>
             <TopicReply
               v-if="showReply && (!isNestedReplyEnabled || replyBatches.length)"
-              :total="replyTotal"
               :list="displayedReplyList"
               :batches="replyBatches"
               :nested-reply-display="nestedReplyDisplay"
@@ -913,6 +916,9 @@ onUnmounted(() => {
           :height="TOPIC_FOOTER_HEIGHT"
           :reverse-reply="isReverseReply"
           :only-original-poster="onlyOriginalPoster"
+          :reply-display="nestedReplyDisplay"
+          :reply-focusing="!!replyFocusId"
+          :show-reply-display="showReply"
           :loading="isTopicBodyLoading"
           @favorite-topic="handleTopicFavorite"
           @like-topic="handleTopicLike"
@@ -921,6 +927,7 @@ onUnmounted(() => {
           @scroll-to-reply-total="scrollToReplyTotal"
           @toggle-reply-order="handleToggleReplyOrder"
           @toggle-original-poster="handleToggleOriginalPoster"
+          @change-reply-display="changeNestedReplyDisplay"
         />
       </div>
       <div v-if="isTopicEditing" ref="topicEditorContainer" class="topic-editor-host"></div>
@@ -1344,6 +1351,11 @@ onUnmounted(() => {
   .topic-reply-loading.is-animated :deep(.el-skeleton__item) {
     animation: none;
   }
+}
+
+.topic-reply-total {
+  font-weight: var(--el-font-weight-primary);
+  color: var(--el-text-color-primary);
 }
 
 .topic-body-absolute {

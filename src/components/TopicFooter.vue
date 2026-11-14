@@ -6,8 +6,10 @@ import { ADD_REPLY_INJECTION_KEY } from '@/constants/inject-key';
 
 import LikeButton from './LikeButton.vue';
 import OperateButton from './OperateButton.vue';
+import TopicReplyDisplay from './TopicReplyDisplay.vue';
 
 import type { CSSProperties } from 'vue';
+import type { NestedReplyDisplay } from '@/constants';
 
 interface Props {
   replyTotal?: string;
@@ -19,6 +21,9 @@ interface Props {
   height: number;
   reverseReply?: boolean;
   onlyOriginalPoster?: boolean;
+  replyDisplay: NestedReplyDisplay;
+  replyFocusing: boolean;
+  showReplyDisplay: boolean;
   loading?: boolean;
 }
 
@@ -32,6 +37,7 @@ defineEmits<{
   blockTopic: [];
   toggleReplyOrder: [];
   toggleOriginalPoster: [];
+  changeReplyDisplay: [display: NestedReplyDisplay];
 }>();
 
 const TOOLTIP_ENABLE_DELAY = 500;
@@ -149,28 +155,27 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
       :tip-disabled="actionTooltipDisabled"
       @click="$emit('toggleReplyOrder')"
     />
-    <OperateButton
-      v-if="editable"
-      :tip-content="$t('enhancedTopic.editTopic')"
-      icon-class="i-mdi-pencil-outline"
+    <TopicReplyDisplay
+      v-if="showReplyDisplay"
+      :display="replyDisplay"
+      :only-original-poster="!!onlyOriginalPoster"
+      :disabled="!!loading || replyFocusing"
       :tip-disabled="actionTooltipDisabled"
-      @click="$emit('editTopic')"
+      @change-display="$emit('changeReplyDisplay', $event)"
     />
-    <OperateButton
-      v-else
-      :tip-content="$t('enhancedTopic.blockTopic')"
-      icon-class="i-mdi-eye-off-outline"
-      :tip-disabled="actionTooltipDisabled"
-      @click="$emit('blockTopic')"
-    />
+    <OperateButton v-if="editable" :operate-text="$t('enhancedTopic.editTopic')" @click="$emit('editTopic')" />
+    <OperateButton v-else :operate-text="$t('enhancedTopic.blockTopic')" @click="$emit('blockTopic')" />
     <ElInput class="topic-footer-reply-input" :placeholder="$t('enhancedTopic.writeReply')" @focus="addReply?.()" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .topic-footer-container {
+  --topic-footer-gap: 6px;
+  --topic-footer-action-padding: 8px;
+
   display: flex;
-  gap: 6px;
+  gap: var(--topic-footer-gap);
   align-items: center;
   padding: 0 var(--gzkp-topic-padding);
   border-top: 1px solid var(--el-border-color-lighter);
@@ -178,12 +183,12 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
   border-bottom-left-radius: var(--el-border-radius-base);
 
   :deep(.operate-button-container) {
-    padding: 0 8px;
+    padding: 0 var(--topic-footer-action-padding);
     margin-right: 0;
+  }
 
-    &:first-child {
-      padding-left: 0;
-    }
+  > :deep(.operate-button-container:first-child) {
+    padding-left: 0;
   }
 }
 
@@ -196,6 +201,6 @@ const addReply = inject(ADD_REPLY_INJECTION_KEY);
 
 .topic-footer-reply-input {
   flex: 1;
-  margin-left: 8px;
+  margin-inline-start: calc(var(--gzkp-topic-padding) - var(--topic-footer-gap) - var(--topic-footer-action-padding));
 }
 </style>
