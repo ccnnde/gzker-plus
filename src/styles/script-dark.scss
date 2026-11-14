@@ -685,6 +685,7 @@ html[data-gzkp-theme] {
     .gzk-points-wallet,
     .gzk-points-tabs,
     .gzk-points-stats,
+    .gzk-points-note,
     .gzk-point-records > li,
     .gzk-shop-product {
       border-color: var(--el-border-color-light);
@@ -695,8 +696,44 @@ html[data-gzkp-theme] {
       text-shadow: none;
     }
 
-    .gzk-points-wallet {
+    .gzk-points-wallet,
+    .gzk-points-note {
       background: var(--el-fill-color-light);
+    }
+
+    .gzk-points-note {
+      color: var(--el-text-color-regular);
+    }
+
+    #promotion-topic-search,
+    #bounty-amount,
+    .gzk-shop-product details input[name='reason'] {
+      color: var(--el-text-color-regular);
+      background-color: var(--el-bg-color);
+      border: 1px solid var(--el-border-color);
+      border-radius: var(--el-border-radius-base);
+
+      &:hover {
+        border-color: var(--el-border-color-hover);
+      }
+
+      &:focus {
+        border-color: var(--el-color-primary);
+        outline-color: var(--el-color-primary);
+      }
+
+      &::placeholder {
+        color: var(--el-text-color-secondary);
+      }
+    }
+
+    #bounty-amount::-webkit-inner-spin-button {
+      width: 16px;
+      color: var(--el-text-color-secondary);
+      appearance: none;
+      background-color: currentcolor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='20' viewBox='0 0 16 20'%3E%3Cpath d='m4 8 4-4 4 4zm0 4h8l-4 4z'/%3E%3C/svg%3E")
+        center no-repeat;
     }
 
     .muted,
@@ -712,22 +749,23 @@ html[data-gzkp-theme] {
       }
     }
 
-    .gzk-shop-product {
-      select {
-        color: var(--el-text-color-regular);
-        background-color: var(--el-bg-color);
-        border-color: var(--el-border-color);
+    .gzk-shop-product select,
+    #bounty-days {
+      color: var(--el-text-color-regular);
+      background-color: var(--el-bg-color);
+      border-color: var(--el-border-color);
 
-        &:hover {
-          border-color: var(--el-border-color-hover);
-        }
-
-        &:focus {
-          border-color: var(--el-color-primary);
-          outline-color: var(--el-color-primary);
-        }
+      &:hover {
+        border-color: var(--el-border-color-hover);
       }
 
+      &:focus {
+        border-color: var(--el-color-primary);
+        outline-color: var(--el-color-primary);
+      }
+    }
+
+    .gzk-shop-product {
       .btn-success:disabled,
       .btn-success:disabled:hover {
         color: var(--el-text-color-disabled);
@@ -736,10 +774,29 @@ html[data-gzkp-theme] {
       }
     }
 
+    #bounty-days {
+      @supports (appearance: base-select) and selector(::picker(select)) {
+        display: inline-flex;
+        gap: 7px;
+
+        /* stylelint-disable-next-line selector-pseudo-element-no-unknown -- Stylelint 15 尚未识别 ::picker-icon。 */
+        &::picker-icon {
+          transform: translateY(-2px) rotate(45deg);
+        }
+      }
+    }
+
     .gzk-points-tabs a:hover,
     .gzk-points-wallet-actions > a:not(.btn):hover,
     .gzk-points-more:hover {
       color: var(--el-color-primary);
+    }
+  }
+
+  &.gzkp-dark .gzk-points {
+    #promotion-topic-search,
+    #bounty-amount {
+      color-scheme: dark;
     }
   }
 
