@@ -1,13 +1,21 @@
 import { parseMetadataLink } from '@/utils';
 import {
   SELECTOR_CREDIT_LEVEL,
+  SELECTOR_REPLY_BOUNTY_ACCEPT_FORM,
   SELECTOR_REPLY_BOUNTY_ACCEPTED,
   SELECTOR_TOPIC_BOUNTY,
   SELECTOR_USER_DISPLAY_NAME,
   SELECTOR_USER_LINK,
 } from '@/constants/selector';
 
-import type { TopicBounty, UserReplyItem, UserTopic, UserTopicDetail, UserTopicStatus } from '@/types';
+import type {
+  BountyAcceptance,
+  TopicBounty,
+  UserReplyItem,
+  UserTopic,
+  UserTopicDetail,
+  UserTopicStatus,
+} from '@/types';
 
 const getUserId = (userLink: string | undefined): string | undefined => {
   return userLink?.match(/^\/u\/(.+)$/)?.[1];
@@ -19,6 +27,15 @@ const parseTopicBounty = (topicElement: Element | null): TopicBounty | undefined
   const amountText = amountElement?.textContent?.trim().match(/^悬赏\s*(\d+)\s*早点$/)?.[1];
 
   if (!amountText) {
+    const setupHref = bountyElement
+      ?.querySelector(':scope > a[href^="/points/bounty/"]')
+      ?.getAttribute('href')
+      ?.match(/^\/points\/bounty\/\d+$/)?.[0];
+
+    if (setupHref) {
+      return { setupHref };
+    }
+
     return undefined;
   }
 
@@ -122,6 +139,24 @@ const parseTopicStatus = (topicDocument: Document): UserTopicStatus => {
   };
 };
 
+const parseBountyAcceptance = (
+  metaElement: Element | null | undefined,
+  replyId?: string,
+): BountyAcceptance | undefined => {
+  const form = metaElement?.querySelector(SELECTOR_REPLY_BOUNTY_ACCEPT_FORM);
+  const action = form?.getAttribute('action')?.match(/^\/points\/bounty\/\d+\/accept$/)?.[0];
+  const formReplyId = form?.querySelector('input[type="hidden"][name="reply_id"]')?.getAttribute('value');
+
+  if (!action || !replyId || formReplyId !== replyId) {
+    return undefined;
+  }
+
+  return {
+    action,
+    replyId,
+  };
+};
+
 const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
   const metaElement = item.querySelector(':scope > .main > .meta');
   const authorElement =
@@ -155,6 +190,7 @@ const parseTopicReplyItem = (item: HTMLElement): UserReplyItem => {
     isOriginalPoster,
     isAdministrator,
     isBountyAccepted,
+    bountyAcceptance: parseBountyAcceptance(metaElement, replyId),
     replyId,
     replyNo: replyNumberText?.match(/#(\d+)/)?.[1],
     replyTime: replyTimeElement?.textContent?.trim(),

@@ -19,11 +19,16 @@ const emit = defineEmits<{
   focusReply: [replyId: string];
 }>();
 const { t } = useI18n();
+const disputeDetails = ref<HTMLDetailsElement | null>(null);
 const disputeReason = ref('');
 const submittingDispute = ref(false);
 
+const configuredBounty = computed(() => {
+  return 'amount' in props.bounty ? props.bounty : undefined;
+});
+
 const acceptedReplyHref = computed(() => {
-  const replyId = props.bounty.acceptedReplyId;
+  const replyId = configuredBounty.value?.acceptedReplyId;
 
   if (!replyId || !props.topicId) {
     return undefined;
@@ -33,7 +38,7 @@ const acceptedReplyHref = computed(() => {
 });
 
 const focusAcceptedReply = (event: MouseEvent) => {
-  const replyId = props.bounty.acceptedReplyId;
+  const replyId = configuredBounty.value?.acceptedReplyId;
 
   if (!replyId || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
     return;
@@ -44,7 +49,7 @@ const focusAcceptedReply = (event: MouseEvent) => {
 };
 
 const submitDispute = async () => {
-  const action = props.bounty.disputeAction;
+  const action = configuredBounty.value?.disputeAction;
   const reason = disputeReason.value.trim();
 
   if (!action || !reason || submittingDispute.value) {
@@ -55,6 +60,15 @@ const submitDispute = async () => {
 
   try {
     await disputeTopicBounty(action, reason);
+
+    if (configuredBounty.value?.disputeAction === action) {
+      disputeReason.value = '';
+
+      if (disputeDetails.value) {
+        disputeDetails.value.open = false;
+      }
+    }
+
     ElMessage.success(t('enhancedTopic.bounty.reviewSubmitted'));
   } catch {
     ElMessage.error(t('enhancedTopic.bounty.reviewFailed'));
@@ -64,7 +78,7 @@ const submitDispute = async () => {
 };
 
 const isBountyAccepted = computed(() => {
-  return props.bounty.status === '已采纳';
+  return configuredBounty.value?.status === '已采纳';
 });
 
 const statusLabel = computed(() => {
@@ -72,7 +86,9 @@ const statusLabel = computed(() => {
     return t('enhancedTopic.bounty.accepted');
   }
 
-  return props.bounty.status === '进行中' ? t('enhancedTopic.bounty.active') : props.bounty.status;
+  const status = configuredBounty.value?.status;
+
+  return status === '进行中' ? t('enhancedTopic.bounty.active') : status;
 });
 
 const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
@@ -80,13 +96,22 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 
 <template>
   <section class="topic-bounty" :aria-label="$t('enhancedTopic.bounty.label')">
-    <div class="topic-bounty-header">
+    <template v-if="'setupHref' in bounty">
+      <div class="topic-bounty-reward">
+        <span class="topic-bounty-icon i-gzkp-point" aria-hidden="true"></span>
+        <a class="topic-bounty-action-label" :href="bounty.setupHref" target="_blank" rel="noopener noreferrer">
+          {{ $t('enhancedTopic.bounty.setup') }}
+        </a>
+      </div>
+      <div class="topic-bounty-setup-note">{{ $t('enhancedTopic.bounty.setupNote') }}</div>
+    </template>
+    <div v-else-if="configuredBounty" class="topic-bounty-header">
       <div class="topic-bounty-summary">
         <span class="topic-bounty-reward">
           <span class="topic-bounty-icon i-gzkp-point" aria-hidden="true"></span>
           <span class="topic-bounty-points">
             {{ $t('enhancedTopic.bounty.label') }}
-            <strong>{{ bounty.amount }}</strong>
+            <strong>{{ configuredBounty.amount }}</strong>
             {{ $t('enhancedTopic.bounty.points') }}
           </span>
         </span>
@@ -94,18 +119,23 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
           {{ statusLabel }}
         </span>
       </div>
-      <div v-if="bounty.deadline" class="topic-bounty-deadline">
+      <div v-if="configuredBounty.deadline" class="topic-bounty-deadline">
         <un-i-mdi-clock-outline class="topic-bounty-clock" aria-hidden="true" />
-        <span>{{ $t('enhancedTopic.bounty.deadline', { time: bounty.deadline }) }}</span>
+        <span>{{ $t('enhancedTopic.bounty.deadline', { time: configuredBounty.deadline }) }}</span>
       </div>
     </div>
     <a v-if="acceptedReplyHref" class="topic-bounty-reply-link" :href="acceptedReplyHref" @click="focusAcceptedReply">
       <span class="topic-bounty-reply-arrow i-gzkp-reply-arrow" aria-hidden="true"></span>
       <span class="topic-bounty-action-label">
-        {{ $t('enhancedTopic.bounty.acceptedReply', { id: bounty.acceptedReplyId }) }}
+        {{ $t('enhancedTopic.bounty.acceptedReply', { id: configuredBounty?.acceptedReplyId }) }}
       </span>
     </a>
-    <details v-if="bounty.disputeAction" class="topic-bounty-dispute" @toggle="updateScrollbar?.()">
+    <details
+      v-if="configuredBounty?.disputeAction"
+      ref="disputeDetails"
+      class="topic-bounty-dispute"
+      @toggle="updateScrollbar?.()"
+    >
       <summary class="topic-bounty-toggle">
         <span class="topic-bounty-action-label">{{ $t('enhancedTopic.bounty.requestReview') }}</span>
       </summary>
@@ -268,6 +298,13 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] .topic-bounty {
 .topic-bounty-deadline {
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+  color: var(--topic-bounty-deadline);
+}
+
+.topic-bounty-setup-note {
+  margin-block-start: 4px;
+  margin-inline-start: $action-indent;
+  font-size: 13px;
   color: var(--topic-bounty-deadline);
 }
 

@@ -16,6 +16,7 @@ import { GZK_URL, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/c
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type {
+  BountyAcceptance,
   FavoriteResponse,
   MentionUser,
   ReplyMentionBinding,
@@ -256,6 +257,16 @@ export const disputeTopicBounty = async (action: string, reason: string): Promis
     method: 'POST',
     body: new URLSearchParams({
       reason,
+      _xsrf: getXsrfToken(),
+    }),
+  });
+};
+
+export const acceptTopicBounty = async ({ action, replyId }: BountyAcceptance): Promise<void> => {
+  await request(action, {
+    method: 'POST',
+    body: new URLSearchParams({
+      reply_id: replyId,
       _xsrf: getXsrfToken(),
     }),
   });

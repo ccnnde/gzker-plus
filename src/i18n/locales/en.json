@@ -253,9 +253,13 @@
     "blockTopic": "Block topic",
     "blockTopicSuccessful": "Topic blocked successfully",
     "bounty": {
+      "acceptReply": "Accept reply",
+      "acceptSucceeded": "Reply accepted and bounty awarded",
+      "acceptUnconfirmed": "Could not confirm the result. Refresh the topic and check the bounty status before trying again.",
       "accepted": "Accepted",
       "acceptedReply": "Accepted reply #{id}",
       "active": "In progress",
+      "confirmAccept": "Accept the reply from {reply} and award all {amount} points? Only one reply can be accepted for this bounty.",
       "deadline": "Deadline {time}",
       "label": "Bounty",
       "points": "points",
@@ -264,6 +268,8 @@
       "requestReview": "Request moderator review",
       "reviewFailed": "Could not submit the review request. Please try again later.",
       "reviewSubmitted": "Review request submitted",
+      "setup": "Set bounty",
+      "setupNote": "Only the topic author can accept one reply and award the bounty. If no reply is accepted, the bounty is returned when it expires.",
       "submitReview": "Submit for review"
     },
     "cannotEditSelectedReply": "The selected reply cannot be edited",

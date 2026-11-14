@@ -253,9 +253,13 @@
     "blockTopic": "屏蔽主题",
     "blockTopicSuccessful": "屏蔽主题成功",
     "bounty": {
+      "acceptReply": "采纳回复",
+      "acceptSucceeded": "回复已采纳，悬赏已发放",
+      "acceptUnconfirmed": "暂时无法确认采纳结果，请刷新主题核对悬赏状态后再试",
       "accepted": "已采纳",
       "acceptedReply": "已采纳回复 #{id}",
       "active": "进行中",
+      "confirmAccept": "确定采纳{reply}的回复并发放全部 {amount} 早点？同一悬赏只能采纳一次。",
       "deadline": "截止 {time}",
       "label": "悬赏",
       "points": "早点",
@@ -264,6 +268,8 @@
       "requestReview": "申请管理员核查悬赏",
       "reviewFailed": "未能提交核查申请，请稍后重试",
       "reviewSubmitted": "核查申请已提交",
+      "setup": "设置悬赏",
+      "setupNote": "仅楼主可采纳一条回复并发赏，未采纳到期退回",
       "submitReview": "提交核查"
     },
     "cannotEditSelectedReply": "当前指向的回复不可编辑",

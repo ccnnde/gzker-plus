@@ -9,6 +9,7 @@ import { convertEmojiToNative } from '@/utils/emoji';
 import { getReplyMention, linkifyContent } from '@/utils/reply-content';
 import {
   ADD_REPLY_INJECTION_KEY,
+  BOUNTY_ACCEPTANCE_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
   MENTION_REPLIES_INJECTION_KEY,
   REPLY_HOVER_INJECTION_KEY,
@@ -134,6 +135,15 @@ const handleUserReply = () => {
 };
 
 const editReply = inject(EDIT_REPLY_INJECTION_KEY);
+const bountyAcceptanceController = inject(BOUNTY_ACCEPTANCE_INJECTION_KEY);
+
+const handleAcceptReply = () => {
+  if (!bountyAcceptanceController || bountyAcceptanceController.busy.value) {
+    return;
+  }
+
+  bountyAcceptanceController.accept(props);
+};
 
 const handleReplyEdit = () => {
   if (isLoading.value) {
@@ -207,6 +217,17 @@ const handleReplyEdit = () => {
         <template v-if="isNotInConversation">
           <OperateButton icon-class="i-mdi-chat-outline" @click="handleUserReply" />
           <OperateButton
+            v-if="bountyAcceptance && bountyAcceptanceController?.available.value && !isBountyAccepted"
+            class="reply-item-accept"
+            role="button"
+            :tabindex="bountyAcceptanceController.busy.value ? -1 : 0"
+            :aria-disabled="bountyAcceptanceController.busy.value"
+            :operate-text="$t('enhancedTopic.bounty.acceptReply')"
+            @click="handleAcceptReply"
+            @keydown.enter.prevent="handleAcceptReply"
+            @keydown.space.prevent="handleAcceptReply"
+          />
+          <OperateButton
             v-if="editable"
             :operate-text="$t('enhancedTopic.editReply')"
             data-gzkp-reply-edit
@@ -220,6 +241,11 @@ const handleReplyEdit = () => {
 
 <style lang="scss" scoped>
 @import '@/styles/mixin';
+
+.reply-item-accept[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
 
 .reply-container {
   display: flex;

@@ -242,13 +242,15 @@ export interface MetadataLink {
   title?: string;
 }
 
-export interface TopicBounty {
+export interface ConfiguredTopicBounty {
   amount: number;
   status?: string;
   deadline?: string;
   acceptedReplyId?: string;
   disputeAction?: string;
 }
+
+export type TopicBounty = ConfiguredTopicBounty | { setupHref: string };
 
 export interface UserTopicDetail {
   editInfo?: string;
@@ -289,6 +291,17 @@ export interface UserTopicReply {
   list: UserReplyItem[];
 }
 
+export interface BountyAcceptance {
+  action: string;
+  replyId: string;
+}
+
+export interface BountyAcceptanceController {
+  available: ComputedRef<boolean>;
+  busy: ComputedRef<boolean>;
+  accept: (reply: UserReplyItem) => Promise<void>;
+}
+
 export interface UserReplyItem {
   uid?: string;
   userId?: string;
@@ -298,6 +311,7 @@ export interface UserReplyItem {
   isOriginalPoster?: boolean;
   isAdministrator?: boolean;
   isBountyAccepted?: boolean;
+  bountyAcceptance?: BountyAcceptance;
   replyId?: string;
   replyNo?: string;
   replyTime?: string;

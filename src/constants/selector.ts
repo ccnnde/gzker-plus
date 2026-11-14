@@ -14,6 +14,11 @@ export const SELECTOR_TOPIC_BOUNTY = ':scope > section#gzk-bounty';
 export const SELECTOR_REPLY_BOUNTY_ACCEPTED = ':scope > .gzk-bounty-accepted';
 
 /**
+ * 回复元数据中用于采纳回复并发放悬赏的原站表单
+ */
+export const SELECTOR_REPLY_BOUNTY_ACCEPT_FORM = ':scope > form.gzk-accept-bounty[method="post" i]';
+
+/**
  * Topic reply total element
  */
 export const SELECTOR_TOPIC_REPLY_TOTAL = '.topic-reply-total';

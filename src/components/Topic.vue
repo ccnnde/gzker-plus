@@ -16,6 +16,7 @@ import { useTopicShortcuts } from '@/composables/topic-shortcuts';
 import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import {
+  acceptTopicBounty,
   deleteTopic,
   favoriteTopic,
   getEditedTopic,
@@ -40,6 +41,7 @@ import { buildTopicMarkdown } from '@/utils/topic-markdown';
 import { DialogType, INFINITE_SCROLL_LOAD_DISTANCE, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
+  BOUNTY_ACCEPTANCE_INJECTION_KEY,
   EDIT_REPLY_INJECTION_KEY,
   REPLY_FOCUS_ID_INJECTION_KEY,
   REPLY_HOVER_INJECTION_KEY,
@@ -83,6 +85,7 @@ const topicEditorContainer = ref<HTMLDivElement | null>(null);
 const isTopicEditing = ref(false);
 const isTopicEditorFullscreen = ref(false);
 const isDeletingTopic = ref(false);
+const isAcceptingBounty = ref(false);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
 const replyHoverDisabled = ref(false);
 
@@ -335,6 +338,121 @@ const handleTopicEdit = () => {
     topicEditor.value?.openEditEditor(topicId.value as string, data);
   });
 };
+
+const bountyAcceptanceBusy = computed(() => {
+  return isAcceptingBounty.value || isTopicRefreshing.value;
+});
+
+const bountyAcceptanceAvailable = computed(() => {
+  const bounty = topicDetail.value?.bounty;
+
+  return Boolean(
+    bounty && 'amount' in bounty && !bounty.acceptedReplyId && bounty.status !== '已采纳' && !replyLoadError.value,
+  );
+});
+
+const isCurrentTopic = (id: string) => {
+  return dialogVisible.value && topicId.value === id;
+};
+
+const confirmBountyAcceptance = (reply: UserReplyItem, replyId: string, amount: number) => {
+  const recipient = reply.displayName || reply.uid;
+  const label = reply.replyNo ? `#${reply.replyNo}` : `ID ${replyId}`;
+  const message = t('enhancedTopic.bounty.confirmAccept', {
+    reply: recipient ? `【${label} ${recipient}】` : `【${label}】`,
+    amount,
+  });
+
+  return ElMessageBox.confirm(message, t('enhancedTopic.bounty.acceptReply'), {
+    type: 'warning',
+  });
+};
+
+const refreshBountyAcceptance = async (id: string, replyId: string) => {
+  if (isTopicRefreshing.value) {
+    await until(isTopicRefreshing).toBe(false);
+  }
+
+  if (!isCurrentTopic(id)) {
+    return;
+  }
+
+  const previousDetail = topicDetail.value;
+
+  await refreshTopic();
+
+  if (!isCurrentTopic(id)) {
+    return;
+  }
+
+  const bounty = topicDetail.value?.bounty;
+  const acceptedReplyId = bounty && 'amount' in bounty ? bounty.acceptedReplyId : undefined;
+  const acceptedReply = effectiveReplyList.value.some((item) => {
+    return item.replyId === replyId && item.isBountyAccepted;
+  });
+
+  if (topicDetail.value !== previousDetail && (acceptedReplyId === replyId || acceptedReply)) {
+    ElMessage.success(t('enhancedTopic.bounty.acceptSucceeded'));
+    return;
+  }
+
+  ElMessage.warning(t('enhancedTopic.bounty.acceptUnconfirmed'));
+};
+
+const handleAcceptReply = async (reply: UserReplyItem): Promise<void> => {
+  const acceptance = reply.bountyAcceptance;
+  const currentTopicId = topicId.value;
+  const bounty = topicDetail.value?.bounty;
+
+  if (!acceptance || !currentTopicId || !bounty || !('amount' in bounty) || !bountyAcceptanceAvailable.value) {
+    return;
+  }
+
+  if (bountyAcceptanceBusy.value) {
+    return;
+  }
+
+  isAcceptingBounty.value = true;
+
+  try {
+    try {
+      await confirmBountyAcceptance(reply, acceptance.replyId, bounty.amount);
+    } catch {
+      return;
+    }
+
+    const currentBounty = topicDetail.value?.bounty;
+
+    if (
+      !isCurrentTopic(currentTopicId) ||
+      !currentBounty ||
+      !('amount' in currentBounty) ||
+      currentBounty.amount !== bounty.amount ||
+      currentBounty.status !== bounty.status ||
+      !bountyAcceptanceAvailable.value
+    ) {
+      return;
+    }
+
+    try {
+      await acceptTopicBounty(acceptance);
+    } catch {
+      // 请求失败时，服务器仍可能已完成发赏。刷新后再判断。
+    }
+
+    await refreshBountyAcceptance(currentTopicId, acceptance.replyId);
+  } catch {
+    ElMessage.warning(t('enhancedTopic.bounty.acceptUnconfirmed'));
+  } finally {
+    isAcceptingBounty.value = false;
+  }
+};
+
+provide(BOUNTY_ACCEPTANCE_INJECTION_KEY, {
+  available: bountyAcceptanceAvailable,
+  busy: bountyAcceptanceBusy,
+  accept: handleAcceptReply,
+});
 
 const handleTopicDelete = async () => {
   if (!topicId.value || !topicDetail.value?.deletable || isDeletingTopic.value) {
