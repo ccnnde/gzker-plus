@@ -140,6 +140,7 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
   --gzkp-topic-tag-bg-color: var(--el-fill-color-darker);
   --gzkp-reply-count-bg-color: #3e5160;
   --gzkp-reply-count-visited-bg-color: #708598;
+  --gzkp-app-page-bg: var(--el-bg-color-page);
 
   // 页面与卡片分层，仅应用于此主题。
   &,

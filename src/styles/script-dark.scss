@@ -10,6 +10,25 @@ html[data-gzkp-theme] {
     background: var(--el-bg-color);
   }
 
+  // 游戏通过论坛的 data-theme 接收深浅模式。此处覆盖同时生效的原生夜间样式。
+  &.gzkp-theme-controlled[data-theme='dark'].yw-embedded-page {
+    --gzk-link: var(--el-color-primary);
+
+    &,
+    body {
+      background: var(--gzkp-app-page-bg, var(--el-bg-color)) !important;
+    }
+
+    .top-navbar .nav li a {
+      color: var(--el-text-color-primary) !important;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--el-color-primary) !important;
+      }
+    }
+  }
+
   .alert-danger {
     color: var(--el-color-error);
     background-color: var(--el-color-error-light-9);
@@ -32,6 +51,30 @@ html[data-gzkp-theme] {
 
     &::placeholder {
       color: var(--el-text-color-placeholder);
+    }
+  }
+
+  .yw-tools,
+  .yw-form,
+  .yw-dialog {
+    :is(input:not([type='file'], [type='checkbox']), select, textarea) {
+      color: var(--el-text-color-primary);
+      background-color: var(--el-bg-color);
+      border-color: var(--el-border-color);
+
+      &:hover {
+        border-color: var(--el-border-color-hover);
+      }
+
+      &:focus {
+        border-color: var(--el-color-primary);
+        outline-color: var(--el-color-primary);
+        box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
+      }
+
+      &::placeholder {
+        color: var(--el-text-color-secondary);
+      }
     }
   }
 
@@ -244,6 +287,15 @@ html[data-gzkp-theme] {
     }
   }
 
+  &.gzkp-theme-controlled[data-theme='dark'] .yw-player .btn-default {
+    color: var(--el-text-color-primary) !important;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--el-color-primary) !important;
+    }
+  }
+
   .btn-primary,
   .dropdown.open > .dropdown-toggle.btn-primary {
     color: var(--el-color-white) !important;
@@ -327,27 +379,106 @@ html[data-gzkp-theme] {
       color: var(--el-text-color-secondary);
     }
 
-    form {
-      fieldset {
-        legend {
-          padding-bottom: 10px;
+    form fieldset legend {
+      padding-bottom: 10px;
+      color: var(--el-text-color-primary);
+      border-color: var(--el-border-color-light);
+    }
+
+    :is(form fieldset, .yw-form) input[type='file'] {
+      &::file-selector-button {
+        color: var(--el-text-color-primary);
+        background-color: var(--el-fill-color);
+        border: 1px solid var(--el-border-color-light);
+      }
+
+      &:enabled::file-selector-button:hover {
+        color: var(--el-color-primary);
+        background-color: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary-light-5);
+      }
+    }
+
+    &.yw {
+      --yw-line: var(--el-border-color-light);
+      --yw-muted: var(--el-text-color-secondary);
+      --yw-panel: var(--el-bg-color-overlay);
+      --yw-text: var(--el-text-color-primary);
+      --yw-link: var(--el-color-primary);
+      --yw-input: var(--el-bg-color);
+
+      background-color: var(--el-bg-color);
+
+      .yw-header .muted {
+        color: var(--yw-muted);
+      }
+
+      .yw-header h1 a,
+      .yw-card-title,
+      .yw-author a,
+      .yw-detail a:not(.btn),
+      .yw-player a:not(.btn) {
+        color: var(--yw-link);
+      }
+
+      .yw-tags a {
+        &:hover,
+        &:focus-visible {
+          color: var(--yw-link);
+          background-color: var(--el-color-primary-light-9);
+        }
+
+        &[aria-current] {
           color: var(--el-text-color-primary);
-          border-color: var(--el-border-color-light);
+          background-color: var(--el-color-primary-light-8);
         }
+      }
 
-        input[type='file'] {
-          &::file-selector-button {
-            color: var(--el-text-color-primary);
-            background-color: var(--el-fill-color);
-            border: 1px solid var(--el-border-color-light);
-          }
+      .yw-app-icon {
+        background-color: var(--el-fill-color-light);
+      }
 
-          &:enabled::file-selector-button:hover {
-            color: var(--el-color-primary);
-            background-color: var(--el-color-primary-light-9);
-            border-color: var(--el-color-primary-light-5);
-          }
+      .yw-app-fallback {
+        color: var(--yw-link);
+        background-color: var(--el-color-primary-light-9);
+      }
+
+      .yw-player {
+        background-color: var(--el-bg-color);
+
+        .yw-player-status {
+          color: var(--el-color-warning-dark-2);
         }
+      }
+    }
+
+    .yw-community-heading {
+      .yw-community-caption {
+        color: var(--el-text-color-secondary);
+      }
+
+      + .ui-content a:hover,
+      + .ui-content a:focus-visible {
+        color: var(--el-color-primary);
+      }
+    }
+  }
+
+  &.gzkp-theme-controlled .yw-dialog {
+    color: var(--el-text-color-primary);
+    background-color: var(--el-bg-color-overlay);
+    border-color: var(--el-border-color);
+
+    &::backdrop {
+      background-color: var(--el-overlay-color-lighter);
+    }
+
+    header {
+      border-color: var(--el-border-color-light);
+
+      button:hover,
+      button:focus-visible {
+        color: var(--el-color-primary);
       }
     }
   }
@@ -1129,7 +1260,8 @@ html[data-gzkp-theme] {
 
   .topic-detail .ui-content,
   .topic-reply .ui-content,
-  .replies-lists .ui-content {
+  .replies-lists .ui-content,
+  .yw-detail {
     hr {
       border-color: var(--el-border-color-light);
     }

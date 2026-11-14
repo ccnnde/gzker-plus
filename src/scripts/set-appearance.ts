@@ -19,10 +19,15 @@ const overrideForumTheme = (context: ContentScriptContext) => {
   const colorSchemePriority = root.style.getPropertyPriority('color-scheme');
   const controlledClass = 'gzkp-theme-controlled';
   const hadControlledClass = root.classList.contains(controlledClass);
+  // 一起玩的 SDK 读取论坛主题，并在属性变化时通知游戏。
+  const isAppRunPage = /^\/apps\/[^/]+\/run\/?$/.test(location.pathname);
 
-  const disableForumTheme = () => {
-    if (root.getAttribute(FORUM_THEME_ATTR) !== 'light') {
-      root.setAttribute(FORUM_THEME_ATTR, 'light');
+  const syncForumTheme = () => {
+    const isDark = isAppRunPage && root.classList.contains(DARK_MODE_CLASS);
+    const theme = isDark ? 'dark' : 'light';
+
+    if (root.getAttribute(FORUM_THEME_ATTR) !== theme) {
+      root.setAttribute(FORUM_THEME_ATTR, theme);
     }
 
     if (root.style.getPropertyValue('background-color')) {
@@ -34,10 +39,19 @@ const overrideForumTheme = (context: ContentScriptContext) => {
     }
   };
 
-  const observer = new MutationObserver(disableForumTheme);
-  observer.observe(root, { attributes: true, attributeFilter: [FORUM_THEME_ATTR, 'style'] });
+  const attributeFilter = [FORUM_THEME_ATTR, 'style'];
+
+  if (isAppRunPage) {
+    attributeFilter.push('class');
+  }
+
+  const observer = new MutationObserver(syncForumTheme);
+  observer.observe(root, {
+    attributes: true,
+    attributeFilter,
+  });
   root.classList.add(controlledClass);
-  disableForumTheme();
+  syncForumTheme();
 
   context.onInvalidated(() => {
     observer.disconnect();
