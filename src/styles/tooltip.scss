@@ -1,0 +1,10 @@
+.gzkp-tooltip-popper {
+  padding: 2px 8px;
+  font-size: 12px;
+  line-height: 18px;
+
+  &.el-fade-in-linear-enter-active,
+  &.el-fade-in-linear-leave-active {
+    transition: opacity 0.15s ease;
+  }
+}

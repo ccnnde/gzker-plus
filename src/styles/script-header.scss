@@ -133,10 +133,10 @@
     }
   }
 
-  .gzkp-header-theme-icon > svg {
-    display: block;
-    width: 1em;
-    height: 1em;
+  .gzkp-header-theme-icon {
+    padding: 0;
+    background: transparent;
+    border: 0;
   }
 }
 

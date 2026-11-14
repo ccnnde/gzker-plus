@@ -1,5 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 @use 'script-header';
+@use 'tooltip';
 @import 'mixin';
 
 html.gzkp-theme-controlled[data-theme='light']:not([data-gzkp-theme]) body {
@@ -16,17 +17,6 @@ img[src^="https://img.whzxc.cn/bd"]
   width: 1.22em !important;
   height: 1.22em !important;
   vertical-align: -0.214em !important;
-}
-
-.gzkp-tooltip-popper {
-  padding: 2px 8px;
-  font-size: 12px;
-  line-height: 18px;
-
-  &.el-fade-in-linear-enter-active,
-  &.el-fade-in-linear-leave-active {
-    transition: opacity 0.15s ease;
-  }
 }
 
 .gzkp-reply-item-flash {

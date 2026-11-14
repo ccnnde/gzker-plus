@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
+import DarkModeToggle from '@/components/DarkModeToggle.vue';
 import { setStorage, translateNavigation } from '@/utils';
 import { LanguageType } from '@/constants';
 
@@ -53,6 +54,7 @@ const switchLanguage = (lang: LanguageType) => {
       <a class="options-icon-button" href="https://github.com/ccnnde/gzker-plus" title="GitHub" target="_blank">
         <un-i-mdi-github />
       </a>
+      <DarkModeToggle class="options-icon-button" />
     </div>
   </ElHeader>
 </template>
