@@ -39,3 +39,9 @@
 代码实现任务在改动完成并趋于稳定后，必须使用 `code-quality-check` skill，执行其中规定的格式化、自动修复和最终 diff 检查。类型检查和构建默认不执行；必要时说明建议及原因，经用户确认后再运行。验收、审查或测试任务，不执行该 skill。
 
 使用浏览器工具（如 `@Chrome`）验收时，先确认当前界面和交互目标，按实际用户路径操作并等待结果，再截图确认可见结果，若结果未出现，先核对交互命中、状态变化和等待条件，必要时用最小对照复测并检查 DOM、样式、网络和控制台。
+
+### Windows 上的 Canary 连接排查
+
+- 本项目使用 WXT 启动的 Chrome Canary 验收。按运行中 Canary 的 `--user-data-dir` 或 `chrome://version` 的「个人资料路径」确认实际配置。项目默认使用 `.wxt/chrome-data`。运行 Browser 插件的扩展检测脚本时，可在当前终端通过 `CODEX_CHROMIUM_USER_DATA_DIR` 指定该目录。默认 Chrome 或 Canary 配置的检测结果无法代表 WXT 配置。
+- 如果 `@Chrome` 工具缺失且 Codex 日志出现 `node_repl` 初始化握手断开，检查 `~/.codex/config.toml` 中 `mcp_servers.node_repl` 的启动配置。本机的 `ProxyRuntime.exe` 启动时从 `NODE_REPL_NODE_MODULE_DIRS` 动态定位与 `node_modules` 同级的 `node_repl.exe`。核对该文件存在后，再验证 MCP 初始化和工具注册。
+- 如果独立验证已能注册工具，但当前聊天仍提示运行时未就绪，在新聊天中重新选择 `@Chrome`。读取 Canary 标签页后再确认端到端连接。如果此时出现 EI 连接超时，参考 Codex 聊天「排查 Chrome 连接 EI 超时」中的代理设置（聊天 ID `01a1c4f9-c13d-7460-b012-d0f3604c941b`），确认本机代理 `127.0.0.1:7897` 可连接，并让本地回环流量直连。
