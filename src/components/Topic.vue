@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onUnmounted, provide, ref } from 'vue';
+import { computed, h, nextTick, onBeforeMount, onUnmounted, provide, ref } from 'vue';
 import { until } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { ElMessage, ElMessageBox } from 'element-plus';
@@ -17,6 +17,7 @@ import { useStorageStore } from '@/stores/storage';
 import { t } from '@/i18n';
 import {
   acceptTopicBounty,
+  API_TOPIC,
   deleteTopic,
   favoriteTopic,
   getEditedTopic,
@@ -84,7 +85,7 @@ const topicContainer = ref<HTMLDivElement | null>(null);
 const topicEditorContainer = ref<HTMLDivElement | null>(null);
 const isTopicEditing = ref(false);
 const isTopicEditorFullscreen = ref(false);
-const isDeletingTopic = ref(false);
+const isDeleteConfirmationOpen = ref(false);
 const isAcceptingBounty = ref(false);
 const hotRepliesDialog = ref<InstanceType<typeof HotRepliesDialog> | null>(null);
 const replyHoverDisabled = ref(false);
@@ -455,37 +456,75 @@ provide(BOUNTY_ACCEPTANCE_INJECTION_KEY, {
 });
 
 const handleTopicDelete = async () => {
-  if (!topicId.value || !topicDetail.value?.deletable || isDeletingTopic.value) {
+  if (!topicId.value || !topicDetail.value?.deletable || isDeleteConfirmationOpen.value) {
     return;
   }
 
   const deletedTopicId = topicId.value;
-  isDeletingTopic.value = true;
+  isDeleteConfirmationOpen.value = true;
 
   try {
-    await ElMessageBox.confirm(t('enhancedTopic.confirmDeleteTopic'), t('common.warning'), {
+    const message = h('div', [
+      h('p', t('enhancedTopic.confirmDeleteTopic.impact')),
+      h('p', t('enhancedTopic.confirmDeleteTopic.recovery')),
+      h('p', t('enhancedTopic.confirmDeleteTopic.repeatedDeletion')),
+    ]);
+
+    await ElMessageBox.confirm(message, t('common.warning'), {
       type: 'warning',
       autofocus: false,
+      customClass: 'gzkp-topic-delete-confirm',
+      cancelButtonClass: 'gzkp-topic-delete-cancel',
+      closeOnHashChange: false,
+      beforeClose: async (action, instance, done) => {
+        if (instance.confirmButtonLoading) {
+          instance.action = 'confirm';
+          return;
+        }
+
+        if (action !== 'confirm') {
+          done();
+          return;
+        }
+
+        instance.confirmButtonLoading = true;
+        // MessageBox 通过加载状态为取消按钮设置原生 disabled，图标由样式隐藏。
+        instance.cancelButtonLoading = true;
+
+        try {
+          await deleteTopic(deletedTopicId);
+        } catch (err) {
+          instance.confirmButtonLoading = false;
+          instance.cancelButtonLoading = false;
+          ElMessage.error((err as Error).message);
+          console.error(err);
+          return;
+        }
+
+        done();
+      },
     });
   } catch {
-    isDeletingTopic.value = false;
     return;
+  } finally {
+    isDeleteConfirmationOpen.value = false;
   }
 
-  await handleTopicActionRequest(async () => {
-    await deleteTopic(deletedTopicId);
+  if (topicId.value === deletedTopicId && topicDetail.value) {
+    topicDetail.value.deletable = false;
+  }
 
-    if (topicId.value === deletedTopicId && topicDetail.value) {
-      topicDetail.value.deletable = false;
-    }
+  ElMessage.success({
+    message: t('enhancedTopic.deleteTopicSuccessful'),
+    onClose: () => {
+      if (window.location.pathname === `${API_TOPIC}${deletedTopicId}`) {
+        window.location.replace('/');
+        return;
+      }
 
-    ElMessage.success({
-      message: t('enhancedTopic.deleteTopicSuccessful'),
-      onClose: () => window.location.reload(),
-    });
+      window.location.reload();
+    },
   });
-
-  isDeletingTopic.value = false;
 };
 
 const handleTopicBlock = async () => {
@@ -679,7 +718,6 @@ const topicActions = computed<readonly TopicAction[]>(() => {
       label: t('enhancedTopic.deleteTopic'),
       iconClass: 'i-mdi-trash-can-outline',
       handler: handleTopicDelete,
-      loading: isDeletingTopic.value,
     });
   }
 
@@ -1066,6 +1104,37 @@ onUnmounted(() => {
 
 <style lang="scss">
 @import '@/styles/mixin';
+
+.gzkp-topic-delete-confirm {
+  .gzkp-topic-delete-cancel {
+    & > .el-icon.is-loading {
+      display: none;
+
+      & + span {
+        margin-left: 0;
+      }
+    }
+  }
+
+  &:has(.gzkp-topic-delete-cancel.is-loading) .el-message-box__headerbtn {
+    visibility: hidden;
+  }
+
+  .el-message-box__container {
+    align-items: flex-start;
+  }
+
+  .el-message-box__message p {
+    & + p {
+      margin-top: 10px;
+    }
+
+    &:first-child {
+      font-weight: var(--el-font-weight-primary);
+      color: var(--el-text-color-primary);
+    }
+  }
+}
 
 .gzkp-topic-overlay {
   top: var(--gzkp-top-navbar-height);

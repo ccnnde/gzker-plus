@@ -1,4 +1,5 @@
 import { parseMetadataLink } from '@/utils';
+import { TOPIC_DELETE_PATH } from '@/constants';
 import {
   SELECTOR_CREDIT_LEVEL,
   SELECTOR_REPLY_BOUNTY_ACCEPT_FORM,
@@ -126,7 +127,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
     favoriteNumber: statisticsElement?.querySelector('.favorited')?.textContent?.match(/(\d+)\s*人收藏/)?.[1],
     clickNumber: topicElement?.querySelector('.hits')?.textContent?.match(/(\d+) 次点击/)?.[1],
     editable: Boolean(ownerActionsElement?.querySelector('a.gzk-topic-edit[href^="/t/edit/"]')),
-    deletable: Boolean(ownerActionsElement?.querySelector('a.gzk-topic-delete[href^="/t/destory/"]')),
+    deletable: Boolean(ownerActionsElement?.querySelector(`a.gzk-topic-delete[href^="${TOPIC_DELETE_PATH}"]`)),
   };
 };
 

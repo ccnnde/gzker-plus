@@ -7,12 +7,13 @@ import {
   parseNodeList,
   parseSearchNodeOptions,
   parseSearchTopicResult,
+  parseTopicDeleteForm,
   parseUserInfo,
   parseUserMessageList,
 } from '@/utils/page-parser';
 import { mergeTopicReplies } from '@/utils/topic-export';
 import { parseUserTopic } from '@/utils/topic-parser';
-import { GZK_URL, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
+import { GZK_URL, TOPIC_DELETE_PATH, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type {
@@ -302,14 +303,18 @@ export const modifyTopic = async (topicId: string, title: string, content: strin
 };
 
 export const deleteTopic = async (topicId: string): Promise<void> => {
-  await request(`/t/destory/${topicId}`, {
+  const path = `${TOPIC_DELETE_PATH}${topicId}`;
+  const page = await request(path, {
+    cache: 'no-store',
+    credentials: 'include',
+  });
+
+  const { action, body } = parseTopicDeleteForm(page, path);
+
+  await request(action, {
     method: 'POST',
     credentials: 'include',
-    body: new URLSearchParams({
-      _xsrf: getXsrfToken(),
-      confirm_delete: '1',
-      version: 'member-controls-20261101-v1',
-    }),
+    body,
   });
 };
 

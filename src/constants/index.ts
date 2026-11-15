@@ -7,6 +7,8 @@ import type { ElementPositionAndSize, Options, StorageSettings } from '@/types';
  */
 export const GZK_URL = 'https://www.guozaoke.com';
 
+export const TOPIC_DELETE_PATH = '/t/destory/';
+
 export const GZK_IMAGE_HOST_SETTINGS_URL = `${GZK_URL}/setting/image-host`;
 
 /**

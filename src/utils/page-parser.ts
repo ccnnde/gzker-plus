@@ -405,6 +405,49 @@ export const parseBlockedUserList = (htmlStr: string): string[] => {
   });
 };
 
+export const parseTopicDeleteForm = (htmlStr: string, path: string): { action: string; body: URLSearchParams } => {
+  const pageUrl = new URL(path, GZK_URL);
+  const formDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
+  const forms = formDocument.querySelectorAll<HTMLFormElement>('form[method="post" i][action]');
+
+  for (const form of forms) {
+    const action = form.getAttribute('action')?.trim();
+
+    if (!action) {
+      continue;
+    }
+
+    let actionUrl: URL;
+
+    try {
+      actionUrl = new URL(action, pageUrl);
+    } catch {
+      continue;
+    }
+
+    if (actionUrl.origin !== pageUrl.origin || actionUrl.pathname !== pageUrl.pathname) {
+      continue;
+    }
+
+    const body = new URLSearchParams();
+
+    new FormData(form).forEach((value, name) => {
+      if (typeof value === 'string') {
+        body.append(name, value);
+      }
+    });
+
+    if (body.get('_xsrf') && body.get('confirm_delete')) {
+      return {
+        action: actionUrl.pathname + actionUrl.search,
+        body,
+      };
+    }
+  }
+
+  throw new Error(t('enhancedTopic.deleteTopicFormUnavailable'));
+};
+
 export const checkAlertInfo = (htmlStr: string): void => {
   const formDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
   const formElement = Array.from(formDocument.querySelectorAll('form')).find((element) => {

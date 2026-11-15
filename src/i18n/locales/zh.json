@@ -284,7 +284,11 @@
     "confirmBlockTopic": "确定屏蔽主题【{title}】？屏蔽后可前往扩展选项页面管理屏蔽主题列表",
     "confirmDeleteAllEditHistory": "确定要删除当前展示的所有历史记录吗？",
     "confirmDeleteEditHistory": "确定要删除该历史记录吗？",
-    "confirmDeleteTopic": "删除后，主题及其回复将不再公开显示（本人删帖每次扣 2 信用，不足时扣至 0；重复提交不会重复扣分，实际扣分以提交时的信用为准）",
+    "confirmDeleteTopic": {
+      "impact": "删除后，主题及其回复将不再公开显示。",
+      "recovery": "删除后将回收这条内容已获得的早点和信用；信用最多扣至 0。可用早点不足的部分记入待抵扣记录，从后续奖励中抵扣，悬赏冻结资金不受影响。",
+      "repeatedDeletion": "7 天内本人第 3 次及之后删帖，每次另扣 5 早点。可在早点账户查看处理记录。"
+    },
     "confirmImportEditHistory": "导入该历史记录会覆盖编辑器当前的内容，确定继续吗？",
     "confirmUnblockTopic": "确定解除屏蔽主题【{title}】？解除屏蔽后刷新论坛即可生效",
     "continueSearchOriginalPosterReply": "继续查找楼主回复",
@@ -294,6 +298,7 @@
     "createTopic": "创建主题",
     "createdOn": "创建于",
     "deleteTopic": "删除主题",
+    "deleteTopicFormUnavailable": "无法获取删除确认表单，请刷新页面后重试。",
     "deleteTopicSuccessful": "删除主题成功",
     "dialogFullscreen": "展开编辑器",
     "editReply": "编辑回复",
