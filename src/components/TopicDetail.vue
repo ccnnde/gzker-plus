@@ -44,7 +44,7 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
         </div>
       </div>
       <div class="detail-header-bottom">
-        <UserAvatar :uid="authorId" :user-link="authorLink" :avatar-url="avatarUrl" :avatar-size="50" />
+        <UserAvatar :uid="authorId" :user-link="authorLink" :avatar-url="avatarUrl" />
         <div v-if="meta" class="topic-detail-info">
           <div class="user-id topic-detail-author">
             <a
@@ -197,8 +197,8 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 17px;
+  line-height: 20px;
 }
 
 .topic-detail-author-link {
@@ -208,9 +208,11 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
 }
 
 .topic-detail-meta {
-  font-size: 14px;
+  position: relative;
+  top: 1px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 16px;
   color: var(--el-text-color-regular);
   overflow-wrap: anywhere;
 
