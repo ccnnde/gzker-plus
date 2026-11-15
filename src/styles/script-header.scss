@@ -1,10 +1,3 @@
-.top-navbar .navbar-right > .gzk-mobile-search > a[href='/search'],
-#gzkp-app-header > :not(.gzkp-header-icon) {
-  width: var(--gzkp-header-button-width);
-  height: var(--gzkp-header-button-height);
-  padding: 0;
-}
-
 .top-navbar {
   --gzkp-header-button-width: 32px;
   --gzkp-header-button-height: 40px;
@@ -79,10 +72,28 @@
     }
   }
 
+  .navbar-right > .gzk-mobile-apps > a[href='/apps'] {
+    > svg {
+      display: none;
+    }
+
+    &::before {
+      width: var(--gzkp-header-icon-size);
+      height: var(--gzkp-header-icon-size);
+      content: '';
+      background-color: currentcolor;
+      mask: url('../assets/icons/apps.svg?inline') center / contain no-repeat;
+    }
+  }
+
+  .navbar-right > .gzk-mobile-apps > a[href='/apps'],
   .navbar-right > .gzk-mobile-search > a[href='/search'] {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: var(--gzkp-header-button-width);
+    height: var(--gzkp-header-button-height);
+    padding: 0;
     color: var(--el-text-color-primary);
     transition: color 0.1s ease-in;
 
@@ -91,7 +102,7 @@
       background-color: transparent;
     }
 
-    .gzk-search-symbol {
+    > svg {
       width: var(--gzkp-header-icon-size);
       height: var(--gzkp-header-icon-size);
       stroke-width: 2.4;
@@ -109,6 +120,9 @@
     display: grid;
     flex: none;
     place-items: center;
+    width: var(--gzkp-header-button-width);
+    height: var(--gzkp-header-button-height);
+    padding: 0;
 
     &:has(> .message-badge) {
       height: auto;
