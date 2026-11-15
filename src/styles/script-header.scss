@@ -69,6 +69,10 @@
   }
 
   form.gzk-header-search {
+    input.form-control[type='search'] {
+      width: 100%;
+    }
+
     button,
     .gzk-search-symbol {
       color: var(--el-text-color-secondary);
@@ -147,7 +151,7 @@
   }
 }
 
-.top-navbar > .container:has(> #navbar5 > .navbar-right > .gzkp-header-item) {
+.top-navbar > .container:has(> #navbar5 > .navbar-right) {
   display: flex;
   align-items: center;
   padding-inline: 0;
@@ -176,6 +180,14 @@
     margin-inline: 8px;
   }
 
+  .divider-vertical:has(+ .notification-indicator) {
+    margin-inline-end: 0;
+  }
+
+  .notification-indicator + .divider-vertical {
+    margin-inline-start: 0;
+  }
+
   #navbar5 {
     display: flex;
     flex: 1;
@@ -194,8 +206,28 @@
   }
 
   .navbar-right {
+    // 挂载前让原生主题入口占用工具栏空间，搜索区可以提前按最终宽度排版。
+    --gzkp-header-button-count: 4;
+    --gzkp-header-button-step: calc(var(--gzkp-header-button-width) + var(--gzkp-header-button-gap));
+    --gzkp-header-toolbar-width: calc(
+      var(--gzkp-header-button-count) * var(--gzkp-header-button-step) - var(--gzkp-header-button-gap)
+    );
+
     gap: var(--gzkp-header-button-gap);
     margin-inline-start: auto;
+
+    @media (width > 600px) {
+      &:has(> .gzk-nav-shortcuts > .gzk-shortcut-trigger) {
+        --gzkp-header-button-count: 5;
+      }
+    }
+
+    > .gzkp-header-item,
+    &:not(:has(> .gzkp-header-item)) > .gzk-nav-theme {
+      display: flex;
+      justify-content: flex-end;
+      min-width: var(--gzkp-header-toolbar-width);
+    }
   }
 
   .navbar-form {
@@ -330,7 +362,6 @@ form.gzk-header-search.gzkp-search-enhanced {
 
   input.form-control[type='search'] {
     box-sizing: border-box;
-    width: 100%;
     height: 34px;
     padding-right: 44px;
     padding-left: 34px;
