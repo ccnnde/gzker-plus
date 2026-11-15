@@ -141,7 +141,12 @@ defineExpose({
       @submit.prevent
     >
       <ElFormItem prop="title">
-        <ElInput ref="titleInput" v-model="title" :placeholder="$t('enhancedTopic.topicTitle')" />
+        <ElInput
+          ref="titleInput"
+          v-model="title"
+          class="topic-editor-panel-title"
+          :placeholder="$t('enhancedTopic.topicTitle')"
+        />
       </ElFormItem>
       <ElFormItem class="topic-editor-panel-content" prop="content">
         <ContentEditor
@@ -216,6 +221,10 @@ defineExpose({
   flex: 1;
   flex-direction: column;
   min-height: 0;
+}
+
+.topic-editor-panel-title {
+  --el-input-text-color: var(--el-text-color-primary);
 }
 
 .topic-editor-panel-content {
