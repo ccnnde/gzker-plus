@@ -145,6 +145,10 @@
 }
 
 .gzkp-theme-controlled {
+  .navbar-right > .gzk-nav-theme {
+    visibility: hidden;
+  }
+
   .navbar-right:has(> .gzkp-header-item) > .gzk-nav-theme,
   .gzk-night-notice {
     display: none !important;
