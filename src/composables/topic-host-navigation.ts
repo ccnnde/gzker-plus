@@ -6,6 +6,8 @@ import { emitter } from '@/utils/event-bus';
 import { topicLinkRegExp } from '@/constants';
 import { SELECTOR_TOPIC_LINK, SELECTOR_TOPIC_NODE_LINK } from '@/constants/selector';
 
+import topicLoadingIcon from '@/assets/icons/topic-loading.svg?raw';
+
 import type { Ref } from 'vue';
 
 interface UseTopicHostNavigationOptions {
@@ -25,6 +27,13 @@ const NODE_PATH_REGEXP = /^\/node\/([^/]+)\/?$/;
 const DEFAULT_CREATE_TOPIC_NODE = 'qna';
 const CREATE_BUTTON_CLASS = 'gzkp-create-btn';
 const CREATE_BUTTON_LOADING_CLASS = `${CREATE_BUTTON_CLASS}-loading`;
+const CREATE_BUTTON_SPINNER_CLASS = `${CREATE_BUTTON_CLASS}-spinner`;
+
+const createButtonSpinner = () => {
+  const { documentElement: spinner } = new DOMParser().parseFromString(topicLoadingIcon, 'image/svg+xml');
+  spinner.classList.add(CREATE_BUTTON_SPINNER_CLASS);
+  return spinner;
+};
 
 const getCurrentNode = () => {
   const nodeFromPath = location.pathname.match(NODE_PATH_REGEXP)?.[1];
@@ -116,16 +125,13 @@ export const useTopicHostNavigation = ({
     if (publishButton?.innerText.includes('发布新主题') && parentElement) {
       const button = document.createElement('a');
       const editIcon = document.createElement('div');
-      const loadingIcon = document.createElement('div');
 
       button.href = `/t/create/${DEFAULT_CREATE_TOPIC_NODE}`;
       button.className = `btn btn-primary ${CREATE_BUTTON_CLASS}`;
       editIcon.className = 'i-mdi-lead-pencil';
-      loadingIcon.className = 'i-mdi-loading';
 
       parentElement.prepend(button);
-      button.prepend(editIcon);
-      button.prepend(loadingIcon);
+      button.prepend(createButtonSpinner(), editIcon);
       button.addEventListener('click', handleCreateTopicClick);
       insertedTopicButton = button;
     }
@@ -139,11 +145,9 @@ export const useTopicHostNavigation = ({
       nodePublishButtonOriginalHtml = nodePublishButtonElement.innerHTML;
       nodePublishButtonHadCreateClass = nodePublishButtonElement.classList.contains(CREATE_BUTTON_CLASS);
 
-      const loadingIcon = document.createElement('div');
-      loadingIcon.className = 'i-mdi-loading';
       nodePublishButtonElement.classList.add(CREATE_BUTTON_CLASS);
       nodePublishButtonElement.innerHTML = '<span>创建新主题</span>';
-      nodePublishButtonElement.prepend(loadingIcon);
+      nodePublishButtonElement.prepend(createButtonSpinner());
     }
   };
 

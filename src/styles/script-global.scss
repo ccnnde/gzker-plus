@@ -126,11 +126,13 @@ img[src^="https://img.whzxc.cn/bd"]
 .gzkp-create-btn {
   position: relative;
 
-  div.i-mdi-loading {
+  &-spinner {
     position: absolute;
     top: 50%;
     left: 50%;
     display: none;
+    width: 1em;
+    height: 1em;
     transform: translate(-50%, -50%);
   }
 
@@ -151,7 +153,7 @@ img[src^="https://img.whzxc.cn/bd"]
       opacity: 0;
     }
 
-    div.i-mdi-loading {
+    .gzkp-create-btn-spinner {
       display: block;
       animation: gzkp-loading-rotate 0.5s linear infinite;
     }
