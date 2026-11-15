@@ -281,6 +281,10 @@ html {
   }
 }
 
+dialog.gzk-shortcut-dialog {
+  box-shadow: var(--gzkp-dialog-shadow);
+}
+
 html[data-gzkp-theme] {
   scrollbar-color: var(--gzkp-scrollbar-thumb-color) transparent;
 

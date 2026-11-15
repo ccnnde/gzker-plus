@@ -805,6 +805,7 @@ onUnmounted(() => {
 
 :global(.gzkp-search-dialog.el-dialog) {
   --el-dialog-padding-primary: 0px;
+  --el-dialog-box-shadow: var(--gzkp-dialog-shadow);
 
   position: absolute !important;
   top: 50%;
@@ -825,7 +826,6 @@ onUnmounted(() => {
   background: var(--el-bg-color-overlay);
   border: 1px solid var(--el-border-color-lighter) !important;
   border-radius: 10px !important;
-  box-shadow: 0 18px 54px rgb(15 28 40 / 24%);
   transform: translate(-50%, -50%);
 }
 

@@ -533,8 +533,6 @@ html[data-gzkp-theme] {
   }
 
   .gzk-shortcut-dialog {
-    box-shadow: var(--el-box-shadow);
-
     &::backdrop {
       background-color: var(--el-overlay-color-lighter);
     }

@@ -1,5 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 html {
+  --gzkp-dialog-shadow: 0 6px 20px rgb(0 0 0 / 12%);
   --gzkp-selection-bg-color: #b5cfee;
   --gzkp-img-viewer-bg-color: rgb(0 0 0 / 90%);
   --gzkp-img-viewer-ctrl-bg-color: #444;
@@ -262,11 +263,10 @@ html[data-gzkp-theme='light-solarized'] {
   --el-color-info-dark-2: #697678;
 
   // 阴影
-  --el-box-shadow: 0px 12px 32px 4px rgb(7 54 66 / 20%), 0px 8px 20px rgb(7 54 66 / 12%);
-  --el-box-shadow-light: 0px 0px 12px rgb(7 54 66 / 12%);
-  --el-box-shadow-lighter: 0px 0px 6px rgb(7 54 66 / 8%);
-  --el-box-shadow-dark: 0px 16px 48px 16px rgb(7 54 66 / 20%), 0px 12px 32px rgb(7 54 66 / 16%),
-    0px 8px 16px -8px rgb(7 54 66 / 12%);
+  --el-box-shadow: var(--gzkp-dialog-shadow);
+  --el-box-shadow-light: 0 2px 6px rgb(0 0 0 / 8%);
+  --el-box-shadow-lighter: 0 1px 4px rgb(0 0 0 / 6%);
+  --el-box-shadow-dark: 0 8px 24px rgb(0 0 0 / 14%);
 
   // 背景色
   --el-bg-color-page: #fdf6e3;
@@ -306,6 +306,10 @@ html[data-gzkp-theme='light-solarized'] {
   --gzkp-reply-count-visited-bg-color: #e2e3eb;
 
   // 组件相关
+  .cherry.theme__github .cherry-dropdown.cherry-insert-table-menu {
+    box-shadow: var(--el-box-shadow-light);
+  }
+
   .el-empty {
     --el-empty-fill-color-0: var(--el-color-white);
     --el-empty-fill-color-1: #f4efdf;
