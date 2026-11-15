@@ -110,7 +110,7 @@ const getForumUrl = (href: string | null) => {
   }
 };
 
-const getProfileField = (parent: ParentNode | null, label: string): string | undefined => {
+const getProfileFieldElement = (parent: ParentNode | null, label: string): Element | undefined => {
   const fieldLabel = Array.from(parent?.querySelectorAll('dt') || []).find((element) => {
     return element.textContent?.trim().toUpperCase() === label.toUpperCase();
   });
@@ -120,7 +120,11 @@ const getProfileField = (parent: ParentNode | null, label: string): string | und
     return undefined;
   }
 
-  return fieldValue.textContent?.trim() || undefined;
+  return fieldValue;
+};
+
+const getProfileField = (parent: ParentNode | null, label: string): string | undefined => {
+  return getProfileFieldElement(parent, label)?.textContent?.trim() || undefined;
 };
 
 const parseProfileStatistic = (statistics: Element | null, selector: string) => {
@@ -214,10 +218,16 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
   const topics = parseProfileStatistic(statistics, '.status-topic > strong');
   const replies = parseProfileStatistic(statistics, '.status-reply > strong');
   const favorites = parseProfileStatistic(statistics, '.status-favorite > strong');
+
+  const sidebarSections = Array.from(userDocument.querySelectorAll('.sidebar-right .user-page > .self-introduction'));
+  const introduction = sidebarSections.find((section) => {
+    return getElementText(section, ':scope > .ui-header > .title') === '自我介绍';
+  });
+
   const followText = getElementText(profile, '.gzk-profile-follow > a');
-  const unblockLink = userDocument.querySelector(
-    `.sidebar-right .user-page > .self-introduction a[href="/u/${memberNo}/unblock"]`,
-  );
+  const blocked = sidebarSections.some((section) => {
+    return Boolean(section.querySelector(`a[href="/u/${memberNo}/unblock"]`));
+  });
 
   return {
     uid,
@@ -226,7 +236,9 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
     gender: identity?.querySelector('.gzk-profile-gender')?.getAttribute('aria-label')?.trim() || undefined,
     generation: getElementText(identity, '.gzk-profile-generation'),
     signature: getElementText(profile, '.gzk-card-signature'),
+    bio: getElementText(introduction ?? null, ':scope > .ui-content'),
     email: getProfileField(details, 'Email'),
+    blog: parseMetadataLink(getProfileFieldElement(details, 'Blog')?.querySelector('a[href]')),
     directMessageLink: parseMetadataLink(profile.querySelector(SELECTOR_PROFILE_DIRECT_MESSAGE_LINK)),
     creditLevel: parseMetadataLink(identity?.querySelector(SELECTOR_CREDIT_LEVEL)),
     avatarUrl: profile.querySelector('.gzk-profile-avatar > img')?.getAttribute('src') || undefined,
@@ -243,7 +255,7 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
     favoriteListTitle: favorites.title,
     creditValue: getElementText(statistics, '.status-reputation > strong'),
     followed: followText?.replace(/\s+/g, '') === '取消关注',
-    blocked: Boolean(unblockLink),
+    blocked,
   };
 };
 

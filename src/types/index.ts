@@ -182,7 +182,9 @@ export interface UserInfo {
   gender?: string;
   generation?: string;
   signature?: string;
+  bio?: string;
   email?: string;
+  blog?: MetadataLink;
   directMessageLink?: MetadataLink;
   creditLevel?: MetadataLink;
   avatarUrl?: string;
