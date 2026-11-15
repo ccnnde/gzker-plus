@@ -984,7 +984,13 @@ onUnmounted(() => {
       >
         <ElScrollbar ref="scrollbar" :distance="INFINITE_SCROLL_LOAD_DISTANCE" @end-reached="handleReplyScrollEnd">
           <div ref="topicContainer" v-viewer="viewerOptions" class="topic-container" :style="topicContainerStyle">
-            <TopicDetail v-if="topicDetail" v-bind="topicDetail" :topic-id="topicId" @focus-reply="focusTopicReply" />
+            <TopicDetail
+              v-if="topicDetail"
+              v-bind="topicDetail"
+              :topic-id="topicId"
+              :is-topic-refreshing="isTopicRefreshing"
+              @focus-reply="focusTopicReply"
+            />
             <ElDivider v-if="topicDetail" border-style="dashed">
               <un-i-mdi-comment-processing-outline class="comment-icon" />
             </ElDivider>

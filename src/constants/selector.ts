@@ -9,6 +9,11 @@ export const SELECTOR_TOPIC_LINK = 'a[href^="/t/"]:not([href*="?p="])';
 export const SELECTOR_TOPIC_BOUNTY = ':scope > section#gzk-bounty';
 
 /**
+ * 主题详情中带有投票 ID 的原站投票区块
+ */
+export const SELECTOR_TOPIC_POLL = ':scope > section.gzk-poll[data-poll-id]';
+
+/**
  * 回复元数据中的悬赏采纳标记
  */
 export const SELECTOR_REPLY_BOUNTY_ACCEPTED = ':scope > .gzk-bounty-accepted';

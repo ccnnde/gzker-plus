@@ -164,7 +164,7 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
     }
   }
 
-  .el-button--primary:not(.is-plain) {
+  .el-button--primary:not(.is-plain, .is-link) {
     --el-button-text-color: var(--el-color-white);
     --el-button-bg-color: var(--el-color-primary-dark-2);
     --el-button-border-color: var(--el-color-primary-light-5);
@@ -176,6 +176,10 @@ html.gzkp-dark[data-gzkp-theme='dark-soft'] {
     --el-button-disabled-text-color: var(--el-text-color-placeholder);
     --el-button-disabled-bg-color: var(--el-color-primary-light-9);
     --el-button-disabled-border-color: var(--el-border-color-light);
+  }
+
+  .el-button--primary.is-link {
+    --el-button-hover-link-text-color: var(--el-color-primary-light-3);
   }
 
   // 组件相关

@@ -7,12 +7,14 @@ import { linkifyContent } from '@/utils/reply-content';
 import { UPDATE_SCROLLBAR_INJECTION_KEY } from '@/constants/inject-key';
 
 import TopicBounty from './TopicBounty.vue';
+import TopicPoll from './TopicPoll.vue';
 import UserAvatar from './UserAvatar.vue';
 
 import type { UserTopicDetail } from '@/types';
 
 interface Props extends UserTopicDetail {
   topicId?: string;
+  isTopicRefreshing?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -92,6 +94,13 @@ const updateScrollbar = inject(UPDATE_SCROLLBAR_INJECTION_KEY);
       class="main-content markdown-body"
       v-html="linkifyContent(convertEmojiToNative(content) || '')"
     ></section>
+    <TopicPoll
+      v-if="pollId"
+      :key="pollId"
+      :poll-id="pollId"
+      :topic-id="topicId"
+      :is-topic-refreshing="isTopicRefreshing"
+    />
     <TopicBounty v-if="bounty" :bounty="bounty" :topic-id="topicId" @focus-reply="emit('focusReply', $event)" />
     <div v-if="editInfo || tags?.length" class="topic-detail-extra">
       <div v-if="editInfo" class="topic-detail-edit-info">{{ editInfo }}</div>

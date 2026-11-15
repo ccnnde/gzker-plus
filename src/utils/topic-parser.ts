@@ -5,6 +5,7 @@ import {
   SELECTOR_REPLY_BOUNTY_ACCEPT_FORM,
   SELECTOR_REPLY_BOUNTY_ACCEPTED,
   SELECTOR_TOPIC_BOUNTY,
+  SELECTOR_TOPIC_POLL,
   SELECTOR_USER_DISPLAY_NAME,
   SELECTOR_USER_LINK,
 } from '@/constants/selector';
@@ -84,6 +85,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
   const lastReplyName = lastReplyAnchor?.textContent || '';
   const lastReplyNameIndex = lastReplyName ? lastReplyText.indexOf(lastReplyName) : -1;
   const contentElement = topicElement?.querySelector(':scope > .ui-content');
+  const pollId = topicElement?.querySelector(SELECTOR_TOPIC_POLL)?.getAttribute('data-poll-id');
   const editInfoElement = contentElement?.querySelector(':scope > .edit-info');
   const editInfo = editInfoElement?.textContent?.trim();
   const statisticsElement = topicDocument.querySelector('.gzk-topic-stats');
@@ -119,6 +121,7 @@ const parseTopicDetail = (topicDocument: Document): UserTopicDetail => {
     },
     content: contentElement?.innerHTML,
     bounty: parseTopicBounty(topicElement),
+    pollId: pollId && /^\d+$/.test(pollId) ? pollId : undefined,
     editInfo,
     tags,
     liked: topicElement?.querySelector('.J_topicVote')?.getAttribute('data-voted') === '1',

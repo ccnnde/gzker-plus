@@ -254,6 +254,48 @@ export interface ConfiguredTopicBounty {
 
 export type TopicBounty = ConfiguredTopicBounty | { setupHref: string };
 
+export interface TopicPoll {
+  question: string;
+  options: { position: number; label: string; votes?: number | null; percent?: number | null }[];
+  max_choices: number;
+  public: boolean;
+  revote: boolean;
+  results: string;
+  show_results: boolean;
+  closes_at: number;
+  closed: boolean;
+  voters: number;
+  mine: number[];
+  revision: number;
+  can_vote: boolean;
+  can_close: boolean;
+  server_now: number;
+  logged_in: boolean;
+  read_only?: boolean;
+}
+
+export interface TopicPollVoter {
+  uid: number;
+  username: string;
+  nickname: string;
+  avatar: string;
+}
+
+export interface TopicPollVoterPage {
+  items: TopicPollVoter[];
+  next: number | string | null;
+}
+
+export interface TopicPollVote {
+  choices: number[];
+  revision: number;
+}
+
+export interface TopicPollVoterQuery {
+  option: number;
+  after: number | string;
+}
+
 export interface UserTopicDetail {
   editInfo?: string;
   tags?: { name: string; href: string }[];
@@ -274,6 +316,7 @@ export interface UserTopicDetail {
   };
   content?: string;
   bounty?: TopicBounty;
+  pollId?: string;
   favorited?: boolean;
   favoriteNumber?: string;
   liked?: boolean;
