@@ -289,8 +289,9 @@ html[data-gzkp-theme] {
   }
 
   .gzkp-topic-page-dialog {
+    --el-dialog-box-shadow: none;
+
     border: 1px solid var(--el-border-color);
-    box-shadow: none;
 
     .gzkp-reply-editor-container,
     .topic-footer-container {
