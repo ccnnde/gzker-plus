@@ -12,11 +12,18 @@ html[data-gzkp-theme] {
 
   // 游戏通过论坛的 data-theme 接收深浅模式。此处覆盖同时生效的原生夜间样式。
   &.gzkp-theme-controlled[data-theme='dark'].yw-embedded-page {
+    --gzk-bg: var(--gzkp-app-page-bg, var(--el-bg-color));
+    --gzk-surface: var(--el-bg-color);
+    --gzk-raised: var(--el-bg-color-overlay);
+    --gzk-input: var(--el-bg-color);
+    --gzk-border: var(--el-border-color-light);
+    --gzk-text: var(--el-text-color-primary);
+    --gzk-muted: var(--el-text-color-secondary);
     --gzk-link: var(--el-color-primary);
 
     &,
     body {
-      background: var(--gzkp-app-page-bg, var(--el-bg-color)) !important;
+      background: var(--gzk-bg) !important;
     }
 
     .top-navbar .nav li a {
@@ -56,6 +63,7 @@ html[data-gzkp-theme] {
 
   .yw-tools,
   .yw-form,
+  .yw-chat-form,
   .yw-dialog {
     :is(input:not([type='file'], [type='checkbox']), select, textarea) {
       color: var(--el-text-color-primary);
@@ -275,7 +283,8 @@ html[data-gzkp-theme] {
     border-color: var(--el-border-color-light);
   }
 
-  .btn-default {
+  .btn-default,
+  .yw-player .btn-default {
     color: var(--el-text-color-primary) !important;
     background-color: var(--el-fill-color);
     border-color: var(--el-border-color-light);
@@ -287,16 +296,12 @@ html[data-gzkp-theme] {
     }
   }
 
-  &.gzkp-theme-controlled[data-theme='dark'] .yw-player .btn-default {
-    color: var(--el-text-color-primary) !important;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--el-color-primary) !important;
-    }
+  .yw-player .btn-default:focus-visible {
+    color: var(--el-color-primary) !important;
   }
 
   .btn-primary,
+  .yw-chat .btn-primary,
   .dropdown.open > .dropdown-toggle.btn-primary {
     color: var(--el-color-white) !important;
     background-color: var(--el-color-primary);
@@ -460,6 +465,97 @@ html[data-gzkp-theme] {
       + .ui-content a:hover,
       + .ui-content a:focus-visible {
         color: var(--el-color-primary);
+      }
+    }
+  }
+
+  #reply-display {
+    .gzk-reply-option {
+      > span {
+        color: var(--el-text-color-primary);
+        background-color: var(--el-bg-color-overlay);
+        border-color: var(--el-border-color);
+      }
+
+      &:hover > span {
+        border-color: var(--el-border-color-dark);
+      }
+
+      > input[type='radio'] {
+        accent-color: var(--el-color-primary);
+
+        @media (forced-colors: none) {
+          &:enabled {
+            box-sizing: border-box;
+            width: 13px;
+            height: 13px;
+            appearance: none;
+            background-color: var(--el-bg-color);
+            border: 1px solid var(--el-border-color-darker);
+            border-radius: 50%;
+
+            &:focus {
+              outline: none;
+            }
+
+            &:is(:hover, :focus-visible, :checked) {
+              border-color: var(--el-color-primary);
+            }
+
+            &:checked {
+              background-image: radial-gradient(circle, var(--el-color-primary) 3px, transparent 3.5px);
+            }
+          }
+        }
+
+        &:checked + span {
+          background-color: var(--el-color-primary-light-9);
+          border-color: var(--el-color-primary);
+          box-shadow: 0 0 0 1px var(--el-color-primary);
+        }
+
+        &:focus-visible + span {
+          outline: 2px solid var(--el-color-primary);
+          outline-offset: 2px;
+        }
+      }
+
+      svg {
+        color: var(--el-text-color-regular);
+      }
+    }
+
+    .gzk-reply-option small,
+    .gzk-reply-setting-note {
+      color: var(--el-text-color-secondary);
+    }
+
+    .text-success[role='status'] {
+      color: var(--el-color-success);
+    }
+  }
+
+  #yw-lobby-chat .yw-chat,
+  .yw-play-layout .yw-chat {
+    --chat-bg: var(--el-bg-color);
+    --chat-line: var(--el-border-color-light);
+    --chat-muted: var(--el-text-color-secondary);
+
+    color: var(--el-text-color-primary);
+
+    .yw-chat-log a,
+    .yw-chat-more {
+      color: var(--el-color-primary);
+    }
+
+    .yw-chat-more {
+      background-color: var(--el-fill-color);
+      border-color: var(--chat-line);
+
+      &:hover,
+      &:focus-visible {
+        background-color: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary-light-5);
       }
     }
   }
