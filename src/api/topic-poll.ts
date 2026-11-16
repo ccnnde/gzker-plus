@@ -1,9 +1,10 @@
 import { t } from '@/i18n';
 import { getXsrfToken } from '@/utils';
+import { GZK_URL } from '@/constants';
 
 import type { TopicPoll, TopicPollVote, TopicPollVoterPage, TopicPollVoterQuery } from '@/types';
 
-const API_POLL = '/api/polls/';
+const API_POLL = `${GZK_URL}/api/polls/`;
 
 interface PollResponse<T> {
   ok?: boolean;
@@ -16,7 +17,7 @@ const requestPoll = async <T>(path: string, signal: AbortSignal, body?: object):
   const init: RequestInit = {
     headers,
     signal,
-    credentials: 'same-origin',
+    credentials: 'include',
     cache: 'no-store',
   };
 

@@ -256,6 +256,7 @@ export const likeTopic = async (topicId: string | undefined, voted: boolean): Pr
 export const disputeTopicBounty = async (action: string, reason: string): Promise<void> => {
   await request(action, {
     method: 'POST',
+    credentials: 'include',
     body: new URLSearchParams({
       reason,
       _xsrf: getXsrfToken(),
@@ -266,6 +267,7 @@ export const disputeTopicBounty = async (action: string, reason: string): Promis
 export const acceptTopicBounty = async ({ action, replyId }: BountyAcceptance): Promise<void> => {
   await request(action, {
     method: 'POST',
+    credentials: 'include',
     body: new URLSearchParams({
       reply_id: replyId,
       _xsrf: getXsrfToken(),

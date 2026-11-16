@@ -1,4 +1,5 @@
 import { getXsrfToken } from '@/utils';
+import { GZK_URL } from '@/constants';
 
 import type { GzkImageResponse } from '@/types';
 
@@ -34,8 +35,8 @@ const readImageResponse = async <T>(response: Response): Promise<T | undefined> 
 };
 
 const checkGzkImageBinding = async (): Promise<void> => {
-  const response = await fetch('/api/media/settings', {
-    credentials: 'same-origin',
+  const response = await fetch(`${GZK_URL}/api/media/settings`, {
+    credentials: 'include',
     cache: 'no-store',
     signal: AbortSignal.timeout(15_000),
   });
@@ -57,9 +58,9 @@ const postGzkImage = async (file: File): Promise<string> => {
     return byte.toString(16).padStart(2, '0');
   }).join('');
 
-  const response = await fetch(`/api/media/uploads/${id}`, {
+  const response = await fetch(`${GZK_URL}/api/media/uploads/${id}`, {
     method: 'POST',
-    credentials: 'same-origin',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/octet-stream',
       'X-XSRFToken': getXsrfToken(),
