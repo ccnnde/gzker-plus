@@ -133,6 +133,27 @@ export default defineConfig({
   },
   hooks: {
     ready: ensureBrowserProfile,
+    'build:manifestGenerated': (wxt, manifest) => {
+      if (wxt.config.command !== 'build') {
+        return;
+      }
+
+      const scripts = manifest.content_scripts;
+      const gzker = scripts?.find((script) => {
+        return script.js?.includes('content-scripts/gzker.js');
+      });
+      const appearance = scripts?.find((script) => {
+        return script.js?.includes('content-scripts/set-appearance.js');
+      });
+
+      if (!gzker?.css?.length || appearance?.run_at !== 'document_start') {
+        throw new Error('Expected the forum stylesheet and a document_start appearance script.');
+      }
+
+      // Keep the stylesheet bundled with gzker for development reloads.
+      appearance.css = [...(appearance.css ?? []), ...gzker.css];
+      delete gzker.css;
+    },
     'vite:build:extendConfig': (entrypoints, config) => {
       if (
         !entrypoints.some((entrypoint) => {
