@@ -23,22 +23,6 @@ interface CreateFirstPageTopicDataOptions {
   list: UserReplyItem[];
 }
 
-export const getParsedTopicPage = (search: string, total: string, list: UserReplyItem[]): number => {
-  const requestedPage = Number(new URLSearchParams(search).get('p'));
-
-  if (requestedPage > 0) {
-    return requestedPage;
-  }
-
-  const firstReplyNo = Number(list[0]?.replyNo);
-
-  if (firstReplyNo > 0) {
-    return Math.ceil(firstReplyNo / TOPIC_REPLY_PAGE_SIZE);
-  }
-
-  return total === '0' ? 1 : Math.max(Math.ceil(Number(total) / TOPIC_REPLY_PAGE_SIZE), 1);
-};
-
 export const createTopicPageSeed = (page: number, data: UserTopic): PageDataSeed<UserTopic> | undefined => {
   const total = Number(data.reply.total);
   const totalPageNumber = Math.max(Math.ceil(total / TOPIC_REPLY_PAGE_SIZE), 1);

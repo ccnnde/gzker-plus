@@ -6,7 +6,6 @@ import { mergeReplyInteractionState, updateReplyInLists } from '@/utils/reply-li
 import {
   createFirstPageTopicData,
   createTopicPageSeed,
-  getParsedTopicPage,
   updateReverseTopBatches,
   updateReverseTopPage,
 } from '@/utils/topic-reply-pagination';
@@ -72,8 +71,6 @@ interface UseTopicRepliesResult {
   isReplyFirstPage: ComputedRef<boolean>;
   scrollbar: Ref<InstanceType<typeof ElScrollbar> | null>;
   initReplyOrder: () => void;
-  getParsedTopicPage: (search: string, total: string, list: UserReplyItem[]) => number;
-  createTopicPageSeed: (page: number, data: UserTopic) => PageDataSeed<UserTopic> | undefined;
   loadTopicReplies: (loadOptions?: LoadTopicRepliesOptions) => Promise<void>;
   openTopic: (selectedTopicId: string | undefined) => void;
   resetTopicData: () => void;
@@ -911,8 +908,6 @@ export const useTopicReplies = ({
     isReplyFirstPage,
     scrollbar,
     initReplyOrder,
-    getParsedTopicPage,
-    createTopicPageSeed,
     loadTopicReplies,
     openTopic,
     resetTopicData,

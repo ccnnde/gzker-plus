@@ -133,8 +133,6 @@ const {
   isReplyFirstPage,
   scrollbar,
   initReplyOrder,
-  getParsedTopicPage,
-  createTopicPageSeed,
   loadTopicReplies,
   openTopic,
   resetTopicData,
@@ -230,7 +228,7 @@ const isTopicLinkBlank = computed(() => {
 });
 
 onBeforeMount(() => {
-  const { pathname, search } = window.location;
+  const { pathname } = window.location;
 
   if (!topicLinkRegExp.test(pathname)) {
     return;
@@ -259,9 +257,8 @@ onBeforeMount(() => {
   const {
     detail,
     status,
-    reply: { total, list },
+    reply: { total },
   } = parsedTopic;
-  const parsedTopicPage = getParsedTopicPage(search, total, list);
 
   topicDetail.value = detail;
   topicStatus.value = status;
@@ -269,14 +266,8 @@ onBeforeMount(() => {
 
   openDialog();
 
-  /**
-   * 新标签页查看主题时，将当前 DOM 对应页作为隐藏缓存：
-   * 加载器仍从正序首页或倒序末页开始展示，仅请求尚未缓存的页面。
-   */
-  const parsedTopicPageSeed = createTopicPageSeed(parsedTopicPage, parsedTopic);
-  loadTopicReplies({
-    pageSeeds: parsedTopicPageSeed ? [parsedTopicPageSeed] : [],
-  });
+  // 论坛脚本可能已改写 DOM 中的回复链接和顺序，回复列表从原始响应加载。
+  loadTopicReplies();
 
   hideGlobalLoading();
 });
