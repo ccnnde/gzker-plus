@@ -9,6 +9,10 @@
 
 新增字面量、选择器、选项、消息类型、路由或共享类型前，先搜索现有实现。优先复用 `src/constants/index.ts`、`src/constants/selector.ts` 和 `src/types/index.ts`，避免局部重复。
 
+### Firefox 内容脚本请求
+
+Firefox Manifest V2 的内容脚本需要用绝对 URL 请求论坛接口。优先复用会补全 `GZK_URL` 的 `request` 或 `requestJson`，直接调用 `fetch` 时用 `GZK_URL` 拼接路径。依赖论坛登录态的请求显式设置 `credentials: 'include'`。参考 [MDN 内容脚本请求说明](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#xhr_and_fetch)。
+
 ### TypeScript 与代码排版
 
 - 类型定义优先放在 `src/types/index.ts`。
