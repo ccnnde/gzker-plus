@@ -1244,8 +1244,16 @@ html[data-gzkp-theme] {
           color: var(--el-text-color-primary);
           background: var(--gzkp-reply-count-bg-color);
 
-          &:visited {
+          // 论坛的阅读状态优先于浏览器历史，使用 :any-link 覆盖论坛配色。
+          &:visited:not([data-gzk-read]),
+          &[data-gzk-read='yes']:any-link {
+            color: var(--el-text-color-primary);
             background: var(--gzkp-reply-count-visited-bg-color);
+          }
+
+          &[data-gzk-read='no']:any-link {
+            color: var(--el-color-white);
+            background: var(--gzkp-reply-count-new-bg-color, var(--el-color-primary-dark-2));
           }
         }
       }
