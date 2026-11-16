@@ -139,7 +139,7 @@ export const getMentionedUserReplies = (
   if ('userId' in mention) {
     if (mention.replyId) {
       const explicitReply = replies.find((item) => item.replyId === mention.replyId);
-      return { replies: explicitReply ? replies : [], focusReplyNo: explicitReply?.replyNo };
+      return { replies: explicitReply ? [explicitReply] : [], focusReplyNo: explicitReply?.replyNo };
     }
 
     return { replies, focusReplyNo: replies[replies.length - 1]?.replyNo };
