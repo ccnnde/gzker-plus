@@ -261,7 +261,7 @@ export const parseUserInfo = (htmlStr: string): UserInfo => {
 
 export const parseEditedReply = (htmlStr: string): string => {
   const replyDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
-  return replyDocument.querySelector('textarea')?.innerHTML || '';
+  return replyDocument.querySelector('textarea')?.value || '';
 };
 
 export const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
@@ -270,7 +270,7 @@ export const parseEditedTopic = (htmlStr: string): UserTopicDetail => {
 
   return {
     title: titleElement?.getAttribute('value') || undefined,
-    content: topicDocument.querySelector('textarea')?.innerHTML || undefined,
+    content: topicDocument.querySelector('textarea')?.value || undefined,
   };
 };
 
