@@ -392,6 +392,18 @@
       "singleChoice": "1 项（单选）",
       "topicHint": "标题和正文可不填；标题留空时，使用投票主题"
     },
+    "pollHistory": {
+      "collapse": "收起选项",
+      "expandOptions": "展开其余 {count} 项",
+      "expired": "已过期",
+      "label": "投票",
+      "maxChoices": "最多可选 {count} 项",
+      "missingOption": "选项 {index}（未填写）",
+      "notAttached": "未附加",
+      "private": "不公开参与者",
+      "public": "公开参与者",
+      "revoteDisabled": "不允许修改或撤回投票"
+    },
     "refreshTopic": "刷新主题",
     "replyContent": "回复内容",
     "replyContentCannotBeEmpty": "回复内容不能为空",

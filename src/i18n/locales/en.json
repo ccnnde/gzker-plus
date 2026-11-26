@@ -392,6 +392,18 @@
       "singleChoice": "1 choice (single choice)",
       "topicHint": "The title and body are optional; if the title is blank, the poll question is used"
     },
+    "pollHistory": {
+      "collapse": "Collapse options",
+      "expandOptions": "Show {count} more options",
+      "expired": "Expired",
+      "label": "Poll",
+      "maxChoices": "Choose up to {count} options",
+      "missingOption": "Option {index} (empty)",
+      "notAttached": "Not attached",
+      "private": "Private participants",
+      "public": "Public participants",
+      "revoteDisabled": "Changing or withdrawing votes is disabled"
+    },
     "refreshTopic": "Refresh topic",
     "replyContent": "Reply content",
     "replyContentCannotBeEmpty": "The reply content cannot be empty",

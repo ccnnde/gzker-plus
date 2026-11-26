@@ -7,6 +7,8 @@ import { useScrollbar } from '@/composables/scrollbar';
 import { t } from '@/i18n';
 import { deleteAllEditHistoryByType, EditHistoryType, getAllEditHistoryByType } from '@/utils/edit-history';
 
+import EditorHistoryPoll from './EditorHistoryPoll.vue';
+
 import type { EditHistoryItem } from '@/types';
 
 interface Props {
@@ -172,15 +174,14 @@ defineExpose({
                 </template>
                 <template v-if="item.title !== undefined">
                   <label class="history-card-label">{{ $t('enhancedTopic.topicTitle') }}</label>
-                  <p class="history-card-content">
-                    {{ item.title || (item.poll?.enabled && item.poll.question) || '-' }}
-                  </p>
+                  <p class="history-card-content">{{ item.title || '-' }}</p>
                   <label class="history-card-label">{{ $t('enhancedTopic.topicContent') }}</label>
                 </template>
                 <p
                   :class="`history-card-content cherry-markdown theme__${markdownTheme}`"
                   v-html="renderMarkdown(item.content) || '-'"
                 ></p>
+                <EditorHistoryPoll v-if="item.poll" :poll="item.poll" />
               </ElCard>
             </ElTimelineItem>
           </TransitionGroup>
