@@ -13,7 +13,14 @@ import {
 } from '@/utils/page-parser';
 import { mergeTopicReplies } from '@/utils/topic-export';
 import { parseUserTopic } from '@/utils/topic-parser';
-import { GZK_URL, TOPIC_DELETE_PATH, TOPIC_EXPORT_MAX_CONCURRENT, TOPIC_REPLY_PAGE_SIZE } from '@/constants';
+import { serializePoll } from '@/utils/topic-poll-editor';
+import {
+  GZK_URL,
+  TOPIC_DELETE_PATH,
+  TOPIC_EDIT_PATH,
+  TOPIC_EXPORT_MAX_CONCURRENT,
+  TOPIC_REPLY_PAGE_SIZE,
+} from '@/constants';
 import { SELECTOR_MSG_UNREAD_INDICATOR } from '@/constants/selector';
 
 import type {
@@ -24,6 +31,7 @@ import type {
   SearchNodeOption,
   SearchParams,
   SearchTopicResult,
+  TopicForm,
   TreeNode,
   UserInfo,
   UserMessage,
@@ -276,23 +284,31 @@ export const acceptTopicBounty = async ({ action, replyId }: BountyAcceptance): 
 };
 
 export const getEditedTopic = async (topicId?: string): Promise<UserTopicDetail> => {
-  const data = await request(`/t/edit/${topicId}`);
+  const data = await request(`${TOPIC_EDIT_PATH}${topicId}`);
   return parseEditedTopic(data);
 };
 
-export const createTopic = async (node: string, title: string, content: string) => {
-  await request(`/t/create/${node}`, {
+export const createTopic = async ({ node, title, content, poll }: TopicForm): Promise<void> => {
+  const pollData = poll?.enabled ? serializePoll(poll) : '';
+  const path = `/t/create/${node}`;
+  const data = await request(path, {
     method: 'POST',
+    credentials: 'include',
     body: new URLSearchParams({
       title,
       content,
+      gzk_poll_required: pollData ? '1' : '0',
+      gzk_poll: pollData,
+      gzk_mentions: '[]',
       _xsrf: getXsrfToken(),
     }),
   });
+
+  checkAlertInfo(data, path);
 };
 
 export const modifyTopic = async (topicId: string, title: string, content: string): Promise<void> => {
-  const data = await request(`/t/edit/${topicId}`, {
+  const data = await request(`${TOPIC_EDIT_PATH}${topicId}`, {
     method: 'POST',
     body: new URLSearchParams({
       title,

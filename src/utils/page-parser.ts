@@ -448,8 +448,21 @@ export const parseTopicDeleteForm = (htmlStr: string, path: string): { action: s
   throw new Error(t('enhancedTopic.deleteTopicFormUnavailable'));
 };
 
-export const checkAlertInfo = (htmlStr: string): void => {
+export const checkAlertInfo = (htmlStr: string, createPath?: string): void => {
   const formDocument = new DOMParser().parseFromString(htmlStr, 'text/html');
+
+  if (createPath) {
+    const createForm = Array.from(formDocument.forms).find((form) => {
+      return form.getAttribute('action') === createPath;
+    });
+
+    const error = formDocument.querySelector('.alert.alert-danger');
+
+    if (createForm && error) {
+      throw new Error(error.textContent?.trim() || t('enhancedTopic.createTopicFailed'));
+    }
+  }
+
   const formElement = Array.from(formDocument.querySelectorAll('form')).find((element) => {
     return element.querySelector('textarea') && element.querySelector('.alert.alert-danger');
   });

@@ -172,7 +172,9 @@ defineExpose({
                 </template>
                 <template v-if="item.title !== undefined">
                   <label class="history-card-label">{{ $t('enhancedTopic.topicTitle') }}</label>
-                  <p class="history-card-content">{{ item.title || '-' }}</p>
+                  <p class="history-card-content">
+                    {{ item.title || (item.poll?.enabled && item.poll.question) || '-' }}
+                  </p>
                   <label class="history-card-label">{{ $t('enhancedTopic.topicContent') }}</label>
                 </template>
                 <p

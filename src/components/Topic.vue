@@ -39,7 +39,14 @@ import {
 import { isImgViewerVisible, viewerOptions, vViewer } from '@/utils/img-viewer';
 import { downloadMarkdownFile, getTopicMarkdownFilename } from '@/utils/topic-export';
 import { buildTopicMarkdown } from '@/utils/topic-markdown';
-import { DialogType, INFINITE_SCROLL_LOAD_DISTANCE, LinkElementType, OptionsKey, topicLinkRegExp } from '@/constants';
+import {
+  DialogType,
+  INFINITE_SCROLL_LOAD_DISTANCE,
+  LinkElementType,
+  OptionsKey,
+  TOPIC_EDIT_PATH,
+  topicLinkRegExp,
+} from '@/constants';
 import {
   ADD_REPLY_INJECTION_KEY,
   BOUNTY_ACCEPTANCE_INJECTION_KEY,
@@ -322,6 +329,11 @@ const handleTopicLike = () => {
 
 const handleTopicEdit = () => {
   if (!topicDetail.value?.editable || isTopicActionLoading.value) {
+    return;
+  }
+
+  if (topicDetail.value.pollId) {
+    window.location.assign(`${TOPIC_EDIT_PATH}${topicId.value}`);
     return;
   }
 

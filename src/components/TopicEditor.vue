@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { ElMessage, useLockscreen } from 'element-plus';
-import { debounce } from 'lodash-es';
+import { cloneDeep, debounce } from 'lodash-es';
 
 import { useClickModal } from '@/composables/click-modal';
 import { useDialogFullscreen } from '@/composables/dialog-fullscreen';
@@ -152,7 +152,7 @@ const { isLoading, handleRequest } = useRequest();
 const sendTopic = async () => {
   const valid = await editorPanel.value?.validate();
 
-  if (!valid) {
+  if (!valid || isLoading.value) {
     return;
   }
 
@@ -161,7 +161,10 @@ const sendTopic = async () => {
 
     if (isAddContent.value) {
       const shouldRefresh = refreshAfterCreate;
-      await createTopic(topicForm.node, topicForm.title, content);
+      await createTopic({
+        ...topicForm,
+        content,
+      });
 
       ElMessage.success({
         message: t('enhancedTopic.topicContentIsUnderReview'),
@@ -187,6 +190,7 @@ const closeEditor = () => {
   }
 
   const wasAddContent = isAddContent.value;
+  updateEditHistory.flush();
   editorPanel.value?.hideAllSubMenu();
   editorVisible.value = false;
   editHistoryId = '';
@@ -199,6 +203,7 @@ const closeEditor = () => {
   topicForm.node = '';
   topicForm.title = '';
   topicForm.content = '';
+  topicForm.poll = undefined;
   resetDialogFullscreen();
 };
 
@@ -227,15 +232,16 @@ const editorHistoryType = computed<EditHistoryType>(() => {
 
 watch(
   () => {
-    return [topicForm.title, topicForm.content];
+    return [topicForm.title, topicForm.content, topicForm.poll];
   },
   () => {
     if (!editHistoryId) {
       return;
     }
 
-    updateEditHistory(editHistoryId, { ...topicForm });
+    updateEditHistory(editHistoryId, cloneDeep(topicForm));
   },
+  { deep: true },
 );
 
 const generateEditHistoryId = () => {
@@ -252,9 +258,14 @@ const updateEditHistory = debounce((historyId: string, data: Partial<TopicForm>)
   saveEditHistory(historyId, data);
 }, 200);
 
-const importEditHistory = (data: EditHistoryItem) => {
+const importEditHistory = async (data: EditHistoryItem) => {
   const { id, title, content } = data;
+  updateEditHistory.flush();
   editHistoryId = '';
+
+  if (isAddContent.value) {
+    topicForm.poll = cloneDeep(data.poll);
+  }
 
   if (title !== undefined) {
     topicForm.title = title;
@@ -265,9 +276,9 @@ const importEditHistory = (data: EditHistoryItem) => {
     editorPanel.value?.setContent(content);
   }
 
-  setTimeout(() => {
-    editHistoryId = id;
-  }, 100);
+  await nextTick();
+  editorPanel.value?.clearValidation();
+  editHistoryId = id;
 };
 
 defineExpose({
@@ -330,6 +341,8 @@ defineExpose({
       ref="editorPanel"
       v-model:title="topicForm.title"
       v-model:content="topicForm.content"
+      v-model:poll="topicForm.poll"
+      allow-poll
       :editor-title="editorTitle"
       :editor-history-type="editorHistoryType"
       :loading="isLoading"
@@ -343,9 +356,17 @@ defineExpose({
 
 <style lang="scss">
 .gzkp-topic-editor-dialog {
+  --topic-editor-panel-inset: var(--el-dialog-padding-primary);
+
   height: 540px;
+  padding-inline: 0;
+
+  .el-dialog__header {
+    padding-inline: var(--topic-editor-panel-inset);
+  }
 
   .el-dialog__body {
+    padding-inline: 0;
     padding-bottom: var(--gzkp-topic-padding);
   }
 }

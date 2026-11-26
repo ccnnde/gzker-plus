@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import Cherry from 'cherry-markdown/dist/cherry-markdown.core';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { browser } from 'wxt/browser';
@@ -80,6 +80,12 @@ const emit = defineEmits<{
   toggleFullscreen: [];
 }>();
 
+const placeholderText = document.createTextNode('');
+
+watchEffect(() => {
+  placeholderText.data = props.placeholder ?? '';
+});
+
 let cherryEditor: Cherry | null = null;
 let cmEditor: CodeMirror.Editor | null = null;
 let previewObserver: MutationObserver | undefined;
@@ -137,7 +143,7 @@ const initCherryMarkdown = () => {
     fileUpload: handleImgFileUpload,
     editor: {
       codemirror: {
-        placeholder: props.placeholder,
+        placeholder: placeholderText,
       },
     },
     toolbars: {

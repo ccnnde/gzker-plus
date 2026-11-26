@@ -138,13 +138,9 @@ defineExpose({
 </style>
 
 <style lang="scss" scoped>
-.emoji-icon {
-  font-size: 25px;
-  color: var(--el-text-color-secondary);
-  cursor: pointer;
+@use '@/styles/mixin';
 
-  &:hover {
-    color: var(--el-text-color-regular);
-  }
+.emoji-icon {
+  @include mixin.editor-action-icon;
 }
 </style>

@@ -278,6 +278,8 @@ html {
     box-shadow: var(--el-dropdown-menu-box-shadow) !important;
   }
 
+  .el-picker__popper.el-popper:focus:not(:focus-visible),
+  .el-time-panel:focus:not(:focus-visible),
   .el-popover.el-popper:focus:not(:focus-visible) {
     box-shadow: var(--el-box-shadow-light) !important;
   }

@@ -587,13 +587,26 @@ export interface TopicMarkdownLabels {
   replyThanks: string;
 }
 
+export interface TopicPollDraft {
+  enabled: boolean;
+  question: string;
+  options: string[];
+  maxChoices: number;
+  public: boolean;
+  revote: boolean;
+  results: 'always' | 'after_vote' | 'after_close';
+  deadline: string;
+}
+
 export interface TopicForm {
   node: string;
   title: string;
   content: string;
+  poll?: TopicPollDraft;
 }
 
 export interface EditHistoryItem {
+  poll?: TopicPollDraft;
   id: string;
   uid: string;
   topicId?: string;

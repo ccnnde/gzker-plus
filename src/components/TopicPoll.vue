@@ -122,25 +122,11 @@ const loadPoll = async () => {
   }
 };
 
-const updateChoice = (event: Event, position: number) => {
-  const input = event.target as HTMLInputElement;
-  const limit = poll.value?.max_choices ?? 1;
-
-  if (limit === 1) {
+const chooseSingle = (position: string | number | boolean | undefined) => {
+  if (typeof position === 'number') {
     choices.value = [position];
-  } else if (!input.checked) {
-    choices.value = choices.value.filter((choice) => {
-      return choice !== position;
-    });
-  } else if (choices.value.length < limit) {
-    choices.value = [...choices.value, position];
-  } else {
-    input.checked = false;
-    error.value = t('enhancedTopic.poll.selectionLimit', { count: limit });
-    return;
+    error.value = '';
   }
-
-  error.value = '';
 };
 
 const updatePoll = async (request: () => Promise<TopicPoll>, isApplied: (state: TopicPoll) => boolean) => {
@@ -389,17 +375,41 @@ onBeforeUnmount(() => {
           </template>
         </li>
       </ul>
-      <fieldset v-else class="topic-poll-list" :aria-labelledby="headingId" :disabled="busy || !canChangeVote">
-        <label v-for="option in poll.options" :key="option.position" class="topic-poll-choice">
-          <input
-            :type="poll.max_choices === 1 ? 'radio' : 'checkbox'"
-            :name="headingId"
-            :checked="choices.includes(option.position)"
-            @change="updateChoice($event, option.position)"
-          />
-          <span>{{ option.label }}</span>
-        </label>
-      </fieldset>
+      <ElRadioGroup
+        v-else-if="poll.max_choices === 1"
+        class="topic-poll-list topic-poll-choices"
+        :model-value="choices[0]"
+        :aria-label="poll.question"
+        :disabled="busy || !canChangeVote"
+        @update:model-value="chooseSingle"
+      >
+        <ElRadio
+          v-for="option in poll.options"
+          :key="option.position"
+          class="topic-poll-choice"
+          :value="option.position"
+        >
+          {{ option.label }}
+        </ElRadio>
+      </ElRadioGroup>
+      <ElCheckboxGroup
+        v-else
+        v-model="choices"
+        class="topic-poll-list topic-poll-choices"
+        :aria-label="poll.question"
+        :disabled="busy || !canChangeVote"
+        :max="poll.max_choices"
+        @change="error = ''"
+      >
+        <ElCheckbox
+          v-for="option in poll.options"
+          :key="option.position"
+          class="topic-poll-choice"
+          :value="option.position"
+        >
+          {{ option.label }}
+        </ElCheckbox>
+      </ElCheckboxGroup>
       <p v-if="showingResults && poll.max_choices > 1" class="topic-poll-meta">
         {{ $t('enhancedTopic.poll.percentageNote') }}
       </p>
@@ -515,100 +525,19 @@ onBeforeUnmount(() => {
   border-radius: var(--el-border-radius-base);
 }
 
+.topic-poll-choices {
+  display: grid;
+  gap: 6px;
+}
+
 .topic-poll-choice {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
+  height: auto;
   margin: 0;
-  font-weight: normal;
-  line-height: 1.5;
-}
+  white-space: normal;
 
-.topic-poll-choice input {
-  --topic-poll-control-size: 14px;
-
-  display: inline-grid;
-  flex: none;
-  place-items: center;
-  width: var(--topic-poll-control-size);
-  height: var(--topic-poll-control-size);
-  margin: calc((1lh - var(--topic-poll-control-size)) / 2) 0 0;
-  font: inherit;
-  appearance: none;
-  cursor: inherit;
-  background-color: var(--el-bg-color);
-  border: 1px solid var(--el-border-color);
-  border-radius: var(--el-border-radius-small);
-
-  &[type='radio'] {
-    border-radius: 50%;
-  }
-
-  &:checked {
-    background-color: var(--el-color-primary);
-    border-color: var(--el-color-primary);
-
-    &::after {
-      content: '';
-    }
-  }
-
-  &[type='checkbox']::after {
-    width: 4px;
-    height: 7px;
-    border: solid var(--el-color-white);
-    border-width: 0 1px 1px 0;
-    transform: translateY(-1px) rotate(45deg);
-  }
-
-  &[type='radio']::after {
-    width: 4px;
-    height: 4px;
-    background-color: var(--el-color-white);
-    border-radius: 50%;
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  &:disabled {
-    background-color: var(--el-fill-color-light);
-    border-color: var(--el-border-color);
-
-    &::after {
-      border-color: var(--el-text-color-disabled);
-    }
-
-    &[type='radio']::after {
-      background-color: var(--el-text-color-disabled);
-    }
-  }
-
-  @media (forced-colors: active) {
-    appearance: auto;
-
-    &:checked::after {
-      content: none;
-    }
-  }
-}
-
-.topic-poll-list:not(:disabled) .topic-poll-choice {
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--el-fill-color-light);
-
-    input:not(:checked) {
-      border-color: var(--el-color-primary);
-    }
-  }
-
-  &:has(input:focus-visible) {
-    background-color: var(--el-fill-color-light);
-    border-color: var(--el-color-primary);
+  :deep(.el-radio__label),
+  :deep(.el-checkbox__label) {
+    white-space: normal;
   }
 }
 

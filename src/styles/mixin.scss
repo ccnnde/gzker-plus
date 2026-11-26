@@ -1,5 +1,16 @@
 @use 'sass:list';
 
+@mixin editor-action-icon {
+  font-size: 25px;
+  color: var(--el-text-color-secondary);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--el-text-color-regular);
+  }
+}
+
 @mixin dynamic-width($widths...) {
   $breakpoints: 1700px, 1600px, 1500px, 1400px, 1300px, 1200px, 1100px, 1000px;
 
