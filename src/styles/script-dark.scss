@@ -36,6 +36,12 @@ html[data-gzkp-theme] {
     }
   }
 
+  .alert-info {
+    color: var(--el-text-color-primary);
+    background-color: var(--el-color-primary-light-9);
+    border-color: var(--el-color-primary-light-5);
+  }
+
   .alert-danger {
     color: var(--el-color-error);
     background-color: var(--el-color-error-light-9);
@@ -469,6 +475,77 @@ html[data-gzkp-theme] {
     }
   }
 
+  // 新版设置侧栏与邮箱状态使用独立变量，统一接入扩展主题。
+  &.gzkp-theme-controlled body {
+    .gzk-setting-nav {
+      --sn-bg: var(--el-bg-color);
+      --sn-line: var(--el-border-color-light);
+      --sn-text: var(--el-text-color-regular);
+      --sn-muted: var(--el-text-color-secondary);
+      --sn-icon: var(--el-text-color-secondary);
+      --sn-hover-bg: var(--el-fill-color-light);
+      --sn-hover-text: var(--el-color-primary);
+      --sn-active-bg: var(--el-color-primary-light-9);
+      --sn-active-text: var(--el-color-primary);
+
+      .gzk-setting-nav__icon {
+        &--points,
+        &--pass {
+          color: var(--el-color-warning);
+        }
+
+        &--dm,
+        &--id,
+        &--phone {
+          color: var(--el-color-primary);
+        }
+
+        &--avatar,
+        &--img {
+          color: var(--el-color-success);
+        }
+
+        &--privacy {
+          color: var(--el-color-info);
+        }
+
+        &--block {
+          color: var(--el-color-danger);
+        }
+      }
+
+      .gzk-setting-nav__item {
+        &:is(:hover, :focus-visible, .is-active, [aria-current='page']) .gzk-setting-nav__icon {
+          color: var(--el-color-primary);
+        }
+      }
+    }
+
+    .gzk-mail-row,
+    .gzk-methods {
+      --mail-accent: var(--el-color-primary);
+      --mail-fill: var(--el-color-primary-light-9);
+      --mail-edge: var(--el-color-primary-light-5);
+      --mail-active: var(--el-color-primary-dark-2);
+      --mail-ok: var(--el-color-success);
+      --mail-ok-bg: var(--el-color-success-light-9);
+    }
+
+    .gzk-mail-row .gzk-mail-state {
+      color: var(--mail-accent);
+
+      &.is-verified {
+        color: var(--mail-ok);
+      }
+    }
+  }
+
+  .setting .form-control:is(:disabled, [readonly]) {
+    color: var(--el-text-color-secondary);
+    background-color: var(--el-fill-color-light);
+  }
+
+  #custom-css,
   #reply-display {
     .gzk-reply-option {
       > span {
@@ -523,9 +600,12 @@ html[data-gzkp-theme] {
       svg {
         color: var(--el-text-color-regular);
       }
+
+      small {
+        color: var(--el-text-color-secondary);
+      }
     }
 
-    .gzk-reply-option small,
     .gzk-reply-setting-note {
       color: var(--el-text-color-secondary);
     }
