@@ -185,6 +185,10 @@ export const THEME_ATTR = 'data-gzkp-theme';
 
 export const FORUM_THEME_ATTR = 'data-theme';
 
+export const FORUM_STYLE_ATTR = 'data-custom-css';
+
+export const FORUM_DEFAULT_STYLE = 'classic';
+
 export const enum ReplyType {
   Topic = 'topic',
   Mention = 'mention',

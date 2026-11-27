@@ -6,9 +6,66 @@ import {
   updateDarkTheme,
   updateLightTheme,
 } from '@/utils';
-import { DARK_MODE_CLASS, FORUM_THEME_ATTR, OptionsKey, THEME_ATTR } from '@/constants';
+import {
+  DARK_MODE_CLASS,
+  FORUM_DEFAULT_STYLE,
+  FORUM_STYLE_ATTR,
+  FORUM_THEME_ATTR,
+  OptionsKey,
+  THEME_ATTR,
+} from '@/constants';
 
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
+
+const overrideForumStyle = (context: ContentScriptContext) => {
+  const root = document.documentElement;
+  let originalStyle: string | null | undefined;
+
+  const restoreForumStyle = () => {
+    if (originalStyle === undefined) {
+      return;
+    }
+
+    if (originalStyle === null) {
+      root.removeAttribute(FORUM_STYLE_ATTR);
+    } else {
+      root.setAttribute(FORUM_STYLE_ATTR, originalStyle);
+    }
+
+    originalStyle = undefined;
+  };
+
+  const syncForumStyle = () => {
+    if (!root.hasAttribute(THEME_ATTR)) {
+      restoreForumStyle();
+      return;
+    }
+
+    const currentStyle = root.getAttribute(FORUM_STYLE_ATTR);
+
+    // 保留原生选择，只在扩展自定义主题生效期间使用经典样式。
+    if (originalStyle === undefined || currentStyle !== FORUM_DEFAULT_STYLE) {
+      originalStyle = currentStyle;
+    }
+
+    if (currentStyle !== FORUM_DEFAULT_STYLE) {
+      root.setAttribute(FORUM_STYLE_ATTR, FORUM_DEFAULT_STYLE);
+    }
+  };
+
+  const observer = new MutationObserver(syncForumStyle);
+  observer.observe(root, {
+    attributes: true,
+    attributeFilter: [THEME_ATTR, FORUM_STYLE_ATTR],
+  });
+
+  syncForumStyle();
+
+  context.onInvalidated(() => {
+    observer.disconnect();
+    restoreForumStyle();
+  });
+};
 
 const overrideForumTheme = (context: ContentScriptContext) => {
   const root = document.documentElement;
@@ -70,6 +127,7 @@ const overrideForumTheme = (context: ContentScriptContext) => {
 
 export const applyAppearance = async (ctx: ContentScriptContext) => {
   overrideForumTheme(ctx);
+  overrideForumStyle(ctx);
 
   const hadDarkModeClass = document.documentElement.classList.contains(DARK_MODE_CLASS);
   const originalTheme = document.documentElement.getAttribute(THEME_ATTR);
