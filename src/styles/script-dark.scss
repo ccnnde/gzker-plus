@@ -420,8 +420,29 @@ html[data-gzkp-theme] {
 
       background-color: var(--el-bg-color);
 
-      .yw-header .muted {
-        color: var(--yw-muted);
+      .yw-header {
+        .muted {
+          color: var(--yw-muted);
+        }
+
+        .yw-create-entry {
+          color: var(--el-text-color-primary);
+          background: linear-gradient(115deg, var(--el-color-primary-light-9), var(--el-color-danger-light-9));
+          border-color: var(--el-border-color);
+          box-shadow: var(--el-box-shadow-lighter);
+
+          &:hover {
+            border-color: var(--el-color-primary);
+          }
+
+          &:focus-visible {
+            outline-color: var(--el-color-primary);
+          }
+
+          small {
+            color: var(--el-text-color-regular);
+          }
+        }
       }
 
       .yw-header h1 a,
@@ -445,8 +466,71 @@ html[data-gzkp-theme] {
         }
       }
 
-      .yw-app-icon {
+      .yw-scope a {
+        color: var(--yw-muted);
+
+        &[aria-current],
+        &:hover,
+        &:focus-visible {
+          color: var(--yw-link);
+        }
+      }
+
+      .yw-app-icon,
+      .yw-lobby-icon {
         background-color: var(--el-fill-color-light);
+      }
+
+      .yw-view-switch {
+        --view-selected-bg: var(--el-color-primary-light-9);
+        --view-selected-ink: var(--el-text-color-primary);
+        --view-idle-ink: var(--el-text-color-secondary);
+      }
+
+      .yw-catalog-pager {
+        --pager-bg: var(--el-bg-color-overlay);
+        --pager-next: var(--el-color-primary-light-9);
+        --pager-ink: var(--el-text-color-primary);
+        --pager-line: var(--el-border-color);
+        --pager-hover: var(--el-color-primary-light-8);
+        --pager-muted: var(--el-text-color-secondary);
+        --pager-focus: var(--el-color-primary);
+
+        .yw-page-link,
+        .yw-jump-shortcuts a {
+          color: var(--pager-ink);
+        }
+
+        .yw-mobile-jump button {
+          color: var(--el-color-white);
+          background: color-mix(in srgb, var(--el-color-primary) 65%, #000);
+          border-color: var(--el-color-primary);
+        }
+      }
+
+      .yw-detail-actions {
+        --yw-launch-text: var(--el-color-white);
+        --yw-launch-bg: color-mix(in srgb, var(--el-color-primary) 65%, #000);
+        --yw-launch-hover: color-mix(in srgb, var(--el-color-primary) 75%, #000);
+        --yw-launch-active: color-mix(in srgb, var(--el-color-primary) 55%, #000);
+        --yw-launch-border: var(--el-color-primary);
+        --yw-launch-ring: var(--el-color-primary);
+      }
+
+      .yw-card-favorite[aria-pressed='true'] {
+        color: var(--el-color-danger);
+      }
+
+      .yw-detail-favorite[aria-pressed='true'] svg {
+        fill: var(--el-color-danger);
+        stroke: var(--el-color-danger);
+      }
+
+      .yw-lobby-seat,
+      .yw-owner-state,
+      .yw-preview-status {
+        color: var(--el-text-color-primary);
+        background: var(--el-color-primary-light-9);
       }
 
       .yw-app-fallback {
@@ -638,9 +722,34 @@ html[data-gzkp-theme] {
         border-color: var(--el-color-primary-light-5);
       }
     }
+
+    .yw-chat-invite {
+      color: var(--el-text-color-primary);
+      background: var(--el-color-success-light-9);
+      border-color: var(--el-color-success-light-5);
+    }
+
+    .yw-chat-invite-state {
+      color: var(--el-text-color-primary);
+      background: var(--el-color-success-light-8);
+    }
+
+    .yw-chat-invite-join {
+      background: color-mix(in srgb, var(--el-color-success) 65%, #000);
+
+      &:hover,
+      &:focus-visible {
+        background: color-mix(in srgb, var(--el-color-success) 55%, #000);
+      }
+    }
   }
 
   &.gzkp-theme-controlled .yw-dialog {
+    --yw-line: var(--el-border-color-light);
+    --yw-muted: var(--el-text-color-secondary);
+    --yw-link: var(--el-color-primary);
+    --yw-input: var(--el-bg-color);
+
     color: var(--el-text-color-primary);
     background-color: var(--el-bg-color-overlay);
     border-color: var(--el-border-color);
@@ -651,11 +760,32 @@ html[data-gzkp-theme] {
 
     header {
       border-color: var(--el-border-color-light);
+    }
 
-      button:hover,
-      button:focus-visible {
+    #yw-dialog-close {
+      color: var(--el-text-color-secondary);
+
+      &:hover,
+      &:focus-visible {
         color: var(--el-color-primary);
+        background: var(--el-fill-color-light);
+        box-shadow: none;
       }
+
+      &:focus-visible {
+        outline: 2px solid var(--el-color-primary);
+        outline-offset: 2px;
+      }
+    }
+
+    a:not(.btn) {
+      color: var(--el-color-primary);
+    }
+
+    .yw-meta,
+    .yw-lobby-field-opt,
+    .yw-lobby-intent-hint {
+      color: var(--el-text-color-secondary);
     }
   }
 
@@ -890,6 +1020,11 @@ html[data-gzkp-theme] {
   }
 
   .user-page .profile {
+    .gzk-online {
+      color: var(--el-text-color-primary);
+      background: var(--el-color-success-light-9);
+    }
+
     .gzk-profile-actions {
       .gzk-profile-action {
         color: var(--el-color-primary) !important;
@@ -913,6 +1048,111 @@ html[data-gzkp-theme] {
     .ui-header a.gzk-credit-level {
       color: var(--el-color-primary) !important;
       border-color: var(--el-color-primary-light-5) !important;
+    }
+  }
+
+  .gzk-medal-pill {
+    color: var(--el-text-color-primary) !important;
+    background: linear-gradient(135deg, var(--el-color-primary-light-8), var(--el-color-primary-light-9));
+    border-color: var(--el-color-primary-light-5);
+    box-shadow: var(--el-box-shadow-lighter);
+
+    &:hover,
+    &:focus {
+      color: var(--el-text-color-primary) !important;
+      background: var(--el-color-primary-light-8);
+      border-color: var(--el-color-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--el-color-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  .gzk-dev-showcase {
+    --zwk-line: var(--el-border-color-light);
+    --zwk-surface: var(--el-bg-color);
+    --zwk-soft: var(--el-bg-color-overlay);
+    --zwk-soft-hover: var(--el-fill-color-light);
+    --zwk-text: var(--el-text-color-primary);
+    --zwk-muted: var(--el-text-color-secondary);
+    --zwk-link: var(--el-color-primary);
+    --zwk-gold-bg: linear-gradient(135deg, var(--el-color-primary-light-9), var(--el-bg-color-overlay));
+    --zwk-gold-border: var(--el-color-primary-light-5);
+    --zwk-gold-text: var(--el-text-color-primary);
+    --zwk-chip-bg: var(--el-color-primary-light-9);
+    --zwk-tag-bg: var(--el-fill-color);
+    --zwk-tag-text: var(--el-text-color-regular);
+    --zwk-icon-bg: var(--el-fill-color-light);
+
+    .gzk-dev-showcase__more {
+      color: var(--zwk-link);
+    }
+
+    .gzk-dev-work {
+      &:hover {
+        border-color: var(--el-border-color);
+      }
+
+      &__name {
+        color: var(--zwk-text) !important;
+
+        &:hover {
+          color: var(--zwk-link) !important;
+        }
+      }
+
+      &__rank {
+        color: var(--el-text-color-primary);
+        background: color-mix(in srgb, currentcolor 12%, var(--zwk-soft));
+        box-shadow: none;
+
+        &--1,
+        &--2,
+        &--3 {
+          background: linear-gradient(
+            135deg,
+            color-mix(in srgb, currentcolor var(--gzkp-rank-bg-start-weight, 24%), var(--zwk-soft)),
+            color-mix(in srgb, currentcolor var(--gzkp-rank-bg-end-weight, 8%), var(--zwk-soft))
+          );
+          box-shadow: inset 0 0 0 1px color-mix(in srgb, currentcolor var(--gzkp-rank-border-weight, 20%), transparent);
+        }
+
+        &--1 {
+          color: var(--el-color-warning);
+        }
+
+        &--2 {
+          color: var(--el-text-color-regular);
+        }
+
+        &--3 {
+          color: color-mix(in srgb, var(--el-color-warning) 65%, var(--el-color-danger));
+        }
+      }
+
+      &__rating {
+        color: var(--el-color-warning);
+      }
+
+      &__play {
+        color: var(--zwk-text) !important;
+        background: var(--el-fill-color);
+        border-color: var(--el-border-color);
+
+        &:hover,
+        &:focus {
+          color: var(--zwk-text) !important;
+          background: var(--el-color-primary-light-9);
+          border-color: var(--el-color-primary);
+        }
+      }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--el-color-primary);
+      outline-offset: 2px;
     }
   }
 
